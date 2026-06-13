@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { T } from '@/components/admin/theme';
 import { PRODUCTS, COLLECTIONS, CATEGORIES, MATERIALS, fmtPrice } from '@/lib/data/products';
 import { resolveCatalogue } from '@/lib/data/resolve';
-import { loadOverrides, OVERRIDE_KEY } from '@/lib/overrides';
+import { loadOverrides, saveOverridesLocal, fetchOverrides, OVERRIDE_KEY } from '@/lib/overrides';
 
 // Items in these states never appear in the public catalogue.
 const HIDDEN_STOCK = ['Archived'];
@@ -27,15 +27,26 @@ export default function Storefront() {
   const [sort, setSort] = useState('featured');
   const [active, setActive] = useState(null);
 
-  // Read the studio's saved edits, and stay in sync if the admin desk is open in
-  // another tab.
+  // Show the studio's shared edits. Paint instantly from the local cache, then pull
+  // the shared server copy (source of truth) on load and whenever the tab regains
+  // focus, so prices stay current for every visitor. Also sync across tabs in the
+  // same browser via the `storage` event.
   useEffect(() => {
     setOverrides(loadOverrides());
-    const onStorage = (e) => {
-      if (e.key === OVERRIDE_KEY) setOverrides(loadOverrides());
-    };
+    let alive = true;
+    const refresh = () => fetchOverrides()
+      .then((srv) => { if (alive) { setOverrides(srv); saveOverridesLocal(srv); } })
+      .catch(() => {});
+    refresh();
+    const onFocus = () => refresh();
+    const onStorage = (e) => { if (e.key === OVERRIDE_KEY) setOverrides(loadOverrides()); };
+    window.addEventListener('focus', onFocus);
     window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
+    return () => {
+      alive = false;
+      window.removeEventListener('focus', onFocus);
+      window.removeEventListener('storage', onStorage);
+    };
   }, []);
 
   const resolved = useMemo(

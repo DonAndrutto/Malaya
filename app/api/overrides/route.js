@@ -1,20 +1,34 @@
-// GET /api/overrides — fetch saved overrides (future: read from DB).
-// POST /api/overrides — save overrides (future: write to DB).
-// Currently the client uses localStorage; these routes are the migration path.
+// GET  /api/overrides — read the shared catalogue overrides (price/stock/name edits).
+// POST /api/overrides — replace the shared overrides with the studio's latest edits.
+//
+// Persistence is handled by lib/server/overridesStore.js (Vercel KV / Upstash Redis,
+// with an in-memory fallback when no store is configured).
+
+import { readOverrides, writeOverrides, persistence } from '@/lib/server/overridesStore';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  // TODO: read from database (e.g. Vercel KV, Postgres, PlanetScale).
-  return Response.json({ overrides: {} });
+  try {
+    const overrides = await readOverrides();
+    return Response.json({ overrides, persistence });
+  } catch (err) {
+    return Response.json({ overrides: {}, persistence, error: String(err) }, { status: 200 });
+  }
 }
 
 export async function POST(request) {
   const body = await request.json().catch(() => ({}));
   const { overrides } = body;
 
-  if (!overrides || typeof overrides !== 'object') {
+  if (!overrides || typeof overrides !== 'object' || Array.isArray(overrides)) {
     return Response.json({ error: 'Invalid overrides payload' }, { status: 400 });
   }
 
-  // TODO: persist overrides to a real store so they survive across sessions / devices.
-  return Response.json({ ok: true, saved: Object.keys(overrides).length });
+  try {
+    await writeOverrides(overrides);
+    return Response.json({ ok: true, saved: Object.keys(overrides).length, persistence });
+  } catch (err) {
+    return Response.json({ error: 'Failed to persist overrides', detail: String(err) }, { status: 500 });
+  }
 }

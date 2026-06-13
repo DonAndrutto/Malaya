@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { T, ghostBtn } from './theme';
 import { PRODUCTS, COLLECTIONS, CATEGORIES, MATERIALS, STOCK_OPTIONS, fmtPrice } from '@/lib/data/products';
-import { loadOverrides, saveOverrides } from '@/lib/overrides';
+import { loadOverrides, saveOverrides, saveOverridesLocal, fetchOverrides } from '@/lib/overrides';
 import StockLedger from './StockLedger';
 import MassEdit from './MassEdit';
 
@@ -496,7 +496,11 @@ function Console({ user, onLogout }) {
   useEffect(() => {
     const saved = localStorage.getItem('malaya:admin:tab');
     if (saved) setTab(saved);
-    setOverrides(loadOverrides());
+    setOverrides(loadOverrides()); // paint instantly from local cache
+    // then reconcile with the shared server copy (source of truth)
+    fetchOverrides()
+      .then((srv) => { setOverrides(srv); saveOverridesLocal(srv); })
+      .catch(() => {});
   }, []);
 
   const update = (updater) => setOverrides((prev) => {
