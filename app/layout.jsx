@@ -3,8 +3,8 @@ import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata = {
-  title: 'Malaya · Studio Admin',
-  description: 'Malaya Jewellery studio administration',
+  title: 'Malaya · Fine Buddhist Jewellery',
+  description: 'Handcrafted Buddhist jewellery from Bhutan — mantras, ritual objects and healing stones in fine gold and silver.',
 };
 
 export default function RootLayout({ children }) {
