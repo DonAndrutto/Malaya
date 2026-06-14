@@ -1,0 +1,39 @@
+rules_version = '2';
+
+// Storage security rules for the Malaya catalogue.
+//
+// Uploaded images live under:
+//   products/{productId}/...   — product photos
+//   site/{slot}/...            — hero slides, banners, tiles, logo, portrait
+//
+// Reads are public (images are served on the storefront). Writes come from the
+// admin and are limited to image files under 15 MB.
+//
+// ⚠ The active write rules are OPEN (any image upload to these paths is allowed)
+//   so uploads work before Firebase Auth is set up. Before launch, uncomment the
+//   `request.auth != null` clause in isAdminImage() and wire the admin sign-in.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAdminImage() {
+      return request.resource.size < 15 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+      // && request.auth != null;   // AUTHENTICATED (recommended) — add this.
+    }
+
+    match /products/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdminImage();
+    }
+
+    match /site/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdminImage();
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

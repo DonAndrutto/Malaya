@@ -2,24 +2,37 @@
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Shared shell for the Malaya storefront: header (mega menu, account & cart
-// dropdowns), footer, product card, page banner, and the image-with-fallback.
+// dropdowns), footer, product card, page banner, and image-with-fallback.
+// Navigation uses the Next.js App Router (next/link + usePathname).
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
-  CATEGORIES, COLLECTIONS, SITE_NAV, SITE_INFO, fmtPrice, siteImg,
+  CATEGORIES, COLLECTIONS, SITE_NAV, SITE_INFO, fmtPrice, siteImg, cdnFallback,
 } from '@/lib/data/site-data';
-import {
-  navTo, useCart, removeFromCart, cartTotal, useSiteData,
-} from './store';
+import { useCart, removeFromCart, cartTotal, useSiteData } from './store';
 
-// ── Image with S-size fallback (the live site serves both M and S variants) ──
+const catHref = (c) => `/catalogue?category=${encodeURIComponent(c)}`;
+const colHref = (c) => `/catalogue?collection=${encodeURIComponent(c)}`;
+
+// ── Image with local→CDN→smaller-size fallback ───────────────────────────────
 export function SiteImg({ src, alt, style, className }) {
   return (
     <img
       src={src} alt={alt || ''} loading="lazy" className={className} style={style}
       onError={(e) => {
-        if (!e.target.dataset.fb) { e.target.dataset.fb = '1'; e.target.src = src.replace('M.', 'S.'); }
+        const el = e.target;
+        const tried = el.dataset.tried || '';
+        const cur = el.getAttribute('src') || '';
+        if (!tried.includes('cdn')) {
+          const cdn = cdnFallback(cur);
+          if (cdn) { el.dataset.tried = tried + 'cdn,'; el.src = cdn; return; }
+        }
+        if (!tried.includes('small') && cur.includes('M.')) {
+          el.dataset.tried = (el.dataset.tried || '') + 'small,';
+          el.src = cur.replace('M.', 'S.');
+        }
       }}
     />
   );
@@ -27,11 +40,10 @@ export function SiteImg({ src, alt, style, className }) {
 
 // ── Product card — bordered photo, centred name/subtitle (matches live site) ──
 export function SiteProductCard({ p }) {
-  const open = (e) => { e.preventDefault(); navTo('#/product/' + p.id); };
   const onSale = p.onSale || p.tag === 'sale';
   return (
     <div className="pcard">
-      <a className="pcard-thumb" href={'#/product/' + p.id} onClick={open}>
+      <Link className="pcard-thumb" href={`/product/${p.id}`}>
         <SiteImg src={p.img} alt={p.name} />
         {onSale ? (
           <span className="pcard-label pcard-label-sale">SALE</span>
@@ -45,19 +57,21 @@ export function SiteProductCard({ p }) {
         <span className="pcard-quick">
           <img src={siteImg('icon/malaya.jpg')} alt="" style={{ objectFit: 'scale-down', width: 65 }} />
         </span>
-      </a>
+      </Link>
       <h5 className="pcard-text">
-        <a href={'#/product/' + p.id} onClick={open} className="pcard-name">{p.name}</a>
-        <a href={'#/product/' + p.id} onClick={open} className="pcard-sub">{p.sub}</a>
+        <Link href={`/product/${p.id}`} className="pcard-name">{p.name}</Link>
+        <Link href={`/product/${p.id}`} className="pcard-sub">{p.sub}</Link>
       </h5>
     </div>
   );
 }
 
-// ── Page banner (thin breadcrumb banner like the live site) ──────────────────
+// ── Page banner (admin-overridable default image via settings.pageBanner) ────
 export function PageBanner({ title, subtitle, img }) {
+  const { settings } = useSiteData();
+  const bg = img || settings.pageBanner || siteImg('banner33.jpg');
   return (
-    <div className="page-banner" style={{ backgroundImage: `url(${img || siteImg('banner33.jpg')})` }}>
+    <div className="page-banner" style={{ backgroundImage: `url(${bg})` }}>
       <div className="site-container">
         <strong className="page-banner-title">{title}</strong>
         {subtitle && <span className="page-banner-sub">{subtitle}</span>}
@@ -67,35 +81,28 @@ export function PageBanner({ title, subtitle, img }) {
 }
 
 // ── Header ───────────────────────────────────────────────────────────────────
-function MegaMenu({ onNavigate }) {
+function MegaMenu() {
   const { MEGA_FEATURED } = useSiteData();
-  const go = (hash) => (e) => { e.preventDefault(); onNavigate(); navTo(hash); };
   return (
     <div className="mega">
       <div className="mega-inner">
         <div className="mega-col">
           <h4 className="mega-head">Categories</h4>
-          {CATEGORIES.map((c) => (
-            <a key={c} href={'#/catalogue/cat/' + encodeURIComponent(c)} className="mega-link"
-              onClick={go('#/catalogue/cat/' + encodeURIComponent(c))}>{c}</a>
-          ))}
+          {CATEGORIES.map((c) => <Link key={c} href={catHref(c)} className="mega-link">{c}</Link>)}
         </div>
         <div className="mega-col">
           <h4 className="mega-head">Collections</h4>
-          {COLLECTIONS.map((c) => (
-            <a key={c} href={'#/catalogue/col/' + encodeURIComponent(c)} className="mega-link"
-              onClick={go('#/catalogue/col/' + encodeURIComponent(c))}>{c}</a>
-          ))}
+          {COLLECTIONS.map((c) => <Link key={c} href={colHref(c)} className="mega-link">{c}</Link>)}
         </div>
         <div className="mega-col mega-col-wide">
           <h4 className="mega-head">Shop Collection</h4>
           <div className="mega-products">
             {MEGA_FEATURED.map((p) => (
-              <a key={p.id} className="mega-product" href={'#/product/' + p.id} onClick={go('#/product/' + p.id)}>
+              <Link key={p.id} className="mega-product" href={`/product/${p.id}`}>
                 <SiteImg src={p.img} alt={p.name} />
                 <span className="mega-product-name">{p.name}</span>
                 <span className="mega-product-sub">{p.sub}</span>
-              </a>
+              </Link>
             ))}
           </div>
         </div>
@@ -103,8 +110,7 @@ function MegaMenu({ onNavigate }) {
           <img src={siteImg('mega4.jpg')} alt="Mystical Beings" />
           <h4 className="mega-promo-title">Mystical Beings</h4>
           <p className="mega-promo-desc">Add a splash of colour to your Jewelry with Malaya.</p>
-          <a href="#/catalogue/col/Mystical%20Beings" className="btn-malaya btn-malaya-sm"
-            onClick={go('#/catalogue/col/' + encodeURIComponent('Mystical Beings'))}>Order Now</a>
+          <Link href={colHref('Mystical Beings')} className="btn-malaya btn-malaya-sm">Order Now</Link>
         </div>
       </div>
     </div>
@@ -136,8 +142,8 @@ function CartDropdown({ items }) {
       )}
       <div className="hdr-cart-total"><strong>TOTAL</strong><span>{total.toLocaleString('en-US')} USD</span></div>
       <div className="hdr-cart-btns">
-        <a href="#/order" className="btn-malaya btn-malaya-sm" onClick={(e) => { e.preventDefault(); navTo('#/order'); }}>View Order</a>
-        <a href="#/order" className="btn-malaya btn-malaya-sm btn-malaya-gold" onClick={(e) => { e.preventDefault(); navTo('#/order'); }}>Checkout</a>
+        <Link href="/order" className="btn-malaya btn-malaya-sm">View Order</Link>
+        <Link href="/order" className="btn-malaya btn-malaya-sm btn-malaya-gold">Checkout</Link>
       </div>
     </div>
   );
@@ -151,24 +157,25 @@ function AccountDropdown() {
       <h4 className="hdr-drop-head" style={{ marginTop: 10 }}>Support Centre</h4>
       <a href="#" className="hdr-drop-link" onClick={(e) => e.preventDefault()}>FAQs</a>
       <a href="#" className="hdr-drop-link" onClick={(e) => e.preventDefault()}>Shipping &amp; Returns</a>
-      <a href="#/contact" className="hdr-drop-link" onClick={(e) => { e.preventDefault(); navTo('#/contact'); }}>Contact Us</a>
+      <Link href="/contact" className="hdr-drop-link">Contact Us</Link>
       <a href={'mailto:' + SITE_INFO.email} className="hdr-drop-link">Send an Email</a>
       <span className="hdr-drop-note">Call us on WhatsApp: {SITE_INFO.whatsapp}</span>
     </div>
   );
 }
 
-export function SiteHeader({ route }) {
+export function SiteHeader() {
+  const pathname = usePathname() || '/';
+  const { settings } = useSiteData();
   const items = useCart();
   const count = items.reduce((s, i) => s + i.qty, 0);
-  const [megaOpen, setMegaOpen] = useState(false);
   return (
     <header className="site-header">
       <div className="hdr-top">
         <div className="site-container hdr-top-inner">
-          <a href="#/" className="hdr-logo" onClick={(e) => { e.preventDefault(); navTo('#/'); }}>
-            <img src={siteImg('logo.png')} alt="Malaya Jewelry" />
-          </a>
+          <Link href="/" className="hdr-logo">
+            <img src={settings.logo || siteImg('logo.png')} alt="Malaya Jewelry" />
+          </Link>
           <div className="hdr-icons">
             <div className="hdr-icon-wrap">
               <button className="hdr-icon-btn" title="Account">
@@ -177,11 +184,10 @@ export function SiteHeader({ route }) {
               <AccountDropdown />
             </div>
             <div className="hdr-icon-wrap">
-              <a className="hdr-icon-btn" href="#/order" title="My order"
-                onClick={(e) => { e.preventDefault(); navTo('#/order'); }}>
+              <Link className="hdr-icon-btn" href="/order" title="My order">
                 <img src={siteImg('icon/icon-cart.png')} alt="Cart" />
                 <span className="hdr-cart-count">{count}</span>
-              </a>
+              </Link>
               <CartDropdown items={items} />
             </div>
           </div>
@@ -190,25 +196,23 @@ export function SiteHeader({ route }) {
       <nav className="hdr-nav">
         <div className="site-container hdr-nav-inner">
           {SITE_NAV.map((item) => {
-            const active = item.hash && (route.page === item.hash.slice(2) || (item.hash === '#/' && route.page === ''));
             if (item.href) {
               return <a key={item.label} className="hdr-nav-link" href={item.href} target="_blank" rel="noreferrer">{item.label}</a>;
             }
             if (item.mega) {
+              const active = pathname.startsWith('/catalogue') || pathname.startsWith('/product');
               return (
-                <div key={item.label} className={'hdr-nav-mega' + (megaOpen ? ' open' : '')}
-                  onMouseEnter={() => setMegaOpen(true)} onMouseLeave={() => setMegaOpen(false)}>
-                  <a className={'hdr-nav-link' + (route.page.startsWith('catalogue') || route.page === 'product' ? ' active' : '')}
-                    href={item.hash} onClick={(e) => { e.preventDefault(); setMegaOpen(false); navTo(item.hash); }}>
+                <div key={item.label} className="hdr-nav-mega">
+                  <Link className={'hdr-nav-link' + (active ? ' active' : '')} href={item.path}>
                     {item.label} <span className="hdr-caret">▾</span>
-                  </a>
-                  <MegaMenu onNavigate={() => setMegaOpen(false)} />
+                  </Link>
+                  <MegaMenu />
                 </div>
               );
             }
+            const active = pathname === item.path;
             return (
-              <a key={item.label} className={'hdr-nav-link' + (active ? ' active' : '')} href={item.hash}
-                onClick={(e) => { e.preventDefault(); navTo(item.hash); }}>{item.label}</a>
+              <Link key={item.label} className={'hdr-nav-link' + (active ? ' active' : '')} href={item.path}>{item.label}</Link>
             );
           })}
         </div>
@@ -219,14 +223,11 @@ export function SiteHeader({ route }) {
 
 // ── Footer ───────────────────────────────────────────────────────────────────
 export function SiteFooter() {
-  const go = (hash) => (e) => { e.preventDefault(); navTo(hash); };
   return (
     <footer className="site-footer">
       <div className="ftr-contact-strip">
         <div className="site-container">
-          <h3>Questions about Malaya Jewelry?{' '}
-            <a href="#/contact" onClick={go('#/contact')}>Contact Us</a>
-          </h3>
+          <h3>Questions about Malaya Jewelry? <Link href="/contact">Contact Us</Link></h3>
         </div>
       </div>
       <div className="site-container ftr-cols">
@@ -239,8 +240,8 @@ export function SiteFooter() {
         </div>
         <div className="ftr-col">
           <h4 className="ftr-head">Info Links</h4>
-          <a className="ftr-link" href="#/about" onClick={go('#/about')}>About</a>
-          <a className="ftr-link" href="#/contact" onClick={go('#/contact')}>Contact</a>
+          <Link className="ftr-link" href="/about">About</Link>
+          <Link className="ftr-link" href="/contact">Contact</Link>
           <a className="ftr-link" href="#" onClick={(e) => e.preventDefault()}>Privacy Policy</a>
           <a className="ftr-link" href="#" onClick={(e) => e.preventDefault()}>Terms and Conditions</a>
           <a className="ftr-link" href="#" onClick={(e) => e.preventDefault()}>Cookie policy</a>
@@ -259,7 +260,7 @@ export function SiteFooter() {
       <div className="ftr-bottom">
         <div className="site-container">
           <span>© 2018–2026 Malaya Jewelry</span>
-          <span>Thimphu, Bhutan · <a href="/admin" title="Studio administration" style={{ color: 'inherit' }}>Studio admin</a></span>
+          <span>Thimphu, Bhutan · <Link href="/admin" title="Studio administration" style={{ color: 'inherit' }}>Studio admin</Link></span>
         </div>
       </div>
     </footer>

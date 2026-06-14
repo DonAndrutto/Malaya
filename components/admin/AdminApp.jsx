@@ -3,12 +3,15 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { T, ghostBtn } from './theme';
 import { PRODUCTS, COLLECTIONS, CATEGORIES, MATERIALS, STOCK_OPTIONS, fmtPrice } from '@/lib/data/products';
-import { loadOverrides, saveOverrides } from '@/lib/overrides';
+import { saveOverrides, subscribeOverrides } from '@/lib/overrides';
+import { uploadImage } from '@/lib/upload';
+import { FIREBASE_ENABLED } from '@/lib/firebase';
 import StockLedger from './StockLedger';
 import MassEdit from './MassEdit';
+import SiteImages from './SiteImages';
 
 const SESSION_KEY = 'malaya:admin:session';
-const FIELDS = ['salesCode', 'productionCode', 'name', 'sub', 'category', 'collection', 'material', 'stock', 'listPrice', 'salePrice'];
+const FIELDS = ['salesCode', 'productionCode', 'name', 'sub', 'category', 'collection', 'material', 'stock', 'listPrice', 'salePrice', 'img'];
 
 function money(n) { return fmtPrice(Math.round(Number(n) || 0)); }
 function cleanNum(v) { const n = Number(v); return isNaN(n) ? null : n; }
@@ -88,7 +91,7 @@ function Dashboard({ overrides, setOverrides }) {
     const salePrice = (rawSale === null || rawSale === undefined || rawSale === '') ? null : Number(rawSale);
     const onSale = salePrice != null && !isNaN(salePrice) && salePrice > 0 && salePrice < listPrice;
     return {
-      id, code: val(id, 'salesCode'), img: b.img, hue: b.hue,
+      id, code: val(id, 'salesCode'), img: ('img' in o && o.img) ? o.img : b.img, hue: b.hue,
       salesCode: val(id, 'salesCode'), productionCode: val(id, 'productionCode'),
       name: val(id, 'name'), sub: val(id, 'sub'), category: val(id, 'category'),
       collection: val(id, 'collection'), material: val(id, 'material'), stock: val(id, 'stock'),
@@ -342,6 +345,7 @@ export function EditDrawer({ r, base, fieldEdited, commit, resetItem, onClose })
           <FieldSelect label="Collection" value={r.collection} options={COLLECTIONS} edited={fieldEdited(r.id, 'collection')} base={base.collection} onCommit={(v) => commit(r.id, { collection: v })} onRevert={() => commit(r.id, { collection: base.collection })} />
           <FieldSelect label="Material" value={r.material} options={MATERIALS} edited={fieldEdited(r.id, 'material')} base={base.material} onCommit={(v) => commit(r.id, { material: v })} onRevert={() => commit(r.id, { material: base.material })} />
           <FieldSelect label="Stock / availability" value={r.stock} options={STOCK_OPTIONS} edited={fieldEdited(r.id, 'stock')} base={base.stock} onCommit={(v) => commit(r.id, { stock: v })} onRevert={() => commit(r.id, { stock: base.stock })} />
+          <ImageField r={r} base={base} edited={fieldEdited(r.id, 'img')} commit={commit} />
           <div style={{ borderTop: `1px solid ${T.line}`, marginTop: 6, paddingTop: 18 }}>
             <div style={{ fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', color: T.accent, marginBottom: 14 }}>Pricing</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
@@ -364,6 +368,46 @@ export function EditDrawer({ r, base, fieldEdited, commit, resetItem, onClose })
         </div>
       </aside>
     </div>
+  );
+}
+
+// ─────────────────────────────────────────────────── ImageField ────
+// Upload a replacement product photo to Firebase Storage; the download URL is
+// committed to the override (and mirrored to Firestore), so it flows into the
+// catalogue immediately.
+function ImageField({ r, base, edited, commit }) {
+  const [busy, setBusy] = useState(false);
+  const inputRef = useRef(null);
+  const onPick = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    if (!FIREBASE_ENABLED) { alert('Firebase is not configured — image uploads are unavailable.'); return; }
+    setBusy(true);
+    try {
+      const url = await uploadImage(`products/${r.id}`, file);
+      commit(r.id, { img: url });
+    } catch (err) {
+      alert('Upload failed: ' + (err && err.message ? err.message : String(err)));
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <FieldShell label="Image" edited={edited} base="original" showBase={edited} onRevert={() => commit(r.id, { img: base.img })}>
+      <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
+        <div style={{ width: 64, height: 64, flexShrink: 0, background: T.card, border: `1px solid ${T.line2}`, overflow: 'hidden' }}>
+          <img src={r.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} onError={(e) => { e.target.style.display = 'none'; }} />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <button type="button" onClick={() => inputRef.current && inputRef.current.click()} disabled={busy} style={ghostBtn(busy)}>
+            {busy ? 'Uploading…' : (edited ? 'Replace image' : 'Upload image')}
+          </button>
+          <input ref={inputRef} type="file" accept="image/*" onChange={onPick} style={{ display: 'none' }} />
+          {!FIREBASE_ENABLED && <span style={{ fontSize: 10, color: T.faint }}>Connect Firebase to enable uploads</span>}
+        </div>
+      </div>
+    </FieldShell>
   );
 }
 
@@ -496,7 +540,9 @@ function Console({ user, onLogout }) {
   useEffect(() => {
     const saved = localStorage.getItem('malaya:admin:tab');
     if (saved) setTab(saved);
-    setOverrides(loadOverrides());
+    // Hydrate from Firestore (with the localStorage cache for an instant paint),
+    // and stay in sync with edits made on other devices.
+    return subscribeOverrides(setOverrides);
   }, []);
 
   const update = (updater) => setOverrides((prev) => {
@@ -509,7 +555,7 @@ function Console({ user, onLogout }) {
     try { localStorage.setItem('malaya:admin:tab', tab); } catch {}
   }, [tab]);
 
-  const TABS = [['ledger', 'Stock ledger'], ['catalogue', 'Catalogue prices'], ['massedit', 'Mass edit']];
+  const TABS = [['ledger', 'Stock ledger'], ['catalogue', 'Catalogue prices'], ['massedit', 'Mass edit'], ['site', 'Site images']];
   const tabBtn = (active) => ({ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: T.sans, fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', padding: '6px 2px', color: active ? T.ink : T.muted, borderBottom: `2px solid ${active ? T.accent : 'transparent'}` });
 
   return (
@@ -530,6 +576,7 @@ function Console({ user, onLogout }) {
       {tab === 'ledger' && <StockLedger overrides={overrides} setOverrides={update} />}
       {tab === 'massedit' && <MassEdit overrides={overrides} setOverrides={update} editDrawer={EditDrawer} />}
       {tab === 'catalogue' && <Dashboard overrides={overrides} setOverrides={update} />}
+      {tab === 'site' && <SiteImages />}
     </div>
   );
 }

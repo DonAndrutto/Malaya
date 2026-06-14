@@ -1,39 +1,12 @@
 'use client';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Client runtime for the storefront: hash router, localStorage cart, toast, and
-// a context that hands the resolved site data (catalogue + extras) to every page.
+// Client runtime for the storefront: localStorage cart, toast, and the context
+// that hands the resolved site data (catalogue + extras + site image settings)
+// to every page. Routing is handled by the Next.js App Router.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { createContext, useContext, useEffect, useState } from 'react';
-
-// ── Navigation (hash router) ─────────────────────────────────────────────────
-export function navTo(hash) {
-  if (typeof window !== 'undefined') window.location.hash = hash;
-}
-
-export function parseRoute() {
-  if (typeof window === 'undefined') return { page: '', sub: null, value: null };
-  const h = (window.location.hash || '#/').replace(/^#\//, '');
-  const parts = h.split('/').filter(Boolean);
-  if (parts.length === 0) return { page: '', sub: null, value: null };
-  if (parts[0] === 'product') return { page: 'product', sub: null, value: parts[1] || '' };
-  if (parts[0] === 'catalogue') return { page: 'catalogue', sub: parts[1] || null, value: parts[2] || null };
-  return { page: parts[0], sub: null, value: null };
-}
-
-export function useRoute() {
-  // Render the home route on the server / first client paint, then sync to the
-  // real hash after mount so deep links resolve without a hydration mismatch.
-  const [route, setRoute] = useState({ page: '', sub: null, value: null });
-  useEffect(() => {
-    const onHash = () => { setRoute(parseRoute()); window.scrollTo(0, 0); };
-    onHash();
-    window.addEventListener('hashchange', onHash);
-    return () => window.removeEventListener('hashchange', onHash);
-  }, []);
-  return route;
-}
 
 // ── Cart store (localStorage-backed) ─────────────────────────────────────────
 const CART_KEY = 'malaya-site-cart-v1';
@@ -57,7 +30,6 @@ export function useCart() {
     setItems(readCart());
     const f = (it) => setItems(it.slice());
     cartListeners.push(f);
-    // Keep in sync if the order changes in another tab.
     const onStorage = (e) => { if (e.key === CART_KEY) setItems(readCart()); };
     window.addEventListener('storage', onStorage);
     return () => {
@@ -107,9 +79,10 @@ export function showToast(msg) {
 }
 
 // ── Site data context ────────────────────────────────────────────────────────
-// Holds { SITE_PRODUCTS, SITE_BY_ID, TASHI_PRODUCTS, HOME_BEST, MEGA_FEATURED }
-// rebuilt whenever the admin overrides change.
+// { SITE_PRODUCTS, SITE_BY_ID, TASHI_PRODUCTS, HOME_BEST, MEGA_FEATURED, settings }
 export const SiteDataContext = createContext(null);
 export function useSiteData() {
-  return useContext(SiteDataContext);
+  return useContext(SiteDataContext) || {
+    SITE_PRODUCTS: [], SITE_BY_ID: {}, TASHI_PRODUCTS: [], HOME_BEST: [], MEGA_FEATURED: [], settings: {},
+  };
 }

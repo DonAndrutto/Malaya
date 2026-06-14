@@ -2,42 +2,46 @@
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Storefront pages: Home, Catalogue (filters + pagination), Product detail,
-// Tashi Mannox, About, Contact, and the order/cart page.
+// Tashi Mannox, About, Contact, and the order/cart page. Route-driven via the
+// Next.js App Router; admin-managed images come from `settings` on the context.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import {
   CATEGORIES, COLLECTIONS, fmtPrice, siteImg,
   HOME_HERO, HOME_TILES, TASHI_INTRO, ABOUT_LEAD, ABOUT_BODY, SITE_INFO,
 } from '@/lib/data/site-data';
 import {
-  navTo, useCart, addToCart, setCartQty, removeFromCart, cartTotal, showToast, useSiteData,
+  useCart, addToCart, setCartQty, removeFromCart, cartTotal, showToast, useSiteData,
 } from './store';
 import { SiteImg, SiteProductCard, PageBanner } from './SiteShell';
 
+const catHref = (c) => `/catalogue?category=${encodeURIComponent(c)}`;
+const colHref = (c) => `/catalogue?collection=${encodeURIComponent(c)}`;
+
 // ── Home ─────────────────────────────────────────────────────────────────────
-function HeroSlider() {
+function HeroSlider({ slides }) {
   const [idx, setIdx] = useState(0);
   useEffect(() => {
-    const t = setInterval(() => setIdx((i) => (i + 1) % HOME_HERO.length), 5200);
+    const t = setInterval(() => setIdx((i) => (i + 1) % slides.length), 5200);
     return () => clearInterval(t);
-  }, []);
+  }, [slides.length]);
   return (
     <div className="hero">
-      {HOME_HERO.map((src, i) => (
-        <div key={src} className={'hero-slide' + (i === idx ? ' on' : '')}
+      {slides.map((src, i) => (
+        <div key={src + i} className={'hero-slide' + (i === idx ? ' on' : '')}
           style={{ backgroundImage: `url(${src})` }} />
       ))}
       <div className="hero-overlay">
         <h2 className="hero-title">Malaya Jewelry</h2>
         <span className="hero-sub">Bhutan</span>
-        <a className="btn-malaya" href="#/catalogue"
-          onClick={(e) => { e.preventDefault(); navTo('#/catalogue'); }}>View All Collections</a>
+        <Link className="btn-malaya" href="/catalogue">View All Collections</Link>
       </div>
-      <button className="hero-arrow hero-arrow-l" onClick={() => setIdx((idx + HOME_HERO.length - 1) % HOME_HERO.length)}>‹</button>
-      <button className="hero-arrow hero-arrow-r" onClick={() => setIdx((idx + 1) % HOME_HERO.length)}>›</button>
+      <button className="hero-arrow hero-arrow-l" onClick={() => setIdx((idx + slides.length - 1) % slides.length)}>‹</button>
+      <button className="hero-arrow hero-arrow-r" onClick={() => setIdx((idx + 1) % slides.length)}>›</button>
       <div className="hero-dots">
-        {HOME_HERO.map((_, i) => (
+        {slides.map((_, i) => (
           <button key={i} className={'hero-dot' + (i === idx ? ' on' : '')} onClick={() => setIdx(i)}
             aria-label={'Slide ' + (i + 1)} />
         ))}
@@ -47,21 +51,21 @@ function HeroSlider() {
 }
 
 export function HomePage() {
-  const { HOME_BEST } = useSiteData();
+  const { HOME_BEST, settings } = useSiteData();
+  const slides = settings.heroSlides && settings.heroSlides.length ? settings.heroSlides : HOME_HERO;
   return (
     <main className="malaya-page" data-screen-label="Home">
-      <HeroSlider />
+      <HeroSlider slides={slides} />
 
       <section className="home-tiles site-container">
         {HOME_TILES.map((t) => (
-          <a key={t.title} className="home-tile" href={'#/catalogue/cat/' + encodeURIComponent(t.cat)}
-            onClick={(e) => { e.preventDefault(); navTo('#/catalogue/cat/' + encodeURIComponent(t.cat)); }}>
-            <SiteImg src={t.img} alt={t.title} />
+          <Link key={t.title} className="home-tile" href={catHref(t.cat)}>
+            <SiteImg src={(settings.homeTiles && settings.homeTiles[t.cat]) || t.img} alt={t.title} />
             <span className="home-tile-body">
               <span className="home-tile-title">{t.title}</span>
               <span className="home-tile-cta">View All</span>
             </span>
-          </a>
+          </Link>
         ))}
       </section>
 
@@ -72,16 +76,14 @@ export function HomePage() {
           {HOME_BEST.map((p) => <SiteProductCard key={p.id} p={p} />)}
         </div>
         <div className="home-best-cta">
-          <a className="btn-malaya" href="#/catalogue"
-            onClick={(e) => { e.preventDefault(); navTo('#/catalogue'); }}>View All Collections</a>
+          <Link className="btn-malaya" href="/catalogue">View All Collections</Link>
         </div>
       </section>
 
-      <section className="home-banner" style={{ backgroundImage: `url(${siteImg('banner12.jpg')})` }}>
+      <section className="home-banner" style={{ backgroundImage: `url(${settings.homeBanner || siteImg('banner12.jpg')})` }}>
         <div className="home-banner-inner">
           <h2>Malaya Jewelry — Order Now</h2>
-          <a className="btn-malaya btn-malaya-light" href="#/catalogue"
-            onClick={(e) => { e.preventDefault(); navTo('#/catalogue'); }}>View All Collections</a>
+          <Link className="btn-malaya btn-malaya-light" href="/catalogue">View All Collections</Link>
         </div>
       </section>
     </main>
@@ -91,18 +93,21 @@ export function HomePage() {
 // ── Catalogue ────────────────────────────────────────────────────────────────
 const PAGE_SIZE = 24;
 
-export function CataloguePage({ route }) {
+export function CataloguePage({ category, collection, q }) {
   const { SITE_PRODUCTS } = useSiteData();
-  const initCat = route.sub === 'cat' ? [decodeURIComponent(route.value)] : [];
-  const initCol = route.sub === 'col' ? [decodeURIComponent(route.value)] : [];
-  const [cats, setCats] = useState(initCat);
-  const [cols, setCols] = useState(initCol);
-  const [search, setSearch] = useState('');
+  const [cats, setCats] = useState(category ? [category] : []);
+  const [cols, setCols] = useState(collection ? [collection] : []);
+  const [search, setSearch] = useState(q || '');
   const [sort, setSort] = useState('featured');
   const [page, setPage] = useState(0);
 
-  // A new route (e.g. a mega-menu click while already on the page) resets filters.
-  useEffect(() => { setCats(initCat); setCols(initCol); setPage(0); /* eslint-disable-next-line */ }, [route.sub, route.value]);
+  // Re-seed filters when the URL query changes (e.g. a mega-menu / tile click).
+  useEffect(() => {
+    setCats(category ? [category] : []);
+    setCols(collection ? [collection] : []);
+    setSearch(q || '');
+    setPage(0);
+  }, [category, collection, q]);
   useEffect(() => { setPage(0); }, [cats, cols, search, sort]);
 
   const toggle = (list, setList, v) =>
@@ -112,8 +117,8 @@ export function CataloguePage({ route }) {
   if (cats.length) out = out.filter((p) => cats.includes(p.category));
   if (cols.length) out = out.filter((p) => cols.includes(p.collection));
   if (search) {
-    const q = search.toLowerCase();
-    out = out.filter((p) => (p.name + ' ' + p.sub).toLowerCase().includes(q));
+    const s = search.toLowerCase();
+    out = out.filter((p) => (p.name + ' ' + p.sub).toLowerCase().includes(s));
   }
   switch (sort) {
     case 'new':        out.sort((a, b) => (b.tag === 'new') - (a.tag === 'new')); break;
@@ -193,19 +198,18 @@ export function CataloguePage({ route }) {
 }
 
 // ── Product detail ───────────────────────────────────────────────────────────
-export function ProductPage({ route }) {
+export function ProductPage({ id }) {
   const { SITE_PRODUCTS, SITE_BY_ID } = useSiteData();
-  const p = SITE_BY_ID[route.value];
+  const p = SITE_BY_ID[id];
   const [qty, setQty] = useState(1);
-  useEffect(() => { setQty(1); }, [route.value]);
+  useEffect(() => { setQty(1); }, [id]);
 
   if (!p) {
     return (
       <main className="malaya-page" data-screen-label="Product not found">
         <PageBanner title="Not found" subtitle="Malaya Jewelry" />
         <div className="site-container" style={{ padding: '60px 24px' }}>
-          <p>This item could not be found.{' '}
-            <a href="#/catalogue" onClick={(e) => { e.preventDefault(); navTo('#/catalogue'); }}>Back to the catalogue.</a></p>
+          <p>This item could not be found. <Link href="/catalogue">Back to the catalogue.</Link></p>
         </div>
       </main>
     );
@@ -224,12 +228,9 @@ export function ProductPage({ route }) {
         </div>
         <div className="pd-info">
           <nav className="pd-crumbs">
-            <a href="#/" onClick={(e) => { e.preventDefault(); navTo('#/'); }}>Home</a>
-            <span>/</span>
-            <a href="#/catalogue" onClick={(e) => { e.preventDefault(); navTo('#/catalogue'); }}>Catalogue</a>
-            <span>/</span>
-            <a href={'#/catalogue/cat/' + encodeURIComponent(p.category)}
-              onClick={(e) => { e.preventDefault(); navTo('#/catalogue/cat/' + encodeURIComponent(p.category)); }}>{p.category}</a>
+            <Link href="/">Home</Link><span>/</span>
+            <Link href="/catalogue">Catalogue</Link><span>/</span>
+            <Link href={catHref(p.category)}>{p.category}</Link>
           </nav>
           <h1 className="pd-name">{p.name}</h1>
           <p className="pd-sub">{p.sub}</p>
@@ -244,10 +245,7 @@ export function ProductPage({ route }) {
               {p.salesCode && <tr><th>Reference</th><td>{p.salesCode}</td></tr>}
               <tr><th>Material</th><td>{p.material}</td></tr>
               <tr><th>Category</th><td>{p.category}</td></tr>
-              <tr><th>Collection</th><td>
-                <a href={'#/catalogue/col/' + encodeURIComponent(p.collection)}
-                  onClick={(e) => { e.preventDefault(); navTo('#/catalogue/col/' + encodeURIComponent(p.collection)); }}>{p.collection}</a>
-              </td></tr>
+              <tr><th>Collection</th><td><Link href={colHref(p.collection)}>{p.collection}</Link></td></tr>
               {p.tashi && <tr><th>Design</th><td>Calligraphy by Tashi Mannox</td></tr>}
             </tbody>
           </table>
@@ -284,7 +282,7 @@ export function ProductPage({ route }) {
 
 // ── Tashi Mannox collaboration ───────────────────────────────────────────────
 export function TashiPage() {
-  const { TASHI_PRODUCTS } = useSiteData();
+  const { TASHI_PRODUCTS, settings } = useSiteData();
   return (
     <main className="malaya-page" data-screen-label="Tashi Mannox">
       <PageBanner title="Collaboration" subtitle="With Malaya Jewelry" />
@@ -296,7 +294,7 @@ export function TashiPage() {
           {TASHI_INTRO.map((para, i) => <p key={i} className="tashi-para">{para}</p>)}
         </div>
         <div className="tashi-photo">
-          <SiteImg src={siteImg('Tashi-Mannox.jpg')} alt="Tashi Mannox" />
+          <SiteImg src={settings.tashiPhoto || siteImg('Tashi-Mannox.jpg')} alt="Tashi Mannox" />
         </div>
       </div>
       <section className="site-container tashi-products">
@@ -312,18 +310,16 @@ export function TashiPage() {
 
 // ── About ────────────────────────────────────────────────────────────────────
 export function AboutPage() {
+  const { settings } = useSiteData();
   return (
     <main className="malaya-page" data-screen-label="About">
-      <PageBanner title="About" subtitle="Malaya Jewelry" img={siteImg('banner31.jpg')} />
+      <PageBanner title="About" subtitle="Malaya Jewelry" img={settings.aboutBanner || siteImg('banner31.jpg')} />
       <article className="site-container about-article">
         <p className="about-date">Oct 23, 2016</p>
         <h1 className="about-title">Malaya Jewelry Bhutan</h1>
         <p className="about-lead">{ABOUT_LEAD}</p>
         <div className="about-tags">
-          {CATEGORIES.map((c) => (
-            <a key={c} href={'#/catalogue/cat/' + encodeURIComponent(c)}
-              onClick={(e) => { e.preventDefault(); navTo('#/catalogue/cat/' + encodeURIComponent(c)); }}>{c}</a>
-          ))}
+          {CATEGORIES.map((c) => <Link key={c} href={catHref(c)}>{c}</Link>)}
         </div>
         <p className="about-from">A letter from: The Shop Team at Malaya Jewelry in Bhutan</p>
         <p className="about-para">{ABOUT_BODY[0]}</p>
@@ -389,8 +385,7 @@ export function OrderPage() {
         {items.length === 0 ? (
           <div className="order-empty">
             <p>Your order is empty.</p>
-            <a className="btn-malaya" href="#/catalogue"
-              onClick={(e) => { e.preventDefault(); navTo('#/catalogue'); }}>Browse the Catalogue</a>
+            <Link className="btn-malaya" href="/catalogue">Browse the Catalogue</Link>
           </div>
         ) : (
           <div className="order-grid">
@@ -405,13 +400,10 @@ export function OrderPage() {
                   return (
                     <tr key={i.id}>
                       <td className="order-thumb">
-                        <a href={'#/product/' + p.id} onClick={(e) => { e.preventDefault(); navTo('#/product/' + p.id); }}>
-                          <SiteImg src={p.img} alt={p.name} />
-                        </a>
+                        <Link href={`/product/${p.id}`}><SiteImg src={p.img} alt={p.name} /></Link>
                       </td>
                       <td>
-                        <a className="order-name" href={'#/product/' + p.id}
-                          onClick={(e) => { e.preventDefault(); navTo('#/product/' + p.id); }}>{p.name}</a>
+                        <Link className="order-name" href={`/product/${p.id}`}>{p.name}</Link>
                         <span className="order-sub">{p.sub}</span>
                       </td>
                       <td>{fmtPrice(p.price)}</td>
