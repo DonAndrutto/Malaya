@@ -8,25 +8,27 @@ rules_version = '2';
 //                                     base catalogue on the storefront.
 //   siteSettings/images             — site-element image URLs (hero, banners…).
 //
-// Reads are public (the storefront needs them). Writes come from the admin.
+// Reads are public (the storefront needs them). Writes come from the signed-in
+// admin (Firebase Auth email/password — see lib/auth.js).
 //
-// ⚠ The active write rules below are OPEN so uploads work before Firebase Auth
-//   is set up. Before launch, switch to the AUTHENTICATED block (and wire the
-//   admin sign-in) so only your studio can edit the catalogue.
+// The active write rules require authentication. Create the studio user in the
+// Firebase console (Authentication → Email/Password) before deploying these. The
+// seed script (scripts/fetch-images.mjs) uses the Admin SDK and bypasses rules.
+// (To temporarily allow anonymous writes again, swap to the `if true` lines.)
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
     match /catalogueOverrides/{productId} {
       allow read: if true;
-      allow write: if true;                 // OPEN — anyone may edit.
-      // allow write: if request.auth != null;  // AUTHENTICATED (recommended).
+      allow write: if request.auth != null;  // AUTHENTICATED — signed-in admin only.
+      // allow write: if true;                // OPEN — anyone may edit.
     }
 
     match /siteSettings/{docId} {
       allow read: if true;
-      allow write: if true;                 // OPEN — anyone may edit.
-      // allow write: if request.auth != null;  // AUTHENTICATED (recommended).
+      allow write: if request.auth != null;  // AUTHENTICATED — signed-in admin only.
+      // allow write: if true;                // OPEN — anyone may edit.
     }
 
     // Everything else is denied.

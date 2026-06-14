@@ -7,19 +7,20 @@ rules_version = '2';
 //   site/{slot}/...            — hero slides, banners, tiles, logo, portrait
 //
 // Reads are public (images are served on the storefront). Writes come from the
-// admin and are limited to image files under 15 MB.
+// signed-in admin (Firebase Auth) and are limited to image files under 15 MB.
 //
-// ⚠ The active write rules are OPEN (any image upload to these paths is allowed)
-//   so uploads work before Firebase Auth is set up. Before launch, uncomment the
-//   `request.auth != null` clause in isAdminImage() and wire the admin sign-in.
+// The active rules require authentication. Create the studio user in the Firebase
+// console (Authentication → Email/Password) before deploying. The seed script
+// (scripts/fetch-images.mjs) uses the Admin SDK and bypasses these rules.
+// (To temporarily allow anonymous uploads, drop the `request.auth != null` line.)
 
 service firebase.storage {
   match /b/{bucket}/o {
 
     function isAdminImage() {
       return request.resource.size < 15 * 1024 * 1024
-        && request.resource.contentType.matches('image/.*');
-      // && request.auth != null;   // AUTHENTICATED (recommended) — add this.
+        && request.resource.contentType.matches('image/.*')
+        && request.auth != null;   // AUTHENTICATED — signed-in admin only.
     }
 
     match /products/{allPaths=**} {

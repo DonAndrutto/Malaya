@@ -1,9 +1,8 @@
-// POST /api/auth — accepts any credentials for now.
-// TODO: replace with real credential check + JWT / NextAuth session.
+// POST /api/auth — legacy stub. The admin now signs in client-side with
+// Firebase Auth (email/password); see lib/auth.js. Kept as a harmless no-op so
+// any old clients still get a 200.
 export async function POST(request) {
   const body = await request.json().catch(() => ({}));
   const username = (body.username || '').trim() || 'studio';
-
-  // Stub: accept any credentials. Wire real auth here (bcrypt, DB lookup, etc.).
   return Response.json({ ok: true, user: username });
 }
