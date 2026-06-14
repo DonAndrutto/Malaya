@@ -1,0 +1,37 @@
+rules_version = '2';
+
+// Firestore security rules for the Malaya catalogue.
+//
+// Data model:
+//   catalogueOverrides/{productId}  — admin edits per product (name, price,
+//                                     stock, image URL, …). Merged with the
+//                                     base catalogue on the storefront.
+//   siteSettings/images             — site-element image URLs (hero, banners…).
+//
+// Reads are public (the storefront needs them). Writes come from the admin.
+//
+// ⚠ The active write rules below are OPEN so uploads work before Firebase Auth
+//   is set up. Before launch, switch to the AUTHENTICATED block (and wire the
+//   admin sign-in) so only your studio can edit the catalogue.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /catalogueOverrides/{productId} {
+      allow read: if true;
+      allow write: if true;                 // OPEN — anyone may edit.
+      // allow write: if request.auth != null;  // AUTHENTICATED (recommended).
+    }
+
+    match /siteSettings/{docId} {
+      allow read: if true;
+      allow write: if true;                 // OPEN — anyone may edit.
+      // allow write: if request.auth != null;  // AUTHENTICATED (recommended).
+    }
+
+    // Everything else is denied.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
