@@ -6,6 +6,7 @@ import { PRODUCTS, COLLECTIONS, CATEGORIES, MATERIALS, STOCK_OPTIONS, fmtPrice }
 import { saveOverrides, subscribeOverrides } from '@/lib/overrides';
 import { uploadImage } from '@/lib/upload';
 import { FIREBASE_ENABLED } from '@/lib/firebase';
+import { signIn, signOutUser, subscribeAuth, friendlyAuthError } from '@/lib/auth';
 import StockLedger from './StockLedger';
 import MassEdit from './MassEdit';
 import SiteImages from './SiteImages';
@@ -17,17 +18,29 @@ function money(n) { return fmtPrice(Math.round(Number(n) || 0)); }
 function cleanNum(v) { const n = Number(v); return isNaN(n) ? null : n; }
 
 // ─────────────────────────────────────────────────── Login ────
-function Login({ onLogin }) {
-  const [u, setU] = useState('');
+// Firebase Auth (email/password). When Firebase isn't configured we fall back to
+// the old demo behaviour (any credentials) so a bare checkout still opens.
+function Login({ onDemoLogin }) {
+  const [email, setEmail] = useState('');
   const [p, setP] = useState('');
+  const [err, setErr] = useState('');
+  const [busy, setBusy] = useState(false);
   const submit = async (e) => {
     e.preventDefault();
-    const username = u.trim() || 'studio';
-    // Call the API route; fall back to accepting any credentials (demo mode)
+    setErr('');
+    if (!FIREBASE_ENABLED) {
+      onDemoLogin(email.trim() || 'studio');
+      return;
+    }
+    setBusy(true);
     try {
-      await fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password: p }) });
-    } catch {}
-    onLogin(username);
+      await signIn(email.trim(), p);
+      // subscribeAuth (in AdminApp) flips the view once sign-in resolves.
+    } catch (e2) {
+      setErr(friendlyAuthError(e2));
+    } finally {
+      setBusy(false);
+    }
   };
   const field = {
     width: '100%', background: T.card, border: `1px solid ${T.line2}`, color: T.ink,
@@ -45,17 +58,18 @@ function Login({ onLogin }) {
           <div style={{ fontFamily: T.serif, fontSize: 24, color: T.ink, marginBottom: 4 }}>Sign in</div>
           <div style={{ fontSize: 12.5, color: T.muted, lineHeight: 1.6, marginBottom: 22 }}>Access the price &amp; inventory desk.</div>
           <div style={{ marginBottom: 16 }}>
-            <span style={label}>Username</span>
-            <input style={field} value={u} onChange={(e) => setU(e.target.value)} placeholder="studio" autoFocus />
+            <span style={label}>Email</span>
+            <input style={field} type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@studio.com" autoFocus />
           </div>
-          <div style={{ marginBottom: 24 }}>
+          <div style={{ marginBottom: err ? 14 : 24 }}>
             <span style={label}>Password</span>
-            <input style={field} type="password" value={p} onChange={(e) => setP(e.target.value)} placeholder="••••••••" />
+            <input style={field} type="password" autoComplete="current-password" value={p} onChange={(e) => setP(e.target.value)} placeholder="••••••••" />
           </div>
-          <button type="submit" style={{ width: '100%', background: T.ink, color: T.panel, border: 'none', padding: '15px', fontSize: 11, letterSpacing: '0.28em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: T.sans }}>
-            Enter
+          {err && <div style={{ fontSize: 12, color: T.danger, marginBottom: 18, letterSpacing: '0.02em' }}>{err}</div>}
+          <button type="submit" disabled={busy} style={{ width: '100%', background: T.ink, color: T.panel, border: 'none', padding: '15px', fontSize: 11, letterSpacing: '0.28em', textTransform: 'uppercase', cursor: busy ? 'wait' : 'pointer', opacity: busy ? 0.6 : 1, fontFamily: T.sans }}>
+            {busy ? 'Signing in…' : 'Enter'}
           </button>
-          <div style={{ fontSize: 11, color: T.faint, textAlign: 'center', marginTop: 16, letterSpacing: '0.04em' }}>Demo — any credentials are accepted.</div>
+          {!FIREBASE_ENABLED && <div style={{ fontSize: 11, color: T.faint, textAlign: 'center', marginTop: 16, letterSpacing: '0.04em' }}>Firebase not configured — demo mode (any credentials).</div>}
         </form>
       </div>
     </div>
@@ -583,15 +597,29 @@ function Console({ user, onLogout }) {
 
 // ─────────────────────────────────────────────────── Root app ────
 export default function AdminApp() {
-  const [user, setUser] = useState('');
+  // undefined = still resolving auth state, null = signed out, object = signed in.
+  const [user, setUser] = useState(undefined);
 
   useEffect(() => {
-    const saved = localStorage.getItem(SESSION_KEY);
-    if (saved) setUser(saved);
+    if (!FIREBASE_ENABLED) {
+      // Demo mode: restore the localStorage session.
+      const saved = localStorage.getItem(SESSION_KEY);
+      setUser(saved ? { email: saved, demo: true } : null);
+      return;
+    }
+    // Firebase Auth drives the session; persists across reloads.
+    return subscribeAuth(setUser);
   }, []);
 
-  if (!user) {
-    return <Login onLogin={(u) => { localStorage.setItem(SESSION_KEY, u); setUser(u); }} />;
+  if (user === undefined) {
+    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: T.bg, color: T.muted, fontFamily: T.sans, fontSize: 12, letterSpacing: '0.18em', textTransform: 'uppercase' }}>Loading…</div>;
   }
-  return <Console user={user} onLogout={() => { localStorage.removeItem(SESSION_KEY); setUser(''); }} />;
+  if (!user) {
+    return <Login onDemoLogin={(u) => { localStorage.setItem(SESSION_KEY, u); setUser({ email: u, demo: true }); }} />;
+  }
+  const onLogout = async () => {
+    if (FIREBASE_ENABLED) { await signOutUser(); }
+    else { localStorage.removeItem(SESSION_KEY); setUser(null); }
+  };
+  return <Console user={user.email || 'studio'} onLogout={onLogout} />;
 }

@@ -37,34 +37,49 @@ firebase deploy --only firestore:rules,storage --project malaya-catalogue
 In the Firebase console, make sure **Cloud Firestore** and **Storage** are
 enabled for the project.
 
-### ⚠ Write access
+### Write access — admin sign-in (Firebase Auth)
 
-The shipped rules allow **public reads** and, so uploads work before you set up
-auth, **open writes** to the two collections / Storage paths (image files only,
-< 15 MB). Before launch, tighten them:
+The admin console signs in with **Firebase Auth (Email/Password)** and the
+shipped rules require authentication (`request.auth != null`) for all writes;
+reads stay public. To go live:
 
-1. Enable an auth provider (e.g. Email/Password) in the Firebase console and
-   create your studio user.
-2. In `firebase/firestore.rules` and `firebase/storage.rules`, switch the
-   `allow write: if true` / `isAdminImage()` lines to the commented
-   `request.auth != null` versions and redeploy.
-3. Ask and I'll wire the admin login to Firebase Auth (it currently accepts any
-   credentials).
+1. In the Firebase console → **Authentication** → enable the **Email/Password**
+   provider, then **Add user** with the studio's email + password.
+2. Deploy the rules (step 2 above).
+3. Sign in at `/admin` with that email + password.
 
-## 3. Seed the existing images into the repo (optional)
+`lib/auth.js` wraps sign-in/out; `lib/firebase.js` exposes the auth instance.
+If Firebase isn't configured at all (a bare local checkout), the admin falls
+back to demo mode (any credentials) so you can't lock yourself out.
 
-By default images are served from the live CDN, which works today. To serve them
-from the repo instead:
+> To temporarily re-open writes (no sign-in required) while testing, swap the
+> active rule lines back to the commented `if true` versions and redeploy.
+
+## 3. Seed the existing images into Firebase
+
+`scripts/fetch-images.mjs` moves the live site's imagery into **your own
+Firebase** — nothing is downloaded into the repo or committed (the checkout
+stays lightweight). For each image it:
+
+1. downloads it from `malayajewelrybhutan.com` into memory,
+2. uploads it to Firebase **Storage** (`products/{id}/…`, `site/{slot}/…`),
+3. writes the Storage URL into **Firestore** (`catalogueOverrides/{id}.img` and
+   `siteSettings/images`), which the storefront reads live.
+
+It uses the **Admin SDK**, so it bypasses the security rules (works whether or
+not auth is set up). Provide a service account (console → Project settings →
+Service accounts → Generate new private key):
 
 ```bash
-npm run fetch-images        # downloads into public/images/{products,site}
-# commit public/images, then set:
-NEXT_PUBLIC_IMAGE_SOURCE=local
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/serviceAccount.json
+npm run fetch-images                 # seed everything
+npm run fetch-images -- --dry-run    # preview, no writes
+npm run fetch-images -- --force      # re-upload even if already present
 ```
 
-`<SiteImg>` falls back local → CDN → smaller-size, so a missing local file still
-resolves. Run the script where `malayajewelrybhutan.com` is reachable (some
-sandboxes block it).
+Reruns are idempotent: images already in Storage are reused (their existing
+download token is kept) and only Firestore is refreshed. Anything not yet seeded
+keeps falling back to the CDN, so the site works throughout.
 
 ## 4. Using the admin
 
