@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "fetch-images": "node scripts/fetch-images.mjs",
+    "build-inventory": "node scripts/build-inventory.mjs",
     "seed-local-images": "node scripts/seed-local-images.mjs"
   },
   "dependencies": {

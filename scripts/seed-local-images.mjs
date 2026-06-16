@@ -111,15 +111,13 @@ async function loadCredential() {
   return null; // fall back to applicationDefault via env
 }
 
-// Soft check: SKUs the storefront already knows about (from the stock ledger).
-// Folders outside this set still upload — they just won't surface online until a
-// matching ledger line exists and is published.
+// Soft check: SKUs in the master inventory (lib/data/stock-ledger.json — the
+// source of truth, generated from these same folders by build-inventory.mjs).
+// Once the inventory has been (re)built, every folder is a known SKU.
 async function knownSkus() {
   try {
-    const txt = await readFile(path.join(ROOT, 'lib/data/stock-data.js'), 'utf8');
-    const set = new Set();
-    for (const m of txt.matchAll(/sku:\s*'([^']+)'/g)) set.add(m[1]);
-    return set;
+    const rows = JSON.parse(await readFile(path.join(ROOT, 'lib/data/stock-ledger.json'), 'utf8'));
+    return new Set(rows.map((r) => r.sku));
   } catch {
     return new Set();
   }
@@ -222,10 +220,9 @@ async function main() {
   }
 
   if (unknown.length) {
-    console.log(`\nHeads-up: ${unknown.length} folder(s) aren't in the stock ledger (lib/data/stock-data.js):`);
+    console.log(`\nHeads-up: ${unknown.length} folder(s) aren't in the master inventory yet (lib/data/stock-ledger.json):`);
     console.log(`  ${unknown.join(', ')}`);
-    console.log('  Their images are saved, but a SKU only appears on the storefront once a matching');
-    console.log('  ledger line exists AND is toggled Online. We can extend the ledger in a later phase.');
+    console.log('  Run `node scripts/build-inventory.mjs` to fold them into the ledger, then commit.');
   }
 
   if (DRY) {
