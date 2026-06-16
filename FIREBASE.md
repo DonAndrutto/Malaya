@@ -5,8 +5,18 @@ The storefront (real routes: `/`, `/catalogue`, `/product/[id]`, `/tashi`,
 The `/admin` console writes to that layer, and **Firebase** persists it:
 
 - **Firestore** holds the admin's edits and image URLs
-  - `catalogueOverrides/{productId}` — per-product edits (name, sub, category,
-    collection, material, stock, list/sale price, **`img`** = uploaded photo URL)
+  - `catalogueOverrides/{id}` — per-item edits, where `{id}` is a catalogue
+    product id (`p001`), a live-site extra (`x001`) **or a stock-ledger SKU**
+    (`P020-S`). Fields:
+    - name, sub, category, collection, material, stock, list/sale price
+    - **`published`** (boolean) — when set on a ledger SKU, that stock line goes
+      live on the storefront (keyed by its SKU). Items can be published with **no
+      image** at all.
+    - **`story`** (string) — editable narrative shown on the product page
+      (blank lines separate paragraphs)
+    - **`images`** (string[]) — gallery of uploaded photo URLs. `img` mirrors
+      `images[0]` (the primary photo) for the many single-image surfaces
+      (cards, cart, mega-menu).
   - `siteSettings/images` — site-element image URLs (logo, hero slideshow,
     category tiles, banners, Tashi portrait)
 - **Storage** holds the uploaded image files
@@ -83,8 +93,16 @@ keeps falling back to the CDN, so the site works throughout.
 
 ## 4. Using the admin
 
-- **Catalogue prices / Mass edit / Stock ledger** — edit any product field.
-- **Edit drawer → Image** — upload/replace a product photo (→ Storage → the URL
-  is saved to the product's Firestore doc → shows on the catalogue).
+- **Stock ledger** — the real inventory (the studio "Total Stock" sheet). Each
+  line has an **Online / Publish** toggle (in the row and the edit drawer):
+  flipping it on lists that exact stock line on the live storefront, keyed by its
+  SKU. A line can be published **with no image** — the storefront shows a
+  monogram placeholder until photos are added. Publishing a line that is linked
+  to a legacy catalogue listing supersedes that listing online (no duplicates).
+- **Edit drawer → Story** — a free-text narrative saved to the item's Firestore
+  doc and rendered on the product page (blank lines start a new paragraph).
+- **Edit drawer → Images / gallery** — upload one or many photos (click or drag &
+  drop). Reorder or remove them; the first image is the primary one. Works the
+  same on the **Catalogue prices / Mass edit** drawers for the existing catalogue.
 - **Site images tab** — replace the logo, hero slideshow, category tiles,
   banners and the Tashi portrait.

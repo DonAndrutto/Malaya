@@ -103,6 +103,7 @@ button, input, select { font-family: inherit; }
 .malaya-site .pgrid-4 { grid-template-columns: repeat(4, 1fr); }
 .malaya-site .pcard-thumb { position: relative; display: block; border: 1px solid lightgrey; background: #fff; overflow: hidden; }
 .malaya-site .pcard-thumb img:first-child { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; transition: transform .5s; }
+.malaya-site .pcard-noimg { width: 100%; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; background: #f4eee3; color: var(--muted); font-family: "Cormorant Garamond", "Times New Roman", serif; font-size: 40px; letter-spacing: .1em; }
 .malaya-site .pcard:hover .pcard-thumb img:first-child { transform: scale(1.04); }
 .malaya-site .pcard-label { position: absolute; top: 12px; left: 12px; background: var(--brown); color: #fff; font-size: 9.5px; letter-spacing: .2em; padding: 4px 10px; }
 .malaya-site .pcard-label-sale { background: #a4502b; }
@@ -136,9 +137,18 @@ button, input, select { font-family: inherit; }
 .malaya-site .shop-page { min-width: 38px; height: 38px; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 13px; color: #555; }
 .malaya-site .shop-page.on, .malaya-site .shop-page:hover { border-color: var(--gold); color: var(--gold); }
 .malaya-site .pd-layout { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 56px; padding-top: 48px; padding-bottom: 30px; }
-.malaya-site .pd-photo { position: relative; border: 1px solid var(--line); align-self: start; }
+.malaya-site .pd-media { align-self: start; }
+.malaya-site .pd-photo { position: relative; border: 1px solid var(--line); }
 .malaya-site .pd-photo img:first-child { width: 100%; display: block; }
 .malaya-site .pd-tashi { position: absolute; left: 16px; bottom: 16px; width: 64px; border: 1px solid var(--line); }
+.malaya-site .pd-noimg { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; background: #f4eee3; color: var(--muted); }
+.malaya-site .pd-noimg span { font-size: 64px; font-family: "Cormorant Garamond", "Times New Roman", serif; letter-spacing: .12em; }
+.malaya-site .pd-thumbs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.malaya-site .pd-thumb { width: 74px; height: 74px; padding: 0; border: 1px solid var(--line); background: #fff; cursor: pointer; overflow: hidden; }
+.malaya-site .pd-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.malaya-site .pd-thumb.on, .malaya-site .pd-thumb:hover { border-color: var(--gold); }
+.malaya-site .pd-story { margin-top: 2px; }
+.malaya-site .pd-story .pd-desc { margin-bottom: 12px; }
 .malaya-site .pd-crumbs { font-size: 12px; color: var(--muted); display: flex; gap: 8px; margin-bottom: 18px; }
 .malaya-site .pd-crumbs a:hover { color: var(--gold); }
 .malaya-site .pd-name { font-size: 32px; font-weight: 600; color: var(--brown); line-height: 1.25; text-wrap: pretty; }

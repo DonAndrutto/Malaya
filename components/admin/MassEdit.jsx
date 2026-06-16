@@ -31,7 +31,7 @@ const COLUMNS = [
 export default function MassEdit({ overrides, setOverrides, editDrawer: EditDrawer }) {
   const BASE = useMemo(() => {
     const m = {};
-    PRODUCTS.forEach((p) => { m[p.id] = { ...p.base, code: p.code, img: p.img, hue: p.hue }; });
+    PRODUCTS.forEach((p) => { m[p.id] = { ...p.base, code: p.code, img: p.img, hue: p.hue, story: '', images: p.img ? [p.img] : [] }; });
     return m;
   }, []);
   const ORDER = useMemo(() => PRODUCTS.map((p) => p.id), []);
@@ -53,8 +53,10 @@ export default function MassEdit({ overrides, setOverrides, editDrawer: EditDraw
     const rawSale = ('salePrice' in o) ? o.salePrice : b.salePrice;
     const salePrice = (rawSale === null || rawSale === undefined || rawSale === '') ? null : Number(rawSale);
     const onSale = salePrice != null && !isNaN(salePrice) && salePrice > 0 && salePrice < listPrice;
+    const images = Array.isArray(o.images) && o.images.length ? o.images : (('img' in o && o.img) ? [o.img] : (b.img ? [b.img] : []));
     return {
-      id, code: val(id, 'salesCode'), img: b.img, hue: b.hue,
+      id, code: val(id, 'salesCode'), img: images[0] || b.img, images, hue: b.hue,
+      story: ('story' in o && o.story != null) ? o.story : '',
       salesCode: val(id, 'salesCode'), productionCode: val(id, 'productionCode'),
       name: val(id, 'name'), sub: val(id, 'sub'), category: val(id, 'category'),
       collection: val(id, 'collection'), material: val(id, 'material'), stock: val(id, 'stock'),

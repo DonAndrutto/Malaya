@@ -1,12 +1,15 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { T } from './theme';
 import { PRODUCTS, CATEGORIES, MATERIALS, STOCK_OPTIONS } from '@/lib/data/products';
 import { STOCK_ROWS, stockStatus } from '@/lib/data/stock-data';
+import { ledgerCollection } from '@/lib/data/ledger';
 import { saveOverrides } from '@/lib/overrides';
+import { uploadImage } from '@/lib/upload';
+import { FIREBASE_ENABLED } from '@/lib/firebase';
 
-const LEDGER_FIELDS = ['name', 'category', 'material', 'qty', 'unitCost', 'retail', 'salePrice', 'salesCode', 'productionCode', 'stock'];
+const LEDGER_FIELDS = ['name', 'category', 'material', 'qty', 'unitCost', 'retail', 'salePrice', 'salesCode', 'productionCode', 'stock', 'published', 'story', 'images'];
 
 function m0(n) { return '$' + Math.round(Number(n) || 0).toLocaleString('en-US'); }
 function m2(n) { if (n == null || n === '' || isNaN(Number(n))) return '—'; return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -25,14 +28,16 @@ export default function StockLedger({ overrides, setOverrides }) {
   const BASE = useMemo(() => {
     const m = {};
     ROWS.forEach((r) => {
+      const p = (r.productId && PRODUCTS_BY_ID[r.productId]) || null;
+      const img = p ? p.img : null;
       m[r.sku] = {
         name: r.name, category: r.category, material: r.material,
         qty: r.qty, unitCost: r.cost, retail: r.retail, salePrice: null,
         salesCode: r.sku, productionCode: r.code, stock: stockStatus(r.qty),
-        productId: r.productId, productIds: r.productIds || [], img: null,
+        productId: r.productId, productIds: r.productIds || [],
+        published: false, story: '', img, images: img ? [img] : [],
+        collection: ledgerCollection(r.name),
       };
-      const p = (r.productId && PRODUCTS_BY_ID[r.productId]) || null;
-      if (p) m[r.sku].img = p.img;
     });
     return m;
   }, [ROWS, PRODUCTS_BY_ID]);
@@ -53,6 +58,7 @@ export default function StockLedger({ overrides, setOverrides }) {
 
   const resolve = (sku) => {
     const b = BASE[sku];
+    const o = overrides[sku] || {};
     const qty = numOrNull(val(sku, 'qty'));
     const unitCost = numOrNull(val(sku, 'unitCost'));
     const retail = numOrNull(val(sku, 'retail'));
@@ -62,6 +68,7 @@ export default function StockLedger({ overrides, setOverrides }) {
     const status = statusManual(sku) ? val(sku, 'stock') : stockStatus(qty);
     const marginPct = (unitCost != null && sellRetail) ? (1 - unitCost / sellRetail) * 100 : null;
     const markupPct = (unitCost != null && unitCost > 0 && sellRetail != null) ? (sellRetail / unitCost - 1) * 100 : null;
+    const images = Array.isArray(o.images) && o.images.length ? o.images : (o.img ? [o.img] : (b.images || []));
     return {
       sku, name: val(sku, 'name'), category: val(sku, 'category'), material: val(sku, 'material'),
       salesCode: val(sku, 'salesCode'), productionCode: val(sku, 'productionCode'),
@@ -70,7 +77,10 @@ export default function StockLedger({ overrides, setOverrides }) {
       marginPct, markupPct,
       costValue: (unitCost != null && qty != null) ? unitCost * qty : null,
       retailValue: (retail != null && qty != null) ? retail * qty : null,
-      productId: b.productId, productIds: b.productIds, img: b.img,
+      productId: b.productId, productIds: b.productIds,
+      published: o.published === true,
+      story: ('story' in o && o.story != null) ? o.story : '',
+      images, img: images[0] || b.img || null,
     };
   };
 
@@ -91,16 +101,24 @@ export default function StockLedger({ overrides, setOverrides }) {
       if (Object.keys(o).length === 0) delete next[sku]; else next[sku] = o;
 
       const ids = BASE[sku].productIds || [];
-      if (ids.length && ('retail' in patch || 'salePrice' in patch || 'stock' in patch)) {
+      const mirrors = ['retail', 'salePrice', 'stock', 'img', 'images', 'story'];
+      if (ids.length && mirrors.some((f) => f in patch)) {
         const rRetail = numOrNull(('retail' in o) ? o.retail : BASE[sku].retail);
         const rSale = ('salePrice' in o) ? numOrNull(o.salePrice) : null;
         const rStatus = ('stock' in o) ? o.stock : stockStatus(numOrNull(('qty' in o) ? o.qty : BASE[sku].qty));
+        const rImages = Array.isArray(o.images) && o.images.length ? o.images : (o.img ? [o.img] : null);
+        const rStory = ('story' in o && o.story != null) ? o.story : '';
         ids.forEach((pid) => {
           const p = PRODUCTS_BY_ID[pid]; if (!p) return;
           const po = { ...(next[pid] || {}) };
           if ('retail' in patch) { const lp = rRetail == null ? null : Math.round(rRetail); if (lp != null && lp !== p.base.listPrice) po.listPrice = lp; else delete po.listPrice; }
           if ('salePrice' in patch) { if (rSale != null) po.salePrice = Math.round(rSale); else delete po.salePrice; }
           if ('stock' in patch) { if (rStatus !== p.base.stock) po.stock = rStatus; else delete po.stock; }
+          if ('images' in patch || 'img' in patch) {
+            if (rImages && rImages.length) { po.images = rImages; po.img = rImages[0]; }
+            else { delete po.images; delete po.img; }
+          }
+          if ('story' in patch) { if (rStory) po.story = rStory; else delete po.story; }
           if (Object.keys(po).length === 0) delete next[pid]; else next[pid] = po;
         });
       }
@@ -127,6 +145,9 @@ export default function StockLedger({ overrides, setOverrides }) {
       if (fAvail === 'out' && !(r.qty != null && r.qty <= 0)) return false;
       if (fAvail === 'in' && !(r.qty != null && r.qty > 2)) return false;
       if (fAvail === 'nocost' && r.unitCost != null) return false;
+      if (fAvail === 'online' && !r.published) return false;
+      if (fAvail === 'offline' && r.published) return false;
+      if (fAvail === 'noimage' && r.img) return false;
       if (q && !(r.name.toLowerCase().includes(q) || r.salesCode.toLowerCase().includes(q) || r.productionCode.toLowerCase().includes(q))) return false;
       return true;
     });
@@ -154,16 +175,17 @@ export default function StockLedger({ overrides, setOverrides }) {
   }, [overrides]);
 
   const editedCount = ORDER.filter(itemEdited).length;
+  const onlineCount = ORDER.filter((sku) => (overrides[sku] || {}).published === true).length;
 
   const exportLedger = (fmt) => {
     const data = ORDER.map((sku) => {
       const r = resolve(sku);
-      return { salesCode: r.salesCode, productionCode: r.productionCode, name: r.name, category: r.category, material: r.material, units: r.qty, unitCost: r.unitCost, retail: r.retail, salePrice: r.salePrice, marginPct: r.marginPct == null ? '' : r.marginPct.toFixed(1), totalCost: r.costValue, totalRetail: r.retailValue, status: r.status, catalogueId: r.productId || '' };
+      return { salesCode: r.salesCode, productionCode: r.productionCode, name: r.name, category: r.category, material: r.material, units: r.qty, unitCost: r.unitCost, retail: r.retail, salePrice: r.salePrice, marginPct: r.marginPct == null ? '' : r.marginPct.toFixed(1), totalCost: r.costValue, totalRetail: r.retailValue, status: r.status, online: r.published ? 'yes' : 'no', images: r.images.length, catalogueId: r.productId || '' };
     });
     let blob, fname;
     if (fmt === 'json') { blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }); fname = 'malaya-stock-ledger.json'; }
     else {
-      const cols = ['salesCode', 'productionCode', 'name', 'category', 'material', 'units', 'unitCost', 'retail', 'salePrice', 'marginPct', 'totalCost', 'totalRetail', 'status', 'catalogueId'];
+      const cols = ['salesCode', 'productionCode', 'name', 'category', 'material', 'units', 'unitCost', 'retail', 'salePrice', 'marginPct', 'totalCost', 'totalRetail', 'status', 'online', 'images', 'catalogueId'];
       const esc = (v) => { v = v == null ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
       const csv = [cols.join(',')].concat(data.map((row) => cols.map((c) => esc(row[c])).join(','))).join('\n');
       blob = new Blob([csv], { type: 'text/csv' }); fname = 'malaya-stock-ledger.csv';
@@ -181,7 +203,7 @@ export default function StockLedger({ overrides, setOverrides }) {
           <div>
             <h1 style={{ fontFamily: T.serif, fontSize: 38, margin: 0, lineHeight: 1 }}>Stock ledger</h1>
             <div style={{ fontSize: 12, color: T.muted, marginTop: 8, letterSpacing: '0.04em' }}>
-              {rows.length} of {stats.skus} lines · from the studio total-stock sheet
+              {rows.length} of {stats.skus} lines · <span style={{ color: onlineCount ? T.good : T.muted }}>{onlineCount} online</span> · toggle any line to publish it to the live storefront
               {editedCount > 0 && <> · <span style={{ color: T.accent }}>{editedCount} edited</span></>}
             </div>
           </div>
@@ -206,7 +228,7 @@ export default function StockLedger({ overrides, setOverrides }) {
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search name or code…" style={{ background: 'transparent', border: 'none', outline: 'none', color: T.ink, fontSize: 13, fontFamily: T.sans, flex: 1 }} />
         </div>
         <Pick value={fCat} onChange={setFCat} all="All categories" options={CATEGORIES} />
-        <Pick value={fAvail} onChange={setFAvail} all="All availability" options={[['low', 'Low stock'], ['out', 'Sold out'], ['in', 'In stock'], ['nocost', 'Missing cost']]} pairs />
+        <Pick value={fAvail} onChange={setFAvail} all="All availability" options={[['online', 'Online'], ['offline', 'Offline'], ['noimage', 'No image'], ['low', 'Low stock'], ['out', 'Sold out'], ['in', 'In stock'], ['nocost', 'Missing cost']]} pairs />
         <Pick value={sort} onChange={setSort} all="Sort: ledger order" options={[['units', 'Fewest units'], ['units-desc', 'Most units'], ['margin', 'Highest margin'], ['value', 'Highest value'], ['name', 'Name A–Z']]} pairs />
         {(search || fCat || fAvail || sort !== 'default') &&
           <button onClick={() => { setSearch(''); setFCat(''); setFAvail(''); setSort('default'); }} style={{ background: 'transparent', border: 'none', color: T.accent, fontSize: 12, cursor: 'pointer', letterSpacing: '0.06em' }}>Clear</button>}
@@ -259,10 +281,11 @@ function LedgerRow({ r, edited, fieldEdited, commit, onEdit }) {
           </div>
           <div style={{ minWidth: 0 }}>
             <div style={{ fontFamily: T.serif, fontSize: 15.5, lineHeight: 1.15, color: T.ink }}>{r.name}</div>
-            <div style={{ fontSize: 10, color: T.faint, letterSpacing: '0.1em', marginTop: 3, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <div style={{ fontSize: 10, color: T.faint, letterSpacing: '0.1em', marginTop: 3, display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
               <span><span style={{ color: T.muted }}>SKU</span> {r.salesCode}</span>
               <span><span style={{ color: T.muted }}>MODEL</span> {r.productionCode}</span>
-              {r.productId && <span style={{ color: T.good, letterSpacing: '0.06em' }}>● in catalogue</span>}
+              <span style={{ color: r.published ? T.good : T.faint, letterSpacing: '0.06em' }}>{r.published ? '● online' : '○ offline'}</span>
+              {!r.img && <span style={{ color: T.muted, letterSpacing: '0.06em' }}>no image</span>}
             </div>
           </div>
         </div>
@@ -286,10 +309,23 @@ function LedgerRow({ r, edited, fieldEdited, commit, onEdit }) {
           <span style={{ width: 7, height: 7, borderRadius: '50%', background: statusColor }} />{r.status}
         </span>
       </td>
-      <td style={{ padding: '10px 14px', textAlign: 'right' }}>
-        <button onClick={onEdit} style={{ ...ghost(), padding: '7px 12px', fontSize: 10 }}>Edit</button>
+      <td style={{ padding: '10px 14px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+        <div style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
+          <PublishPill on={r.published} onToggle={() => commit(r.sku, { published: !r.published })} />
+          <button onClick={onEdit} style={{ ...ghost(), padding: '7px 12px', fontSize: 10 }}>Edit</button>
+        </div>
       </td>
     </tr>
+  );
+}
+
+// Compact online/offline switch used in the ledger table row.
+function PublishPill({ on, onToggle }) {
+  return (
+    <button onClick={onToggle} title={on ? 'Online — click to unpublish' : 'Offline — click to publish to the live site'}
+      style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 10px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: T.sans, border: `1px solid ${on ? T.good : T.line2}`, background: on ? 'rgba(91,110,74,0.12)' : 'transparent', color: on ? T.good : T.muted }}>
+      <span style={{ width: 7, height: 7, borderRadius: '50%', background: on ? T.good : T.faint }} />{on ? 'Online' : 'Publish'}
+    </button>
   );
 }
 
@@ -326,6 +362,21 @@ function LedgerDrawer({ r, base, fieldEdited, commit, resetItem, onClose }) {
           <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: T.muted, fontSize: 22, cursor: 'pointer', lineHeight: 1 }}>×</button>
         </div>
         <div style={{ flex: 1, overflowY: 'auto', padding: '22px 24px' }}>
+          <div style={{ marginBottom: 20, padding: '14px 16px', background: r.published ? 'rgba(91,110,74,0.10)' : T.card, border: `1px solid ${r.published ? T.good : T.line2}` }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+              <div>
+                <div style={{ fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', color: r.published ? T.good : T.muted }}>Storefront</div>
+                <div style={{ fontFamily: T.serif, fontSize: 21, color: T.ink, marginTop: 2 }}>{r.published ? 'Online' : 'Offline'}</div>
+              </div>
+              <Switch on={r.published} onChange={(v) => commit(r.sku, { published: v })} />
+            </div>
+            <div style={{ fontSize: 11.5, color: T.muted, lineHeight: 1.6, marginTop: 10 }}>
+              {r.published
+                ? <>Live on the storefront{!r.img ? ' — no image yet; you can add photos below at any time.' : '.'} <a href={`/product/${encodeURIComponent(r.sku)}`} target="_blank" rel="noreferrer" style={{ color: T.accent }}>View on site →</a></>
+                : 'Publish to list this stock line on the live storefront. You can publish now and add images later.'}
+              {r.published && r.productIds.length > 0 && <div style={{ marginTop: 6, color: T.faint }}>Supersedes {r.productIds.length} linked catalogue listing{r.productIds.length > 1 ? 's' : ''} online to avoid duplicates.</div>}
+            </div>
+          </div>
           <DField label="Item name" value={r.name} edited={fieldEdited(r.sku, 'name')} base={base.name} onCommit={(v) => commit(r.sku, { name: v })} onRevert={() => commit(r.sku, { name: base.name })} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
             <DField label="Sales code (SKU)" value={r.salesCode} edited={fieldEdited(r.sku, 'salesCode')} base={base.salesCode} onCommit={(v) => commit(r.sku, { salesCode: v })} onRevert={() => commit(r.sku, { salesCode: base.salesCode })} />
@@ -356,9 +407,24 @@ function LedgerDrawer({ r, base, fieldEdited, commit, resetItem, onClose }) {
               <Readout label="Stock retail value" value={r.retailValue == null ? '—' : m2(r.retailValue)} sub={r.qty == null ? '' : `${r.qty} × retail`} />
             </div>
           </div>
+
+          <div style={{ borderTop: `1px solid ${T.line}`, marginTop: 6, paddingTop: 18 }}>
+            <div style={{ fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', color: T.accent, marginBottom: 12 }}>Story</div>
+            <DTextArea value={r.story} edited={fieldEdited(r.sku, 'story')} onCommit={(v) => commit(r.sku, { story: v })} onRevert={() => commit(r.sku, { story: '' })}
+              placeholder="Tell this piece's story — materials, symbolism, craft. Shown on the product page (blank lines start a new paragraph)." />
+          </div>
+
+          <div style={{ borderTop: `1px solid ${T.line}`, marginTop: 6, paddingTop: 18 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12 }}>
+              <div style={{ fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', color: T.accent }}>Images</div>
+              <div style={{ fontSize: 10, color: T.faint }}>{r.images.length} photo{r.images.length === 1 ? '' : 's'} · gallery</div>
+            </div>
+            <Gallery sku={r.sku} images={r.images} onChange={(arr) => commit(r.sku, { images: arr.length ? arr : null, img: arr[0] || null })} />
+          </div>
+
           {r.productId && (
             <div style={{ marginTop: 18, padding: '12px 14px', background: T.card, border: `1px solid ${T.line}`, fontSize: 11.5, color: T.muted, lineHeight: 1.6 }}>
-              Retail, sale price &amp; availability changes on this line flow to the live catalogue{r.productIds.length > 1 ? ` (${r.productIds.length} linked listings).` : '.'}
+              Retail, sale price, availability, story &amp; images on this line flow to the live catalogue{r.productIds.length > 1 ? ` (${r.productIds.length} linked listings).` : '.'}
             </div>
           )}
         </div>
@@ -416,6 +482,89 @@ function DNum({ label, value, edited, base, onCommit, onRevert, placeholder, mon
           style={{ ...dFieldStyle(edited), paddingLeft: money ? 26 : 12 }} />
       </div>
     </DShell>
+  );
+}
+
+// Narrative/story editor (multi-line).
+function DTextArea({ value, edited, onCommit, onRevert, placeholder }) {
+  const [v, setV] = useState(value || '');
+  useEffect(() => setV(value || ''), [value]);
+  return (
+    <DShell label="Narrative" edited={edited} base="" onRevert={onRevert}>
+      <textarea value={v} onChange={(e) => setV(e.target.value)} onBlur={() => onCommit(v)} placeholder={placeholder} rows={5}
+        style={{ ...dFieldStyle(edited), resize: 'vertical', lineHeight: 1.6, minHeight: 116, fontFamily: T.sans }} />
+    </DShell>
+  );
+}
+
+// On/off switch for the publish (online) toggle.
+function Switch({ on, onChange }) {
+  return (
+    <button onClick={() => onChange(!on)} role="switch" aria-checked={on} title={on ? 'Online' : 'Offline'}
+      style={{ position: 'relative', width: 52, height: 28, borderRadius: 999, border: 'none', cursor: 'pointer', background: on ? T.good : T.line2, transition: 'background .15s', flexShrink: 0, padding: 0 }}>
+      <span style={{ position: 'absolute', top: 3, left: on ? 27 : 3, width: 22, height: 22, borderRadius: '50%', background: '#fff', transition: 'left .15s', boxShadow: '0 1px 3px rgba(0,0,0,0.3)' }} />
+    </button>
+  );
+}
+
+// Multi-image gallery: upload (click or drag-drop) to Firebase Storage, reorder
+// and remove. The first image is the primary photo. An item can have zero images.
+function Gallery({ sku, images, onChange }) {
+  const [busy, setBusy] = useState(false);
+  const ref = useRef(null);
+  const list = images || [];
+  const addFiles = async (files) => {
+    if (!FIREBASE_ENABLED) { alert('Connect Firebase to upload images.'); return; }
+    const arr = files ? Array.from(files) : [];
+    if (!arr.length) return;
+    setBusy(true);
+    try {
+      const urls = [];
+      for (const f of arr) urls.push(await uploadImage(`products/${sku}`, f));
+      onChange([...list, ...urls]);
+    } catch (e) { alert('Upload failed: ' + (e && e.message ? e.message : String(e))); }
+    finally { setBusy(false); }
+  };
+  const removeAt = (i) => onChange(list.filter((_, j) => j !== i));
+  const move = (i, dir) => { const j = i + dir; if (j < 0 || j >= list.length) return; const a = list.slice(); [a[i], a[j]] = [a[j], a[i]]; onChange(a); };
+  return (
+    <div>
+      {list.length > 0 && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(96px, 1fr))', gap: 10, marginBottom: 12 }}>
+          {list.map((src, i) => (
+            <div key={src + i} style={{ border: `1px solid ${i === 0 ? T.accent : T.line2}`, background: T.card, position: 'relative' }}>
+              <div style={{ aspectRatio: '1 / 1', overflow: 'hidden' }}>
+                <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} onError={(e) => { e.target.style.opacity = 0.3; }} />
+              </div>
+              {i === 0 && <span style={{ position: 'absolute', top: 4, left: 4, fontSize: 8, letterSpacing: '0.1em', textTransform: 'uppercase', background: T.accent, color: '#fff', padding: '2px 5px' }}>Main</span>}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '4px 5px', gap: 2 }}>
+                <div style={{ display: 'flex', gap: 2 }}>
+                  <IconBtn label="◀" title="Move earlier" disabled={i === 0} onClick={() => move(i, -1)} />
+                  <IconBtn label="▶" title="Move later" disabled={i === list.length - 1} onClick={() => move(i, 1)} />
+                </div>
+                <IconBtn label="✕" title="Remove image" danger onClick={() => removeAt(i)} />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      <div onClick={() => ref.current && ref.current.click()}
+        onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); addFiles(e.dataTransfer.files); }}
+        style={{ border: `1px dashed ${T.line2}`, background: T.card, padding: '18px 16px', textAlign: 'center', cursor: busy ? 'wait' : 'pointer', color: T.muted }}>
+        <div style={{ fontSize: 12, letterSpacing: '0.04em' }}>{busy ? 'Uploading…' : (list.length ? 'Add more images' : 'Upload images')}</div>
+        <div style={{ fontSize: 11, color: T.faint, marginTop: 4 }}>Click or drop photos here · the first image is the main one</div>
+        <input ref={ref} type="file" accept="image/*" multiple style={{ display: 'none' }}
+          onChange={(e) => { const fs = e.target.files; e.target.value = ''; addFiles(fs); }} />
+      </div>
+      {!FIREBASE_ENABLED && <div style={{ fontSize: 10, color: T.faint, marginTop: 6 }}>Connect Firebase to enable uploads.</div>}
+    </div>
+  );
+}
+
+function IconBtn({ label, title, onClick, disabled, danger }) {
+  return (
+    <button onClick={onClick} disabled={disabled} title={title}
+      style={{ background: 'transparent', border: `1px solid ${T.line}`, color: disabled ? T.faint : (danger ? T.danger : T.muted), fontSize: 10, lineHeight: 1, padding: '3px 5px', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.5 : 1 }}>{label}</button>
   );
 }
 

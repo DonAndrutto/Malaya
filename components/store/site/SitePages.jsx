@@ -202,7 +202,8 @@ export function ProductPage({ id }) {
   const { SITE_PRODUCTS, SITE_BY_ID } = useSiteData();
   const p = SITE_BY_ID[id];
   const [qty, setQty] = useState(1);
-  useEffect(() => { setQty(1); }, [id]);
+  const [active, setActive] = useState(0);
+  useEffect(() => { setQty(1); setActive(0); }, [id]);
 
   if (!p) {
     return (
@@ -217,14 +218,39 @@ export function ProductPage({ id }) {
 
   const related = SITE_PRODUCTS.filter((x) => x.collection === p.collection && x.id !== p.id).slice(0, 4);
   const sold = p.stock === 'Sold out' || p.stock === 'Archived';
+
+  // Gallery: every uploaded image, falling back to the single primary photo.
+  const images = (p.images && p.images.length) ? p.images : (p.img ? [p.img] : []);
+  const hero = images[Math.min(active, images.length - 1)] || images[0] || null;
+  const monogram = (p.productionCode || p.salesCode || p.name || 'M').replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'M';
+
+  // Editable story (admin-saved), split into paragraphs; default Malaya blurb.
+  const story = (p.story && p.story.trim())
+    ? p.story.trim().split(/\n\s*\n|\n/).map((s) => s.trim()).filter(Boolean)
+    : ['Designed and crafted by Malaya Jewelry in Thimphu, Bhutan — inspired by the spiritual traditions of the Himalayas.'];
+
   return (
     <main className="malaya-page" data-screen-label={'Product · ' + p.name}>
       <PageBanner title={p.name} subtitle={p.sub} />
       <div className="site-container pd-layout">
-        <div className="pd-photo">
-          <SiteImg src={p.img} alt={p.name} />
-          {p.tashi && <img className="pd-tashi" src={siteImg('tashi.jpg')} alt="Tashi Mannox"
-            title="Malaya Jewelry Collaboration with Tashi Mannox" />}
+        <div className="pd-media">
+          <div className="pd-photo">
+            {hero
+              ? <SiteImg src={hero} alt={p.name} />
+              : <div className="pd-noimg"><span>{monogram}</span></div>}
+            {p.tashi && <img className="pd-tashi" src={siteImg('tashi.jpg')} alt="Tashi Mannox"
+              title="Malaya Jewelry Collaboration with Tashi Mannox" />}
+          </div>
+          {images.length > 1 && (
+            <div className="pd-thumbs">
+              {images.map((src, i) => (
+                <button key={src + i} type="button" className={'pd-thumb' + (i === active ? ' on' : '')}
+                  onClick={() => setActive(i)} aria-label={`View image ${i + 1}`}>
+                  <SiteImg src={src} alt={`${p.name} — view ${i + 1}`} />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
         <div className="pd-info">
           <nav className="pd-crumbs">
@@ -249,10 +275,9 @@ export function ProductPage({ id }) {
               {p.tashi && <tr><th>Design</th><td>Calligraphy by Tashi Mannox</td></tr>}
             </tbody>
           </table>
-          <p className="pd-desc">
-            Designed and crafted by Malaya Jewelry in Thimphu, Bhutan — inspired by the
-            spiritual traditions of the Himalayas.
-          </p>
+          <div className="pd-story">
+            {story.map((para, i) => <p key={i} className="pd-desc">{para}</p>)}
+          </div>
           <div className="pd-buy">
             <div className="pd-qty">
               <button onClick={() => setQty(Math.max(1, qty - 1))}>−</button>
