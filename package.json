@@ -9,7 +9,8 @@
     "lint": "next lint",
     "fetch-images": "node scripts/fetch-images.mjs",
     "build-inventory": "node scripts/build-inventory.mjs",
-    "seed-local-images": "node scripts/seed-local-images.mjs"
+    "seed-local-images": "node scripts/seed-local-images.mjs",
+    "scrape-stories": "node scripts/scrape-stories.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
@@ -20,6 +21,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "cheerio": "^1.0.0",
     "eslint": "^8",
     "eslint-config-next": "^14.2.3",
     "firebase-admin": "^14.0.0"

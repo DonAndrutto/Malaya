@@ -20,6 +20,9 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
+# scrape-stories.mjs --debug dump (local inspection only)
+lib/data/_debug-product.html
+
 # Firebase Admin SDK service-account keys — NEVER commit these (they grant full
 # project access and bypass all security rules). Keep them outside the repo and
 # point GOOGLE_APPLICATION_CREDENTIALS at the local path instead.
