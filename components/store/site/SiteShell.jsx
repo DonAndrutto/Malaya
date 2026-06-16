@@ -41,10 +41,13 @@ export function SiteImg({ src, alt, style, className }) {
 // ── Product card — bordered photo, centred name/subtitle (matches live site) ──
 export function SiteProductCard({ p }) {
   const onSale = p.onSale || p.tag === 'sale';
+  const monogram = (p.productionCode || p.salesCode || p.name || 'M').replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'M';
   return (
     <div className="pcard">
       <Link className="pcard-thumb" href={`/product/${p.id}`}>
-        <SiteImg src={p.img} alt={p.name} />
+        {p.img
+          ? <SiteImg src={p.img} alt={p.name} />
+          : <span className="pcard-noimg">{monogram}</span>}
         {onSale ? (
           <span className="pcard-label pcard-label-sale">SALE</span>
         ) : p.tag === 'new' ? (

@@ -80,7 +80,7 @@ function Login({ onDemoLogin }) {
 function Dashboard({ overrides, setOverrides }) {
   const BASE = useMemo(() => {
     const m = {};
-    PRODUCTS.forEach((p) => { m[p.id] = { ...p.base, code: p.code, img: p.img, hue: p.hue }; });
+    PRODUCTS.forEach((p) => { m[p.id] = { ...p.base, code: p.code, img: p.img, hue: p.hue, story: '', images: p.img ? [p.img] : [] }; });
     return m;
   }, []);
   const ORDER = useMemo(() => PRODUCTS.map((p) => p.id), []);
@@ -104,8 +104,10 @@ function Dashboard({ overrides, setOverrides }) {
     const rawSale = ('salePrice' in o) ? o.salePrice : b.salePrice;
     const salePrice = (rawSale === null || rawSale === undefined || rawSale === '') ? null : Number(rawSale);
     const onSale = salePrice != null && !isNaN(salePrice) && salePrice > 0 && salePrice < listPrice;
+    const images = Array.isArray(o.images) && o.images.length ? o.images : (('img' in o && o.img) ? [o.img] : (b.img ? [b.img] : []));
     return {
-      id, code: val(id, 'salesCode'), img: ('img' in o && o.img) ? o.img : b.img, hue: b.hue,
+      id, code: val(id, 'salesCode'), img: images[0] || b.img, images, hue: b.hue,
+      story: ('story' in o && o.story != null) ? o.story : '',
       salesCode: val(id, 'salesCode'), productionCode: val(id, 'productionCode'),
       name: val(id, 'name'), sub: val(id, 'sub'), category: val(id, 'category'),
       collection: val(id, 'collection'), material: val(id, 'material'), stock: val(id, 'stock'),
@@ -359,7 +361,8 @@ export function EditDrawer({ r, base, fieldEdited, commit, resetItem, onClose })
           <FieldSelect label="Collection" value={r.collection} options={COLLECTIONS} edited={fieldEdited(r.id, 'collection')} base={base.collection} onCommit={(v) => commit(r.id, { collection: v })} onRevert={() => commit(r.id, { collection: base.collection })} />
           <FieldSelect label="Material" value={r.material} options={MATERIALS} edited={fieldEdited(r.id, 'material')} base={base.material} onCommit={(v) => commit(r.id, { material: v })} onRevert={() => commit(r.id, { material: base.material })} />
           <FieldSelect label="Stock / availability" value={r.stock} options={STOCK_OPTIONS} edited={fieldEdited(r.id, 'stock')} base={base.stock} onCommit={(v) => commit(r.id, { stock: v })} onRevert={() => commit(r.id, { stock: base.stock })} />
-          <ImageField r={r} base={base} edited={fieldEdited(r.id, 'img')} commit={commit} />
+          <GalleryField r={r} base={base} edited={fieldEdited(r.id, 'img') || fieldEdited(r.id, 'images')} commit={commit} />
+          <StoryField r={r} edited={fieldEdited(r.id, 'story')} commit={commit} />
           <div style={{ borderTop: `1px solid ${T.line}`, marginTop: 6, paddingTop: 18 }}>
             <div style={{ fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', color: T.accent, marginBottom: 14 }}>Pricing</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
@@ -385,42 +388,82 @@ export function EditDrawer({ r, base, fieldEdited, commit, resetItem, onClose })
   );
 }
 
-// ─────────────────────────────────────────────────── ImageField ────
-// Upload a replacement product photo to Firebase Storage; the download URL is
-// committed to the override (and mirrored to Firestore), so it flows into the
-// catalogue immediately.
-function ImageField({ r, base, edited, commit }) {
+// ─────────────────────────────────────────────────── GalleryField ────
+// Upload one or more product photos to Firebase Storage; the download URLs are
+// committed to the override (img = images[0], mirrored to Firestore) so they
+// flow into the catalogue immediately. Items may have zero, one, or many photos.
+function GalleryField({ r, base, edited, commit }) {
   const [busy, setBusy] = useState(false);
   const inputRef = useRef(null);
-  const onPick = async (e) => {
-    const file = e.target.files && e.target.files[0];
-    e.target.value = '';
-    if (!file) return;
+  const images = r.images && r.images.length ? r.images : (r.img ? [r.img] : []);
+  const setImages = (arr) => commit(r.id, { images: arr.length ? arr : null, img: arr[0] || null });
+  const add = async (files) => {
+    const arr = files ? Array.from(files) : [];
+    if (!arr.length) return;
     if (!FIREBASE_ENABLED) { alert('Firebase is not configured — image uploads are unavailable.'); return; }
     setBusy(true);
     try {
-      const url = await uploadImage(`products/${r.id}`, file);
-      commit(r.id, { img: url });
+      const urls = [];
+      for (const f of arr) urls.push(await uploadImage(`products/${r.id}`, f));
+      setImages([...images, ...urls]);
     } catch (err) {
       alert('Upload failed: ' + (err && err.message ? err.message : String(err)));
     } finally {
       setBusy(false);
     }
   };
+  const removeAt = (i) => setImages(images.filter((_, j) => j !== i));
+  const move = (i, dir) => { const j = i + dir; if (j < 0 || j >= images.length) return; const a = images.slice(); [a[i], a[j]] = [a[j], a[i]]; setImages(a); };
   return (
-    <FieldShell label="Image" edited={edited} base="original" showBase={edited} onRevert={() => commit(r.id, { img: base.img })}>
-      <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
-        <div style={{ width: 64, height: 64, flexShrink: 0, background: T.card, border: `1px solid ${T.line2}`, overflow: 'hidden' }}>
-          <img src={r.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} onError={(e) => { e.target.style.display = 'none'; }} />
+    <FieldShell label="Images / gallery" edited={edited} base="original" showBase={edited} onRevert={() => commit(r.id, { images: null, img: base.img })}>
+      {images.length > 0 && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(86px, 1fr))', gap: 9, marginBottom: 11 }}>
+          {images.map((src, i) => (
+            <div key={src + i} style={{ border: `1px solid ${i === 0 ? T.accent : T.line2}`, background: T.card, position: 'relative' }}>
+              <div style={{ aspectRatio: '1 / 1', overflow: 'hidden' }}>
+                <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} onError={(e) => { e.target.style.opacity = 0.3; }} />
+              </div>
+              {i === 0 && <span style={{ position: 'absolute', top: 4, left: 4, fontSize: 8, letterSpacing: '0.1em', textTransform: 'uppercase', background: T.accent, color: '#fff', padding: '2px 5px' }}>Main</span>}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '4px 5px' }}>
+                <div style={{ display: 'flex', gap: 2 }}>
+                  <GIcon label="◀" title="Move earlier" disabled={i === 0} onClick={() => move(i, -1)} />
+                  <GIcon label="▶" title="Move later" disabled={i === images.length - 1} onClick={() => move(i, 1)} />
+                </div>
+                <GIcon label="✕" title="Remove image" danger onClick={() => removeAt(i)} />
+              </div>
+            </div>
+          ))}
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <button type="button" onClick={() => inputRef.current && inputRef.current.click()} disabled={busy} style={ghostBtn(busy)}>
-            {busy ? 'Uploading…' : (edited ? 'Replace image' : 'Upload image')}
-          </button>
-          <input ref={inputRef} type="file" accept="image/*" onChange={onPick} style={{ display: 'none' }} />
-          {!FIREBASE_ENABLED && <span style={{ fontSize: 10, color: T.faint }}>Connect Firebase to enable uploads</span>}
-        </div>
+      )}
+      <div onClick={() => inputRef.current && inputRef.current.click()}
+        onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); add(e.dataTransfer.files); }}
+        style={{ border: `1px dashed ${T.line2}`, background: T.card, padding: '16px', textAlign: 'center', cursor: busy ? 'wait' : 'pointer', color: T.muted }}>
+        <div style={{ fontSize: 12, letterSpacing: '0.04em' }}>{busy ? 'Uploading…' : (images.length ? 'Add more images' : 'Upload image(s)')}</div>
+        <div style={{ fontSize: 10.5, color: T.faint, marginTop: 4 }}>Click or drop photos here · the first image is the main one</div>
+        <input ref={inputRef} type="file" accept="image/*" multiple onChange={(e) => { const fs = e.target.files; e.target.value = ''; add(fs); }} style={{ display: 'none' }} />
       </div>
+      {!FIREBASE_ENABLED && <span style={{ fontSize: 10, color: T.faint, display: 'block', marginTop: 6 }}>Connect Firebase to enable uploads</span>}
+    </FieldShell>
+  );
+}
+function GIcon({ label, title, onClick, disabled, danger }) {
+  return (
+    <button type="button" onClick={onClick} disabled={disabled} title={title}
+      style={{ background: 'transparent', border: `1px solid ${T.line}`, color: disabled ? T.faint : (danger ? T.danger : T.muted), fontSize: 10, lineHeight: 1, padding: '3px 5px', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.5 : 1 }}>{label}</button>
+  );
+}
+
+// ─────────────────────────────────────────────────── StoryField ────
+// Editable narrative saved to the product's Firestore doc and rendered on the
+// live product page (blank lines separate paragraphs).
+function StoryField({ r, edited, commit }) {
+  const [v, setV] = useState(r.story || '');
+  useEffect(() => setV(r.story || ''), [r.story]);
+  return (
+    <FieldShell label="Story" edited={edited} base="" showBase={edited} onRevert={() => commit(r.id, { story: '' })}>
+      <textarea value={v} onChange={(e) => setV(e.target.value)} onBlur={() => commit(r.id, { story: v })} rows={5}
+        placeholder="Describe this piece — materials, symbolism, craft. Shown on the product page."
+        style={{ ...inputStyle(edited), resize: 'vertical', minHeight: 112, lineHeight: 1.6 }} />
     </FieldShell>
   );
 }
