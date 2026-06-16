@@ -91,6 +91,54 @@ Reruns are idempotent: images already in Storage are reused (their existing
 download token is kept) and only Firestore is refreshed. Anything not yet seeded
 keeps falling back to the CDN, so the site works throughout.
 
+## 3a. Master inventory & local image seeding (current workflow)
+
+The stock ledger's SKUs are defined by **`lib/data/stock-ledger.json`** — the
+single source of truth that `lib/data/stock-data.js` imports. It is generated
+from the **names of the curated image sub-folders**, so the folders you keep
+locally are authoritative:
+
+```
+Malaya Website Images/
+  P020-S/        front.jpg  side.jpg
+  P033-14K-MOP/  1.jpg  2.jpg
+```
+
+**Step 1 — build the inventory** (no Firebase needed):
+
+```bash
+node scripts/build-inventory.mjs "/path/to/Malaya Website Images"
+node scripts/build-inventory.mjs --dry-run     # preview
+node scripts/build-inventory.mjs --fresh       # ignore prior values, re-infer
+node scripts/build-inventory.mjs --from-csv lib/data/stock-ledger.csv   # import an edited CSV
+```
+
+Writes `lib/data/stock-ledger.json` (the master the app reads) and a reviewable
+`lib/data/stock-ledger.csv`. Folder names become SKUs; `category` and `material`
+are inferred from the SKU convention; `name`/`qty`/`cost`/`retail` are carried
+over for SKUs that already existed (set the rest in `/admin`, or edit the CSV and
+re-import). Catalogue links (`productId`) are re-derived from `products.js`.
+Commit both files.
+
+**Step 2 — upload the photos** (Admin SDK; bypasses rules):
+
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/serviceAccount.json
+node scripts/seed-local-images.mjs --dry-run   # preview, offline
+node scripts/seed-local-images.mjs             # upload + write Firestore
+node scripts/seed-local-images.mjs --force     # re-upload even if present
+```
+
+For each SKU folder it uploads every image to `products/{SKU}/…` and writes
+`catalogueOverrides/{SKU}` with the `images` gallery and the primary `img`
+(merged — never clobbers `published`/`story`/prices). Idempotent. Because the
+inventory is built from these same folders, none are flagged "unknown".
+
+**Step 3 — publish**: open `/admin → Stock ledger` and toggle lines **Online**.
+
+> `scripts/fetch-images.mjs` (section 3) is the older path that pulled imagery
+> from the live CDN; the local-folder workflow here supersedes it.
+
 ## 4. Using the admin
 
 - **Stock ledger** — the real inventory (the studio "Total Stock" sheet). Each
