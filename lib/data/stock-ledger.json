@@ -1,49 +1,25 @@
 [
   {
-    "sku": "AC008-S",
-    "code": "AC008",
-    "name": "Ball Finding Malaya Silver",
+    "sku": "4473A",
+    "code": "4473A",
+    "name": "",
     "category": "Accessories",
-    "material": "Silver",
-    "qty": 24,
+    "material": "",
+    "qty": null,
     "cost": null,
-    "retail": 8.22,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
   {
-    "sku": "AC008-YGP",
-    "code": "AC008",
-    "name": "Ball Finding Malaya YGP, 0.38g",
+    "sku": "31748.8.0",
+    "code": "31748.8.0",
+    "name": "",
     "category": "Accessories",
-    "material": "Gold Plated",
-    "qty": 40,
+    "material": "",
+    "qty": null,
     "cost": null,
-    "retail": 10.27,
-    "productId": null,
-    "productIds": []
-  },
-  {
-    "sku": "AC009-S",
-    "code": "AC009",
-    "name": "Malaya Square Finding Silver, 1.35g",
-    "category": "Accessories",
-    "material": "Silver",
-    "qty": 12,
-    "cost": null,
-    "retail": 13.7,
-    "productId": null,
-    "productIds": []
-  },
-  {
-    "sku": "AC009-YGP",
-    "code": "AC009",
-    "name": "Malaya Square Finding YGP 1.33g",
-    "category": "Accessories",
-    "material": "Gold Plated",
-    "qty": 20,
-    "cost": null,
-    "retail": 15.07,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
@@ -60,6 +36,18 @@
     "productIds": []
   },
   {
+    "sku": "B002-YG18",
+    "code": "B002",
+    "name": "",
+    "category": "Bracelets",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "B003-S",
     "code": "B003",
     "name": "5 skull bracelet silver",
@@ -68,6 +56,30 @@
     "qty": 1,
     "cost": 60.23,
     "retail": 287.67,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B003-YG14",
+    "code": "B003",
+    "name": "",
+    "category": "Bracelets",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B003-YG18",
+    "code": "B003",
+    "name": "",
+    "category": "Bracelets",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
@@ -84,6 +96,42 @@
     "productIds": []
   },
   {
+    "sku": "B004-YG14",
+    "code": "B004",
+    "name": "",
+    "category": "Bracelets",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B004-YG18",
+    "code": "B004",
+    "name": "",
+    "category": "Bracelets",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B004-YGP",
+    "code": "B004",
+    "name": "",
+    "category": "Bracelets",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "B005-S",
     "code": "B005",
     "name": "5 Bead Small Double Dorje Bracelet Silver",
@@ -92,6 +140,42 @@
     "qty": 1,
     "cost": 67.62,
     "retail": 260.27,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B005-YGP",
+    "code": "B005",
+    "name": "",
+    "category": "Bracelets",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B006-A-S",
+    "code": "B006",
+    "name": "",
+    "category": "Bracelets",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B006-C-S",
+    "code": "B006",
+    "name": "",
+    "category": "Bracelets",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
@@ -108,14 +192,38 @@
     "productIds": []
   },
   {
-    "sku": "B010-S",
+    "sku": "B010-S-CZ",
     "code": "B010",
-    "name": "Endless Knot Chain Bracelet CZ",
+    "name": "",
     "category": "Bracelets",
     "material": "Silver",
-    "qty": 2,
-    "cost": 38.25,
-    "retail": 143.84,
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B010-YG18",
+    "code": "B010",
+    "name": "",
+    "category": "Bracelets",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B010-YG18-DIA",
+    "code": "B010",
+    "name": "",
+    "category": "Bracelets",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
@@ -132,6 +240,18 @@
     "productIds": []
   },
   {
+    "sku": "B013-YG14",
+    "code": "B013",
+    "name": "",
+    "category": "Bracelets",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "B015A-S",
     "code": "B015A",
     "name": "Continuous Vajras Chain Bracelet, Silver, 19cm (Female Size)",
@@ -144,86 +264,50 @@
     "productIds": []
   },
   {
-    "sku": "B017-1-S",
-    "code": "B017",
-    "name": "Dharmachara Single Bead Small Macrame Bracelet Silver",
+    "sku": "B015B-S",
+    "code": "B015B",
+    "name": "",
     "category": "Bracelets",
     "material": "Silver",
-    "qty": 1,
-    "cost": 42.01,
-    "retail": 95.89,
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
   {
-    "sku": "B017-1-YGP",
-    "code": "B017",
-    "name": "Dharmachara Single Bead Small Macrame Bracelet YGP",
-    "category": "Bracelets",
-    "material": "Gold Plated",
-    "qty": 1,
-    "cost": 51.98,
-    "retail": 123.29,
-    "productId": null,
-    "productIds": []
-  },
-  {
-    "sku": "B017-5-S",
-    "code": "B017",
-    "name": "Dharmachara Five Beads Small Macrame Bracelet Silver",
+    "sku": "B016-S",
+    "code": "B016",
+    "name": "",
     "category": "Bracelets",
     "material": "Silver",
-    "qty": 1,
-    "cost": 101.57,
-    "retail": 219.18,
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
   {
-    "sku": "B017-5-YGP",
+    "sku": "B017-S-PQ",
     "code": "B017",
-    "name": "Dharmachara Five Beads Small Macrame Bracelet YGP",
-    "category": "Bracelets",
-    "material": "Gold Plated",
-    "qty": 1,
-    "cost": 128.54,
-    "retail": 273.97,
-    "productId": null,
-    "productIds": []
-  },
-  {
-    "sku": "B018-1-S",
-    "code": "B018",
-    "name": "Malaya Logo Single Bead 8mm Bracelet Silver",
+    "name": "",
     "category": "Bracelets",
     "material": "Silver",
-    "qty": 1,
-    "cost": 36.19,
-    "retail": 123.29,
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
   {
-    "sku": "B018-1-YGP",
-    "code": "B018",
-    "name": "Malaya Logo Single Bead 8mm Bracelet YGP",
-    "category": "Bracelets",
-    "material": "Gold Plated",
-    "qty": 1,
-    "cost": 44.51,
-    "retail": 123.29,
-    "productId": null,
-    "productIds": []
-  },
-  {
-    "sku": "B018-5-YGP",
-    "code": "B018",
-    "name": "Malaya Logo Five Beads 8mm Bracelet YGP",
-    "category": "Bracelets",
-    "material": "Gold Plated",
-    "qty": 1,
-    "cost": 104.07,
-    "retail": 232.87,
+    "sku": "BA001-RGP",
+    "code": "BA001",
+    "name": "",
+    "category": "Bangles",
+    "material": "Rose Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
@@ -240,14 +324,26 @@
     "productIds": []
   },
   {
-    "sku": "BA001-YGP",
+    "sku": "BA001-YG14",
     "code": "BA001",
-    "name": "Infinity edges bangle Bangle YGP",
+    "name": "",
     "category": "Bangles",
-    "material": "Gold Plated",
-    "qty": 2,
-    "cost": 28.09,
-    "retail": 123.29,
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BA002-S",
+    "code": "BA002",
+    "name": "",
+    "category": "Bangles",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
@@ -264,14 +360,110 @@
     "productIds": []
   },
   {
-    "sku": "BA005-S",
-    "code": "BA005",
-    "name": "Vajra Bangle Silver CZ, Large",
+    "sku": "BA004-S",
+    "code": "BA004",
+    "name": "",
     "category": "Bangles",
     "material": "Silver",
-    "qty": 1,
-    "cost": 77.98,
-    "retail": 410.96,
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BA005-RGP",
+    "code": "BA005",
+    "name": "",
+    "category": "Bangles",
+    "material": "Rose Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BA005-S-CZ",
+    "code": "BA005",
+    "name": "",
+    "category": "Bangles",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BA005-YGP-CZ",
+    "code": "BA005",
+    "name": "",
+    "category": "Bangles",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BA007-S-BD",
+    "code": "BA007",
+    "name": "",
+    "category": "Bangles",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR001-S",
+    "code": "BR001",
+    "name": "",
+    "category": "Brooches",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR001-TT",
+    "code": "BR001",
+    "name": "",
+    "category": "Brooches",
+    "material": "",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR001-YGP",
+    "code": "BR001",
+    "name": "",
+    "category": "Brooches",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR002-YGP",
+    "code": "BR002",
+    "name": "",
+    "category": "Brooches",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
@@ -324,6 +516,30 @@
     "productIds": []
   },
   {
+    "sku": "BR004-S",
+    "code": "BR004",
+    "name": "",
+    "category": "Brooches",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR004-YGP",
+    "code": "BR004",
+    "name": "",
+    "category": "Brooches",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "BR004B-S",
     "code": "BR004B",
     "name": "Hung Syllable Brooch, Smaller Silver",
@@ -336,6 +552,78 @@
     "productIds": []
   },
   {
+    "sku": "BR004B-YGP",
+    "code": "BR004B",
+    "name": "",
+    "category": "Brooches",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR005-S",
+    "code": "BR005",
+    "name": "",
+    "category": "Brooches",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR005-YGP",
+    "code": "BR005",
+    "name": "",
+    "category": "Brooches",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR005B-S",
+    "code": "BR005B",
+    "name": "",
+    "category": "Brooches",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR005B-YGP",
+    "code": "BR005B",
+    "name": "",
+    "category": "Brooches",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR006-RGP",
+    "code": "BR006",
+    "name": "",
+    "category": "Brooches",
+    "material": "Rose Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "BR006-S",
     "code": "BR006",
     "name": "Hri Syllable Brooch Larger, Silver",
@@ -344,6 +632,54 @@
     "qty": 2,
     "cost": null,
     "retail": 123.29,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR006-YGP",
+    "code": "BR006",
+    "name": "",
+    "category": "Brooches",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR006B-S",
+    "code": "BR006B",
+    "name": "",
+    "category": "Brooches",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR007-S",
+    "code": "BR007",
+    "name": "",
+    "category": "Brooches",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR007-YGP",
+    "code": "BR007",
+    "name": "",
+    "category": "Brooches",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
@@ -368,6 +704,30 @@
     "qty": 3,
     "cost": null,
     "retail": 82.19,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR009-S",
+    "code": "BR009",
+    "name": "",
+    "category": "Brooches",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR009-YGP",
+    "code": "BR009",
+    "name": "",
+    "category": "Brooches",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
@@ -420,14 +780,328 @@
     "productIds": []
   },
   {
-    "sku": "CC028-YG14-50",
-    "code": "CC028",
-    "name": "Yellow 14k Gold Chain CC028 No Tag , 45-50. 1.51g",
-    "category": "Chains",
+    "sku": "BR012-S",
+    "code": "BR012",
+    "name": "",
+    "category": "Brooches",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "C003-S",
+    "code": "C003",
+    "name": "",
+    "category": "Accessories",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "C004-S",
+    "code": "C004",
+    "name": "",
+    "category": "Accessories",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "C004-YG14",
+    "code": "C004",
+    "name": "",
+    "category": "Accessories",
     "material": "14k Gold",
-    "qty": 1,
-    "cost": 122.48,
-    "retail": 246.58,
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "C005-RGP",
+    "code": "C005",
+    "name": "",
+    "category": "Accessories",
+    "material": "Rose Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "C005-S",
+    "code": "C005",
+    "name": "",
+    "category": "Accessories",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "C005-YG14",
+    "code": "C005",
+    "name": "",
+    "category": "Accessories",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "C006-RGP",
+    "code": "C006",
+    "name": "",
+    "category": "Accessories",
+    "material": "Rose Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "C006-S",
+    "code": "C006",
+    "name": "",
+    "category": "Accessories",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "C006-YG14",
+    "code": "C006",
+    "name": "",
+    "category": "Accessories",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "C007-S",
+    "code": "C007",
+    "name": "",
+    "category": "Accessories",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "C007-YGP",
+    "code": "C007",
+    "name": "",
+    "category": "Accessories",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "C008-S",
+    "code": "C008",
+    "name": "",
+    "category": "Accessories",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "C008-YGP",
+    "code": "C008",
+    "name": "",
+    "category": "Accessories",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CL002-S",
+    "code": "CL002",
+    "name": "",
+    "category": "Cufflinks",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CL002-YGP",
+    "code": "CL002",
+    "name": "",
+    "category": "Cufflinks",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CL003-YGP",
+    "code": "CL003",
+    "name": "",
+    "category": "Cufflinks",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CL004-S",
+    "code": "CL004",
+    "name": "",
+    "category": "Cufflinks",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CL004-YGP",
+    "code": "CL004",
+    "name": "",
+    "category": "Cufflinks",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CL005-S",
+    "code": "CL005",
+    "name": "",
+    "category": "Cufflinks",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CL005-S-CZ",
+    "code": "CL005",
+    "name": "",
+    "category": "Cufflinks",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p123",
+    "productIds": [
+      "p123"
+    ]
+  },
+  {
+    "sku": "CL005-YGP",
+    "code": "CL005",
+    "name": "",
+    "category": "Cufflinks",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CL005-YGP-CZ",
+    "code": "CL005",
+    "name": "",
+    "category": "Cufflinks",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CL006-S",
+    "code": "CL006",
+    "name": "",
+    "category": "Cufflinks",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CL006-YGP",
+    "code": "CL006",
+    "name": "",
+    "category": "Cufflinks",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CL006-YGP-CZ",
+    "code": "CL006",
+    "name": "",
+    "category": "Cufflinks",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E006-RGP",
+    "code": "E006",
+    "name": "",
+    "category": "Earrings",
+    "material": "Rose Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
@@ -442,6 +1116,32 @@
     "retail": 82.19,
     "productId": null,
     "productIds": []
+  },
+  {
+    "sku": "E006-YG14",
+    "code": "E006",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E006-YGP",
+    "code": "E006",
+    "name": "",
+    "category": "Earrings",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p120",
+    "productIds": [
+      "p120"
+    ]
   },
   {
     "sku": "E006B-S",
@@ -472,6 +1172,30 @@
     "productIds": []
   },
   {
+    "sku": "E007-YG14",
+    "code": "E007",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E008-BS-YG14",
+    "code": "E008",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "E008-DIA-YG14",
     "code": "E008",
     "name": "Double Dorje Stud Earrings, 29 White Diamonds, .197cts 14k Yellow Gold",
@@ -480,6 +1204,216 @@
     "qty": 1.5,
     "cost": null,
     "retail": 1136.99,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E008-GT-YG14",
+    "code": "E008",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E008-RR-YG14",
+    "code": "E008",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E009-YG14",
+    "code": "E009",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E010A-YG14",
+    "code": "E010A",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E010B-YG14",
+    "code": "E010B",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E010C-YG14",
+    "code": "E010C",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E010D-YG14",
+    "code": "E010D",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E011AA-YG18",
+    "code": "E011AA",
+    "name": "",
+    "category": "Earrings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E011AB-YG18",
+    "code": "E011AB",
+    "name": "",
+    "category": "Earrings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E012-YGP",
+    "code": "E012",
+    "name": "",
+    "category": "Earrings",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p001",
+    "productIds": [
+      "p001",
+      "p013"
+    ]
+  },
+  {
+    "sku": "E013-YG14",
+    "code": "E013",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E014-YG18",
+    "code": "E014",
+    "name": "",
+    "category": "Earrings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E015-YG14",
+    "code": "E015",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E015-YGP",
+    "code": "E015",
+    "name": "",
+    "category": "Earrings",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E016-14K-TQ",
+    "code": "E016",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p025",
+    "productIds": [
+      "p025",
+      "p117"
+    ]
+  },
+  {
+    "sku": "E016-YG14-COR",
+    "code": "E016",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E017-YG14-TQ",
+    "code": "E017",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
@@ -496,6 +1430,118 @@
     "productIds": [
       "p098",
       "p114"
+    ]
+  },
+  {
+    "sku": "E019BB-S-BD",
+    "code": "E019BB",
+    "name": "",
+    "category": "Earrings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E021-YG18",
+    "code": "E021",
+    "name": "",
+    "category": "Earrings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E023-YG14-TQ",
+    "code": "E023",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E025-S",
+    "code": "E025",
+    "name": "",
+    "category": "Earrings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E025-YG18",
+    "code": "E025",
+    "name": "",
+    "category": "Earrings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E025-YGP",
+    "code": "E025",
+    "name": "",
+    "category": "Earrings",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E026-S",
+    "code": "E026",
+    "name": "",
+    "category": "Earrings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p012",
+    "productIds": [
+      "p012"
+    ]
+  },
+  {
+    "sku": "E026-YG14-DIA",
+    "code": "E026",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E026-YGP",
+    "code": "E026",
+    "name": "",
+    "category": "Earrings",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p101",
+    "productIds": [
+      "p101"
     ]
   },
   {
@@ -523,6 +1569,56 @@
     "productIds": []
   },
   {
+    "sku": "E028-S",
+    "code": "E028",
+    "name": "",
+    "category": "Earrings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E028-YG18",
+    "code": "E028",
+    "name": "",
+    "category": "Earrings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E029-YG18-TQ",
+    "code": "E029",
+    "name": "",
+    "category": "Earrings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E030-YG14",
+    "code": "E030",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p115",
+    "productIds": [
+      "p115"
+    ]
+  },
+  {
     "sku": "E032-S-CZ",
     "code": "E032",
     "name": "Endless Knot Earrings, Silver, CZ",
@@ -536,6 +1632,30 @@
       "p021",
       "p107"
     ]
+  },
+  {
+    "sku": "E033-S-GREEN",
+    "code": "E033",
+    "name": "",
+    "category": "Earrings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E034-S-BLUE",
+    "code": "E034",
+    "name": "",
+    "category": "Earrings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
   },
   {
     "sku": "E035-S-CZ",
@@ -566,6 +1686,30 @@
     ]
   },
   {
+    "sku": "E036-S",
+    "code": "E036",
+    "name": "",
+    "category": "Earrings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E037-S-CZ",
+    "code": "E037",
+    "name": "",
+    "category": "Earrings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "E038-S-CZ",
     "code": "E038",
     "name": "Double Dorje Earrings, Silver, CZ",
@@ -574,6 +1718,190 @@
     "qty": 2,
     "cost": 19.61,
     "retail": 82.19,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E038-YGP-CZ",
+    "code": "E038",
+    "name": "",
+    "category": "Earrings",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E039-S",
+    "code": "E039",
+    "name": "",
+    "category": "Earrings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E039-YG18-DIA",
+    "code": "E039",
+    "name": "",
+    "category": "Earrings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p124",
+    "productIds": [
+      "p124"
+    ]
+  },
+  {
+    "sku": "E039-YGP-CZ",
+    "code": "E039",
+    "name": "",
+    "category": "Earrings",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E040-YG14-DIA",
+    "code": "E040",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p064",
+    "productIds": [
+      "p064"
+    ]
+  },
+  {
+    "sku": "E041-YGP-BQ",
+    "code": "E041",
+    "name": "",
+    "category": "Earrings",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E042-S-ENAMEL",
+    "code": "E042",
+    "name": "",
+    "category": "Earrings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p127",
+    "productIds": [
+      "p127"
+    ]
+  },
+  {
+    "sku": "E044-YG14-COR",
+    "code": "E044",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E045-YG18-COR",
+    "code": "E045",
+    "name": "",
+    "category": "Earrings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p125",
+    "productIds": [
+      "p125",
+      "p126"
+    ]
+  },
+  {
+    "sku": "E054-YG14-TQ",
+    "code": "E054",
+    "name": "",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E056-YG18-BS-DIA",
+    "code": "E056",
+    "name": "",
+    "category": "Earrings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p015",
+    "productIds": [
+      "p015",
+      "p116"
+    ]
+  },
+  {
+    "sku": "N002-S",
+    "code": "N002",
+    "name": "",
+    "category": "Necklaces",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p112",
+    "productIds": [
+      "p112"
+    ]
+  },
+  {
+    "sku": "N002-S-CZ",
+    "code": "N002",
+    "name": "",
+    "category": "Necklaces",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p093",
+    "productIds": [
+      "p093"
+    ]
+  },
+  {
+    "sku": "N002-YG18",
+    "code": "N002",
+    "name": "",
+    "category": "Necklaces",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
@@ -595,6 +1923,18 @@
     ]
   },
   {
+    "sku": "N002-YGP-CZ",
+    "code": "N002",
+    "name": "",
+    "category": "Necklaces",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "N003-YGP-CZ",
     "code": "N003",
     "name": "Eight Auspicious Symbols Necklace, YGP CZ",
@@ -607,14 +1947,136 @@
     "productIds": []
   },
   {
-    "sku": "N010-S",
-    "code": "N010",
-    "name": "Endless Knot Necklace, Silver, CZ",
+    "sku": "N005B-S",
+    "code": "N005B",
+    "name": "",
     "category": "Necklaces",
     "material": "Silver",
-    "qty": 6,
-    "cost": 68.06,
-    "retail": 239.73,
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "N005B-YG14-DIA",
+    "code": "N005B",
+    "name": "",
+    "category": "Necklaces",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "N007-YGP-CZ",
+    "code": "N007",
+    "name": "",
+    "category": "Necklaces",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "N007C-YGP",
+    "code": "N007C",
+    "name": "",
+    "category": "Necklaces",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "N008-YGP-CZ",
+    "code": "N008",
+    "name": "",
+    "category": "Necklaces",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "N009B-S",
+    "code": "N009B",
+    "name": "",
+    "category": "Necklaces",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p100",
+    "productIds": [
+      "p100"
+    ]
+  },
+  {
+    "sku": "N009B-YGP-CZ",
+    "code": "N009B",
+    "name": "",
+    "category": "Necklaces",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "N010-S-CZ",
+    "code": "N010",
+    "name": "",
+    "category": "Necklaces",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "N010-YG14-DIA",
+    "code": "N010",
+    "name": "",
+    "category": "Necklaces",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "N013-S",
+    "code": "N013",
+    "name": "",
+    "category": "Necklaces",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "N014-YGP",
+    "code": "N014",
+    "name": "",
+    "category": "Necklaces",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
@@ -627,6 +2089,58 @@
     "qty": 6,
     "cost": 28.05,
     "retail": 95.89,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "N016-YG18",
+    "code": "N016",
+    "name": "",
+    "category": "Necklaces",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p099",
+    "productIds": [
+      "p099"
+    ]
+  },
+  {
+    "sku": "N017-S",
+    "code": "N017",
+    "name": "",
+    "category": "Necklaces",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "N020-YG18-TQ",
+    "code": "N020",
+    "name": "",
+    "category": "Necklaces",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p094",
+    "productIds": [
+      "p094"
+    ]
+  },
+  {
+    "sku": "N022-YG18-COR",
+    "code": "N022",
+    "name": "",
+    "category": "Necklaces",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
@@ -645,6 +2159,20 @@
     ]
   },
   {
+    "sku": "N025-YG14-TQ-DIA",
+    "code": "N025",
+    "name": "",
+    "category": "Necklaces",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p092",
+    "productIds": [
+      "p092"
+    ]
+  },
+  {
     "sku": "P012-YG14",
     "code": "P012",
     "name": "Tam syllable pendant OLD version, YG14. small without",
@@ -658,6 +2186,18 @@
       "p070",
       "p090"
     ]
+  },
+  {
+    "sku": "P016-WG14-DIA",
+    "code": "P016",
+    "name": "",
+    "category": "Pendants",
+    "material": "White Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
   },
   {
     "sku": "P018-RGP",
@@ -686,6 +2226,18 @@
     "productIds": []
   },
   {
+    "sku": "P019-YG14",
+    "code": "P019",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "P020-S",
     "code": "P020",
     "name": "Hung Syllable Pendant, Bigger, Silver, with chain",
@@ -700,20 +2252,121 @@
     ]
   },
   {
-    "sku": "P020-YG14",
-    "code": "P020",
-    "name": "HUNG syllable pendant, 14k yellow gold, size 44mm, pendant only: 3.82g",
+    "sku": "P021-PT",
+    "code": "P021",
+    "name": "",
+    "category": "Pendants",
+    "material": "Platinum",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p080",
+    "productIds": [
+      "p080"
+    ]
+  },
+  {
+    "sku": "P021-RG14",
+    "code": "P021",
+    "name": "",
+    "category": "Pendants",
+    "material": "Rose Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P021-WG14",
+    "code": "P021",
+    "name": "",
+    "category": "Pendants",
+    "material": "White Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p082",
+    "productIds": [
+      "p082"
+    ]
+  },
+  {
+    "sku": "P021-YG14",
+    "code": "P021",
+    "name": "",
     "category": "Pendants",
     "material": "14k Gold",
-    "qty": 1,
-    "cost": 288.09,
-    "retail": 602.74,
-    "productId": "p083",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P021-YG18",
+    "code": "P021",
+    "name": "",
+    "category": "Pendants",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p057",
     "productIds": [
-      "p083",
-      "p084",
-      "p085"
+      "p057",
+      "p066"
     ]
+  },
+  {
+    "sku": "P023-WH18-BS",
+    "code": "P023",
+    "name": "",
+    "category": "Pendants",
+    "material": "",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P026-S",
+    "code": "P026",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p065",
+    "productIds": [
+      "p065"
+    ]
+  },
+  {
+    "sku": "P026-YGP",
+    "code": "P026",
+    "name": "",
+    "category": "Pendants",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P027-DIA-14KY",
+    "code": "P027",
+    "name": "",
+    "category": "Pendants",
+    "material": "",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
   },
   {
     "sku": "P027-S",
@@ -728,18 +2381,316 @@
     "productIds": []
   },
   {
-    "sku": "P031F",
-    "code": "P031F",
-    "name": "Single Auspicious Pendant, Endless Knot, Gold Plated",
+    "sku": "P027-YG14",
+    "code": "P027",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p076",
+    "productIds": [
+      "p076"
+    ]
+  },
+  {
+    "sku": "P028-YG14",
+    "code": "P028",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p075",
+    "productIds": [
+      "p075"
+    ]
+  },
+  {
+    "sku": "P029-YG18",
+    "code": "P029",
+    "name": "",
+    "category": "Pendants",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p023",
+    "productIds": [
+      "p023"
+    ]
+  },
+  {
+    "sku": "P030-S",
+    "code": "P030",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P030-YG18",
+    "code": "P030",
+    "name": "",
+    "category": "Pendants",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p077",
+    "productIds": [
+      "p077"
+    ]
+  },
+  {
+    "sku": "P031-14K-DIA",
+    "code": "P031",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P031A-S",
+    "code": "P031A",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p050",
+    "productIds": [
+      "p050"
+    ]
+  },
+  {
+    "sku": "P031B-S",
+    "code": "P031B",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p051",
+    "productIds": [
+      "p051"
+    ]
+  },
+  {
+    "sku": "P031C-S",
+    "code": "P031C",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p049",
+    "productIds": [
+      "p049"
+    ]
+  },
+  {
+    "sku": "P031D-S",
+    "code": "P031D",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p046",
+    "productIds": [
+      "p046"
+    ]
+  },
+  {
+    "sku": "P031E-S",
+    "code": "P031E",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p047",
+    "productIds": [
+      "p047"
+    ]
+  },
+  {
+    "sku": "P031G-14K-DIA",
+    "code": "P031G",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P031G-S",
+    "code": "P031G",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p045",
+    "productIds": [
+      "p045"
+    ]
+  },
+  {
+    "sku": "P031H-S",
+    "code": "P031H",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p048",
+    "productIds": [
+      "p048"
+    ]
+  },
+  {
+    "sku": "P031S-A",
+    "code": "P031S",
+    "name": "",
+    "category": "Pendants",
+    "material": "",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P032-YG14-MOP",
+    "code": "P032",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P033-14K-MOP",
+    "code": "P033",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P034-RG14",
+    "code": "P034",
+    "name": "",
+    "category": "Pendants",
+    "material": "Rose Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P034-WG14",
+    "code": "P034",
+    "name": "",
+    "category": "Pendants",
+    "material": "White Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P034-YG14",
+    "code": "P034",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P035-S",
+    "code": "P035",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p091",
+    "productIds": [
+      "p091"
+    ]
+  },
+  {
+    "sku": "P035-YG14",
+    "code": "P035",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P036-06-S",
+    "code": "P036",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P036-08-YGP",
+    "code": "P036",
+    "name": "",
     "category": "Pendants",
     "material": "Gold Plated",
-    "qty": 2,
-    "cost": 30.78,
-    "retail": 102.74,
-    "productId": "p078",
-    "productIds": [
-      "p078"
-    ]
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
   },
   {
     "sku": "P037-S",
@@ -754,6 +2705,46 @@
     "productIds": [
       "p071"
     ]
+  },
+  {
+    "sku": "P037-YG14",
+    "code": "P037",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p069",
+    "productIds": [
+      "p069"
+    ]
+  },
+  {
+    "sku": "P038-S",
+    "code": "P038",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p067",
+    "productIds": [
+      "p067"
+    ]
+  },
+  {
+    "sku": "P040-YG18",
+    "code": "P040",
+    "name": "",
+    "category": "Pendants",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
   },
   {
     "sku": "P041-CZ-S",
@@ -771,6 +2762,74 @@
     ]
   },
   {
+    "sku": "P042-WG14-DIA",
+    "code": "P042",
+    "name": "",
+    "category": "Pendants",
+    "material": "White Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p034",
+    "productIds": [
+      "p034"
+    ]
+  },
+  {
+    "sku": "P042-YG14-DIA",
+    "code": "P042",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P044-YGP",
+    "code": "P044",
+    "name": "",
+    "category": "Pendants",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p032",
+    "productIds": [
+      "p032",
+      "p060"
+    ]
+  },
+  {
+    "sku": "P045-S",
+    "code": "P045",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P045-YGP",
+    "code": "P045",
+    "name": "",
+    "category": "Pendants",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p014",
+    "productIds": [
+      "p014",
+      "p058"
+    ]
+  },
+  {
     "sku": "P047B-YG14",
     "code": "P047B",
     "name": "Phurba Pendant Medium New, YG14, No Chain, 5.09",
@@ -781,6 +2840,32 @@
     "retail": 849.13,
     "productId": null,
     "productIds": []
+  },
+  {
+    "sku": "P049-S",
+    "code": "P049",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P049-YG14",
+    "code": "P049",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p043",
+    "productIds": [
+      "p043"
+    ]
   },
   {
     "sku": "P050-S",
@@ -794,6 +2879,89 @@
     "productId": "p041",
     "productIds": [
       "p041"
+    ]
+  },
+  {
+    "sku": "P050-YG14",
+    "code": "P050",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p044",
+    "productIds": [
+      "p044"
+    ]
+  },
+  {
+    "sku": "P051-RG14",
+    "code": "P051",
+    "name": "",
+    "category": "Pendants",
+    "material": "Rose Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P051-WG18",
+    "code": "P051",
+    "name": "",
+    "category": "Pendants",
+    "material": "White Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p016",
+    "productIds": [
+      "p016"
+    ]
+  },
+  {
+    "sku": "P051-YG14",
+    "code": "P051",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p054",
+    "productIds": [
+      "p054",
+      "p081"
+    ]
+  },
+  {
+    "sku": "P052-S",
+    "code": "P052",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p027",
+    "productIds": [
+      "p027"
+    ]
+  },
+  {
+    "sku": "P052-YG14",
+    "code": "P052",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p036",
+    "productIds": [
+      "p036"
     ]
   },
   {
@@ -811,6 +2979,44 @@
     ]
   },
   {
+    "sku": "P055-YG14",
+    "code": "P055",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p052",
+    "productIds": [
+      "p052"
+    ]
+  },
+  {
+    "sku": "P057-S-CZ",
+    "code": "P057",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P057-WG14-DIA",
+    "code": "P057",
+    "name": "",
+    "category": "Pendants",
+    "material": "White Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "P058-S-B",
     "code": "P058",
     "name": "Hung Syllable Pendant Silver Blue Enamel",
@@ -822,6 +3028,48 @@
     "productId": "p039",
     "productIds": [
       "p039"
+    ]
+  },
+  {
+    "sku": "P059-S-G",
+    "code": "P059",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p038",
+    "productIds": [
+      "p038"
+    ]
+  },
+  {
+    "sku": "P060-YGP-R",
+    "code": "P060",
+    "name": "",
+    "category": "Pendants",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p037",
+    "productIds": [
+      "p037"
+    ]
+  },
+  {
+    "sku": "P061-S",
+    "code": "P061",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p022",
+    "productIds": [
+      "p022"
     ]
   },
   {
@@ -853,6 +3101,20 @@
     ]
   },
   {
+    "sku": "P065-YG18",
+    "code": "P065",
+    "name": "",
+    "category": "Pendants",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p028",
+    "productIds": [
+      "p028"
+    ]
+  },
+  {
     "sku": "P066-YG14-RR",
     "code": "P066",
     "name": "Longevity Vase Bumpa Pendant, Yellow Gold 14k: 13.72g, Red Rubies .14cts, Openable",
@@ -865,14 +3127,127 @@
     "productIds": []
   },
   {
-    "sku": "R014-S",
-    "code": "R014",
-    "name": "Laughing Skull Ring, Silver Black Diamonds, 0.038 CTS",
+    "sku": "P067-S",
+    "code": "P067",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p019",
+    "productIds": [
+      "p019",
+      "p020"
+    ]
+  },
+  {
+    "sku": "P068-YG14-TQ",
+    "code": "P068",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p024",
+    "productIds": [
+      "p024"
+    ]
+  },
+  {
+    "sku": "P069-S",
+    "code": "P069",
+    "name": "",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P070-YG14-TQ",
+    "code": "P070",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P071-YG18-BSDIA",
+    "code": "P071",
+    "name": "",
+    "category": "Pendants",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P073-YG14-TQ-DIA",
+    "code": "P073",
+    "name": "",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R001-S-DIA",
+    "code": "R001",
+    "name": "",
     "category": "Rings",
     "material": "Silver",
-    "qty": 1,
-    "cost": 31.19,
-    "retail": 123.29,
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R005-S-YG14",
+    "code": "R005",
+    "name": "",
+    "category": "Rings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R014-S-BD",
+    "code": "R014",
+    "name": "",
+    "category": "Rings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R014-YG14-BD",
+    "code": "R014",
+    "name": "",
+    "category": "Rings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
@@ -889,14 +3264,355 @@
     "productIds": []
   },
   {
-    "sku": "R017B-YGP",
-    "code": "R017B",
-    "name": "Dorje Bell Samaya Ring, Prototype YGP CZ",
+    "sku": "R017A-S-T",
+    "code": "R017A",
+    "name": "",
     "category": "Rings",
-    "material": "Gold Plated",
-    "qty": 1,
-    "cost": 69.53,
-    "retail": 191.78,
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R017A-YG18",
+    "code": "R017A",
+    "name": "",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R017B-S",
+    "code": "R017B",
+    "name": "",
+    "category": "Rings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R017B-YG18-DIA",
+    "code": "R017B",
+    "name": "",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R017C-S",
+    "code": "R017C",
+    "name": "",
+    "category": "Rings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R019A-WG18",
+    "code": "R019A",
+    "name": "",
+    "category": "Rings",
+    "material": "White Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R019A-YG18",
+    "code": "R019A",
+    "name": "",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R019B-YG18",
+    "code": "R019B",
+    "name": "",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R020-YG18",
+    "code": "R020",
+    "name": "",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R020B-YG18",
+    "code": "R020B",
+    "name": "",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R021-WG14-DIA",
+    "code": "R021",
+    "name": "",
+    "category": "Rings",
+    "material": "White Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R021-YG14",
+    "code": "R021",
+    "name": "",
+    "category": "Rings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R021-YG18-DIA",
+    "code": "R021",
+    "name": "",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R022-YG14-RR",
+    "code": "R022",
+    "name": "",
+    "category": "Rings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R023-YG14-CIT-DIA",
+    "code": "R023",
+    "name": "",
+    "category": "Rings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R023-YG14-RR",
+    "code": "R023",
+    "name": "",
+    "category": "Rings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R025-26-A-YG18",
+    "code": "R025",
+    "name": "",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R026-WG14-AQ-DIA",
+    "code": "R026",
+    "name": "",
+    "category": "Rings",
+    "material": "White Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R027-YG14-COR",
+    "code": "R027",
+    "name": "",
+    "category": "Rings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R029-S",
+    "code": "R029",
+    "name": "",
+    "category": "Rings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R029-YG18-DIA",
+    "code": "R029",
+    "name": "",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R030-YG18",
+    "code": "R030",
+    "name": "",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R032-YG18",
+    "code": "R032",
+    "name": "",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R033-S-BDS",
+    "code": "R033",
+    "name": "",
+    "category": "Rings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R039-YG18",
+    "code": "R039",
+    "name": "",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R041-YG14-TQ",
+    "code": "R041",
+    "name": "",
+    "category": "Rings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p003",
+    "productIds": [
+      "p003"
+    ]
+  },
+  {
+    "sku": "R042-YG18-TQ-DIA",
+    "code": "R042",
+    "name": "",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p007",
+    "productIds": [
+      "p007",
+      "p008"
+    ]
+  },
+  {
+    "sku": "R044-18KY-TQ",
+    "code": "R044",
+    "name": "",
+    "category": "Rings",
+    "material": "",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R044-YG14-COR",
+    "code": "R044",
+    "name": "",
+    "category": "Rings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
@@ -915,27 +3631,53 @@
     ]
   },
   {
-    "sku": "R046-YGP-BLP-61",
+    "sku": "R046-S-ON-DIA",
     "code": "R046",
-    "name": "Dharmachakra Octagonal ring, Gold Plated, YGP, Lapis, size 61",
+    "name": "",
     "category": "Rings",
-    "material": "Gold Plated",
-    "qty": 1,
-    "cost": 95.35,
-    "retail": 314.66,
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
   },
   {
-    "sku": "R046-YGP-CL-DIA-61",
-    "code": "R046",
-    "name": "Dharmachakra Octagonal ring, Gold Plated, YGP, Carnelian, Diamonds, size 61",
+    "sku": "R047-WG18",
+    "code": "R047",
+    "name": "",
     "category": "Rings",
-    "material": "Gold Plated",
-    "qty": 1,
-    "cost": 113.52,
-    "retail": 374.61,
+    "material": "White Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
     "productId": null,
     "productIds": []
+  },
+  {
+    "sku": "R047-YG18",
+    "code": "R047",
+    "name": "",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R048-YG14-TQ-DIA-BT",
+    "code": "R048",
+    "name": "",
+    "category": "Rings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": null,
+    "productId": "p006",
+    "productIds": [
+      "p006"
+    ]
   }
 ]
