@@ -7,6 +7,7 @@ import { STOCK_ROWS, stockStatus } from '@/lib/data/stock-data';
 import { ledgerCollection } from '@/lib/data/ledger';
 import { saveOverrides } from '@/lib/overrides';
 import { uploadImage } from '@/lib/upload';
+import { resizeImageFile } from '@/lib/image-resize';
 import { FIREBASE_ENABLED } from '@/lib/firebase';
 
 const LEDGER_FIELDS = ['name', 'category', 'material', 'qty', 'unitCost', 'retail', 'salePrice', 'salesCode', 'productionCode', 'stock', 'published', 'story', 'images'];
@@ -520,7 +521,7 @@ function Gallery({ sku, images, onChange }) {
     setBusy(true);
     try {
       const urls = [];
-      for (const f of arr) urls.push(await uploadImage(`products/${sku}`, f));
+      for (const f of arr) urls.push(await uploadImage(`products/${sku}`, await resizeImageFile(f)));
       onChange([...list, ...urls]);
     } catch (e) { alert('Upload failed: ' + (e && e.message ? e.message : String(e))); }
     finally { setBusy(false); }

@@ -9,7 +9,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  CATEGORIES, COLLECTIONS, SITE_NAV, SITE_INFO, fmtPrice, siteImg, cdnFallback,
+  CATEGORIES, COLLECTIONS, SITE_NAV, SITE_INFO, fmtPrice, siteImg, cdnFallback, posFor,
 } from '@/lib/data/site-data';
 import { useCart, removeFromCart, cartTotal, useSiteData } from './store';
 
@@ -48,6 +48,9 @@ export function SiteProductCard({ p }) {
         {p.img
           ? <SiteImg src={p.img} alt={p.name} />
           : <span className="pcard-noimg">{monogram}</span>}
+        {p.img && p.images && p.images[1] && (
+          <SiteImg className="pcard-alt" src={p.images[1]} alt={p.name} />
+        )}
         {onSale ? (
           <span className="pcard-label pcard-label-sale">SALE</span>
         ) : p.tag === 'new' ? (
@@ -74,7 +77,7 @@ export function PageBanner({ title, subtitle, img }) {
   const { settings } = useSiteData();
   const bg = img || settings.pageBanner || siteImg('banner33.jpg');
   return (
-    <div className="page-banner" style={{ backgroundImage: `url(${bg})` }}>
+    <div className="page-banner" style={{ backgroundImage: `url(${bg})`, backgroundPosition: posFor(settings, bg) }}>
       <div className="site-container">
         <strong className="page-banner-title">{title}</strong>
         {subtitle && <span className="page-banner-sub">{subtitle}</span>}

@@ -9,7 +9,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
-  CATEGORIES, COLLECTIONS, fmtPrice, siteImg,
+  CATEGORIES, COLLECTIONS, fmtPrice, siteImg, posFor,
   HOME_HERO, HOME_TILES, TASHI_INTRO, ABOUT_LEAD, ABOUT_BODY, SITE_INFO,
 } from '@/lib/data/site-data';
 import {
@@ -21,7 +21,7 @@ const catHref = (c) => `/catalogue?category=${encodeURIComponent(c)}`;
 const colHref = (c) => `/catalogue?collection=${encodeURIComponent(c)}`;
 
 // ── Home ─────────────────────────────────────────────────────────────────────
-function HeroSlider({ slides }) {
+function HeroSlider({ slides, settings }) {
   const [idx, setIdx] = useState(0);
   useEffect(() => {
     const t = setInterval(() => setIdx((i) => (i + 1) % slides.length), 5200);
@@ -31,7 +31,7 @@ function HeroSlider({ slides }) {
     <div className="hero">
       {slides.map((src, i) => (
         <div key={src + i} className={'hero-slide' + (i === idx ? ' on' : '')}
-          style={{ backgroundImage: `url(${src})` }} />
+          style={{ backgroundImage: `url(${src})`, backgroundPosition: posFor(settings, src) }} />
       ))}
       <div className="hero-overlay">
         <h2 className="hero-title">Malaya Jewelry</h2>
@@ -53,20 +53,24 @@ function HeroSlider({ slides }) {
 export function HomePage() {
   const { HOME_BEST, settings } = useSiteData();
   const slides = settings.heroSlides && settings.heroSlides.length ? settings.heroSlides : HOME_HERO;
+  const homeBannerSrc = settings.homeBanner || siteImg('banner12.jpg');
   return (
     <main className="malaya-page" data-screen-label="Home">
-      <HeroSlider slides={slides} />
+      <HeroSlider slides={slides} settings={settings} />
 
       <section className="home-tiles site-container">
-        {HOME_TILES.map((t) => (
+        {HOME_TILES.map((t) => {
+          const tileSrc = (settings.homeTiles && settings.homeTiles[t.cat]) || t.img;
+          return (
           <Link key={t.title} className="home-tile" href={catHref(t.cat)}>
-            <SiteImg src={(settings.homeTiles && settings.homeTiles[t.cat]) || t.img} alt={t.title} />
+            <SiteImg src={tileSrc} alt={t.title} style={{ objectPosition: posFor(settings, tileSrc) }} />
             <span className="home-tile-body">
               <span className="home-tile-title">{t.title}</span>
               <span className="home-tile-cta">View All</span>
             </span>
           </Link>
-        ))}
+          );
+        })}
       </section>
 
       <section className="home-best site-container">
@@ -80,7 +84,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="home-banner" style={{ backgroundImage: `url(${settings.homeBanner || siteImg('banner12.jpg')})` }}>
+      <section className="home-banner" style={{ backgroundImage: `url(${homeBannerSrc})`, backgroundPosition: posFor(settings, homeBannerSrc) }}>
         <div className="home-banner-inner">
           <h2>Malaya Jewelry — Order Now</h2>
           <Link className="btn-malaya btn-malaya-light" href="/catalogue">View All Collections</Link>
@@ -222,6 +226,7 @@ export function ProductPage({ id }) {
   // Gallery: every uploaded image, falling back to the single primary photo.
   const images = (p.images && p.images.length) ? p.images : (p.img ? [p.img] : []);
   const hero = images[Math.min(active, images.length - 1)] || images[0] || null;
+  const heroAlt = images.length > 1 ? images[(Math.min(active, images.length - 1) + 1) % images.length] : null;
   const monogram = (p.productionCode || p.salesCode || p.name || 'M').replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'M';
 
   // Editable story (admin-saved), split into paragraphs; default Malaya blurb.
@@ -238,6 +243,7 @@ export function ProductPage({ id }) {
             {hero
               ? <SiteImg src={hero} alt={p.name} />
               : <div className="pd-noimg"><span>{monogram}</span></div>}
+            {heroAlt && <SiteImg className="pd-alt" src={heroAlt} alt={p.name} />}
             {p.tashi && <img className="pd-tashi" src={siteImg('tashi.jpg')} alt="Tashi Mannox"
               title="Malaya Jewelry Collaboration with Tashi Mannox" />}
           </div>
