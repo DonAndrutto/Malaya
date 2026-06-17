@@ -12,6 +12,7 @@ import { T, ghostBtn } from './theme';
 import { siteImg, HOME_HERO, HOME_TILES } from '@/lib/data/site-data';
 import { subscribeSiteSettings, saveSiteSettings } from '@/lib/site-settings';
 import { uploadImage } from '@/lib/upload';
+import { resizeImageFile } from '@/lib/image-resize';
 import { FIREBASE_ENABLED } from '@/lib/firebase';
 
 const card = { background: T.panel, border: `1px solid ${T.line}`, padding: 20, marginBottom: 16 };
@@ -37,6 +38,47 @@ function PickButton({ label, busy, onFile }) {
   );
 }
 
+// Drag-to-set focal point for a cover-cropped image. Maps the pointer position
+// within the preview frame to a CSS object-position ("x% y%"), which the
+// storefront applies to the live banner/hero/tile. `aspect` shapes the preview.
+function FocalPicker({ url, aspect, pos, onChange }) {
+  const frame = useRef(null);
+  const [dragging, setDragging] = useState(false);
+  const [local, setLocal] = useState(pos || 'center');
+  useEffect(() => { setLocal(pos || 'center'); }, [pos]);
+  if (!url) return null;
+
+  const objPos = local === 'center' ? '50% 50%' : local;
+  const [hx, hy] = objPos.split(' ').map((v) => parseFloat(v));
+  const at = (clientX, clientY) => {
+    const el = frame.current; if (!el) return local;
+    const r = el.getBoundingClientRect();
+    const x = Math.round(Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100)));
+    const y = Math.round(Math.max(0, Math.min(100, ((clientY - r.top) / r.height) * 100)));
+    const v = `${x}% ${y}%`;
+    setLocal(v);
+    return v;
+  };
+
+  return (
+    <div style={{ marginTop: 12 }}>
+      <div ref={frame}
+        onPointerDown={(e) => { e.preventDefault(); e.currentTarget.setPointerCapture(e.pointerId); setDragging(true); at(e.clientX, e.clientY); }}
+        onPointerMove={(e) => { if (dragging) at(e.clientX, e.clientY); }}
+        onPointerUp={(e) => { setDragging(false); onChange(at(e.clientX, e.clientY)); }}
+        style={{ position: 'relative', width: '100%', aspectRatio: aspect, overflow: 'hidden', cursor: 'move', border: `1px solid ${T.line2}`, background: T.bg, touchAction: 'none', userSelect: 'none' }}>
+        <img src={url} alt="" draggable={false} onError={(e) => { e.target.style.display = 'none'; }}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: objPos, display: 'block', pointerEvents: 'none' }} />
+        <span style={{ position: 'absolute', left: `${hx}%`, top: `${hy}%`, width: 18, height: 18, marginLeft: -9, marginTop: -9, borderRadius: '50%', border: '2px solid #fff', boxShadow: '0 0 0 1px rgba(0,0,0,.45)', pointerEvents: 'none' }} />
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
+        <span style={{ fontSize: 10, color: T.faint }}>Drag to reposition · {local === 'center' ? 'centred' : local}</span>
+        {local !== 'center' && <button onClick={() => { setLocal('center'); onChange('center'); }} style={linkBtn}>Reset position</button>}
+      </div>
+    </div>
+  );
+}
+
 export default function SiteImages() {
   const [settings, setSettings] = useState({});
   const [busy, setBusy] = useState('');
@@ -48,29 +90,36 @@ export default function SiteImages() {
     return next;
   });
 
+  // Focal point ("x% y%") per image URL, applied by the storefront to cover-cropped slots.
+  const posOf = (url) => (settings.imgPos && settings.imgPos[url]) || 'center';
+  const setPos = (url, value) => apply({ imgPos: { ...(settings.imgPos || {}), [url]: value } });
+
   const upload = async (key, folder, file, applyUrl) => {
     if (!FIREBASE_ENABLED) { alert('Connect Firebase to upload site images.'); return; }
     setBusy(key);
-    try { applyUrl(await uploadImage(folder, file)); }
+    try { applyUrl(await uploadImage(folder, await resizeImageFile(file))); }
     catch (e) { alert('Upload failed: ' + (e && e.message ? e.message : String(e))); }
     finally { setBusy(''); }
   };
 
   // A single-image slot (logo, banner, portrait, …).
-  const single = ({ k, label, hint, folder, current, fallback }) => (
-    <div style={{ ...card, display: 'flex', gap: 16, alignItems: 'center', justifyContent: 'space-between' }}>
-      <div style={{ display: 'flex', gap: 16, alignItems: 'center', minWidth: 0 }}>
-        <Thumb src={current || fallback} />
-        <div style={{ minWidth: 0 }}>
-          <div style={headStyle}>{label}</div>
-          {hint && <div style={{ fontSize: 12, color: T.muted }}>{hint}</div>}
-          <div style={{ fontSize: 11, color: current ? T.good : T.faint, marginTop: 4 }}>{current ? 'Custom image set' : 'Using default'}</div>
+  const single = ({ k, label, hint, folder, current, fallback, focal }) => (
+    <div style={card}>
+      <div style={{ display: 'flex', gap: 16, alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', gap: 16, alignItems: 'center', minWidth: 0 }}>
+          <Thumb src={current || fallback} />
+          <div style={{ minWidth: 0 }}>
+            <div style={headStyle}>{label}</div>
+            {hint && <div style={{ fontSize: 12, color: T.muted }}>{hint}</div>}
+            <div style={{ fontSize: 11, color: current ? T.good : T.faint, marginTop: 4 }}>{current ? 'Custom image set' : 'Using default'}</div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
+          <PickButton label={current ? 'Replace' : 'Upload'} busy={busy === k} onFile={(f) => upload(k, folder, f, (url) => apply({ [k]: url }))} />
+          {current && <button onClick={() => apply({ [k]: null })} style={linkBtn}>Reset to default</button>}
         </div>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
-        <PickButton label={current ? 'Replace' : 'Upload'} busy={busy === k} onFile={(f) => upload(k, folder, f, (url) => apply({ [k]: url }))} />
-        {current && <button onClick={() => apply({ [k]: null })} style={linkBtn}>Reset to default</button>}
-      </div>
+      {focal && current && <FocalPicker url={current} aspect={focal} pos={posOf(current)} onChange={(v) => setPos(current, v)} />}
     </div>
   );
 
@@ -108,10 +157,8 @@ export default function SiteImages() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 14 }}>
           {heroList.map((src, i) => (
             <div key={src + i} style={{ border: `1px solid ${T.line}`, padding: 10, background: T.card }}>
-              <div style={{ aspectRatio: '16 / 9', background: T.bg, border: `1px solid ${T.line}`, overflow: 'hidden', marginBottom: 8 }}>
-                <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} onError={(e) => { e.target.style.display = 'none'; }} />
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+              <FocalPicker url={src} aspect="16 / 9" pos={posOf(src)} onChange={(v) => setPos(src, v)} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginTop: 8 }}>
                 <PickButton label="Replace" busy={busy === `hero-${i}`} onFile={(f) => upload(`hero-${i}`, 'site/hero', f, (url) => { const a = heroList.slice(); a[i] = url; setHero(a); })} />
                 <button onClick={() => setHero(heroList.filter((_, j) => j !== i))} style={linkBtn}>Remove</button>
               </div>
@@ -129,10 +176,8 @@ export default function SiteImages() {
           const cur = tileUrl(t.cat);
           return (
             <div key={t.cat} style={{ border: `1px solid ${T.line}`, padding: 12, background: T.panel }}>
-              <div style={{ aspectRatio: '3 / 4', background: T.card, border: `1px solid ${T.line}`, overflow: 'hidden', marginBottom: 10 }}>
-                <img src={cur || t.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} onError={(e) => { e.target.style.display = 'none'; }} />
-              </div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: T.ink, marginBottom: 8 }}>{t.title}</div>
+              <FocalPicker url={cur || t.img} aspect="3 / 4" pos={posOf(cur || t.img)} onChange={(v) => setPos(cur || t.img, v)} />
+              <div style={{ fontSize: 12, fontWeight: 600, color: T.ink, margin: '10px 0 8px' }}>{t.title}</div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
                 <PickButton label={cur ? 'Replace' : 'Upload'} busy={busy === `tile-${t.cat}`} onFile={(f) => upload(`tile-${t.cat}`, 'site/tiles', f, (url) => setTile(t.cat, url))} />
                 {cur && <button onClick={() => resetTile(t.cat)} style={linkBtn}>Reset</button>}
@@ -143,9 +188,9 @@ export default function SiteImages() {
       </div>
 
       <h3 style={{ ...headStyle, marginTop: 24, color: T.muted }}>Banners &amp; portrait</h3>
-      {single({ k: 'homeBanner', label: 'Home “Order Now” banner', hint: 'Full-width banner near the foot of the home page.', folder: 'site/banners', current: settings.homeBanner, fallback: siteImg('banner12.jpg') })}
-      {single({ k: 'pageBanner', label: 'Default page banner', hint: 'Breadcrumb banner on Catalogue, Contact, Order, etc.', folder: 'site/banners', current: settings.pageBanner, fallback: siteImg('banner33.jpg') })}
-      {single({ k: 'aboutBanner', label: 'About page banner', hint: 'Banner at the top of the About page.', folder: 'site/banners', current: settings.aboutBanner, fallback: siteImg('banner31.jpg') })}
+      {single({ k: 'homeBanner', label: 'Home “Order Now” banner', hint: 'Full-width banner near the foot of the home page.', folder: 'site/banners', current: settings.homeBanner, fallback: siteImg('banner12.jpg'), focal: '3 / 1' })}
+      {single({ k: 'pageBanner', label: 'Default page banner', hint: 'Breadcrumb banner on Catalogue, Contact, Order, etc.', folder: 'site/banners', current: settings.pageBanner, fallback: siteImg('banner33.jpg'), focal: '3 / 1' })}
+      {single({ k: 'aboutBanner', label: 'About page banner', hint: 'Banner at the top of the About page.', folder: 'site/banners', current: settings.aboutBanner, fallback: siteImg('banner31.jpg'), focal: '3 / 1' })}
       {single({ k: 'tashiPhoto', label: 'Tashi Mannox portrait', hint: 'Portrait on the Tashi Mannox collaboration page.', folder: 'site/tashi', current: settings.tashiPhoto, fallback: siteImg('Tashi-Mannox.jpg') })}
     </div>
   );
