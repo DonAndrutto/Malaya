@@ -1,5 +1,17 @@
 [
   {
+    "sku": "4022A.6G",
+    "code": "4022A.6G",
+    "name": "Oval Malaya Aquamarine Ring 14K White Gold gold 2.54g",
+    "category": "Rings",
+    "material": "White Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 575.34,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "4473A",
     "code": "4473A",
     "name": "",
@@ -26,7 +38,7 @@
   {
     "sku": "B002-S",
     "code": "B002",
-    "name": "1 skull bracelet silver",
+    "name": "One Laughing Skull Silver Macrame Bracelet, 2.65g",
     "category": "Bracelets",
     "material": "Silver",
     "qty": 2,
@@ -38,19 +50,19 @@
   {
     "sku": "B002-YG18",
     "code": "B002",
-    "name": "",
+    "name": "One Laughing Skull Yellow Gold 18k, Black Diamonds, Macrame Bracelet, 6.99g",
     "category": "Bracelets",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1328.77,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "B003-S",
     "code": "B003",
-    "name": "5 skull bracelet silver",
+    "name": "Five Laughing Skulls Silver Macrame Bracelet, black diamonds, adjustable",
     "category": "Bracelets",
     "material": "Silver",
     "qty": 1,
@@ -74,19 +86,19 @@
   {
     "sku": "B003-YG18",
     "code": "B003",
-    "name": "",
+    "name": "Five Laughing Skulls, Macrame Bracelet 15 black diamonds .10cts 18k solid gold 22.22g",
     "category": "Bracelets",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 4246.58,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "B004-S",
     "code": "B004",
-    "name": "Single Small Double Dorje Bead Bracelet, Silver",
+    "name": "Small single bead, double dorje macrame bracelet, silver, CZ",
     "category": "Bracelets",
     "material": "Silver",
     "qty": 1,
@@ -110,48 +122,48 @@
   {
     "sku": "B004-YG18",
     "code": "B004",
-    "name": "",
+    "name": "Eternal Knot 18k yellow gold bangle Mid Size 21.28g",
     "category": "Bracelets",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 4054.79,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "B004-YGP",
     "code": "B004",
-    "name": "",
+    "name": "Small Double Dorje Single Bead Macrame Bracelet, Silver Gold Plated",
     "category": "Bracelets",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 109.59,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "B005-S",
     "code": "B005",
-    "name": "5 Bead Small Double Dorje Bracelet Silver",
+    "name": "Small five bead, double dorje macrame bracelet, silver",
     "category": "Bracelets",
     "material": "Silver",
     "qty": 1,
     "cost": 67.62,
-    "retail": 260.27,
+    "retail": 410.96,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "B005-YGP",
     "code": "B005",
-    "name": "",
+    "name": "Small five bead, double dorje macrame bracelet, silver gold plated",
     "category": "Bracelets",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 438.36,
     "productId": null,
     "productIds": []
   },
@@ -182,12 +194,184 @@
   {
     "sku": "B007-YGP",
     "code": "B007",
-    "name": "Eight Auspicious Symbols Bracelet, YGP",
+    "name": "Eight Auspicious Symbols Bracelet, Silver, Gold plating 14.5g",
     "category": "Bracelets",
     "material": "Gold Plated",
     "qty": 2,
     "cost": null,
     "retail": 397.26,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B008-S",
+    "code": "B008",
+    "name": "Silver, Oxidized Vajra Clasp Black Leather Bracelet",
+    "category": "Bracelets",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 150.68,
+    "productId": "p011",
+    "productIds": [
+      "p011"
+    ]
+  },
+  {
+    "sku": "B008B-S-BLK",
+    "code": "B008B",
+    "name": "Silver Polished Vajra Clasp Bracelet, sting-ray leather, Noir color",
+    "category": "Bracelets",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 246.58,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B008B-S-SNOW",
+    "code": "B008B",
+    "name": "Silver Polished Vajra Clasp Bracelet, sting-ray leather, Natural color",
+    "category": "Bracelets",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 246.58,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B008B-TT-BLK",
+    "code": "B008B",
+    "name": "Silver Oxidized Vajra Clasp Bracelet what 18k solid gold vajra, sting-ray leather, Noir color",
+    "category": "Bracelets",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 630.14,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B008B-TT-SNOW",
+    "code": "B008B",
+    "name": "Silver Oxidized Vajra Clasp Bracelet what 18k solid gold vajra, sting-ray leather, SNOW color",
+    "category": "Bracelets",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 589.04,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B009-RG14",
+    "code": "B009",
+    "name": "Rose 14k Gold leather bracelet 14k rose gold 22.36g",
+    "category": "Bracelets",
+    "material": "Rose Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 2602.74,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B009-S-BLU",
+    "code": "B009",
+    "name": "Silver, Polished Vajra Clasp, Blue Leather Bracelet",
+    "category": "Bracelets",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 150.68,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B009-S-CHAIN",
+    "code": "B009",
+    "name": "Silver Polished Chain Vajra Clasp Bracelet",
+    "category": "Bracelets",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 342.47,
+    "productId": "p010",
+    "productIds": [
+      "p010"
+    ]
+  },
+  {
+    "sku": "B009-S-PNK",
+    "code": "B009",
+    "name": "Silver, Polished Vajra Clasp, Pink Leather Bracelet",
+    "category": "Bracelets",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 150.68,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B009-S-TAN",
+    "code": "B009",
+    "name": "Silver, Polished Vajra Clasp Tan Leather Bracelet",
+    "category": "Bracelets",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 150.68,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B009-S-TAN-OX",
+    "code": "B009",
+    "name": "Silver, Oxidized Vajra Clasp Tan Leather Bracelet",
+    "category": "Bracelets",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 150.68,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B009-S-WHITE",
+    "code": "B009",
+    "name": "Silver, Polished Vajra Clasp, White Leather Bracelet",
+    "category": "Bracelets",
+    "material": "White Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 150.68,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B009-YG14",
+    "code": "B009",
+    "name": "14k Yellow Gold Black Leather Vajra Clasp Bracelet 14k 31.6g",
+    "category": "Bracelets",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 3561.64,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B010-S",
+    "code": "B010",
+    "name": "Endless Knot Bracelet Silver 3.73g",
+    "category": "Bracelets",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 143.84,
     "productId": null,
     "productIds": []
   },
@@ -206,24 +390,24 @@
   {
     "sku": "B010-YG18",
     "code": "B010",
-    "name": "",
+    "name": "Endless Knot New Bracelet, YG18, 19cm, 4.64g",
     "category": "Bracelets",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 876.71,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "B010-YG18-DIA",
     "code": "B010",
-    "name": "",
+    "name": "Endless Knot New Bracelet, YG18 .20cts diamonds, 5.12g",
     "category": "Bracelets",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1082.19,
     "productId": null,
     "productIds": []
   },
@@ -252,6 +436,30 @@
     "productIds": []
   },
   {
+    "sku": "B013-YGP",
+    "code": "B013",
+    "name": "Vajra Chain Bracelet, Yellow Gold 14K, Medium, Flat 3 Prongs, 19cm, 6.64g (Gold plated)",
+    "category": "Bracelets",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": 136.99,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "B014-S-PQ",
+    "code": "B014",
+    "name": "Purple Milk Quartz Cabochon Bracelet, 5.39cts, CZ 0.23",
+    "category": "Bracelets",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 191.78,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "B015A-S",
     "code": "B015A",
     "name": "Continuous Vajras Chain Bracelet, Silver, 19cm (Female Size)",
@@ -266,24 +474,24 @@
   {
     "sku": "B015B-S",
     "code": "B015B",
-    "name": "",
+    "name": "Continuous Vajras Chain Bracelet, Silver, 23cm (male size)",
     "category": "Bracelets",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 219.18,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "B016-S",
     "code": "B016",
-    "name": "",
+    "name": "Endless Knot Chain Adjustable Bracelet, Silver 4.71g",
     "category": "Bracelets",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 68.49,
     "productId": null,
     "productIds": []
   },
@@ -314,60 +522,84 @@
   {
     "sku": "BA001-S",
     "code": "BA001",
-    "name": "Infinity edges bangle Bangle Silver",
+    "name": "Infinity edges bangle Silver 4.62g",
     "category": "Bangles",
     "material": "Silver",
     "qty": 2,
     "cost": 26.51,
-    "retail": 109.59,
+    "retail": 123.29,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BA001-YG14",
     "code": "BA001",
-    "name": "",
+    "name": "Infinity Edges Bangle, Solid 14k yellow gold 5.5g",
     "category": "Bangles",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 821.92,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BA002-S",
     "code": "BA002",
-    "name": "",
+    "name": "Infinity in middle stainless bangle Silver",
     "category": "Bangles",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 109.59,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BA002-YG14",
+    "code": "BA002",
+    "name": "Infinity in middle stainless bangle , Solid 14k Yellow gold, 5.2g",
+    "category": "Bangles",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 671.23,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BA002-YGP",
     "code": "BA002",
-    "name": "Infinity in middle stainless bangle YGP",
+    "name": "Infinity in middle stainless bangle , Yellow Gold Plated",
     "category": "Bangles",
     "material": "Gold Plated",
     "qty": 2,
     "cost": 27.88,
-    "retail": 109.59,
+    "retail": 123.29,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BA003-S",
+    "code": "BA003",
+    "name": "Solid “Dobchu” Vajra bangle silver 37.5g, clasp",
+    "category": "Bangles",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 301.37,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BA004-S",
     "code": "BA004",
-    "name": "",
+    "name": "Endless Knot bangle, Silver, smaller 13.89g",
     "category": "Bangles",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 301.37,
     "productId": null,
     "productIds": []
   },
@@ -384,6 +616,18 @@
     "productIds": []
   },
   {
+    "sku": "BA005-S",
+    "code": "BA005",
+    "name": "Vajra Bangle Silver, CZ 18.59g, regular size",
+    "category": "Bangles",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 410.96,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "BA005-S-CZ",
     "code": "BA005",
     "name": "",
@@ -396,6 +640,18 @@
     "productIds": []
   },
   {
+    "sku": "BA005-YGP",
+    "code": "BA005",
+    "name": "Vajra Bangle Gold Plated, CZ 19.14g",
+    "category": "Bangles",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": 438.36,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "BA005-YGP-CZ",
     "code": "BA005",
     "name": "",
@@ -404,6 +660,18 @@
     "qty": null,
     "cost": null,
     "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BA007-S",
+    "code": "BA007",
+    "name": "Flexible Double skull bangle black diamonds, Sterling Silver",
+    "category": "Bangles",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 260.27,
     "productId": null,
     "productIds": []
   },
@@ -446,31 +714,31 @@
   {
     "sku": "BR001-YGP",
     "code": "BR001",
-    "name": "",
+    "name": "Eight Auspicious Symbols Brooch, Round, Silver Gold Plated 21.3g",
     "category": "Brooches",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 273.97,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BR002-YGP",
     "code": "BR002",
-    "name": "",
+    "name": "Eight Auspicious Symbols Brooch, Elongated, Silver Gold Plated 17.7g",
     "category": "Brooches",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 301.37,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BR003-S",
     "code": "BR003",
-    "name": "Tam Syllable Brooch, Larger Silver",
+    "name": "Tam Syllable Brooch, Larger, Silver, 46mm 5.6g",
     "category": "Brooches",
     "material": "Silver",
     "qty": 2,
@@ -482,7 +750,7 @@
   {
     "sku": "BR003-YGP",
     "code": "BR003",
-    "name": "Tam brooch, Large, YGP",
+    "name": "Tam Syllable Brooch, Larger, Yellow Gold Plated, 46mm 5.5g",
     "category": "Brooches",
     "material": "Gold Plated",
     "qty": 2,
@@ -494,7 +762,7 @@
   {
     "sku": "BR003B-S",
     "code": "BR003B",
-    "name": "Tam Brooch Small, Silver",
+    "name": "Tam Syllable Brooch, Smaller, Silver, 37mm 2.7g",
     "category": "Brooches",
     "material": "Silver",
     "qty": 1,
@@ -506,7 +774,7 @@
   {
     "sku": "BR003B-YGP",
     "code": "BR003B",
-    "name": "Tam Brooch Small, YGP",
+    "name": "Tam Syllable Brooch, Smaller, Gold Plated, 37mm 2.7g",
     "category": "Brooches",
     "material": "Gold Plated",
     "qty": 1,
@@ -518,31 +786,31 @@
   {
     "sku": "BR004-S",
     "code": "BR004",
-    "name": "",
+    "name": "Hung Syllable Brooch, Larger, 53mm, Silver 7.6g",
     "category": "Brooches",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 123.29,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BR004-YGP",
     "code": "BR004",
-    "name": "",
+    "name": "Hung Syllable Brooch, 53mm, Larger, Yellow Gold Plated, 7.6g",
     "category": "Brooches",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 136.99,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BR004B-S",
     "code": "BR004B",
-    "name": "Hung Syllable Brooch, Smaller Silver",
+    "name": "Hung Syllable Brooch, Smaller, Silver , 37mm 3.8g",
     "category": "Brooches",
     "material": "Silver",
     "qty": 1,
@@ -564,6 +832,18 @@
     "productIds": []
   },
   {
+    "sku": "BR005",
+    "code": "BR005",
+    "name": "Dhi Syllable Brooch, Silver, Larger, 55mm 10.2g",
+    "category": "Brooches",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 136.99,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "BR005-S",
     "code": "BR005",
     "name": "",
@@ -578,55 +858,55 @@
   {
     "sku": "BR005-YGP",
     "code": "BR005",
-    "name": "",
+    "name": "Dhi Syllable Brooch, Gold Plated, Larger, 55mm 10.37g",
     "category": "Brooches",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 150.68,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BR005B-S",
     "code": "BR005B",
-    "name": "",
+    "name": "Dhi Syllable Brooch, Silver Smaller, 35mm",
     "category": "Brooches",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 89.04,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BR005B-YGP",
     "code": "BR005B",
-    "name": "",
+    "name": "Dhi Syllable Brooch, Gold Plated, Smaller, 35mm",
     "category": "Brooches",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 102.74,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BR006-RGP",
     "code": "BR006",
-    "name": "",
+    "name": "Hri Syllable Brooch Larger Rose Gold Plated, 43mm 9.19g",
     "category": "Brooches",
     "material": "Rose Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 136.99,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BR006-S",
     "code": "BR006",
-    "name": "Hri Syllable Brooch Larger, Silver",
+    "name": "Hri Syllable Brooch Larger, Silver, 43mm",
     "category": "Brooches",
     "material": "Silver",
     "qty": 2,
@@ -638,55 +918,79 @@
   {
     "sku": "BR006-YGP",
     "code": "BR006",
-    "name": "",
+    "name": "Hri Syllable Brooch Larger Gold Plated, 43mm, 9.21g",
     "category": "Brooches",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 136.99,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BR006B-S",
     "code": "BR006B",
-    "name": "",
+    "name": "Hri Syllable Brooch Silver, Smaller, 36mm 3.9g",
     "category": "Brooches",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 75.34,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR006B-YGP",
+    "code": "BR006B",
+    "name": "Hri Syllable Brooch, Gold Plated, Smaller, 36mm 3.9g",
+    "category": "Brooches",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": 95.89,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR007-RGP",
+    "code": "BR007",
+    "name": "Bam Syllable Brooch, Rose Gold Plated 28mm, 3g",
+    "category": "Brooches",
+    "material": "Rose Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 68.49,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BR007-S",
     "code": "BR007",
-    "name": "",
+    "name": "Bam Syllable Brooch, Silver, 28mm 3g",
     "category": "Brooches",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 61.64,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BR007-YGP",
     "code": "BR007",
-    "name": "",
+    "name": "Bam Syllable Brooch, Yellow Gold Plated 28mm, 3g",
     "category": "Brooches",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 68.49,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BR008-S",
     "code": "BR008",
-    "name": "Ah Syllable Brooch, Silver",
+    "name": "Ah Syllable Brooch, Silver 4g",
     "category": "Brooches",
     "material": "Silver",
     "qty": 2,
@@ -698,12 +1002,24 @@
   {
     "sku": "BR008-YGP",
     "code": "BR008",
-    "name": "Ah Syllable Brooch, Gold Plated",
+    "name": "Ah Syllable Brooch, Gold Plated 4g",
     "category": "Brooches",
     "material": "Gold Plated",
     "qty": 3,
     "cost": null,
     "retail": 82.19,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BR009",
+    "code": "BR009",
+    "name": "Om Syllable Brooch, Silver, 26mm 2.8g",
+    "category": "Brooches",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 68.49,
     "productId": null,
     "productIds": []
   },
@@ -722,19 +1038,19 @@
   {
     "sku": "BR009-YGP",
     "code": "BR009",
-    "name": "",
+    "name": "Om Syllable Brooch, Yellow Gold Plated, 26mm 2.8g",
     "category": "Brooches",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 82.19,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BR010-S",
     "code": "BR010",
-    "name": "Dzam Syllable Brooch, Silver",
+    "name": "Dzam Syllable Brooch, Silver 3.38g",
     "category": "Brooches",
     "material": "Silver",
     "qty": 1,
@@ -746,7 +1062,7 @@
   {
     "sku": "BR010-YGP",
     "code": "BR010",
-    "name": "Dzam Syllable Brooch,YGP",
+    "name": "Dzam Syllable Brooch, Gold Plated 3.39g",
     "category": "Brooches",
     "material": "Gold Plated",
     "qty": 1,
@@ -758,7 +1074,7 @@
   {
     "sku": "BR011-S",
     "code": "BR011",
-    "name": "Double Vajra Brooch, Silver, CZ",
+    "name": "Double Vajra Brooch, Silver, CZ, 5.25g",
     "category": "Brooches",
     "material": "Silver",
     "qty": 1,
@@ -770,7 +1086,7 @@
   {
     "sku": "BR011-YGP",
     "code": "BR011",
-    "name": "Double Vajra Brooch, YGP, CZ",
+    "name": "Double Vajra Brooch, YGP, CZ, 5.15g",
     "category": "Brooches",
     "material": "Gold Plated",
     "qty": 2,
@@ -782,252 +1098,336 @@
   {
     "sku": "BR012-S",
     "code": "BR012",
-    "name": "",
+    "name": "Blue Poppy Silver Enamel Brooch National Flower",
     "category": "Brooches",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 424.66,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "C003-S",
     "code": "C003",
-    "name": "",
+    "name": "Vajra and Bell Mala Counters, Large, Silver, Rhodium",
     "category": "Accessories",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 219.18,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "C004-RGP",
+    "code": "C004",
+    "name": "Vajra and Bell Mala counters, Rose/Yellow Gold Plated",
+    "category": "Accessories",
+    "material": "Rose Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 232.88,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "C004-S",
     "code": "C004",
-    "name": "",
+    "name": "Vajra and Bell Mala Counters, Silver, Silver, Rhodium",
     "category": "Accessories",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 164.38,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "C004-YG14",
     "code": "C004",
-    "name": "",
+    "name": "Vajra and Bell Mala Counters, Yellow 14k Gold, 8.87g",
     "category": "Accessories",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1712.33,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "C005-RGP",
     "code": "C005",
-    "name": "",
+    "name": "Phurba mala counter Rose Gold Plated, 3.81g",
     "category": "Accessories",
     "material": "Rose Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 109.59,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "C005-S",
     "code": "C005",
-    "name": "",
+    "name": "Phurba mala counter Silver, Rhodium, 3.81g",
     "category": "Accessories",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 82.19,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "C005-YG14",
     "code": "C005",
-    "name": "",
+    "name": "Mala Counter - Phurba, 14k Yellow Gold, 4.78g",
     "category": "Accessories",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 821.92,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "C006-RGP",
     "code": "C006",
-    "name": "",
+    "name": "Drigug mala tally counter Rose Gold Plated, 3.82g",
     "category": "Accessories",
     "material": "Rose Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 109.59,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "C006-S",
     "code": "C006",
-    "name": "",
+    "name": "Drigug mala tally counter Silver, Rhodium, 3.82g",
     "category": "Accessories",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 82.19,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "C006-YG14",
     "code": "C006",
-    "name": "",
+    "name": "Mala Counter - Drigug, Yellow 14k Gold, 4.73g",
     "category": "Accessories",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 821.92,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "C007-S",
     "code": "C007",
-    "name": "",
+    "name": "Phurba mala counter, Large Silver, Rhodium, 3.81g",
     "category": "Accessories",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 109.59,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "C007-YGP",
     "code": "C007",
-    "name": "",
+    "name": "Mala Counter - Phurba, Large. Yellow Gold Plated 8.48g, (Vermeil Gold)",
     "category": "Accessories",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 150.68,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "C008-S",
     "code": "C008",
-    "name": "",
+    "name": "Drigug mala tally counter, Large Silver, Rhodium, 8.44g",
     "category": "Accessories",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 109.59,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "C008-YGP",
     "code": "C008",
-    "name": "",
+    "name": "Mala Counter - Drigug, Large. Yellow Gold Plated 8.47g, (Vermeil Gold)",
     "category": "Accessories",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 150.68,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CA040-YG14",
+    "code": "CA040",
+    "name": "CA040 Yellow 14k Gold chain, 2.66g",
+    "category": "Chains",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 397.26,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CC028-RG14-45",
+    "code": "CC028",
+    "name": "Chain 14k Rose gold, 45cm, spring-lock",
+    "category": "Chains",
+    "material": "Rose Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 219.18,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CC028-YG14",
+    "code": "CC028",
+    "name": "Gold 14k Chain CC028, 38-42-45cm, 1.64g",
+    "category": "Chains",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 246.58,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CC3100",
+    "code": "CC3100",
+    "name": "Silver Chain CC3100, 45cm, 1.47g",
+    "category": "Chains",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 34.25,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CH040-YGP",
+    "code": "CH040",
+    "name": "Chain CH040 Silver Yellow Gold Plated",
+    "category": "Chains",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": 54.79,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CH060-S",
+    "code": "CH060",
+    "name": "Silver Chain, 45cm CH060, 7.31g",
+    "category": "Chains",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 47.95,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "CL002-S",
     "code": "CL002",
-    "name": "",
+    "name": "Double Vajra Full Diamond Cufflinks Silver, CZ 14g",
     "category": "Cufflinks",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 219.18,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "CL002-YGP",
     "code": "CL002",
-    "name": "",
+    "name": "Double Vajra Full Diamond Cufflinks Gold Plated, CZ 14.46g",
     "category": "Cufflinks",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 232.88,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "CL003-YGP",
     "code": "CL003",
-    "name": "",
+    "name": "Malaya Emblem Cufflinks, Yellow Gold Plated, CZ Diamonds",
     "category": "Cufflinks",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 232.88,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "CL004-S",
     "code": "CL004",
-    "name": "",
+    "name": "Sun and Moon Tashi Mannox Cufflinks Silver 13.64g",
     "category": "Cufflinks",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 260.27,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "CL004-YGP",
     "code": "CL004",
-    "name": "",
+    "name": "Sun and Moon Tashi Mannox Cufflinks Gold Plated 13.8g",
     "category": "Cufflinks",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 287.67,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "CL005-S",
     "code": "CL005",
-    "name": "",
+    "name": "Double Dorje Cufflink, Silver 10.45g",
     "category": "Cufflinks",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 178.08,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "CL005-S-CZ",
     "code": "CL005",
-    "name": "",
+    "name": "Double Dorje Cufflink, Silver, CZ Diamonds 10.76g",
     "category": "Cufflinks",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 184.93,
     "productId": "p123",
     "productIds": [
       "p123"
@@ -1036,60 +1436,84 @@
   {
     "sku": "CL005-YGP",
     "code": "CL005",
-    "name": "",
+    "name": "Double Dorje Cufflink, Yellow Gold Plated 10.51g",
     "category": "Cufflinks",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 191.78,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "CL005-YGP-CZ",
     "code": "CL005",
-    "name": "",
+    "name": "Double Dorje Cufflink, YGP, CZ 10.49g",
     "category": "Cufflinks",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 198.63,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "CL006-S",
     "code": "CL006",
-    "name": "",
+    "name": "Double Dorje Cufflink, Enamel, Silver 10.67g",
     "category": "Cufflinks",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 198.63,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "CL006-S-CZ",
+    "code": "CL006",
+    "name": "Double Dorje Cufflink, Enamel, Silver, CZ 10.69g",
+    "category": "Cufflinks",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 205.48,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "CL006-YGP",
     "code": "CL006",
-    "name": "",
+    "name": "Double Dorje Cufflink, Enamel, Yellow Gold Plated 10.36g",
     "category": "Cufflinks",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 212.33,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "CL006-YGP-CZ",
     "code": "CL006",
-    "name": "",
+    "name": "Double Dorje Cufflink, Enamel, YGP, CZ 10.59g",
     "category": "Cufflinks",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 219.18,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E005-YGP-CZ",
+    "code": "E005",
+    "name": "AH Syllable Earrings, Yellow Gold plated, CZ Diamonds",
+    "category": "Earrings",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": 136.99,
     "productId": null,
     "productIds": []
   },
@@ -1108,7 +1532,7 @@
   {
     "sku": "E006-S",
     "code": "E006",
-    "name": "Small Endless Knot Earrings, Silver",
+    "name": "Infinity Knot Hanging Earrings, Silver",
     "category": "Earrings",
     "material": "Silver",
     "qty": 3,
@@ -1130,14 +1554,26 @@
     "productIds": []
   },
   {
+    "sku": "E006-YG18",
+    "code": "E006",
+    "name": "Infinity Knot Hanging Earrings, 18k Yellow Gold 6.95g",
+    "category": "Earrings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1328.77,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "E006-YGP",
     "code": "E006",
-    "name": "",
+    "name": "Infinity Knot Hanging Earrings, Gold Plated 4.07g",
     "category": "Earrings",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 102.74,
     "productId": "p120",
     "productIds": [
       "p120"
@@ -1146,7 +1582,7 @@
   {
     "sku": "E006B-S",
     "code": "E006B",
-    "name": "Endless Knot Earrings Large, Silver",
+    "name": "Endless Knot Earrings Large, Silver 6.2g",
     "category": "Earrings",
     "material": "Silver",
     "qty": 2,
@@ -1162,7 +1598,7 @@
   {
     "sku": "E006B-YGP",
     "code": "E006B",
-    "name": "Endless Knot Earrings Large, YGP",
+    "name": "Endless Knot Earrings Large, YGP 6.23g",
     "category": "Earrings",
     "material": "Gold Plated",
     "qty": 2,
@@ -1174,34 +1610,46 @@
   {
     "sku": "E007-YG14",
     "code": "E007",
-    "name": "",
+    "name": "Double Dorje Stud Earrings, Single Diamond, .01cts 14k Yellow Gold 2.36g",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 410.96,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E008-BS-YG14",
     "code": "E008",
-    "name": "",
+    "name": "Double Dorje Stud Earrings, 29 Blue Sapphires, .2cts 14k Yellow Gold 4.3g",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1136.99,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E008-DIA-YG14",
     "code": "E008",
-    "name": "Double Dorje Stud Earrings, 29 White Diamonds, .197cts 14k Yellow Gold",
+    "name": "Double Dorje Stud Earrings, 14k gold, 4.33g: 29 White Diamonds, .197cts",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": 1.5,
+    "cost": null,
+    "retail": 1136.99,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E008-GE-YG14",
+    "code": "E008",
+    "name": "Double Dorje Stud Earrings, 29 Green Emeralds, .2cts 14k Yellow Gold 4.33g",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
     "cost": null,
     "retail": 1136.99,
     "productId": null,
@@ -1222,108 +1670,120 @@
   {
     "sku": "E008-RR-YG14",
     "code": "E008",
-    "name": "",
+    "name": "Double Dorje Stud Earrings, 14k Yellow Gold, 29 red rubies .2cts",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1136.99,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E009-S",
+    "code": "E009",
+    "name": "AH Syllable Stud Earrings silver 1.16g",
+    "category": "Earrings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 34.25,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E009-YG14",
     "code": "E009",
-    "name": "",
+    "name": "AH Syllable Stud Earrings 14K Yellow Gold, 1.42g",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 246.58,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E010A-YG14",
     "code": "E010A",
-    "name": "",
+    "name": "White Enamel OM syllable stud earrings 14K yellow gold, 1.95g",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 287.67,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E010B-YG14",
     "code": "E010B",
-    "name": "",
+    "name": "Blue Enamel HUNG syllable stud earrings 14K yellow gold, 1.88g",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 287.67,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E010C-YG14",
     "code": "E010C",
-    "name": "",
+    "name": "Green Enamel TAM syllable stud earrings 14K yellow gold, 1.83g",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 287.67,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E010D-YG14",
     "code": "E010D",
-    "name": "",
+    "name": "Red Enamel BAM syllable stud earrings 14K yellow gold, 1.93g",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 287.67,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E011AA-YG18",
     "code": "E011AA",
-    "name": "",
+    "name": "Vajra Earrings , 2 diamonds .026cts 18 Yellow Gold 6.84g",
     "category": "Earrings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1958.9,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E011AB-YG18",
     "code": "E011AB",
-    "name": "",
+    "name": "Vajra and Bell Earrings, 3 diamonds, .039cts 18 Yellow Gold 7.25g",
     "category": "Earrings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 2082.19,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E012-YGP",
     "code": "E012",
-    "name": "",
+    "name": "Large Melong earrings, silver, gold plated, CZ Diamonds 14.6",
     "category": "Earrings",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 178.08,
     "productId": "p001",
     "productIds": [
       "p001",
@@ -1333,60 +1793,86 @@
   {
     "sku": "E013-YG14",
     "code": "E013",
-    "name": "",
+    "name": "Endless Band Earrings, Solid Gold 14k, 19mm 6.74g",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1150.68,
     "productId": null,
     "productIds": []
   },
   {
+    "sku": "E014-YG14",
+    "code": "E014",
+    "name": "Tam Syllable earrings Solid 14k Gold, 7.79g 2 diamonds (.025cts)",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1931.51,
+    "productId": "p035",
+    "productIds": [
+      "p035"
+    ]
+  },
+  {
     "sku": "E014-YG18",
     "code": "E014",
-    "name": "",
+    "name": "Tam Syllable earrings 18k gold, 9.39g",
     "category": "Earrings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 2856.16,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E015-S",
+    "code": "E015",
+    "name": "Hung Syllable Earrings Silver",
+    "category": "Earrings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 82.19,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E015-YG14",
     "code": "E015",
-    "name": "",
+    "name": "Hung Syllable Earrings Solid 14k Gold, 4.19g:",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 712.33,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E015-YGP",
     "code": "E015",
-    "name": "",
+    "name": "Hung Syllable Earrings Gold Plated 3.35g",
     "category": "Earrings",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 95.89,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E016-14K-TQ",
     "code": "E016",
-    "name": "",
+    "name": "Bumpa Earrings, Turquoise, 14K Gold, clasp 7.15g, Diamonds .038cts 8.28g",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1424.66,
     "productId": "p025",
     "productIds": [
       "p025",
@@ -1408,19 +1894,19 @@
   {
     "sku": "E017-YG14-TQ",
     "code": "E017",
-    "name": "",
+    "name": "Turquoise 14K Gold Earrings, Gold 9.1 Diamonds .21cts Total Weight 13.72g",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 2219.18,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E018-S-BCZ",
     "code": "E018",
-    "name": "5 Pronged Silver Vajra Earring, Black Diamonds",
+    "name": "Five pronged vajra earrings silver black diamonds 6g",
     "category": "Earrings",
     "material": "Silver",
     "qty": 1,
@@ -1431,6 +1917,18 @@
       "p098",
       "p114"
     ]
+  },
+  {
+    "sku": "E018BB-S-BD",
+    "code": "E018BB",
+    "name": "Five Pronged Bell EarringsSilver Black CZ 6.25g",
+    "category": "Earrings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 410.96,
+    "productId": null,
+    "productIds": []
   },
   {
     "sku": "E019BB-S-BD",
@@ -1447,75 +1945,89 @@
   {
     "sku": "E021-YG18",
     "code": "E021",
-    "name": "",
+    "name": "Hanging Endless Knot Earrings 18k Yellow Gold 1.3cts diamonds 13.34g",
     "category": "Earrings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 3595.89,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E023-YG14-TQ",
     "code": "E023",
-    "name": "",
+    "name": "14K Blue Sapphire & Turquoise, Double Dorje, Endless Knot Earrings. Total weight 10.07g, Gold weight 6.44g",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1575.34,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E025-S",
     "code": "E025",
-    "name": "",
+    "name": "Tam Earrings, Small, Silver",
     "category": "Earrings",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 82.19,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E025-YG18",
     "code": "E025",
-    "name": "",
+    "name": "Tam Earrings, Small, Yellow 18k Gold, 3.92g",
     "category": "Earrings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1123.29,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E025-YGP",
     "code": "E025",
-    "name": "",
+    "name": "Tam Earrings, Small, Yellow Gold Plated",
     "category": "Earrings",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 95.89,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E026-S",
     "code": "E026",
-    "name": "",
+    "name": "Malaya Logo Earrings, Silver, CZ",
     "category": "Earrings",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 61.64,
     "productId": "p012",
     "productIds": [
       "p012"
+    ]
+  },
+  {
+    "sku": "E026-YG14",
+    "code": "E026",
+    "name": "Malaya Logo Earrings, Yellow 14k Gold, diamond 2.36g .025 CTS.",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 356.16,
+    "productId": "p122",
+    "productIds": [
+      "p122"
     ]
   },
   {
@@ -1531,14 +2043,26 @@
     "productIds": []
   },
   {
+    "sku": "E026-YG18",
+    "code": "E026",
+    "name": "Malaya Logo Earrings, Yellow 18k Gold, diamond 2.74g .025 CTS.",
+    "category": "Earrings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 547.95,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "E026-YGP",
     "code": "E026",
-    "name": "",
+    "name": "Malaya Logo Earrings, Yellow Gold Plated, CZ Diamonds",
     "category": "Earrings",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 68.49,
     "productId": "p101",
     "productIds": [
       "p101"
@@ -1547,7 +2071,7 @@
   {
     "sku": "E027-S",
     "code": "E027",
-    "name": "Endless Knot Stud Earrings, Silver",
+    "name": "Endless Knot Stud Earrings, Silver, omega clip",
     "category": "Earrings",
     "material": "Silver",
     "qty": 5,
@@ -1559,36 +2083,48 @@
   {
     "sku": "E027-YGP",
     "code": "E027",
-    "name": "Endless Knot Stud Earrings, YGP",
+    "name": "Endless Knot Stud Earrings, Yellow Gold Plated, omega clip",
     "category": "Earrings",
     "material": "Gold Plated",
     "qty": 5,
     "cost": 28.44,
-    "retail": 95.89,
+    "retail": 102.74,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E028-S",
     "code": "E028",
-    "name": "",
+    "name": "Phurba Earrings Smaller, Silver, clip 39mm",
     "category": "Earrings",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 123.29,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E028-YG18",
     "code": "E028",
-    "name": "",
+    "name": "Phurba Earrings Larger, GOLD 18K, 14.05g 47mm",
     "category": "Earrings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 2684.93,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E029-YG14-TQ",
+    "code": "E029",
+    "name": "Turquoise Earrings. Diamonds: 0.45 CTS. 14k gold: 4.61g, total weight: 5.86g turquoise: 6.27cts",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1424.66,
     "productId": null,
     "productIds": []
   },
@@ -1607,12 +2143,12 @@
   {
     "sku": "E030-YG14",
     "code": "E030",
-    "name": "",
+    "name": "Endless Knot Earrings, Larger GOLD 14K, 23mm, 9.05g",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1547.95,
     "productId": "p115",
     "productIds": [
       "p115"
@@ -1621,7 +2157,7 @@
   {
     "sku": "E032-S-CZ",
     "code": "E032",
-    "name": "Endless Knot Earrings, Silver, CZ",
+    "name": "Endless Knot Earrings Silver, CZ",
     "category": "Earrings",
     "material": "Silver",
     "qty": 2,
@@ -1636,24 +2172,24 @@
   {
     "sku": "E033-S-GREEN",
     "code": "E033",
-    "name": "",
+    "name": "Tam Syllable Earrings, Silver, Green Enamel",
     "category": "Earrings",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 82.19,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E034-S-BLUE",
     "code": "E034",
-    "name": "",
+    "name": "Hung Syllable Earrings, Silver, Blue Enamel",
     "category": "Earrings",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 82.19,
     "productId": null,
     "productIds": []
   },
@@ -1672,7 +2208,7 @@
   {
     "sku": "E035-YGP-CZ",
     "code": "E035",
-    "name": "Om syllable earrings, YGP, CZ",
+    "name": "Om syllable earrings, Vermeil Gold, CZ",
     "category": "Earrings",
     "material": "Gold Plated",
     "qty": 1,
@@ -1688,31 +2224,31 @@
   {
     "sku": "E036-S",
     "code": "E036",
-    "name": "",
+    "name": "Drigug, Curved Knife Earrings, Silver",
     "category": "Earrings",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 123.29,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E037-S-CZ",
     "code": "E037",
-    "name": "",
+    "name": "Tam Earrings, Silver, CZ",
     "category": "Earrings",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 178.08,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E038-S-CZ",
     "code": "E038",
-    "name": "Double Dorje Earrings, Silver, CZ",
+    "name": "Double Dorje Earrings, Silver, CZ, 3.13g",
     "category": "Earrings",
     "material": "Silver",
     "qty": 2,
@@ -1724,12 +2260,12 @@
   {
     "sku": "E038-YGP-CZ",
     "code": "E038",
-    "name": "",
+    "name": "Double Dorje Earrings, Yellow Gold Plated CZ, 3.03g",
     "category": "Earrings",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 95.89,
     "productId": null,
     "productIds": []
   },
@@ -1748,12 +2284,12 @@
   {
     "sku": "E039-YG18-DIA",
     "code": "E039",
-    "name": "",
+    "name": "Long Hanging Endless Knot Earrings, Yellow Gold 18k, 7.56g 0.64cts Diamonds",
     "category": "Earrings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1479.45,
     "productId": "p124",
     "productIds": [
       "p124"
@@ -1762,24 +2298,24 @@
   {
     "sku": "E039-YGP-CZ",
     "code": "E039",
-    "name": "",
+    "name": "Long Hanging Endless Knot Earrings, Yellow Gold Plated, CZ",
     "category": "Earrings",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 164.38,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E040-YG14-DIA",
     "code": "E040",
-    "name": "",
+    "name": "Double Dorje Earrings, Clover, Diamonds 0.37 CTS. Gold 14k: 6.85g, Total: 8.34g",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1767.12,
     "productId": "p064",
     "productIds": [
       "p064"
@@ -1800,12 +2336,12 @@
   {
     "sku": "E042-S-ENAMEL",
     "code": "E042",
-    "name": "",
+    "name": "Blue Poppy, Earrings Sterling Silver, Hand Applied Enamel, 6.26g",
     "category": "Earrings",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 376.71,
     "productId": "p127",
     "productIds": [
       "p127"
@@ -1826,12 +2362,12 @@
   {
     "sku": "E045-YG18-COR",
     "code": "E045",
-    "name": "",
+    "name": "Life Force Coral Gold Earrings with Diamonds 1.01 CTS. YG18: 16.71g, Total: 19.48g",
     "category": "Earrings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 4602.74,
     "productId": "p125",
     "productIds": [
       "p125",
@@ -1839,26 +2375,38 @@
     ]
   },
   {
-    "sku": "E054-YG14-TQ",
-    "code": "E054",
-    "name": "",
+    "sku": "E052-YG14-AMB",
+    "code": "E052",
+    "name": "Amber bead Earrings, lotus Cap, Bumpa (vase) clasp, vajra Yellow Gold 14k",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1506.85,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "E054-YG14-TQ",
+    "code": "E054",
+    "name": "Intricate Turquoise and Diamond Earrings 3.23 cts. Diamonds .292 cts.",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 2438.36,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "E056-YG18-BS-DIA",
     "code": "E056",
-    "name": "",
+    "name": "Bumpa, Longevity Vase Earrings 18k Yellow Gold 12.74g with Sapphires .285cts, & .Diamonds .254cts.",
     "category": "Earrings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 3369.86,
     "productId": "p015",
     "productIds": [
       "p015",
@@ -1866,14 +2414,38 @@
     ]
   },
   {
+    "sku": "EXT 15cm-YG14",
+    "code": "EXT 15cm",
+    "name": "Chain Extension 15cm, adjustable to 10cm and 5cm, Yellow Gold 14k, 0.92g:",
+    "category": "Chains",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 102.74,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "EXT 15cm-YG18",
+    "code": "EXT 15cm",
+    "name": "Chain Extension 15cm, Yellow Gold 18k, 1.15g:",
+    "category": "Chains",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 150.68,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "N002-S",
     "code": "N002",
-    "name": "",
+    "name": "Tara Mantra Necklace, Silver, White Rhodium, chain CH060, 50cm",
     "category": "Necklaces",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 273.97,
     "productId": "p112",
     "productIds": [
       "p112"
@@ -1882,12 +2454,12 @@
   {
     "sku": "N002-S-CZ",
     "code": "N002",
-    "name": "",
+    "name": "Tara Mantra Necklace, Silver, White Rhodium, chain CH060, CZ Diamonds 50cm",
     "category": "Necklaces",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 328.77,
     "productId": "p093",
     "productIds": [
       "p093"
@@ -1908,12 +2480,12 @@
   {
     "sku": "N002-YGP",
     "code": "N002",
-    "name": "Tara mantra necklace, New Version, Gold Plated",
+    "name": "Tara Mantra Necklace, Silver, Gold Plated, chain CH060, 50cm, chain CH040",
     "category": "Necklaces",
     "material": "Gold Plated",
     "qty": 5,
     "cost": 55.36,
-    "retail": 205.48,
+    "retail": 356.16,
     "productId": "p104",
     "productIds": [
       "p104",
@@ -1925,14 +2497,28 @@
   {
     "sku": "N002-YGP-CZ",
     "code": "N002",
-    "name": "",
+    "name": "Tara Mantra Necklace, Silver Gold Plated, White CZ Diamonds",
     "category": "Necklaces",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 383.56,
     "productId": null,
     "productIds": []
+  },
+  {
+    "sku": "N003-YGP",
+    "code": "N003",
+    "name": "Eight Auspicious Signs Necklace, Silver, Vermeil Gold",
+    "category": "Necklaces",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": 397.26,
+    "productId": "p110",
+    "productIds": [
+      "p110"
+    ]
   },
   {
     "sku": "N003-YGP-CZ",
@@ -1943,6 +2529,45 @@
     "qty": 2,
     "cost": null,
     "retail": 397.26,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "N004-S",
+    "code": "N004",
+    "name": "Silver Vajra necklace, large, 48cm",
+    "category": "Necklaces",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 273.97,
+    "productId": "p095",
+    "productIds": [
+      "p095",
+      "p097"
+    ]
+  },
+  {
+    "sku": "N004-YG18-DIA",
+    "code": "N004",
+    "name": "Vajra Necklace Yellow Gold 18k, Diamonds 0.24 cts with Chain ength 45-50 cm + 20.9 grams",
+    "category": "Necklaces",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 4041.1,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "N005-S",
+    "code": "N005",
+    "name": "Silver Vajra necklace, Medium 3 Dimensional design - 5 Prongs, Black Diamonds .118 CTS.",
+    "category": "Necklaces",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 260.27,
     "productId": null,
     "productIds": []
   },
@@ -1959,6 +2584,21 @@
     "productIds": []
   },
   {
+    "sku": "N005B-YG14",
+    "code": "N005B",
+    "name": "Mid Vajra Necklace, 3 Dimensional design - 5 Prongs, 14K Yellow Gold 8.46g .115cts diamonds",
+    "category": "Necklaces",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1753.42,
+    "productId": "p068",
+    "productIds": [
+      "p068",
+      "p103"
+    ]
+  },
+  {
     "sku": "N005B-YG14-DIA",
     "code": "N005B",
     "name": "",
@@ -1967,6 +2607,18 @@
     "qty": null,
     "cost": null,
     "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "N006-AMB-B",
+    "code": "N006",
+    "name": "14K Gold Amber Necklace, With Vajras, 55cm Chain 13.4g/ 12.6g",
+    "category": "Necklaces",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1109.59,
     "productId": null,
     "productIds": []
   },
@@ -1983,14 +2635,40 @@
     "productIds": []
   },
   {
-    "sku": "N007C-YGP",
-    "code": "N007C",
-    "name": "",
+    "sku": "N007B-YGP",
+    "code": "N007B",
+    "name": "Vajra Guru Mantra Necklace Gold Plated, Large 17.6g",
     "category": "Necklaces",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 328.77,
+    "productId": "p102",
+    "productIds": [
+      "p102"
+    ]
+  },
+  {
+    "sku": "N007C-YGP",
+    "code": "N007C",
+    "name": "Vajra Guru Mantra New, Small, Yellow Gold Plated, CZ Diamonds",
+    "category": "Necklaces",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": 246.58,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "N008-YGP",
+    "code": "N008",
+    "name": "Dzambhala mantra Necklace, Gold Plated, CZ Diamonds, Large",
+    "category": "Necklaces",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": 328.77,
     "productId": null,
     "productIds": []
   },
@@ -2009,15 +2687,29 @@
   {
     "sku": "N009B-S",
     "code": "N009B",
-    "name": "",
+    "name": "Mani Mantra Necklace Small, Silver Tashi Mannox Design",
     "category": "Necklaces",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 164.38,
     "productId": "p100",
     "productIds": [
       "p100"
+    ]
+  },
+  {
+    "sku": "N009B-YGP",
+    "code": "N009B",
+    "name": "Mani Mantra Necklace Gold Plated small, CZ Diamonds 9.84g",
+    "category": "Necklaces",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": 246.58,
+    "productId": "p106",
+    "productIds": [
+      "p106"
     ]
   },
   {
@@ -2029,6 +2721,18 @@
     "qty": null,
     "cost": null,
     "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "N010-S",
+    "code": "N010",
+    "name": "Endless Knot Hanging Necklace silver, CZ Diamonds",
+    "category": "Necklaces",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 239.73,
     "productId": null,
     "productIds": []
   },
@@ -2045,6 +2749,20 @@
     "productIds": []
   },
   {
+    "sku": "N010-YG14",
+    "code": "N010",
+    "name": "Hanging Endless Knot Necklace, 14K Yellow Gold 6.48g, Diamonds, .653cts",
+    "category": "Necklaces",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1643.84,
+    "productId": "p105",
+    "productIds": [
+      "p105"
+    ]
+  },
+  {
     "sku": "N010-YG14-DIA",
     "code": "N010",
     "name": "",
@@ -2059,24 +2777,36 @@
   {
     "sku": "N013-S",
     "code": "N013",
-    "name": "",
+    "name": "Malaya Logo chain with CZ diamonds, Silver, Rhodium",
     "category": "Necklaces",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 219.18,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "N013-YGP",
+    "code": "N013",
+    "name": "Malaya Logo chain with CZ diamonds, Yellow Gold Plated",
+    "category": "Necklaces",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": 232.88,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "N014-YGP",
     "code": "N014",
-    "name": "",
+    "name": "Double Vajra, Endless Knot and Malaya Logo chain layered necklace",
     "category": "Necklaces",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 547.95,
     "productId": null,
     "productIds": []
   },
@@ -2088,19 +2818,19 @@
     "material": "Silver",
     "qty": 6,
     "cost": 28.05,
-    "retail": 95.89,
+    "retail": 109.59,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "N016-YG18",
     "code": "N016",
-    "name": "",
+    "name": "Vajra Necklace Medium Flat Design - 3 Prongs, Yellow 18k Gold 10.46g",
     "category": "Necklaces",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 2000,
     "productId": "p099",
     "productIds": [
       "p099"
@@ -2109,24 +2839,24 @@
   {
     "sku": "N017-S",
     "code": "N017",
-    "name": "",
+    "name": "Vajra Necklace, Medium, Silver, 3 Dimensional design - 5 Prongs, Chain 45cm",
     "category": "Necklaces",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 123.29,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "N020-YG18-TQ",
     "code": "N020",
-    "name": "",
+    "name": "Necklace, Turquoise with Diamonds .212cts, Yellow 18k gold, 10.52g",
     "category": "Necklaces",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 2438.36,
     "productId": "p094",
     "productIds": [
       "p094"
@@ -2135,19 +2865,19 @@
   {
     "sku": "N022-YG18-COR",
     "code": "N022",
-    "name": "",
+    "name": "Life Force Coral Gold Necklace with Diamonds, 0.77 CTS. YG18: 20.24g, Total: 22.42g",
     "category": "Necklaces",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 4589.04,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "N024-S",
     "code": "N024",
-    "name": "Om Ah Hung Necklace, Silver, 48cm",
+    "name": "Om Ah Hung sacred syllables Necklace, Silver, 48cm",
     "category": "Necklaces",
     "material": "Silver",
     "qty": 1,
@@ -2161,21 +2891,85 @@
   {
     "sku": "N025-YG14-TQ-DIA",
     "code": "N025",
-    "name": "",
+    "name": "Oval Turquoise Necklace, Yellow 14k Gold, Turquoise: 6.01cts, Diamonds: .15cts 5.62g",
     "category": "Necklaces",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1246.58,
     "productId": "p092",
     "productIds": [
       "p092"
     ]
   },
   {
+    "sku": "P005-S",
+    "code": "P005",
+    "name": "Large Phurba pendant, Three faces, 82mm, silver, with chain 70cm 17.5 grams",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 356.16,
+    "productId": "p042",
+    "productIds": [
+      "p042"
+    ]
+  },
+  {
+    "sku": "P005-YG14",
+    "code": "P005",
+    "name": "Phurba Pendant, Size 82mm, just pendant: 14k Solid Gold 19.9g",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 3000,
+    "productId": "p055",
+    "productIds": [
+      "p055"
+    ]
+  },
+  {
+    "sku": "P005-YG18",
+    "code": "P005",
+    "name": "Phurba Pendant, Size 82mm, just pendant: 18k solid gold, 25.6g:",
+    "category": "Pendants",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 3972.6,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P005-YG18-DIA1",
+    "code": "P005",
+    "name": "Phurba Pendant, Size 82mm, just pendant 18k Solid Gold, 18 diamonds (.31cts) 22.59g",
+    "category": "Pendants",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 7547.95,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P005-YG18-DIA2",
+    "code": "P005",
+    "name": "Phurba Pendant, Size 82mm, just pendant 18k full diamond set 25.28g (1.86cts)",
+    "category": "Pendants",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 10712.33,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "P012-YG14",
     "code": "P012",
-    "name": "Tam syllable pendant OLD version, YG14. small without",
+    "name": "Tam syllable pendant small size, 24.5mm, Yellow 14k gold, 1.21g",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": 1,
@@ -2200,9 +2994,23 @@
     "productIds": []
   },
   {
+    "sku": "P016-YG14",
+    "code": "P016",
+    "name": "Om Syllable Pendant 14k gold, .343 cts white diamonds, pendant only, 1.56g",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 835.62,
+    "productId": "p088",
+    "productIds": [
+      "p088"
+    ]
+  },
+  {
     "sku": "P018-RGP",
     "code": "P018",
-    "name": "LOVE CHARM PENDANT HRI RGP",
+    "name": "Sanskrit HRI syllable in a semi circle. Silver, rose gold plated. With chain.",
     "category": "Pendants",
     "material": "Rose Gold",
     "qty": 1,
@@ -2216,7 +3024,7 @@
   {
     "sku": "P019-S",
     "code": "P019",
-    "name": "Infinity Knot Pendant Silver With Chain",
+    "name": "Infinity knot pendant Silver, with chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": 4,
@@ -2228,19 +3036,19 @@
   {
     "sku": "P019-YG14",
     "code": "P019",
-    "name": "",
+    "name": "Infinity knot pendant 14k Solid yellow gold, pendant only - 3.75g",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 643.84,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "P020-S",
     "code": "P020",
-    "name": "Hung Syllable Pendant, Bigger, Silver, with chain",
+    "name": "New HUNG syllable pendant, silver, white rhodium, 44mm, with chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": 2,
@@ -2252,14 +3060,30 @@
     ]
   },
   {
+    "sku": "P020-YG14",
+    "code": "P020",
+    "name": "New hung syllable pendant solid gold, size 44mm, pendant only 14k Yellow Gold - 3.82g",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 602.74,
+    "productId": "p083",
+    "productIds": [
+      "p083",
+      "p084",
+      "p085"
+    ]
+  },
+  {
     "sku": "P021-PT",
     "code": "P021",
-    "name": "",
+    "name": "New HUNG syllable pendant, solid Platinum, size 35mm, Pendant only, 3.89",
     "category": "Pendants",
     "material": "Platinum",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1164.38,
     "productId": "p080",
     "productIds": [
       "p080"
@@ -2280,12 +3104,12 @@
   {
     "sku": "P021-WG14",
     "code": "P021",
-    "name": "",
+    "name": "New HUNG syllable pendant, solid 14k white gold, size 35mm, With 45cm Chain, 4.48g",
     "category": "Pendants",
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 712.33,
     "productId": "p082",
     "productIds": [
       "p082"
@@ -2304,14 +3128,26 @@
     "productIds": []
   },
   {
+    "sku": "P021-YG14-CH",
+    "code": "P021",
+    "name": "New HUNG syllable pendant, solid 14k yellow gold, size 35mm, With 45cm Chain, 4.44g",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 753.42,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "P021-YG18",
     "code": "P021",
-    "name": "",
+    "name": "New HUNG syllable pendant, solid gold, size 35mm, pendant only: 18k yellow gold 2.70g",
     "category": "Pendants",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 506.85,
     "productId": "p057",
     "productIds": [
       "p057",
@@ -2331,18 +3167,56 @@
     "productIds": []
   },
   {
-    "sku": "P026-S",
-    "code": "P026",
-    "name": "",
+    "sku": "P024-S",
+    "code": "P024",
+    "name": "Large Silver Vajra Pendant, with chain, Hung syllable engraved",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 493.15,
+    "productId": "p017",
+    "productIds": [
+      "p017"
+    ]
+  },
+  {
+    "sku": "P025-YG18-3C",
+    "code": "P025",
+    "name": "Large 18K Solid Gold Vajra Pendant, Natural Red Rubies, white diamonds, blue sapphires, 21.6g",
+    "category": "Pendants",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 4246.58,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P026-S",
+    "code": "P026",
+    "name": "Large Bell pendant Silver with chain",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 246.58,
     "productId": "p065",
     "productIds": [
       "p065"
     ]
+  },
+  {
+    "sku": "P026-YG18",
+    "code": "P026",
+    "name": "18K Yellow Gold Gold 8.31g, Diamond: .025cts, pendant only",
+    "category": "Pendants",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1986.3,
+    "productId": null,
+    "productIds": []
   },
   {
     "sku": "P026-YGP",
@@ -2383,26 +3257,50 @@
   {
     "sku": "P027-YG14",
     "code": "P027",
-    "name": "",
+    "name": "Vajra Pendant, Medium Size. pendant only 14k yellow gold 5.77g",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1123.29,
     "productId": "p076",
     "productIds": [
       "p076"
     ]
   },
   {
+    "sku": "P027-YG18",
+    "code": "P027",
+    "name": "Vajra Pendant, Medium Size. 18k gold, 7.00",
+    "category": "Pendants",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1575.34,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P027-YG18-DIA",
+    "code": "P027",
+    "name": "Vajra Pendant, Medium .076cts white Diamonds 18k Yellow Gold 7.94g",
+    "category": "Pendants",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1479.45,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "P028-YG14",
     "code": "P028",
-    "name": "",
+    "name": "Bell pendant Small Size pendant only 14k Yellow Gold 3.18g",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 698.63,
     "productId": "p075",
     "productIds": [
       "p075"
@@ -2411,12 +3309,12 @@
   {
     "sku": "P029-YG18",
     "code": "P029",
-    "name": "",
+    "name": "Vajra Pendant, Small Size. pendant only 18 karat yellow gold, 3.36g:",
     "category": "Pendants",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 767.12,
     "productId": "p023",
     "productIds": [
       "p023"
@@ -2425,24 +3323,24 @@
   {
     "sku": "P030-S",
     "code": "P030",
-    "name": "",
+    "name": "Melong Pendant, Silver, CZ, With Chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 198.63,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "P030-YG18",
     "code": "P030",
-    "name": "",
+    "name": "Melong (Mirror), 12 white diamonds, .06cts 18K Yellow Gold 9.8g",
     "category": "Pendants",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1780.82,
     "productId": "p077",
     "productIds": [
       "p077"
@@ -2463,12 +3361,12 @@
   {
     "sku": "P031A-S",
     "code": "P031A",
-    "name": "",
+    "name": "Single Auspicious Pendant, Parasol, Gold Plated, With chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 102.74,
     "productId": "p050",
     "productIds": [
       "p050"
@@ -2477,12 +3375,12 @@
   {
     "sku": "P031B-S",
     "code": "P031B",
-    "name": "",
+    "name": "Single Auspicious Pendant, Pair Of Golden Fish, Gold Plated, With chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 102.74,
     "productId": "p051",
     "productIds": [
       "p051"
@@ -2491,12 +3389,12 @@
   {
     "sku": "P031C-S",
     "code": "P031C",
-    "name": "",
+    "name": "Single Auspicious Pendant, Vase, Gold Plated, With chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 102.74,
     "productId": "p049",
     "productIds": [
       "p049"
@@ -2505,12 +3403,12 @@
   {
     "sku": "P031D-S",
     "code": "P031D",
-    "name": "",
+    "name": "Single Auspicious Pendant, Lotus, Gold Plated, With chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 102.74,
     "productId": "p046",
     "productIds": [
       "p046"
@@ -2519,15 +3417,43 @@
   {
     "sku": "P031E-S",
     "code": "P031E",
-    "name": "",
+    "name": "Single Auspicious Pendant, Right Turning Conch, Gold Plated, With chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 102.74,
     "productId": "p047",
     "productIds": [
       "p047"
+    ]
+  },
+  {
+    "sku": "P031F",
+    "code": "P031F",
+    "name": "Single Auspicious Pendant, Endless Knot, Gold Plated, With chain",
+    "category": "Pendants",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": 102.74,
+    "productId": "p078",
+    "productIds": [
+      "p078"
+    ]
+  },
+  {
+    "sku": "P031F-YG14-DIA",
+    "code": "P031F",
+    "name": "Single Auspicious Victory Banner, (or any other of the 8 signs), 14Karat white & yellow gold 2.62g Diamonds 0.11 CTS. Pendant Only",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 712.33,
+    "productId": "p040",
+    "productIds": [
+      "p040"
     ]
   },
   {
@@ -2545,12 +3471,12 @@
   {
     "sku": "P031G-S",
     "code": "P031G",
-    "name": "",
+    "name": "Single Auspicious Pendant, Victory Banner, Gold Plated, With chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 102.74,
     "productId": "p045",
     "productIds": [
       "p045"
@@ -2559,12 +3485,12 @@
   {
     "sku": "P031H-S",
     "code": "P031H",
-    "name": "",
+    "name": "Single Auspicious Pendant, Dharma Wheel, Gold Plated, With chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 102.74,
     "productId": "p048",
     "productIds": [
       "p048"
@@ -2581,6 +3507,20 @@
     "retail": null,
     "productId": null,
     "productIds": []
+  },
+  {
+    "sku": "P032-14K-MOP",
+    "code": "P032",
+    "name": "Laughing Skull Pendant, Gold, Mother Of Pearl 3.2g, .128cts",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 767.12,
+    "productId": "p073",
+    "productIds": [
+      "p073"
+    ]
   },
   {
     "sku": "P032-YG14-MOP",
@@ -2607,6 +3547,18 @@
     "productIds": []
   },
   {
+    "sku": "P033-TT14-MOP",
+    "code": "P033",
+    "name": "Clover shaped vajra pendant, white gold, yellow gold, diamonds 3.43g, .153cts",
+    "category": "Pendants",
+    "material": "White Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 821.92,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "P034-RG14",
     "code": "P034",
     "name": "",
@@ -2617,6 +3569,21 @@
     "retail": null,
     "productId": null,
     "productIds": []
+  },
+  {
+    "sku": "P034-RG14-DIA",
+    "code": "P034",
+    "name": "Endless Knot Diamond Pendant 14k Rose Gold 2.15.g .26cts Diamonds",
+    "category": "Pendants",
+    "material": "Rose Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1000,
+    "productId": "p053",
+    "productIds": [
+      "p053",
+      "p061"
+    ]
   },
   {
     "sku": "P034-WG14",
@@ -2631,6 +3598,21 @@
     "productIds": []
   },
   {
+    "sku": "P034-WG14-DIA",
+    "code": "P034",
+    "name": "Endless Knot Diamond Pendant 14k White Gold 2.15.g .26cts Diamonds",
+    "category": "Pendants",
+    "material": "White Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1000,
+    "productId": "p030",
+    "productIds": [
+      "p030",
+      "p063"
+    ]
+  },
+  {
     "sku": "P034-YG14",
     "code": "P034",
     "name": "",
@@ -2643,14 +3625,29 @@
     "productIds": []
   },
   {
+    "sku": "P034-YG14-DIA",
+    "code": "P034",
+    "name": "Endless Knot Diamond Pendant 14k Yellow Gold 2.15.g .26cts Diamonds",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 972.6,
+    "productId": "p062",
+    "productIds": [
+      "p062",
+      "p072"
+    ]
+  },
+  {
     "sku": "P035-S",
     "code": "P035",
-    "name": "",
+    "name": "Silver Tam Syllable Pendant With Chain TASHI MANNOX DESIGN",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 82.19,
     "productId": "p091",
     "productIds": [
       "p091"
@@ -2659,12 +3656,12 @@
   {
     "sku": "P035-YG14",
     "code": "P035",
-    "name": "",
+    "name": "Solid 14K Gold Tam syllable pendant, Pendant only 4.32 grams",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 739.73,
     "productId": null,
     "productIds": []
   },
@@ -2695,12 +3692,12 @@
   {
     "sku": "P037-S",
     "code": "P037",
-    "name": "Ah Syllable Pendant, New Silver, With Chain",
+    "name": "New Ah syllable Pendant Tashi Mannox Design Silver with chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": 4,
     "cost": 20.5,
-    "retail": 82.19,
+    "retail": 68.49,
     "productId": "p071",
     "productIds": [
       "p071"
@@ -2709,12 +3706,12 @@
   {
     "sku": "P037-YG14",
     "code": "P037",
-    "name": "",
+    "name": "New Ah syllable Pendant Tashi Mannox Design 3.40 grams Solid 14k Gold",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 582.19,
     "productId": "p069",
     "productIds": [
       "p069"
@@ -2723,12 +3720,12 @@
   {
     "sku": "P038-S",
     "code": "P038",
-    "name": "",
+    "name": "New Tashi Mannox OM AH HUNG/ Vajra Dogtag pendant",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 191.78,
     "productId": "p067",
     "productIds": [
       "p067"
@@ -2737,19 +3734,19 @@
   {
     "sku": "P040-YG18",
     "code": "P040",
-    "name": "",
+    "name": "Hung Syllable Pendant XXL Solid 18k Yellow Gold 7.63g 50mm, 1.191cts",
     "category": "Pendants",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 2726.03,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "P041-CZ-S",
     "code": "P041",
-    "name": "TAM BIG PENDANT CZ, With Chain",
+    "name": "Tam Syllable Pendant, Silver, CZ Diamonds, With Chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": 5,
@@ -2764,12 +3761,12 @@
   {
     "sku": "P042-WG14-DIA",
     "code": "P042",
-    "name": "",
+    "name": "Tam syllable Pendant White Gold 14k, Diamonds, .262 CTS. With Chain, 1.2g",
     "category": "Pendants",
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 671.23,
     "productId": "p034",
     "productIds": [
       "p034"
@@ -2778,24 +3775,24 @@
   {
     "sku": "P042-YG14-DIA",
     "code": "P042",
-    "name": "",
+    "name": "Tam Syllable Pendant YG14, Diamonds, .25cts, Pendant only, 1.18g",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 643.84,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "P044-YGP",
     "code": "P044",
-    "name": "",
+    "name": "Tsipatta/ Hung Syllable Gau, openable, Silver, Gold Plated, With Chain 21.68g",
     "category": "Pendants",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 547.95,
     "productId": "p032",
     "productIds": [
       "p032",
@@ -2817,12 +3814,12 @@
   {
     "sku": "P045-YGP",
     "code": "P045",
-    "name": "",
+    "name": "Tara Mantra Pendant Green Agate Tashi Mannox Design silver, gold plated. 34.19g",
     "category": "Pendants",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 630.14,
     "productId": "p014",
     "productIds": [
       "p014",
@@ -2832,36 +3829,36 @@
   {
     "sku": "P047B-YG14",
     "code": "P047B",
-    "name": "Phurba Pendant Medium New, YG14, No Chain, 5.09",
+    "name": "Phurba Pendant medium, 14k yellow & white gold, 4.98g, Pendant only",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": 1,
     "cost": 378.61,
-    "retail": 849.13,
+    "retail": 849.32,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "P049-S",
     "code": "P049",
-    "name": "",
+    "name": "Phurba Pendant Small, Silver, With chain 45cm 4.04g",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 82.19,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "P049-YG14",
     "code": "P049",
-    "name": "",
+    "name": "Phurba Pendant Small, Yellow Gold 14k , 2.42g: Pendant only",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 424.66,
     "productId": "p043",
     "productIds": [
       "p043"
@@ -2870,7 +3867,7 @@
   {
     "sku": "P050-S",
     "code": "P050",
-    "name": "Drigug Pendant, Silver, With chain",
+    "name": "Drigug Pendant Small, Silver, With chain 45cm 4.02g",
     "category": "Pendants",
     "material": "Silver",
     "qty": 4,
@@ -2884,12 +3881,12 @@
   {
     "sku": "P050-YG14",
     "code": "P050",
-    "name": "",
+    "name": "Drigug Pendant Small, Yellow Gold 14k, 2.44g Pendant only",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 424.66,
     "productId": "p044",
     "productIds": [
       "p044"
@@ -2910,12 +3907,12 @@
   {
     "sku": "P051-WG18",
     "code": "P051",
-    "name": "",
+    "name": "Endless Knot Pendant, Small, White Gold 18k, With Chain 50cm, 5.07g",
     "category": "Pendants",
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1095.89,
     "productId": "p016",
     "productIds": [
       "p016"
@@ -2924,12 +3921,12 @@
   {
     "sku": "P051-YG14",
     "code": "P051",
-    "name": "",
+    "name": "Endless Knot Pendant, Small, Yellow Gold 14k With Chain, 3.94g",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 671.23,
     "productId": "p054",
     "productIds": [
       "p054",
@@ -2939,12 +3936,12 @@
   {
     "sku": "P052-S",
     "code": "P052",
-    "name": "",
+    "name": "Bam Syllable Pendant, Silver, with chain 2.59g",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 82.19,
     "productId": "p027",
     "productIds": [
       "p027"
@@ -2953,12 +3950,12 @@
   {
     "sku": "P052-YG14",
     "code": "P052",
-    "name": "",
+    "name": "Bam Syllable Pendant, Yellow Gold 14k, 3.23g",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 561.64,
     "productId": "p036",
     "productIds": [
       "p036"
@@ -2967,7 +3964,7 @@
   {
     "sku": "P055-S",
     "code": "P055",
-    "name": "Double Dorje Pendant, Silver CZ, with chain",
+    "name": "Double Dorje Pendant, Silver, CZ Diamond, With Chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": 7,
@@ -2981,15 +3978,29 @@
   {
     "sku": "P055-YG14",
     "code": "P055",
-    "name": "",
+    "name": "Double Dorje Pendant, Yellow 14K Gold, 2.72g, central diamond .029cts, pendant only",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 479.45,
     "productId": "p052",
     "productIds": [
       "p052"
+    ]
+  },
+  {
+    "sku": "P056-WG18-BS",
+    "code": "P056",
+    "name": "New Hung Syllable Pendant, Natural Blue Sapphires, 43mm, with chain 18k White Gold - 5.35g",
+    "category": "Pendants",
+    "material": "White Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1643.84,
+    "productId": "p079",
+    "productIds": [
+      "p079"
     ]
   },
   {
@@ -3007,19 +4018,19 @@
   {
     "sku": "P057-WG14-DIA",
     "code": "P057",
-    "name": "",
+    "name": "Hung Syllable Pendant Diamond 0.41 CTS, Small WG14 With Chain",
     "category": "Pendants",
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1438.36,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "P058-S-B",
     "code": "P058",
-    "name": "Hung Syllable Pendant Silver Blue Enamel",
+    "name": "Hung Syllable Pendant Silver Blue Enamel with chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": 4,
@@ -3033,12 +4044,12 @@
   {
     "sku": "P059-S-G",
     "code": "P059",
-    "name": "",
+    "name": "Tam Syllable Pendant, Silver, Green Enamel, with chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 95.89,
     "productId": "p038",
     "productIds": [
       "p038"
@@ -3047,12 +4058,12 @@
   {
     "sku": "P060-YGP-R",
     "code": "P060",
-    "name": "",
+    "name": "Bam Syllable Pendant, Yellow Gold Plated, Red Enamel with chain",
     "category": "Pendants",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 109.59,
     "productId": "p037",
     "productIds": [
       "p037"
@@ -3061,12 +4072,12 @@
   {
     "sku": "P061-S",
     "code": "P061",
-    "name": "",
+    "name": "Hri Syllable Pendant Silver, Larger, With Chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 95.89,
     "productId": "p022",
     "productIds": [
       "p022"
@@ -3075,7 +4086,7 @@
   {
     "sku": "P064-YGP-CZ",
     "code": "P064",
-    "name": "Double Vajra Medallion, Gold Plated, CZ, With Chain",
+    "name": "Double Vajra Medallion, Gold Plated, CZ, With Chain 55cm",
     "category": "Pendants",
     "material": "Gold Plated",
     "qty": 2,
@@ -3103,12 +4114,12 @@
   {
     "sku": "P065-YG18",
     "code": "P065",
-    "name": "",
+    "name": "Om Syllable Pendant, NEW, Yellow Gold 18k, Pendant Only 4.3g",
     "category": "Pendants",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 767.12,
     "productId": "p028",
     "productIds": [
       "p028"
@@ -3127,14 +4138,28 @@
     "productIds": []
   },
   {
+    "sku": "P066-YG14-SRB",
+    "code": "P066",
+    "name": "Longevity Vase Bumpa Pendant, Yellow Gold 14k: 13.72g, Red Rubies, Openable",
+    "category": "Pendants",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 2356.16,
+    "productId": "p031",
+    "productIds": [
+      "p031"
+    ]
+  },
+  {
     "sku": "P067-S",
     "code": "P067",
-    "name": "",
+    "name": "Ratna Pendant Purple Quartz, Silver, CZ Diamonds, with chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 130.14,
     "productId": "p019",
     "productIds": [
       "p019",
@@ -3144,12 +4169,12 @@
   {
     "sku": "P068-YG14-TQ",
     "code": "P068",
-    "name": "",
+    "name": "Turquoise Oval Pendant,Yellow Gold 14k, Diamonds 0.216 CTS. 1.88g",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 739.73,
     "productId": "p024",
     "productIds": [
       "p024"
@@ -3158,48 +4183,96 @@
   {
     "sku": "P069-S",
     "code": "P069",
-    "name": "",
+    "name": "Three Dimensional Endless knot pendant studded with CZ diamonds, with chain",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 390.41,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "P070-YG14-TQ",
     "code": "P070",
-    "name": "",
+    "name": "Bumpa Turquoise Pendant with a diamond .008cts, 3.76g",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 726.03,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "P071-YG18-BSDIA",
     "code": "P071",
-    "name": "",
+    "name": "18K Longevity Vase, Larger, with Large sapphires and diamonds .14 CTS. 45.95g",
     "category": "Pendants",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 8835.62,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P072-S",
+    "code": "P072",
+    "name": "Silver Buddha Shakyamuni Medallion Pendant, Rhodinated, With Chain, 42-45-55 cm",
+    "category": "Pendants",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 109.59,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "P072-YGP",
+    "code": "P072",
+    "name": "Yellow Gold Plated Buddha Shakyamuni Medallion Pendant, With Chain, 42-45-55 cm",
+    "category": "Pendants",
+    "material": "Gold Plated",
+    "qty": null,
+    "cost": null,
+    "retail": 205.48,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "P073-YG14-TQ-DIA",
     "code": "P073",
-    "name": "",
+    "name": "Intricate Diamond Turquoise Pendant 2.64 CTS./ Diamonds .188 CTS.",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1260.27,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R001-DIA",
+    "code": "R001",
+    "name": "Silver Mahakala ring with 32 white and black diamonds 0.34cts, 23g",
+    "category": "Rings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 1041.1,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R001-S",
+    "code": "R001",
+    "name": "Wrathful Protector Ring, Sterling Silver, Oxidized, 23g",
+    "category": "Rings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 547.95,
     "productId": null,
     "productIds": []
   },
@@ -3218,12 +4291,24 @@
   {
     "sku": "R005-S-YG14",
     "code": "R005",
-    "name": "",
+    "name": "Rahu Ring Ring, Silver, 14K Yellow Gold Ring (2.8g) with white topaz + Black Diamonds",
     "category": "Rings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 424.66,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R014-S",
+    "code": "R014",
+    "name": "Laughing Skull Ring, Silver Black Diamonds 6g",
+    "category": "Rings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 123.29,
     "productId": null,
     "productIds": []
   },
@@ -3236,6 +4321,18 @@
     "qty": null,
     "cost": null,
     "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R014-YG14",
+    "code": "R014",
+    "name": "Laughing Skull Ring, Black Diamonds, .036 cts 14k Gold 7.50g",
+    "category": "Rings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1315.07,
     "productId": null,
     "productIds": []
   },
@@ -3254,7 +4351,7 @@
   {
     "sku": "R017A-S",
     "code": "R017A",
-    "name": "Samaya Ring, silver, black enamel, vajra bell",
+    "name": "Vajra and bell Ring, silver, black enamel, brushed finished surface, sanded insert, polished edges",
     "category": "Rings",
     "material": "Silver",
     "qty": 1,
@@ -3266,12 +4363,12 @@
   {
     "sku": "R017A-S-T",
     "code": "R017A",
-    "name": "",
+    "name": "Vajra and bell Ring, silver, Tiffany blue enamel, brushed finished surface, sanded insert, polished edges",
     "category": "Rings",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 150.68,
     "productId": null,
     "productIds": []
   },
@@ -3300,6 +4397,30 @@
     "productIds": []
   },
   {
+    "sku": "R017B-YG14",
+    "code": "R017B",
+    "name": "Dorje Bell Samaya Ring, male size 14K Yellow Gold, brushed finished surface, sanded insert, polished edges Central Diamond .025 CTS. 10.49 grams",
+    "category": "Rings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1780.82,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R017B-YG18",
+    "code": "R017B",
+    "name": "Dorje Bell Samaya Ring, male size 18K Yellow Gold, brushed finished surface, sanded insert, polished edges Central Diamond .025 CTS. 12.5 grams",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 2397.26,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "R017B-YG18-DIA",
     "code": "R017B",
     "name": "",
@@ -3324,14 +4445,50 @@
     "productIds": []
   },
   {
+    "sku": "R017D-S",
+    "code": "R017D",
+    "name": "Double Dorje Ring, silver, brushed finished surface, sanded insert, polished edges",
+    "category": "Rings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 143.84,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R019-YG18",
+    "code": "R019",
+    "name": "Infinity Knot Eternal Band, 18k Gold 4.8g, female size (51-55)",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 917.81,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R019-YG18-DIA",
+    "code": "R019",
+    "name": "Infinity Knot Eternal Band, 18k Gold, diamonds .05cts, 5.64 female size (51-55)",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1150.68,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "R019A-WG18",
     "code": "R019A",
-    "name": "",
+    "name": "Ring eternity infinity auspicious 18k White Gold, male size (59-60), 6g",
     "category": "Rings",
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1150.68,
     "productId": null,
     "productIds": []
   },
@@ -3362,72 +4519,84 @@
   {
     "sku": "R020-YG18",
     "code": "R020",
-    "name": "",
+    "name": "Infinity Knot Eternal Band, Thinner, With Background, 18k Yellow Gold 4.7g female size (51-55)",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1000,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R020B-YG18",
     "code": "R020B",
-    "name": "",
+    "name": "Large endless knot ring, THICKER, 18k yellow gold, Size 53 (female), 5.34g",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1013.7,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R021-WG14-DIA",
     "code": "R021",
-    "name": "",
+    "name": "Infinity Knot Ring, 14k White Gold, Diamonds 5.1g .71cts",
     "category": "Rings",
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1643.84,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R021-YG14",
     "code": "R021",
-    "name": "",
+    "name": "Infinity Knot Ring, 14k Gold 4.9g",
     "category": "Rings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 931.51,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R021-YG18-DIA",
     "code": "R021",
-    "name": "",
+    "name": "Endless Knot Ring 18k Yellow Gold, Diamonds 5.79g, .71cts",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 2150.68,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R022-YG14-RR",
     "code": "R022",
-    "name": "",
+    "name": "Red Ruby Jewels Ring Ruby - 5.5cts 0.494cts diamonds 14k yellow gold 4.37g",
     "category": "Rings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 2136.99,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R023-YG14-CIT",
+    "code": "R023",
+    "name": "Citrine “Sunshine” Diamond 14K Vajra Ring Citrine - 3.34cts 0.598cts Diamonds 14k yellow gold 3.59g",
+    "category": "Rings",
+    "material": "14k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 2041.1,
     "productId": null,
     "productIds": []
   },
@@ -3446,12 +4615,12 @@
   {
     "sku": "R023-YG14-RR",
     "code": "R023",
-    "name": "",
+    "name": "Red Ruby Vajras Ring Ruby - 3.34cts 0.598cts Diamonds 14k yellow gold 3.59g",
     "category": "Rings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 2041.1,
     "productId": null,
     "productIds": []
   },
@@ -3464,6 +4633,42 @@
     "qty": null,
     "cost": null,
     "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R025A-YG18",
+    "code": "R025A",
+    "name": "A pair of Dorje and Bell Wedding Bands, Sanded Finish, Simple Design 4 diamonds... 18k Yellow Gold: approx 17g",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 3287.67,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R025C-YG18",
+    "code": "R025C",
+    "name": "A pair of Dorje and Bell Wedding Bands, Brushed Finish, Protruding Design, 14 diamonds... 18k Yellow Gold: approx 19g",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 3356.16,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R026-WG14-AQ",
+    "code": "R026",
+    "name": "Aquamarine Ring, .28cts White Diamonds, 14k White Gold 5.29g",
+    "category": "Rings",
+    "material": "White Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 2383.56,
     "productId": null,
     "productIds": []
   },
@@ -3494,12 +4699,24 @@
   {
     "sku": "R029-S",
     "code": "R029",
-    "name": "",
+    "name": "Malaya Dream Ring, CZ Diamonds Sterling Rhodinated Silver",
     "category": "Rings",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 200,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R029-YG18",
+    "code": "R029",
+    "name": "Malaya Dream Ring, .255cts Diamonds 18k gold 9.77g",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1917.81,
     "productId": null,
     "productIds": []
   },
@@ -3512,6 +4729,18 @@
     "qty": null,
     "cost": null,
     "retail": null,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R030-18KY",
+    "code": "R030",
+    "name": "Large endless knot ring, THICKER, 18k yellow gold, Size 59 (male) 5.72g",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1095.89,
     "productId": null,
     "productIds": []
   },
@@ -3540,38 +4769,76 @@
     "productIds": []
   },
   {
+    "sku": "R032-YG18-CO",
+    "code": "R032",
+    "name": "Endless Knot Ring Thicker, Seamless 18K Yellow Gold 11.37 Male size (size 61)",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 2178.08,
+    "productId": "p096",
+    "productIds": [
+      "p096"
+    ]
+  },
+  {
     "sku": "R033-S-BDS",
     "code": "R033",
-    "name": "",
+    "name": "Kirtimukha (Tsipatta) Ring Silver 20g Black diamonds, yellow sapphire .08cts",
     "category": "Rings",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 246.58,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R034-YG18",
+    "code": "R034",
+    "name": "Infinity Knot Eternal Band, Thinner, With Background, 18k Yellow Gold Size 59 and above (male) 6.25g",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1191.78,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R039-S-CZ",
+    "code": "R039",
+    "name": "Samaya Ring, Dorje & Bell, JUMBO CZ Silver",
+    "category": "Rings",
+    "material": "Silver",
+    "qty": null,
+    "cost": null,
+    "retail": 178.08,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R039-YG18",
     "code": "R039",
-    "name": "",
+    "name": "Samaya Ring Jumbo, Size 65, Yellow 18K Gold: 18.08g, Diamond: .015cts",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 3493.15,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R041-YG14-TQ",
     "code": "R041",
-    "name": "",
+    "name": "Oval Cabochon Turquoise Malaya Ring with Diamonds 0.22 CTS. total: 3.57g, 14k: 2.94g Turquoise: 3.15cts",
     "category": "Rings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1013.7,
     "productId": "p003",
     "productIds": [
       "p003"
@@ -3580,12 +4847,12 @@
   {
     "sku": "R042-YG18-TQ-DIA",
     "code": "R042",
-    "name": "",
+    "name": "“Ratna” Turquoise Ring 5.53cts With Diamonds .043cts. Yellow 18k Gold 5.01g",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1013.7,
     "productId": "p007",
     "productIds": [
       "p007",
@@ -3617,14 +4884,38 @@
     "productIds": []
   },
   {
+    "sku": "R044-YG18-TQ",
+    "code": "R044",
+    "name": "Oval Turquoise Diamond Ring, Endless knot design in gallery, 3.25 CTS. Turquoise. Diamonds 0.28 CTS. 3.86g",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1301.37,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "R045-YG18",
+    "code": "R045",
+    "name": "Brushed/polished band ring, Yellow 18k Gold, 4.14g (female size)",
+    "category": "Rings",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1027.4,
+    "productId": null,
+    "productIds": []
+  },
+  {
     "sku": "R046-S-ON",
     "code": "R046",
-    "name": "Dharmachakra Octagonal ring, Silver, Black Onyx",
+    "name": "Dharmachakra, “The Dharma Wheel” Octagonal ring, Silver, Black Onyx",
     "category": "Rings",
     "material": "Silver",
     "qty": 1,
     "cost": 64.5,
-    "retail": 260.27,
+    "retail": 438.36,
     "productId": "p009",
     "productIds": [
       "p009"
@@ -3633,48 +4924,48 @@
   {
     "sku": "R046-S-ON-DIA",
     "code": "R046",
-    "name": "",
+    "name": "Dharmachakra, “The Dharma Wheel” Octagonal ring, Silver, Black Onyx & black Diamonds",
     "category": "Rings",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 493.15,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R047-WG18",
     "code": "R047",
-    "name": "",
+    "name": "Gold bands sizes 50-54, bell engravings, white 18k gold Small sizes",
     "category": "Rings",
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 342.47,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R047-YG18",
     "code": "R047",
-    "name": "",
+    "name": "Gold bands sizes 50-61, vajra & bell engravings, yellow 18k gold Small sizes",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 328.77,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R048-YG14-TQ-DIA-BT",
     "code": "R048",
-    "name": "",
+    "name": "Intricate Ring, Turquoise, 14k Gold, Diamonds, Blue Topaz Turquoise 2.60 CTS. Blue Topaz .22 CTS. Diamonds .17 CTS. 6.16g",
     "category": "Rings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1424.66,
     "productId": "p006",
     "productIds": [
       "p006"
