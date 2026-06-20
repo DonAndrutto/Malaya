@@ -8,6 +8,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   CATEGORIES, COLLECTIONS, fmtPrice, siteImg, posFor,
   HOME_HERO, HOME_TILES,
@@ -204,10 +205,13 @@ export function CataloguePage({ category, collection, q }) {
 // ── Product detail ───────────────────────────────────────────────────────────
 export function ProductPage({ id }) {
   const { SITE_PRODUCTS, SITE_BY_ID, content } = useSiteData();
+  const router = useRouter();
   const p = SITE_BY_ID[id];
   const [qty, setQty] = useState(1);
   const [active, setActive] = useState(0);
   useEffect(() => { setQty(1); setActive(0); }, [id]);
+  // If this id was merged into a master, canonicalise the URL to the master.
+  useEffect(() => { if (p && p.id && p.id !== id) router.replace(`/product/${p.id}`); }, [p, id, router]);
 
   if (!p) {
     return (

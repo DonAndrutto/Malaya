@@ -18,7 +18,7 @@ import { stockStatus } from '@/lib/data/stock-data';
 import { resolveProduct } from '@/lib/data/resolve';
 import {
   INVENTORY, INVENTORY_BY_KEY, isBlankEntity,
-  METAL_SCOPES, matchesMetalScope,
+  METAL_SCOPES, matchesMetalScope, dupKey, pickMaster,
 } from '@/lib/data/inventory';
 import { saveOverrides } from '@/lib/overrides';
 import { uploadImage } from '@/lib/upload';
@@ -35,7 +35,7 @@ function ghost(disabled) {
 
 // Override field name for a generic field, per entity kind (the catalogue stores
 // its list price under `listPrice`; the ledger under `retail`).
-const ovField = (kind, g) => (kind === 'catalogue' && g === 'retail' ? 'listPrice' : g);
+const ovField = (kind, g) => (kind !== 'ledger' && g === 'retail' ? 'listPrice' : g);
 const NUMERIC = ['retail', 'salePrice', 'qty', 'unitCost'];
 
 export default function Inventory({ overrides, setOverrides }) {
@@ -48,8 +48,11 @@ export default function Inventory({ overrides, setOverrides }) {
   const [fAvail, setFAvail] = useState('');
   const [sort, setSort] = useState('default');
   const [showBlank, setShowBlank] = useState(false);
+  const [showMerged, setShowMerged] = useState(false);
   const [editKey, setEditKey] = useState(null);
   const [bulkOpen, setBulkOpen] = useState(false);
+  const [mergeKey, setMergeKey] = useState(null);
+  const [suggestOpen, setSuggestOpen] = useState(false);
   const [toast, setToast] = useState('');
   const flash = (m) => setToast(m);
   useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), 2200); return () => clearTimeout(t); }, [toast]);
@@ -63,7 +66,7 @@ export default function Inventory({ overrides, setOverrides }) {
     const o = overrides[key] || {};
     let name, sub, category, collection, material, salesCode, productionCode, stock, retail, salePrice, onSale, images, img, story;
 
-    if (e.kind === 'catalogue') {
+    if (e.kind !== 'ledger') {
       const rp = resolveProduct({ ...b, id: e.key, listPrice: b.retail, salePrice: b.salePrice, tag: null }, o);
       name = rp.name; sub = rp.sub; category = rp.category; collection = rp.collection; material = rp.material;
       salesCode = rp.salesCode; productionCode = rp.productionCode; stock = rp.stock;
@@ -83,11 +86,12 @@ export default function Inventory({ overrides, setOverrides }) {
     const qty = numOrNull('qty' in o ? o.qty : b.qty);
     const unitCost = numOrNull('unitCost' in o ? o.unitCost : b.unitCost);
     const sellRetail = onSale ? salePrice : retail;
-    const online = e.kind === 'catalogue' ? stock !== 'Archived' : o.published === true;
+    const online = e.kind !== 'ledger' ? stock !== 'Archived' : o.published === true;
     const marginPct = unitCost != null && sellRetail ? (1 - unitCost / sellRetail) * 100 : null;
     const markupPct = unitCost != null && unitCost > 0 && sellRetail != null ? (sellRetail / unitCost - 1) * 100 : null;
     return {
-      key, kind: e.kind, sku: e.sku, productId: e.kind === 'catalogue' ? e.key : null,
+      key, kind: e.kind, sku: e.sku, productId: e.kind !== 'ledger' ? e.key : null,
+      mergedInto: o.mergedInto || null,
       name, sub, category, collection, material, salesCode, productionCode,
       qty, unitCost, retail, salePrice, onSale, sellRetail, stock, online,
       marginUnit: unitCost != null && sellRetail != null ? sellRetail - unitCost : null,
@@ -122,10 +126,13 @@ export default function Inventory({ overrides, setOverrides }) {
 
       // Unified online/offline control maps onto each kind's mechanism.
       if ('online' in p) {
-        if (e.kind === 'catalogue') p.stock = p.online ? e.base.stock : 'Archived';
+        if (e.kind !== 'ledger') p.stock = p.online ? e.base.stock : 'Archived';
         else o.published = p.online === true;
         delete p.online;
       }
+
+      // Merge alias (set from the "Merge into…" picker; reversible).
+      if ('mergedInto' in p) { if (p.mergedInto) o.mergedInto = p.mergedInto; else delete o.mergedInto; delete p.mergedInto; }
 
       Object.keys(p).forEach((g) => {
         const f = ovField(e.kind, g);
@@ -160,12 +167,34 @@ export default function Inventory({ overrides, setOverrides }) {
     flash('All edits cleared');
   };
 
+  // ── Merge / de-duplicate ───────────────────────────────────────────────────
+  const displayName = (key) => { const e = INVENTORY_BY_KEY[key]; if (!e) return key; const o = overrides[key] || {}; return (o.name != null && o.name !== '' ? o.name : e.base.name) || key; };
+  const mergeInto = (dupK, masterK) => {
+    if (!masterK || masterK === dupK) return;
+    commit(dupK, { mergedInto: masterK });
+    const master = resolve(masterK), dup = resolve(dupK);
+    if ((!master.images || !master.images.length) && dup.img) commit(masterK, { images: [dup.img], img: dup.img });
+    setMergeKey(null);
+    flash('Merged into ' + displayName(masterK));
+  };
+  const unmerge = (key) => { commit(key, { mergedInto: null }); flash('Un-merged'); };
+
+  // Active (non-merged, non-blank) items — used by the merge picker & suggestions.
+  const activeItems = useMemo(() => ORDER.map(resolve).filter((r) => !r.mergedInto && !isBlankEntity(INVENTORY_BY_KEY[r.key])), [overrides]); // eslint-disable-line
+  const mergedCount = useMemo(() => ORDER.filter((k) => (overrides[k] || {}).mergedInto).length, [overrides, ORDER]);
+  const dupGroups = useMemo(() => {
+    const m = {};
+    activeItems.forEach((r) => { const k = dupKey(r); (m[k] = m[k] || []).push(r); });
+    return Object.values(m).filter((g) => g.length > 1).map((g) => ({ items: g, master: pickMaster(g) }));
+  }, [activeItems]);
+
   // ── Filtering / sorting ────────────────────────────────────────────────────
   const rows = useMemo(() => {
     const q = search.trim().toLowerCase();
     let out = ORDER.map(resolve).filter((r) => {
       const e = INVENTORY_BY_KEY[r.key];
       if (!showBlank && isBlankEntity(e)) return false;
+      if (!showMerged && r.mergedInto) return false;
       if (fCat && r.category !== fCat) return false;
       if (fMat && r.material !== fMat) return false;
       if (fAvail === 'low' && !(r.qty != null && r.qty > 0 && r.qty <= 2)) return false;
@@ -191,7 +220,7 @@ export default function Inventory({ overrides, setOverrides }) {
     if (by[sort]) out.sort(by[sort]);
     return out;
   // eslint-disable-next-line
-  }, [overrides, search, fCat, fMat, fAvail, sort, showBlank]);
+  }, [overrides, search, fCat, fMat, fAvail, sort, showBlank, showMerged]);
 
   const stats = useMemo(() => {
     let items = 0, units = 0, retailVal = 0, online = 0, low = 0, out = 0;
@@ -265,6 +294,7 @@ export default function Inventory({ overrides, setOverrides }) {
             </div>
           </div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <button onClick={() => setSuggestOpen(true)} style={ghost()}>Find duplicates{dupGroups.length ? ` (${dupGroups.length})` : ''}…</button>
             <button onClick={() => setBulkOpen(true)} style={ghost()}>Bulk adjust…</button>
             <button onClick={() => exportData('csv')} style={ghost()}>Export CSV</button>
             <button onClick={() => exportData('json')} style={ghost()}>Export JSON</button>
@@ -291,11 +321,18 @@ export default function Inventory({ overrides, setOverrides }) {
         <Pick value={fAvail} onChange={setFAvail} all="All availability" options={[['online', 'Online'], ['offline', 'Offline'], ['onsale', 'On sale'], ['noimage', 'No image'], ['low', 'Low stock'], ['out', 'Sold out'], ['in', 'In stock'], ['nocost', 'Missing cost']]} pairs />
         <Pick value={sort} onChange={setSort} all="Sort: default order" options={[['name', 'Name A–Z'], ['price-desc', 'Highest price'], ['price-asc', 'Lowest price'], ['units', 'Fewest units'], ['units-desc', 'Most units'], ['margin', 'Highest margin'], ['value', 'Highest value']]} pairs />
         {anyFilter && <button onClick={() => { setSearch(''); setFCat(''); setFMat(''); setFAvail(''); setSort('default'); }} style={{ background: 'transparent', border: 'none', color: T.accent, fontSize: 12, cursor: 'pointer', letterSpacing: '0.06em' }}>Clear</button>}
-        {blankCount > 0 &&
-          <label style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 12, color: T.muted, cursor: 'pointer', letterSpacing: '0.04em', userSelect: 'none' }}>
-            <input type="checkbox" checked={showBlank} onChange={(e) => setShowBlank(e.target.checked)} style={{ accentColor: T.accent }} />
-            Show {blankCount} blank stock SKUs
-          </label>}
+        <div style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 16 }}>
+          {mergedCount > 0 &&
+            <label style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 12, color: T.muted, cursor: 'pointer', letterSpacing: '0.04em', userSelect: 'none' }}>
+              <input type="checkbox" checked={showMerged} onChange={(e) => setShowMerged(e.target.checked)} style={{ accentColor: T.accent }} />
+              Show {mergedCount} merged
+            </label>}
+          {blankCount > 0 &&
+            <label style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 12, color: T.muted, cursor: 'pointer', letterSpacing: '0.04em', userSelect: 'none' }}>
+              <input type="checkbox" checked={showBlank} onChange={(e) => setShowBlank(e.target.checked)} style={{ accentColor: T.accent }} />
+              Show {blankCount} blank stock SKUs
+            </label>}
+        </div>
       </div>
 
       <div style={{ padding: '16px 28px 80px' }}>
@@ -309,7 +346,7 @@ export default function Inventory({ overrides, setOverrides }) {
               </tr>
             </thead>
             <tbody>
-              {rows.map((r) => <ItemRow key={r.key} r={r} edited={itemEdited(r.key)} fieldEdited={fieldEdited} commit={commit} onEdit={() => setEditKey(r.key)} />)}
+              {rows.map((r) => <ItemRow key={r.key} r={r} edited={itemEdited(r.key)} fieldEdited={fieldEdited} commit={commit} onEdit={() => setEditKey(r.key)} onMerge={() => setMergeKey(r.key)} onUnmerge={() => unmerge(r.key)} masterName={r.mergedInto ? displayName(r.mergedInto) : null} />)}
               {rows.length === 0 && <tr><td colSpan={9} style={{ padding: 56, textAlign: 'center', color: T.muted, fontFamily: T.serif, fontSize: 20 }}>No items match the current filters.</td></tr>}
             </tbody>
           </table>
@@ -318,6 +355,8 @@ export default function Inventory({ overrides, setOverrides }) {
 
       {editing && <ItemDrawer r={editing} base={INVENTORY_BY_KEY[editKey].base} fieldEdited={fieldEdited} commit={commit} resetItem={resetItem} onClose={() => setEditKey(null)} />}
       {bulkOpen && <BulkModal rows={rows} onApply={applyBulk} onClose={() => setBulkOpen(false)} />}
+      {mergeKey && <MergePicker row={resolve(mergeKey)} candidates={activeItems.filter((c) => c.key !== mergeKey)} onPick={(masterK) => mergeInto(mergeKey, masterK)} onClose={() => setMergeKey(null)} />}
+      {suggestOpen && <SuggestModal groups={dupGroups} onMerge={mergeInto} onClose={() => setSuggestOpen(false)} />}
       {toast && <div style={{ position: 'fixed', bottom: 26, left: '50%', transform: 'translateX(-50%)', zIndex: 60, background: T.ink, color: T.panel, padding: '12px 22px', fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', boxShadow: '0 10px 30px rgba(0,0,0,0.25)' }}>{toast}</div>}
     </div>
   );
@@ -333,11 +372,11 @@ function Stat({ label, value, sub, accent }) {
   );
 }
 
-function ItemRow({ r, edited, fieldEdited, commit, onEdit }) {
+function ItemRow({ r, edited, fieldEdited, commit, onEdit, onMerge, onUnmerge, masterName }) {
   const statusColor = { 'Sold out': T.danger, 'Archived': T.faint, 'Low stock': T.accent, 'Made to order': T.muted }[r.stock] || T.good;
   const lowQty = r.qty != null && r.qty <= 2;
   return (
-    <tr style={{ borderBottom: `1px solid ${T.line}`, background: edited ? 'rgba(138,106,59,0.045)' : 'transparent' }}>
+    <tr style={{ borderBottom: `1px solid ${T.line}`, background: edited ? 'rgba(138,106,59,0.045)' : 'transparent', opacity: r.mergedInto ? 0.55 : 1 }}>
       <td style={{ padding: '10px 14px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ width: 42, height: 42, flexShrink: 0, background: T.card, border: `1px solid ${T.line}`, overflow: 'hidden', position: 'relative' }}>
@@ -349,7 +388,9 @@ function ItemRow({ r, edited, fieldEdited, commit, onEdit }) {
             <div style={{ fontSize: 10, color: T.faint, letterSpacing: '0.1em', marginTop: 3, display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
               <span><span style={{ color: T.muted }}>SKU</span> {r.salesCode || r.key}</span>
               {r.productionCode && <span><span style={{ color: T.muted }}>MODEL</span> {r.productionCode}</span>}
-              <span style={{ color: r.online ? T.good : T.faint, letterSpacing: '0.06em' }}>{r.online ? '● online' : '○ offline'}</span>
+              {r.mergedInto
+                ? <span style={{ color: T.accent, letterSpacing: '0.06em' }}>merged → {masterName}</span>
+                : <span style={{ color: r.online ? T.good : T.faint, letterSpacing: '0.06em' }}>{r.online ? '● online' : '○ offline'}</span>}
             </div>
           </div>
         </div>
@@ -379,7 +420,14 @@ function ItemRow({ r, edited, fieldEdited, commit, onEdit }) {
       </td>
       <td style={{ padding: '10px 14px', textAlign: 'right', whiteSpace: 'nowrap' }}>
         <div style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
-          <PublishPill on={r.online} onToggle={() => commit(r.key, { online: !r.online })} />
+          {r.mergedInto ? (
+            <button onClick={onUnmerge} style={{ ...ghost(), padding: '7px 12px', fontSize: 10 }}>Un-merge</button>
+          ) : (
+            <>
+              <button onClick={onMerge} title="Merge this into another item" style={{ ...ghost(), padding: '7px 10px', fontSize: 10 }}>Merge…</button>
+              <PublishPill on={r.online} onToggle={() => commit(r.key, { online: !r.online })} />
+            </>
+          )}
           <button onClick={onEdit} style={{ ...ghost(), padding: '7px 12px', fontSize: 10 }}>Edit</button>
         </div>
       </td>
@@ -477,6 +525,101 @@ function BulkModal({ rows, onApply, onClose }) {
   );
 }
 
+// ─────────────────────────────────────────────────── MergePicker ────
+// Pick the master to merge the current row into (searchable list of active items).
+function MergePicker({ row, candidates, onPick, onClose }) {
+  const [q, setQ] = useState('');
+  const s = q.trim().toLowerCase();
+  const list = (s ? candidates.filter((c) => (c.name || '').toLowerCase().includes(s) || (c.salesCode || '').toLowerCase().includes(s) || c.key.toLowerCase().includes(s)) : candidates).slice(0, 80);
+  return (
+    <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(20,16,10,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ width: 520, maxWidth: '100%', maxHeight: '82vh', display: 'flex', flexDirection: 'column', background: T.panel, border: `1px solid ${T.line2}`, boxShadow: '0 30px 70px rgba(0,0,0,0.3)' }}>
+        <div style={{ padding: '20px 24px', borderBottom: `1px solid ${T.line}` }}>
+          <div style={{ fontFamily: T.serif, fontSize: 24 }}>Merge into…</div>
+          <div style={{ fontSize: 12, color: T.muted, marginTop: 5 }}>Hide <strong style={{ color: T.ink }}>{row.name || row.key}</strong> and keep the item you pick as the master. Reversible at any time.</div>
+        </div>
+        <div style={{ padding: '14px 24px' }}>
+          <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search the item to keep…" style={{ width: '100%', background: T.card, border: `1px solid ${T.line2}`, color: T.ink, padding: '10px 12px', fontSize: 13, fontFamily: T.sans, outline: 'none', boxSizing: 'border-box' }} />
+        </div>
+        <div style={{ overflowY: 'auto', padding: '0 12px 12px' }}>
+          {list.map((c) => (
+            <button key={c.key} onClick={() => onPick(c.key)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '8px 12px', background: 'transparent', border: 'none', borderBottom: `1px solid ${T.line}`, cursor: 'pointer', textAlign: 'left' }}>
+              <div style={{ width: 36, height: 36, flexShrink: 0, background: T.card, border: `1px solid ${T.line}`, overflow: 'hidden' }}>
+                {c.img && <img src={c.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} onError={(e) => { e.target.style.display = 'none'; }} />}
+              </div>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ fontFamily: T.serif, fontSize: 15, color: T.ink }}>{c.name || c.key}</div>
+                <div style={{ fontSize: 10, color: T.faint, letterSpacing: '0.08em' }}>{c.salesCode || c.key} · {c.category} · {c.images.length} photo{c.images.length === 1 ? '' : 's'}</div>
+              </div>
+            </button>
+          ))}
+          {list.length === 0 && <div style={{ padding: 24, textAlign: 'center', color: T.muted }}>No matching items.</div>}
+        </div>
+        <div style={{ padding: '14px 24px', borderTop: `1px solid ${T.line}`, textAlign: 'right' }}>
+          <button onClick={onClose} style={ghost()}>Cancel</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────── SuggestModal ────
+// Auto-grouped duplicate suggestions: same category + same normalised name. The
+// master is pre-selected (most photos, then a real code); the admin confirms.
+function SuggestModal({ groups, onMerge, onClose }) {
+  const [masters, setMasters] = useState({});
+  const [done, setDone] = useState({});
+  const masterFor = (g, i) => masters[i] || g.master.key;
+  const mergeGroup = (g, i) => {
+    const mk = masterFor(g, i);
+    g.items.forEach((it) => { if (it.key !== mk) onMerge(it.key, mk); });
+    setDone((d) => ({ ...d, [i]: true }));
+  };
+  return (
+    <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(20,16,10,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ width: 640, maxWidth: '100%', maxHeight: '85vh', display: 'flex', flexDirection: 'column', background: T.panel, border: `1px solid ${T.line2}`, boxShadow: '0 30px 70px rgba(0,0,0,0.3)' }}>
+        <div style={{ padding: '20px 24px', borderBottom: `1px solid ${T.line}` }}>
+          <div style={{ fontFamily: T.serif, fontSize: 24 }}>Suggested duplicates</div>
+          <div style={{ fontSize: 12, color: T.muted, marginTop: 5 }}>{groups.length} group{groups.length === 1 ? '' : 's'} of same-name items in the same category. Choose the master (most photos pre-selected) and merge the rest into it.</div>
+        </div>
+        <div style={{ overflowY: 'auto', padding: '8px 24px 12px' }}>
+          {groups.length === 0 && <div style={{ padding: 28, textAlign: 'center', color: T.muted, fontFamily: T.serif, fontSize: 18 }}>No duplicates found.</div>}
+          {groups.map((g, i) => (
+            <div key={i} style={{ borderBottom: `1px solid ${T.line}`, padding: '14px 0', opacity: done[i] ? 0.5 : 1 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8, gap: 12 }}>
+                <div style={{ fontFamily: T.serif, fontSize: 16 }}>{g.items[0].name} <span style={{ fontSize: 11, color: T.faint }}>· {g.items[0].category} · {g.items.length} items</span></div>
+                {!done[i]
+                  ? <button onClick={() => mergeGroup(g, i)} style={{ background: T.ink, color: T.panel, border: 'none', padding: '8px 16px', fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: T.sans, whiteSpace: 'nowrap' }}>Merge {g.items.length - 1} →</button>
+                  : <span style={{ fontSize: 11, color: T.good, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Merged ✓</span>}
+              </div>
+              <div style={{ display: 'grid', gap: 6 }}>
+                {g.items.map((it) => {
+                  const isMaster = masterFor(g, i) === it.key;
+                  return (
+                    <label key={it.key} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 10px', border: `1px solid ${isMaster ? T.accent : T.line}`, background: isMaster ? 'rgba(138,106,59,0.07)' : T.card, cursor: done[i] ? 'default' : 'pointer' }}>
+                      <input type="radio" name={`master-${i}`} checked={isMaster} disabled={done[i]} onChange={() => setMasters((m) => ({ ...m, [i]: it.key }))} style={{ accentColor: T.accent }} />
+                      <div style={{ width: 30, height: 30, flexShrink: 0, background: T.bg, border: `1px solid ${T.line}`, overflow: 'hidden' }}>
+                        {it.img && <img src={it.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} onError={(e) => { e.target.style.display = 'none'; }} />}
+                      </div>
+                      <span style={{ flex: 1, minWidth: 0, fontSize: 13, color: T.ink }}>{it.sub || it.material || '—'}
+                        <span style={{ fontSize: 10, color: T.faint, marginLeft: 8 }}>{it.salesCode || it.key} · {it.images.length} img</span>
+                      </span>
+                      {isMaster && <span style={{ fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: T.accent }}>Master</span>}
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ padding: '14px 24px', borderTop: `1px solid ${T.line}`, textAlign: 'right' }}>
+          <button onClick={onClose} style={ghost()}>Done</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─────────────────────────────────────────────────── ItemDrawer ────
 function ItemDrawer({ r, base, fieldEdited, commit, resetItem, onClose }) {
   return (
@@ -490,7 +633,7 @@ function ItemDrawer({ r, base, fieldEdited, commit, resetItem, onClose }) {
             </div>
             <div style={{ minWidth: 0 }}>
               <div style={{ fontFamily: T.serif, fontSize: 21, lineHeight: 1.12 }}>{r.name || 'Unnamed SKU'}</div>
-              <div style={{ fontSize: 10, color: T.faint, letterSpacing: '0.1em', marginTop: 4 }}>{r.salesCode || r.key} · {r.kind === 'catalogue' ? 'catalogue item' : 'stock SKU'}</div>
+              <div style={{ fontSize: 10, color: T.faint, letterSpacing: '0.1em', marginTop: 4 }}>{r.salesCode || r.key} · {r.kind === 'ledger' ? 'stock SKU' : (r.kind === 'extra' ? 'collaboration item' : 'catalogue item')}</div>
             </div>
           </div>
           <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: T.muted, fontSize: 22, cursor: 'pointer', lineHeight: 1 }}>×</button>
@@ -507,7 +650,7 @@ function ItemDrawer({ r, base, fieldEdited, commit, resetItem, onClose }) {
             <div style={{ fontSize: 11.5, color: T.muted, lineHeight: 1.6, marginTop: 10 }}>
               {r.online
                 ? <>Live on the storefront. <a href={`/product/${encodeURIComponent(r.key)}`} target="_blank" rel="noreferrer" style={{ color: T.accent }}>View on site →</a></>
-                : (r.kind === 'catalogue' ? 'Offline (archived) — switch on to list it on the live storefront again.' : 'Publish to list this stock line on the live storefront. You can publish now and add images later.')}
+                : (r.kind !== 'ledger' ? 'Offline (archived) — switch on to list it on the live storefront again.' : 'Publish to list this stock line on the live storefront. You can publish now and add images later.')}
             </div>
           </div>
 

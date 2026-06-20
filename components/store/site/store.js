@@ -59,6 +59,22 @@ export function removeFromCart(id) {
   writeCart(readCart().filter((i) => i.id !== id));
 }
 
+// Rewrite cart entries whose item was merged into a master (ALIASES from
+// buildSiteData), so existing carts survive an admin merge. Merges quantities of
+// any duplicate that now points at the same master. No-op when nothing changed.
+export function migrateCartAliases(aliases) {
+  if (!aliases || !Object.keys(aliases).length) return;
+  const items = readCart();
+  let changed = false;
+  const merged = {};
+  items.forEach((i) => {
+    const id = aliases[i.id] || i.id;
+    if (id !== i.id) changed = true;
+    merged[id] = (merged[id] || 0) + i.qty;
+  });
+  if (changed) writeCart(Object.keys(merged).map((id) => ({ id, qty: merged[id] })));
+}
+
 export function cartTotal(items, byId) {
   return items.reduce((s, i) => s + ((byId[i.id] || {}).price || 0) * i.qty, 0);
 }
@@ -84,6 +100,6 @@ export function showToast(msg) {
 export const SiteDataContext = createContext(null);
 export function useSiteData() {
   return useContext(SiteDataContext) || {
-    SITE_PRODUCTS: [], SITE_BY_ID: {}, TASHI_PRODUCTS: [], HOME_BEST: [], MEGA_FEATURED: [], settings: {}, content: resolveContent({}),
+    SITE_PRODUCTS: [], SITE_BY_ID: {}, TASHI_PRODUCTS: [], HOME_BEST: [], MEGA_FEATURED: [], ALIASES: {}, settings: {}, content: resolveContent({}),
   };
 }
