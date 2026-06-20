@@ -7,6 +7,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { createContext, useContext, useEffect, useState } from 'react';
+import { resolveContent } from '@/lib/data/site-data';
 
 // ── Cart store (localStorage-backed) ─────────────────────────────────────────
 const CART_KEY = 'malaya-site-cart-v1';
@@ -83,6 +84,6 @@ export function showToast(msg) {
 export const SiteDataContext = createContext(null);
 export function useSiteData() {
   return useContext(SiteDataContext) || {
-    SITE_PRODUCTS: [], SITE_BY_ID: {}, TASHI_PRODUCTS: [], HOME_BEST: [], MEGA_FEATURED: [], settings: {},
+    SITE_PRODUCTS: [], SITE_BY_ID: {}, TASHI_PRODUCTS: [], HOME_BEST: [], MEGA_FEATURED: [], settings: {}, content: resolveContent({}),
   };
 }

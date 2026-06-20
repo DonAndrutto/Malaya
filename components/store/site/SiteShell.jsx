@@ -9,7 +9,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  CATEGORIES, COLLECTIONS, SITE_NAV, SITE_INFO, fmtPrice, siteImg, cdnFallback, posFor,
+  CATEGORIES, COLLECTIONS, fmtPrice, siteImg, cdnFallback, posFor,
 } from '@/lib/data/site-data';
 import { useCart, removeFromCart, cartTotal, useSiteData } from './store';
 
@@ -88,7 +88,7 @@ export function PageBanner({ title, subtitle, img }) {
 
 // ── Header ───────────────────────────────────────────────────────────────────
 function MegaMenu() {
-  const { MEGA_FEATURED } = useSiteData();
+  const { MEGA_FEATURED, content } = useSiteData();
   return (
     <div className="mega">
       <div className="mega-inner">
@@ -113,10 +113,10 @@ function MegaMenu() {
           </div>
         </div>
         <div className="mega-col mega-col-promo">
-          <img src={siteImg('mega4.jpg')} alt="Mystical Beings" />
-          <h4 className="mega-promo-title">Mystical Beings</h4>
-          <p className="mega-promo-desc">Add a splash of colour to your Jewelry with Malaya.</p>
-          <Link href={colHref('Mystical Beings')} className="btn-malaya btn-malaya-sm">Order Now</Link>
+          <img src={siteImg('mega4.jpg')} alt={content.mega.promoTitle} />
+          <h4 className="mega-promo-title">{content.mega.promoTitle}</h4>
+          <p className="mega-promo-desc">{content.mega.promoDesc}</p>
+          <Link href={colHref('Mystical Beings')} className="btn-malaya btn-malaya-sm">{content.mega.promoCta}</Link>
         </div>
       </div>
     </div>
@@ -156,6 +156,7 @@ function CartDropdown({ items }) {
 }
 
 function AccountDropdown() {
+  const { content } = useSiteData();
   return (
     <div className="hdr-drop hdr-drop-account">
       <a href="#" className="hdr-drop-link" onClick={(e) => e.preventDefault()}>Log In</a>
@@ -164,17 +165,25 @@ function AccountDropdown() {
       <a href="#" className="hdr-drop-link" onClick={(e) => e.preventDefault()}>FAQs</a>
       <a href="#" className="hdr-drop-link" onClick={(e) => e.preventDefault()}>Shipping &amp; Returns</a>
       <Link href="/contact" className="hdr-drop-link">Contact Us</Link>
-      <a href={'mailto:' + SITE_INFO.email} className="hdr-drop-link">Send an Email</a>
-      <span className="hdr-drop-note">Call us on WhatsApp: {SITE_INFO.whatsapp}</span>
+      <a href={'mailto:' + content.contact.email} className="hdr-drop-link">Send an Email</a>
+      <span className="hdr-drop-note">Call us on WhatsApp: {content.contact.whatsapp}</span>
     </div>
   );
 }
 
 export function SiteHeader() {
   const pathname = usePathname() || '/';
-  const { settings } = useSiteData();
+  const { settings, content } = useSiteData();
   const items = useCart();
   const count = items.reduce((s, i) => s + i.qty, 0);
+  const NAV = [
+    { label: content.nav.home, path: '/' },
+    { label: content.nav.catalogue, path: '/catalogue', mega: true },
+    { label: content.nav.tashi, path: '/tashi' },
+    { label: content.nav.contact, path: '/contact' },
+    { label: content.nav.about, path: '/about' },
+    { label: content.nav.instagram, href: content.contact.instagram },
+  ];
   return (
     <header className="site-header">
       <div className="hdr-top">
@@ -201,7 +210,7 @@ export function SiteHeader() {
       </div>
       <nav className="hdr-nav">
         <div className="site-container hdr-nav-inner">
-          {SITE_NAV.map((item) => {
+          {NAV.map((item) => {
             if (item.href) {
               return <a key={item.label} className="hdr-nav-link" href={item.href} target="_blank" rel="noreferrer">{item.label}</a>;
             }
@@ -229,20 +238,22 @@ export function SiteHeader() {
 
 // ── Footer ───────────────────────────────────────────────────────────────────
 export function SiteFooter() {
+  const { content } = useSiteData();
+  const ct = content.contact;
   return (
     <footer className="site-footer">
       <div className="ftr-contact-strip">
         <div className="site-container">
-          <h3>Questions about Malaya Jewelry? <Link href="/contact">Contact Us</Link></h3>
+          <h3>{content.footer.contactStrip} <Link href="/contact">Contact Us</Link></h3>
         </div>
       </div>
       <div className="site-container ftr-cols">
         <div className="ftr-col">
           <h4 className="ftr-head">Malaya Information</h4>
-          {SITE_INFO.address.map((l) => <p key={l} className="ftr-line">{l}</p>)}
+          {ct.address.map((l) => <p key={l} className="ftr-line">{l}</p>)}
           <p className="ftr-line" style={{ marginTop: 14 }}>Call us now on WhatsApp:<br />
-            <a href={SITE_INFO.whatsappUrl} target="_blank" rel="noreferrer">{SITE_INFO.whatsapp}</a></p>
-          <p className="ftr-line">Email: <a href={'mailto:' + SITE_INFO.email}>{SITE_INFO.email}</a></p>
+            <a href={ct.whatsappUrl} target="_blank" rel="noreferrer">{ct.whatsapp}</a></p>
+          <p className="ftr-line">Email: <a href={'mailto:' + ct.email}>{ct.email}</a></p>
         </div>
         <div className="ftr-col">
           <h4 className="ftr-head">Info Links</h4>
@@ -255,18 +266,18 @@ export function SiteFooter() {
         </div>
         <div className="ftr-col">
           <h4 className="ftr-head">Follow Us</h4>
-          <p className="ftr-line">Get latest news and proposals</p>
+          <p className="ftr-line">{content.footer.followNote}</p>
           <div className="ftr-social">
-            <a href={SITE_INFO.facebook} target="_blank" rel="noreferrer" title="Malaya Jewelry on Facebook">f</a>
-            <a href={SITE_INFO.instagram} target="_blank" rel="noreferrer" title="Malaya Jewelry on Instagram">IG</a>
-            <a href={SITE_INFO.whatsappUrl} target="_blank" rel="noreferrer" title="Chat on WhatsApp">✆</a>
+            <a href={ct.facebook} target="_blank" rel="noreferrer" title="Malaya Jewelry on Facebook">f</a>
+            <a href={ct.instagram} target="_blank" rel="noreferrer" title="Malaya Jewelry on Instagram">IG</a>
+            <a href={ct.whatsappUrl} target="_blank" rel="noreferrer" title="Chat on WhatsApp">✆</a>
           </div>
         </div>
       </div>
       <div className="ftr-bottom">
         <div className="site-container">
-          <span>© 2018–2026 Malaya Jewelry</span>
-          <span>Thimphu, Bhutan · <Link href="/admin" title="Studio administration" style={{ color: 'inherit' }}>Studio admin</Link></span>
+          <span>{content.footer.copyright}</span>
+          <span>{content.footer.location} · <Link href="/admin" title="Studio administration" style={{ color: 'inherit' }}>Studio admin</Link></span>
         </div>
       </div>
     </footer>

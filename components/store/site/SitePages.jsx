@@ -10,7 +10,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   CATEGORIES, COLLECTIONS, fmtPrice, siteImg, posFor,
-  HOME_HERO, HOME_TILES, TASHI_INTRO, ABOUT_LEAD, ABOUT_BODY, SITE_INFO,
+  HOME_HERO, HOME_TILES,
 } from '@/lib/data/site-data';
 import {
   useCart, addToCart, setCartQty, removeFromCart, cartTotal, showToast, useSiteData,
@@ -21,7 +21,7 @@ const catHref = (c) => `/catalogue?category=${encodeURIComponent(c)}`;
 const colHref = (c) => `/catalogue?collection=${encodeURIComponent(c)}`;
 
 // ── Home ─────────────────────────────────────────────────────────────────────
-function HeroSlider({ slides, settings }) {
+function HeroSlider({ slides, settings, content }) {
   const [idx, setIdx] = useState(0);
   useEffect(() => {
     const t = setInterval(() => setIdx((i) => (i + 1) % slides.length), 5200);
@@ -34,9 +34,9 @@ function HeroSlider({ slides, settings }) {
           style={{ backgroundImage: `url(${src})`, backgroundPosition: posFor(settings, src) }} />
       ))}
       <div className="hero-overlay">
-        <h2 className="hero-title">Malaya Jewelry</h2>
-        <span className="hero-sub">Bhutan</span>
-        <Link className="btn-malaya" href="/catalogue">View All Collections</Link>
+        <h2 className="hero-title">{content.hero.title}</h2>
+        <span className="hero-sub">{content.hero.subtitle}</span>
+        <Link className="btn-malaya" href="/catalogue">{content.hero.cta}</Link>
       </div>
       <button className="hero-arrow hero-arrow-l" onClick={() => setIdx((idx + slides.length - 1) % slides.length)}>‹</button>
       <button className="hero-arrow hero-arrow-r" onClick={() => setIdx((idx + 1) % slides.length)}>›</button>
@@ -51,21 +51,21 @@ function HeroSlider({ slides, settings }) {
 }
 
 export function HomePage() {
-  const { HOME_BEST, settings } = useSiteData();
+  const { HOME_BEST, settings, content } = useSiteData();
   const slides = settings.heroSlides && settings.heroSlides.length ? settings.heroSlides : HOME_HERO;
   const homeBannerSrc = settings.homeBanner || siteImg('banner12.jpg');
   return (
     <main className="malaya-page" data-screen-label="Home">
-      <HeroSlider slides={slides} settings={settings} />
+      <HeroSlider slides={slides} settings={settings} content={content} />
 
       <section className="home-tiles site-container">
         {HOME_TILES.map((t) => {
           const tileSrc = (settings.homeTiles && settings.homeTiles[t.cat]) || t.img;
           return (
-          <Link key={t.title} className="home-tile" href={catHref(t.cat)}>
-            <SiteImg src={tileSrc} alt={t.title} style={{ objectPosition: posFor(settings, tileSrc) }} />
+          <Link key={t.cat} className="home-tile" href={catHref(t.cat)}>
+            <SiteImg src={tileSrc} alt={content.home.tiles[t.cat] || t.title} style={{ objectPosition: posFor(settings, tileSrc) }} />
             <span className="home-tile-body">
-              <span className="home-tile-title">{t.title}</span>
+              <span className="home-tile-title">{content.home.tiles[t.cat] || t.title}</span>
               <span className="home-tile-cta">View All</span>
             </span>
           </Link>
@@ -74,20 +74,20 @@ export function HomePage() {
       </section>
 
       <section className="home-best site-container">
-        <h2 className="section-title">Malaya Jewelry</h2>
+        <h2 className="section-title">{content.home.sectionTitle}</h2>
         <div className="rule-dot" />
         <div className="pgrid pgrid-3">
           {HOME_BEST.map((p) => <SiteProductCard key={p.id} p={p} />)}
         </div>
         <div className="home-best-cta">
-          <Link className="btn-malaya" href="/catalogue">View All Collections</Link>
+          <Link className="btn-malaya" href="/catalogue">{content.hero.cta}</Link>
         </div>
       </section>
 
       <section className="home-banner" style={{ backgroundImage: `url(${homeBannerSrc})`, backgroundPosition: posFor(settings, homeBannerSrc) }}>
         <div className="home-banner-inner">
-          <h2>Malaya Jewelry — Order Now</h2>
-          <Link className="btn-malaya btn-malaya-light" href="/catalogue">View All Collections</Link>
+          <h2>{content.home.bannerTitle}</h2>
+          <Link className="btn-malaya btn-malaya-light" href="/catalogue">{content.home.bannerCta}</Link>
         </div>
       </section>
     </main>
@@ -98,7 +98,7 @@ export function HomePage() {
 const PAGE_SIZE = 24;
 
 export function CataloguePage({ category, collection, q }) {
-  const { SITE_PRODUCTS } = useSiteData();
+  const { SITE_PRODUCTS, content } = useSiteData();
   const [cats, setCats] = useState(category ? [category] : []);
   const [cols, setCols] = useState(collection ? [collection] : []);
   const [search, setSearch] = useState(q || '');
@@ -138,7 +138,7 @@ export function CataloguePage({ category, collection, q }) {
 
   return (
     <main className="malaya-page" data-screen-label="Catalogue">
-      <PageBanner title={bannerTitle} subtitle="Malaya Jewelry" />
+      <PageBanner title={bannerTitle} subtitle={content.banners.catalogueSubtitle} />
       <div className="site-container shop-layout">
         <aside className="shop-sidebar">
           <input className="shop-search" type="search" placeholder="Search…" value={search}
@@ -203,7 +203,7 @@ export function CataloguePage({ category, collection, q }) {
 
 // ── Product detail ───────────────────────────────────────────────────────────
 export function ProductPage({ id }) {
-  const { SITE_PRODUCTS, SITE_BY_ID } = useSiteData();
+  const { SITE_PRODUCTS, SITE_BY_ID, content } = useSiteData();
   const p = SITE_BY_ID[id];
   const [qty, setQty] = useState(1);
   const [active, setActive] = useState(0);
@@ -293,7 +293,7 @@ export function ProductPage({ id }) {
             <button className="btn-malaya" disabled={sold}
               onClick={() => addToCart(p.id, qty)}>{sold ? 'Sold Out' : 'Add to Order'}</button>
           </div>
-          <a className="pd-whatsapp" href={SITE_INFO.whatsappUrl} target="_blank" rel="noreferrer">
+          <a className="pd-whatsapp" href={content.contact.whatsappUrl} target="_blank" rel="noreferrer">
             Ask about this piece on WhatsApp →
           </a>
         </div>
@@ -313,23 +313,23 @@ export function ProductPage({ id }) {
 
 // ── Tashi Mannox collaboration ───────────────────────────────────────────────
 export function TashiPage() {
-  const { TASHI_PRODUCTS, settings } = useSiteData();
+  const { TASHI_PRODUCTS, settings, content } = useSiteData();
   return (
     <main className="malaya-page" data-screen-label="Tashi Mannox">
-      <PageBanner title="Collaboration" subtitle="With Malaya Jewelry" />
+      <PageBanner title={content.banners.tashi.title} subtitle={content.banners.tashi.subtitle} />
       <div className="site-container tashi-intro">
         <div className="tashi-text">
-          <h3 className="tashi-kicker">Malaya Jewelry Collaboration With</h3>
-          <h2 className="tashi-name">Tashi Mannox</h2>
-          <h4 className="tashi-role">Calligraphy Artist</h4>
-          {TASHI_INTRO.map((para, i) => <p key={i} className="tashi-para">{para}</p>)}
+          <h3 className="tashi-kicker">{content.tashi.kicker}</h3>
+          <h2 className="tashi-name">{content.tashi.name}</h2>
+          <h4 className="tashi-role">{content.tashi.role}</h4>
+          {content.tashi.intro.map((para, i) => <p key={i} className="tashi-para">{para}</p>)}
         </div>
         <div className="tashi-photo">
-          <SiteImg src={settings.tashiPhoto || siteImg('Tashi-Mannox.jpg')} alt="Tashi Mannox" />
+          <SiteImg src={settings.tashiPhoto || siteImg('Tashi-Mannox.jpg')} alt={content.tashi.name} />
         </div>
       </div>
       <section className="site-container tashi-products">
-        <h2 className="section-title">Tashi Mannox &amp; Malaya Jewelry</h2>
+        <h2 className="section-title">{content.tashi.productsTitle}</h2>
         <div className="rule-dot" />
         <div className="pgrid pgrid-3">
           {TASHI_PRODUCTS.map((p) => <SiteProductCard key={p.id} p={p} />)}
@@ -341,24 +341,25 @@ export function TashiPage() {
 
 // ── About ────────────────────────────────────────────────────────────────────
 export function AboutPage() {
-  const { settings } = useSiteData();
+  const { settings, content } = useSiteData();
+  const about = content.about;
   return (
     <main className="malaya-page" data-screen-label="About">
-      <PageBanner title="About" subtitle="Malaya Jewelry" img={settings.aboutBanner || siteImg('banner31.jpg')} />
+      <PageBanner title={content.banners.about.title} subtitle={content.banners.about.subtitle} img={settings.aboutBanner || siteImg('banner31.jpg')} />
       <article className="site-container about-article">
-        <p className="about-date">Oct 23, 2016</p>
-        <h1 className="about-title">Malaya Jewelry Bhutan</h1>
-        <p className="about-lead">{ABOUT_LEAD}</p>
+        <p className="about-date">{about.date}</p>
+        <h1 className="about-title">{about.title}</h1>
+        <p className="about-lead">{about.lead}</p>
         <div className="about-tags">
           {CATEGORIES.map((c) => <Link key={c} href={catHref(c)}>{c}</Link>)}
         </div>
-        <p className="about-from">A letter from: The Shop Team at Malaya Jewelry in Bhutan</p>
-        <p className="about-para">{ABOUT_BODY[0]}</p>
+        <p className="about-from">{about.from}</p>
+        <p className="about-para">{about.body[0]}</p>
         <figure className="about-figure">
           <SiteImg src={siteImg('malaya-jewelry-hand-craft.jpg')} alt="Malaya Jewelry hand craft" />
-          <figcaption>Malaya Jewelry — inspired by traditional Bhutanese and Buddhist iconography</figcaption>
+          <figcaption>{about.caption}</figcaption>
         </figure>
-        {ABOUT_BODY.slice(1).map((para, i) => <p key={i} className="about-para">{para}</p>)}
+        {about.body.slice(1).map((para, i) => <p key={i} className="about-para">{para}</p>)}
       </article>
     </main>
   );
@@ -366,30 +367,32 @@ export function AboutPage() {
 
 // ── Contact ──────────────────────────────────────────────────────────────────
 export function ContactPage() {
+  const { content } = useSiteData();
+  const ct = content.contact;
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
   const submit = (e) => {
     e.preventDefault();
     const body = encodeURIComponent(form.message + '\n\n— ' + form.name + ' (' + form.email + ')');
-    window.open('mailto:' + SITE_INFO.email + '?subject=' + encodeURIComponent('Malaya Jewelry enquiry') + '&body=' + body);
+    window.open('mailto:' + ct.email + '?subject=' + encodeURIComponent('Malaya Jewelry enquiry') + '&body=' + body);
     showToast('Opening your email app…');
   };
   return (
     <main className="malaya-page" data-screen-label="Contact">
-      <PageBanner title="Contact" subtitle="Malaya Jewelry" />
+      <PageBanner title={content.banners.contact.title} subtitle={content.banners.contact.subtitle} />
       <div className="site-container contact-layout">
         <div className="contact-info">
           <h2 className="section-title" style={{ textAlign: 'left' }}>Visit Us</h2>
-          {SITE_INFO.address.map((l) => <p key={l} className="ftr-line" style={{ color: '#555' }}>{l}</p>)}
+          {ct.address.map((l) => <p key={l} className="ftr-line" style={{ color: '#555' }}>{l}</p>)}
           <h4 className="shop-filter-head" style={{ marginTop: 26 }}>WhatsApp</h4>
-          <p><a className="contact-link" href={SITE_INFO.whatsappUrl} target="_blank" rel="noreferrer">{SITE_INFO.whatsapp}</a></p>
+          <p><a className="contact-link" href={ct.whatsappUrl} target="_blank" rel="noreferrer">{ct.whatsapp}</a></p>
           <h4 className="shop-filter-head">Email</h4>
-          <p><a className="contact-link" href={'mailto:' + SITE_INFO.email}>{SITE_INFO.email}</a></p>
+          <p><a className="contact-link" href={'mailto:' + ct.email}>{ct.email}</a></p>
           <h4 className="shop-filter-head">Follow</h4>
           <div className="ftr-social ftr-social-dark">
-            <a href={SITE_INFO.facebook} target="_blank" rel="noreferrer" title="Facebook">f</a>
-            <a href={SITE_INFO.instagram} target="_blank" rel="noreferrer" title="Instagram">IG</a>
-            <a href={SITE_INFO.whatsappUrl} target="_blank" rel="noreferrer" title="WhatsApp">✆</a>
+            <a href={ct.facebook} target="_blank" rel="noreferrer" title="Facebook">f</a>
+            <a href={ct.instagram} target="_blank" rel="noreferrer" title="Instagram">IG</a>
+            <a href={ct.whatsappUrl} target="_blank" rel="noreferrer" title="WhatsApp">✆</a>
           </div>
         </div>
         <form className="contact-form" onSubmit={submit}>
@@ -406,12 +409,12 @@ export function ContactPage() {
 
 // ── Order / cart ─────────────────────────────────────────────────────────────
 export function OrderPage() {
-  const { SITE_BY_ID } = useSiteData();
+  const { SITE_BY_ID, content } = useSiteData();
   const items = useCart();
   const total = cartTotal(items, SITE_BY_ID);
   return (
     <main className="malaya-page" data-screen-label="My Order">
-      <PageBanner title="My Order" subtitle="Malaya Jewelry" />
+      <PageBanner title={content.banners.order.title} subtitle={content.banners.order.subtitle} />
       <div className="site-container order-layout">
         {items.length === 0 ? (
           <div className="order-empty">
@@ -456,7 +459,7 @@ export function OrderPage() {
               <h4 className="shop-filter-head">Order Summary</h4>
               <div className="order-total"><span>TOTAL</span><strong>{total.toLocaleString('en-US')} USD</strong></div>
               <a className="btn-malaya btn-malaya-gold" style={{ display: 'block', textAlign: 'center' }}
-                href={SITE_INFO.whatsappUrl} target="_blank" rel="noreferrer">Checkout via WhatsApp</a>
+                href={content.contact.whatsappUrl} target="_blank" rel="noreferrer">Checkout via WhatsApp</a>
               <p className="order-note">We confirm availability, shipping and payment over WhatsApp or email.</p>
             </aside>
           </div>

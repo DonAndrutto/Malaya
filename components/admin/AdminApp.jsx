@@ -9,6 +9,7 @@ import { FIREBASE_ENABLED } from '@/lib/firebase';
 import { signIn, signOutUser, subscribeAuth, friendlyAuthError } from '@/lib/auth';
 import Inventory from './Inventory';
 import MassEdit from './MassEdit';
+import SiteContent from './SiteContent';
 import SiteImages from './SiteImages';
 
 const SESSION_KEY = 'malaya:admin:session';
@@ -290,7 +291,7 @@ function Console({ user, onLogout }) {
     try { localStorage.setItem('malaya:admin:tab', tab); } catch {}
   }, [tab]);
 
-  const TABS = [['inventory', 'Inventory'], ['massedit', 'Mass edit'], ['site', 'Site images']];
+  const TABS = [['inventory', 'Inventory'], ['massedit', 'Mass edit'], ['content', 'Content'], ['site', 'Site images']];
   const tabBtn = (active) => ({ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: T.sans, fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', padding: '6px 2px', color: active ? T.ink : T.muted, borderBottom: `2px solid ${active ? T.accent : 'transparent'}` });
 
   return (
@@ -310,6 +311,7 @@ function Console({ user, onLogout }) {
 
       {tab === 'inventory' && <Inventory overrides={overrides} setOverrides={update} />}
       {tab === 'massedit' && <MassEdit overrides={overrides} setOverrides={update} editDrawer={EditDrawer} />}
+      {tab === 'content' && <SiteContent />}
       {tab === 'site' && <SiteImages />}
     </div>
   );
