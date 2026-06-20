@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { T } from './theme';
 import { PRODUCTS, COLLECTIONS, CATEGORIES, MATERIALS, STOCK_OPTIONS, fmtPrice } from '@/lib/data/products';
 import { saveOverrides } from '@/lib/overrides';
+import { useSort, sortRows, SortLabel } from './sortable';
 
 const ME_FIELDS = ['salesCode', 'productionCode', 'name', 'sub', 'category', 'collection', 'material', 'stock', 'listPrice', 'salePrice'];
 const mono = '"SFMono-Regular", ui-monospace, "Menlo", monospace';
@@ -41,6 +42,8 @@ export default function MassEdit({ overrides, setOverrides, editDrawer: EditDraw
   const [fCat, setFCat] = useState('');
   const [fMat, setFMat] = useState('');
   const [onlyEdited, setOnlyEdited] = useState(false);
+  const [showDeleted, setShowDeleted] = useState(false);
+  const { sort, toggle: toggleSort, clear: clearSort } = useSort();
   const [editId, setEditId] = useState(null);
   const [toast, setToast] = useState('');
   const flash = (msg) => setToast(msg);
@@ -86,6 +89,17 @@ export default function MassEdit({ overrides, setOverrides, editDrawer: EditDraw
     });
   };
   const resetItem = (id) => { setOverrides((prev) => { const n = { ...prev }; delete n[id]; saveOverrides(n); return n; }); flash('Item reset to original'); };
+  const isDeleted = (id) => !!(overrides[id] && overrides[id]._deleted);
+  const deleteItem = (id) => {
+    if (!confirm(`Delete “${BASE[id].name}” from the catalogue? It will be hidden from the storefront — restore it any time with “Show deleted”.`)) return;
+    setOverrides((prev) => { const n = { ...prev }; n[id] = { ...(n[id] || {}), _deleted: true }; saveOverrides(n); return n; });
+    setEditId(null);
+    flash('Item deleted — toggle “Show deleted” to restore');
+  };
+  const restoreItem = (id) => {
+    setOverrides((prev) => { const n = { ...prev }; const o = { ...(n[id] || {}) }; delete o._deleted; if (Object.keys(o).length === 0) delete n[id]; else n[id] = o; saveOverrides(n); return n; });
+    flash('Item restored');
+  };
   const resetAll = () => {
     if (!confirm('Reset every item back to its original studio values? This clears all manual edits across the catalogue.')) return;
     setOverrides(() => { saveOverrides({}); return {}; }); flash('All edits cleared');
@@ -93,7 +107,10 @@ export default function MassEdit({ overrides, setOverrides, editDrawer: EditDraw
 
   const rows = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return ORDER.map(resolve).filter((r) => {
+    const out = ORDER.map(resolve).filter((r) => {
+      const del = isDeleted(r.id);
+      if (showDeleted) { if (!del) return false; }
+      else if (del) return false;
       if (fCol && r.collection !== fCol) return false;
       if (fCat && r.category !== fCat) return false;
       if (fMat && r.material !== fMat) return false;
@@ -101,8 +118,9 @@ export default function MassEdit({ overrides, setOverrides, editDrawer: EditDraw
       if (q && !(r.name.toLowerCase().includes(q) || r.sub.toLowerCase().includes(q) || (r.salesCode || '').toLowerCase().includes(q) || (r.productionCode || '').toLowerCase().includes(q) || r.id.includes(q))) return false;
       return true;
     });
+    return sortRows(out, sort);
   // eslint-disable-next-line
-  }, [overrides, search, fCol, fCat, fMat, onlyEdited]);
+  }, [overrides, search, fCol, fCat, fMat, onlyEdited, showDeleted, sort]);
 
   const exportData = (fmt) => {
     const data = ORDER.map((id) => { const r = resolve(id), b = BASE[id]; return { id, salesCode: r.salesCode, productionCode: r.productionCode, name: r.name, sub: r.sub, category: r.category, collection: r.collection, material: r.material, stock: r.stock, listPrice: r.listPrice, salePrice: r.salePrice, effectivePrice: r.price, originalListPrice: b.listPrice, edited: itemEdited(id) }; });
@@ -150,9 +168,13 @@ export default function MassEdit({ overrides, setOverrides, editDrawer: EditDraw
             <input type="checkbox" checked={onlyEdited} onChange={(e) => setOnlyEdited(e.target.checked)} style={{ accentColor: T.accent }} />
             Edited only
           </label>
-          {(search || fCol || fCat || fMat || onlyEdited) &&
-            <button onClick={() => { setSearch(''); setFCol(''); setFCat(''); setFMat(''); setOnlyEdited(false); }} style={{ background: 'transparent', border: 'none', color: T.accent, fontSize: 12, cursor: 'pointer', letterSpacing: '0.06em' }}>Clear</button>}
-          <span style={{ marginLeft: 'auto', fontSize: 11, color: T.faint, letterSpacing: '0.04em' }}>Tab to move across · Enter to commit a cell</span>
+          <label style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 12, color: showDeleted ? T.danger : T.muted, cursor: 'pointer', letterSpacing: '0.04em', userSelect: 'none' }}>
+            <input type="checkbox" checked={showDeleted} onChange={(e) => setShowDeleted(e.target.checked)} style={{ accentColor: T.danger }} />
+            Show deleted
+          </label>
+          {(search || fCol || fCat || fMat || onlyEdited || showDeleted || sort) &&
+            <button onClick={() => { setSearch(''); setFCol(''); setFCat(''); setFMat(''); setOnlyEdited(false); setShowDeleted(false); clearSort(); }} style={{ background: 'transparent', border: 'none', color: T.accent, fontSize: 12, cursor: 'pointer', letterSpacing: '0.06em' }}>Clear</button>}
+          <span style={{ marginLeft: 'auto', fontSize: 11, color: T.faint, letterSpacing: '0.04em' }}>Click a heading to sort · Tab/Enter to edit cells</span>
         </div>
       </div>
 
@@ -161,15 +183,19 @@ export default function MassEdit({ overrides, setOverrides, editDrawer: EditDraw
           <table style={{ borderCollapse: 'separate', borderSpacing: 0, fontSize: 13, minWidth: totalW, tableLayout: 'fixed' }}>
             <thead>
               <tr>
-                <th style={{ textAlign: 'left', padding: '11px 14px', width: 250, minWidth: 250, fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted, fontWeight: 600, position: 'sticky', top: 0, left: 0, zIndex: 5, background: T.card, borderBottom: `1px solid ${T.line2}`, borderRight: `1px solid ${T.line2}` }}>Item</th>
+                <th style={{ textAlign: 'left', padding: '11px 14px', width: 250, minWidth: 250, fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted, fontWeight: 600, position: 'sticky', top: 0, left: 0, zIndex: 5, background: T.card, borderBottom: `1px solid ${T.line2}`, borderRight: `1px solid ${T.line2}` }}>
+                  <SortLabel label="Item" sortKey="name" sort={sort} onSort={toggleSort} />
+                </th>
                 {COLUMNS.map((c) => (
-                  <th key={c.key} style={{ textAlign: c.align || 'left', padding: '11px 14px', width: c.w, minWidth: c.w, fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase', color: T.muted, fontWeight: 600, position: 'sticky', top: 0, zIndex: 4, background: T.card, borderBottom: `1px solid ${T.line2}`, whiteSpace: 'nowrap' }}>{c.label}</th>
+                  <th key={c.key} style={{ textAlign: c.align || 'left', padding: '11px 14px', width: c.w, minWidth: c.w, fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase', color: T.muted, fontWeight: 600, position: 'sticky', top: 0, zIndex: 4, background: T.card, borderBottom: `1px solid ${T.line2}`, whiteSpace: 'nowrap' }}>
+                    <SortLabel label={c.label} sortKey={c.key} sort={sort} onSort={toggleSort} align={c.align || 'left'} />
+                  </th>
                 ))}
                 <th style={{ textAlign: 'right', padding: '11px 14px', width: 96, minWidth: 96, position: 'sticky', top: 0, zIndex: 4, background: T.card, borderBottom: `1px solid ${T.line2}` }}></th>
               </tr>
             </thead>
             <tbody>
-              {rows.map((r) => <MeRow key={r.id} r={r} edited={itemEdited(r.id)} fieldEdited={fieldEdited} commit={commit} resetItem={resetItem} onEdit={() => setEditId(r.id)} />)}
+              {rows.map((r) => <MeRow key={r.id} r={r} edited={itemEdited(r.id)} deleted={isDeleted(r.id)} fieldEdited={fieldEdited} commit={commit} resetItem={resetItem} onEdit={() => setEditId(r.id)} onRestore={() => restoreItem(r.id)} />)}
               {rows.length === 0 && <tr><td colSpan={COLUMNS.length + 2} style={{ padding: 56, textAlign: 'center', color: T.muted, fontFamily: T.serif, fontSize: 20 }}>No items match the current filters.</td></tr>}
             </tbody>
           </table>
@@ -177,16 +203,16 @@ export default function MassEdit({ overrides, setOverrides, editDrawer: EditDraw
       </div>
 
       {editing && EditDrawer &&
-        <EditDrawer r={editing} base={BASE[editId]} fieldEdited={fieldEdited} commit={commit} resetItem={resetItem} onClose={() => setEditId(null)} />}
+        <EditDrawer r={editing} base={BASE[editId]} fieldEdited={fieldEdited} commit={commit} resetItem={resetItem} deleteItem={deleteItem} onClose={() => setEditId(null)} />}
       {toast && <div style={{ position: 'fixed', bottom: 26, left: '50%', transform: 'translateX(-50%)', zIndex: 60, background: T.ink, color: T.panel, padding: '12px 22px', fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', boxShadow: '0 10px 30px rgba(0,0,0,0.25)' }}>{toast}</div>}
     </div>
   );
 }
 
-function MeRow({ r, edited, fieldEdited, commit, resetItem, onEdit }) {
-  const stickyBg = edited ? '#f3ead9' : T.panel;
+function MeRow({ r, edited, deleted, fieldEdited, commit, resetItem, onEdit, onRestore }) {
+  const stickyBg = deleted ? '#f3e2da' : (edited ? '#f3ead9' : T.panel);
   return (
-    <tr style={{ background: edited ? 'rgba(138,106,59,0.10)' : 'transparent' }}>
+    <tr style={{ background: deleted ? 'rgba(164,80,43,0.08)' : (edited ? 'rgba(138,106,59,0.10)' : 'transparent'), opacity: deleted ? 0.65 : 1 }}>
       <td style={{ padding: '8px 14px', position: 'sticky', left: 0, zIndex: 2, background: stickyBg, borderBottom: `1px solid ${T.line}`, borderRight: `1px solid ${T.line2}`, width: 250, minWidth: 250 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
           <div style={{ width: 40, height: 40, flexShrink: 0, background: T.card, border: `1px solid ${T.line}`, overflow: 'hidden', position: 'relative' }}>
@@ -195,7 +221,7 @@ function MeRow({ r, edited, fieldEdited, commit, resetItem, onEdit }) {
           </div>
           <div style={{ minWidth: 0 }}>
             <div style={{ fontFamily: T.serif, fontSize: 15, lineHeight: 1.15, color: T.ink, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 168 }}>{r.name || '—'}</div>
-            <div style={{ fontSize: 10, color: T.faint, letterSpacing: '0.1em', marginTop: 2, fontFamily: mono }}>{r.id.toUpperCase()}</div>
+            <div style={{ fontSize: 10, color: deleted ? T.danger : T.faint, letterSpacing: '0.1em', marginTop: 2, fontFamily: mono }}>{deleted ? 'DELETED' : r.id.toUpperCase()}</div>
           </div>
         </div>
       </td>
@@ -206,10 +232,14 @@ function MeRow({ r, edited, fieldEdited, commit, resetItem, onEdit }) {
         </td>
       ))}
       <td style={{ padding: '8px 12px', textAlign: 'right', borderBottom: `1px solid ${T.line}`, whiteSpace: 'nowrap', width: 96, minWidth: 96 }}>
-        <div style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}>
-          {edited && <button onClick={() => resetItem(r.id)} title="Reset this item to original" style={{ background: 'transparent', border: 'none', color: T.faint, cursor: 'pointer', fontSize: 14, lineHeight: 1, padding: 2 }}>↺</button>}
-          <button onClick={onEdit} title="Open full editor" style={{ ...meGhost(), padding: '6px 11px', fontSize: 10 }}>Edit</button>
-        </div>
+        {deleted ? (
+          <button onClick={onRestore} title="Restore this item" style={{ ...meGhost(), padding: '6px 11px', fontSize: 10, color: T.good, borderColor: T.good }}>Restore</button>
+        ) : (
+          <div style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}>
+            {edited && <button onClick={() => resetItem(r.id)} title="Reset this item to original" style={{ background: 'transparent', border: 'none', color: T.faint, cursor: 'pointer', fontSize: 14, lineHeight: 1, padding: 2 }}>↺</button>}
+            <button onClick={onEdit} title="Open full editor" style={{ ...meGhost(), padding: '6px 11px', fontSize: 10 }}>Edit</button>
+          </div>
+        )}
       </td>
     </tr>
   );

@@ -10,9 +10,11 @@ import { signIn, signOutUser, subscribeAuth, friendlyAuthError } from '@/lib/aut
 import StockLedger from './StockLedger';
 import MassEdit from './MassEdit';
 import SiteImages from './SiteImages';
+import { useSort, sortRows, SortLabel } from './sortable';
 
 const SESSION_KEY = 'malaya:admin:session';
 const FIELDS = ['salesCode', 'productionCode', 'name', 'sub', 'category', 'collection', 'material', 'stock', 'listPrice', 'salePrice', 'img'];
+const monoFont = '"SFMono-Regular", ui-monospace, "Menlo", monospace';
 
 function money(n) { return fmtPrice(Math.round(Number(n) || 0)); }
 function cleanNum(v) { const n = Number(v); return isNaN(n) ? null : n; }
@@ -90,6 +92,8 @@ function Dashboard({ overrides, setOverrides }) {
   const [fCat, setFCat] = useState('');
   const [fMat, setFMat] = useState('');
   const [onlyEdited, setOnlyEdited] = useState(false);
+  const [showDeleted, setShowDeleted] = useState(false);
+  const { sort, toggle: toggleSort, clear: clearSort } = useSort();
   const [editId, setEditId] = useState(null);
   const [bulkOpen, setBulkOpen] = useState(false);
   const [toast, setToast] = useState('');
@@ -139,6 +143,17 @@ function Dashboard({ overrides, setOverrides }) {
     setOverrides((prev) => { const n = { ...prev }; delete n[id]; saveOverrides(n); return n; });
     flash('Item reset to original');
   };
+  const isDeleted = (id) => !!(overrides[id] && overrides[id]._deleted);
+  const deleteItem = (id) => {
+    if (!confirm(`Delete “${BASE[id].name}” from the catalogue? It will be hidden from the storefront — restore it any time with “Show deleted”.`)) return;
+    setOverrides((prev) => { const n = { ...prev }; n[id] = { ...(n[id] || {}), _deleted: true }; saveOverrides(n); return n; });
+    setEditId(null);
+    flash('Item deleted — toggle “Show deleted” to restore');
+  };
+  const restoreItem = (id) => {
+    setOverrides((prev) => { const n = { ...prev }; const o = { ...(n[id] || {}) }; delete o._deleted; if (Object.keys(o).length === 0) delete n[id]; else n[id] = o; saveOverrides(n); return n; });
+    flash('Item restored');
+  };
   const resetAll = () => {
     if (!confirm('Reset every item back to its original studio values? This clears all manual edits.')) return;
     setOverrides(() => { saveOverrides({}); return {}; });
@@ -147,7 +162,10 @@ function Dashboard({ overrides, setOverrides }) {
 
   const rows = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return ORDER.map(resolve).filter((r) => {
+    const out = ORDER.map(resolve).filter((r) => {
+      const del = isDeleted(r.id);
+      if (showDeleted) { if (!del) return false; }
+      else if (del) return false;
       if (fCol && r.collection !== fCol) return false;
       if (fCat && r.category !== fCat) return false;
       if (fMat && r.material !== fMat) return false;
@@ -155,8 +173,9 @@ function Dashboard({ overrides, setOverrides }) {
       if (q && !(r.name.toLowerCase().includes(q) || r.sub.toLowerCase().includes(q) || r.code.toLowerCase().includes(q) || r.id.includes(q))) return false;
       return true;
     });
+    return sortRows(out, sort);
   // eslint-disable-next-line
-  }, [overrides, search, fCol, fCat, fMat, onlyEdited]);
+  }, [overrides, search, fCol, fCat, fMat, onlyEdited, showDeleted, sort]);
 
   const applyBulk = ({ action, pct, round }) => {
     const ids = rows.map((r) => r.id);
@@ -241,8 +260,12 @@ function Dashboard({ overrides, setOverrides }) {
             <input type="checkbox" checked={onlyEdited} onChange={(e) => setOnlyEdited(e.target.checked)} style={{ accentColor: T.accent }} />
             Edited only
           </label>
-          {(search || fCol || fCat || fMat || onlyEdited) &&
-            <button onClick={() => { setSearch(''); setFCol(''); setFCat(''); setFMat(''); setOnlyEdited(false); }} style={{ background: 'transparent', border: 'none', color: T.accent, fontSize: 12, cursor: 'pointer', letterSpacing: '0.06em' }}>Clear</button>}
+          <label style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 12, color: showDeleted ? T.danger : T.muted, cursor: 'pointer', letterSpacing: '0.04em', userSelect: 'none' }}>
+            <input type="checkbox" checked={showDeleted} onChange={(e) => setShowDeleted(e.target.checked)} style={{ accentColor: T.danger }} />
+            Show deleted
+          </label>
+          {(search || fCol || fCat || fMat || onlyEdited || showDeleted || sort) &&
+            <button onClick={() => { setSearch(''); setFCol(''); setFCat(''); setFMat(''); setOnlyEdited(false); setShowDeleted(false); clearSort(); }} style={{ background: 'transparent', border: 'none', color: T.accent, fontSize: 12, cursor: 'pointer', letterSpacing: '0.06em' }}>Clear</button>}
         </div>
       </div>
 
@@ -251,23 +274,25 @@ function Dashboard({ overrides, setOverrides }) {
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
             <thead>
               <tr style={{ background: T.card }}>
-                {['Item', 'Category', 'Material', 'Stock', 'List price', 'Sale price', ''].map((h, i) => (
-                  <th key={i} style={{ textAlign: i >= 4 ? 'right' : 'left', padding: '11px 14px', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted, fontWeight: 600, borderBottom: `1px solid ${T.line2}`, position: 'sticky', top: 56, background: T.card, whiteSpace: 'nowrap' }}>{h}</th>
+                {[['name', 'Item', 'left'], ['salesCode', 'Sales code', 'left'], ['category', 'Category', 'left'], ['material', 'Material', 'left'], ['stock', 'Stock', 'left'], ['listPrice', 'List price', 'right'], ['salePrice', 'Sale price', 'right'], [null, '', 'right']].map(([key, h, al], i) => (
+                  <th key={i} style={{ textAlign: al, padding: '11px 14px', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted, fontWeight: 600, borderBottom: `1px solid ${T.line2}`, position: 'sticky', top: 56, background: T.card, whiteSpace: 'nowrap' }}>
+                    {key ? <SortLabel label={h} sortKey={key} sort={sort} onSort={toggleSort} align={al} /> : h}
+                  </th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {rows.map((r) => (
-                <Row key={r.id} r={r} base={BASE[r.id]} edited={itemEdited(r.id)} fieldEdited={fieldEdited} commit={commit} onEdit={() => setEditId(r.id)} />
+                <Row key={r.id} r={r} base={BASE[r.id]} edited={itemEdited(r.id)} deleted={isDeleted(r.id)} fieldEdited={fieldEdited} commit={commit} onEdit={() => setEditId(r.id)} onRestore={() => restoreItem(r.id)} />
               ))}
               {rows.length === 0 &&
-                <tr><td colSpan={7} style={{ padding: 56, textAlign: 'center', color: T.muted, fontFamily: T.serif, fontSize: 20 }}>No items match the current filters.</td></tr>}
+                <tr><td colSpan={8} style={{ padding: 56, textAlign: 'center', color: T.muted, fontFamily: T.serif, fontSize: 20 }}>No items match the current filters.</td></tr>}
             </tbody>
           </table>
         </div>
       </div>
 
-      {editing && <EditDrawer r={editing} base={BASE[editId]} fieldEdited={fieldEdited} commit={commit} resetItem={resetItem} onClose={() => setEditId(null)} />}
+      {editing && <EditDrawer r={editing} base={BASE[editId]} fieldEdited={fieldEdited} commit={commit} resetItem={resetItem} deleteItem={deleteItem} onClose={() => setEditId(null)} />}
       {bulkOpen && <BulkModal count={rows.length} onApply={applyBulk} onClose={() => setBulkOpen(false)} />}
       {toast && <Toast msg={toast} />}
     </div>
@@ -275,11 +300,11 @@ function Dashboard({ overrides, setOverrides }) {
 }
 
 // ─────────────────────────────────────────────────── Row ────
-function Row({ r, base, edited, fieldEdited, commit, onEdit }) {
+function Row({ r, base, edited, deleted, fieldEdited, commit, onEdit, onRestore }) {
   const off = r.onSale ? Math.round((1 - r.salePrice / r.listPrice) * 100) : 0;
   const stockColor = { 'Sold out': T.danger, 'Archived': T.faint, 'Low stock': T.accent }[r.stock] || T.ink;
   return (
-    <tr style={{ borderBottom: `1px solid ${T.line}`, background: edited ? 'rgba(138,106,59,0.045)' : 'transparent' }}>
+    <tr style={{ borderBottom: `1px solid ${T.line}`, background: deleted ? 'rgba(164,80,43,0.05)' : (edited ? 'rgba(138,106,59,0.045)' : 'transparent'), opacity: deleted ? 0.6 : 1 }}>
       <td style={{ padding: '10px 14px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ width: 44, height: 44, flexShrink: 0, background: T.card, border: `1px solid ${T.line}`, overflow: 'hidden', position: 'relative' }}>
@@ -287,12 +312,16 @@ function Row({ r, base, edited, fieldEdited, commit, onEdit }) {
             {edited && <span title="Edited" style={{ position: 'absolute', top: 3, right: 3, width: 7, height: 7, borderRadius: '50%', background: T.accent }} />}
           </div>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontFamily: T.serif, fontSize: 16, lineHeight: 1.15, color: T.ink }}>{r.name}</div>
+            <div style={{ fontFamily: T.serif, fontSize: 16, lineHeight: 1.15, color: T.ink, display: 'flex', alignItems: 'center', gap: 8 }}>
+              {r.name}
+              {deleted && <span style={{ fontSize: 8.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: T.danger, border: `1px solid ${T.danger}`, padding: '1px 5px', borderRadius: 2 }}>Deleted</span>}
+            </div>
             <div style={{ fontSize: 11, color: T.muted, letterSpacing: '0.02em', marginTop: 1 }}>{r.sub}</div>
-            <div style={{ fontSize: 10, color: T.faint, letterSpacing: '0.12em', marginTop: 2 }}>{r.code} · {r.collection}</div>
+            <div style={{ fontSize: 10, color: T.faint, letterSpacing: '0.12em', marginTop: 2 }}>{r.collection}</div>
           </div>
         </div>
       </td>
+      <td style={{ padding: '10px 14px', whiteSpace: 'nowrap', fontFamily: monoFont, fontSize: 12, color: T.muted }}>{r.salesCode}</td>
       <td style={{ padding: '10px 14px', color: T.ink, whiteSpace: 'nowrap' }}>{r.category}</td>
       <td style={{ padding: '10px 14px', color: T.ink, whiteSpace: 'nowrap' }}>{r.material}</td>
       <td style={{ padding: '10px 14px' }}>
@@ -310,7 +339,9 @@ function Row({ r, base, edited, fieldEdited, commit, onEdit }) {
         {r.onSale && <div style={{ fontSize: 10, color: T.accent, marginTop: 3, letterSpacing: '0.08em' }}>−{off}%</div>}
       </td>
       <td style={{ padding: '10px 14px', textAlign: 'right' }}>
-        <button onClick={onEdit} style={{ ...ghostBtn(), padding: '7px 12px', fontSize: 10 }}>Edit</button>
+        {deleted
+          ? <button onClick={onRestore} style={{ ...ghostBtn(), padding: '7px 12px', fontSize: 10, color: T.good, borderColor: T.good }}>Restore</button>
+          : <button onClick={onEdit} style={{ ...ghostBtn(), padding: '7px 12px', fontSize: 10 }}>Edit</button>}
       </td>
     </tr>
   );
@@ -333,7 +364,7 @@ function PriceInput({ value, onCommit, edited, placeholder }) {
 }
 
 // ─────────────────────────────────────────────────── EditDrawer ────
-export function EditDrawer({ r, base, fieldEdited, commit, resetItem, onClose }) {
+export function EditDrawer({ r, base, fieldEdited, commit, resetItem, deleteItem, onClose }) {
   const off = r.onSale ? Math.round((1 - r.salePrice / r.listPrice) * 100) : 0;
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(20,16,10,0.32)' }}>
@@ -380,7 +411,10 @@ export function EditDrawer({ r, base, fieldEdited, commit, resetItem, onClose })
           </div>
         </div>
         <div style={{ padding: '16px 24px', borderTop: `1px solid ${T.line}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-          <button onClick={() => resetItem(r.id)} style={{ background: 'transparent', border: 'none', color: T.danger, fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', cursor: 'pointer' }}>Reset to original</button>
+          <div style={{ display: 'flex', gap: 18, alignItems: 'center' }}>
+            {deleteItem && <button onClick={() => deleteItem(r.id)} style={{ background: 'transparent', border: 'none', color: T.danger, fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', cursor: 'pointer' }}>Delete item</button>}
+            <button onClick={() => resetItem(r.id)} style={{ background: 'transparent', border: 'none', color: T.muted, fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', cursor: 'pointer' }}>Reset to original</button>
+          </div>
           <button onClick={onClose} style={{ background: T.ink, color: T.panel, border: 'none', padding: '13px 28px', fontSize: 11, letterSpacing: '0.24em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: T.sans }}>Done</button>
         </div>
       </aside>

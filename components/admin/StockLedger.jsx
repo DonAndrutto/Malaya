@@ -9,8 +9,21 @@ import { saveOverrides } from '@/lib/overrides';
 import { uploadImage } from '@/lib/upload';
 import { resizeImageFile } from '@/lib/image-resize';
 import { FIREBASE_ENABLED } from '@/lib/firebase';
+import { useSort, sortRows, SortLabel } from './sortable';
 
 const LEDGER_FIELDS = ['name', 'category', 'material', 'qty', 'unitCost', 'retail', 'salePrice', 'salesCode', 'productionCode', 'stock', 'published', 'story', 'images'];
+const mono = '"SFMono-Regular", ui-monospace, "Menlo", monospace';
+
+// Neutral base for an admin-created (`_custom`) line — its override doc holds the
+// real values; this just gives resolve()/val() something to fall back to.
+function customBase(sku) {
+  return {
+    name: '', category: 'Accessories', material: '', qty: null, unitCost: null,
+    retail: null, salePrice: null, salesCode: sku, productionCode: String(sku).split('-')[0],
+    stock: 'Made to order', productId: null, productIds: [], published: false,
+    story: '', img: null, images: [],
+  };
+}
 
 function m0(n) { return '$' + Math.round(Number(n) || 0).toLocaleString('en-US'); }
 function m2(n) { if (n == null || n === '' || isNaN(Number(n))) return '—'; return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -26,6 +39,13 @@ export default function StockLedger({ overrides, setOverrides }) {
     const m = {}; PRODUCTS.forEach((p) => { m[p.id] = p; }); return m;
   }, []);
 
+  // Admin-created items live in the override map under their sales code, marked
+  // `_custom`. They list alongside the physical ledger and can be published too.
+  const customIds = useMemo(
+    () => Object.keys(overrides).filter((id) => overrides[id] && overrides[id]._custom),
+    [overrides],
+  );
+
   const BASE = useMemo(() => {
     const m = {};
     ROWS.forEach((r) => {
@@ -40,16 +60,22 @@ export default function StockLedger({ overrides, setOverrides }) {
         collection: ledgerCollection(r.name),
       };
     });
+    customIds.forEach((id) => { if (!m[id]) m[id] = customBase(id); });
     return m;
-  }, [ROWS, PRODUCTS_BY_ID]);
+  }, [ROWS, PRODUCTS_BY_ID, customIds]);
 
-  const ORDER = useMemo(() => ROWS.map((r) => r.sku), [ROWS]);
+  // New items first, then the physical ledger in its natural order.
+  const ORDER = useMemo(() => [...customIds, ...ROWS.map((r) => r.sku)], [customIds, ROWS]);
+
+  const isCustom = (sku) => !!(overrides[sku] && overrides[sku]._custom);
+  const isDeleted = (sku) => !!(overrides[sku] && overrides[sku]._deleted);
 
   const [search, setSearch] = useState('');
   const [fCat, setFCat] = useState('');
   const [fAvail, setFAvail] = useState('');
-  const [sort, setSort] = useState('default');
+  const { sort, toggle: toggleSort, clear: clearSort } = useSort();
   const [editSku, setEditSku] = useState(null);
+  const [newOpen, setNewOpen] = useState(false);
   const [toast, setToast] = useState('');
   const flash = (m) => setToast(m);
   useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), 2200); return () => clearTimeout(t); }, [toast]);
@@ -85,13 +111,26 @@ export default function StockLedger({ overrides, setOverrides }) {
     };
   };
 
-  const itemEdited = (sku) => { const o = overrides[sku]; if (!o) return false; return LEDGER_FIELDS.some((f) => f in o && o[f] !== BASE[sku][f]); };
-  const fieldEdited = (sku, f) => { const o = overrides[sku]; return !!(o && f in o && o[f] !== BASE[sku][f]); };
+  // Custom items have no static base, so they're never "edited" diffs.
+  const itemEdited = (sku) => { if (isCustom(sku)) return false; const o = overrides[sku]; if (!o) return false; return LEDGER_FIELDS.some((f) => f in o && o[f] !== BASE[sku][f]); };
+  const fieldEdited = (sku, f) => { if (isCustom(sku)) return false; const o = overrides[sku]; return !!(o && f in o && o[f] !== BASE[sku][f]); };
 
   const commit = (sku, patch) => {
     setOverrides((prev) => {
       const next = { ...prev };
       const o = { ...(next[sku] || {}) };
+      // A custom doc is self-contained — store every field, never prune to a base.
+      if (o._custom) {
+        Object.keys(patch).forEach((f) => {
+          let v = patch[f];
+          if (['qty', 'unitCost', 'retail', 'salePrice'].includes(f)) v = numOrNull(v);
+          o[f] = v;
+        });
+        o._custom = true;
+        next[sku] = o;
+        saveOverrides(next);
+        return next;
+      }
       Object.keys(patch).forEach((f) => {
         let v = patch[f];
         if (['qty', 'unitCost', 'retail', 'salePrice'].includes(f)) v = numOrNull(v);
@@ -138,10 +177,69 @@ export default function StockLedger({ overrides, setOverrides }) {
     flash('Line reset to ledger original');
   };
 
+  // Create a brand-new item. Keyed by its sales code; must be unique.
+  const skuExists = (code) => !!BASE[code] || ROWS.some((r) => r.sku === code);
+  const createItem = (form) => {
+    const id = (form.salesCode || '').trim();
+    const rec = {
+      _custom: true,
+      name: (form.name || '').trim() || 'Untitled item',
+      category: form.category || 'Accessories',
+      material: form.material || '',
+      qty: numOrNull(form.qty), unitCost: numOrNull(form.unitCost), retail: numOrNull(form.retail),
+      salesCode: id, productionCode: (form.productionCode || '').trim() || id.split('-')[0],
+      stock: 'Made to order', published: false, story: '', images: [],
+    };
+    setOverrides((prev) => { const next = { ...prev, [id]: rec }; saveOverrides(next); return next; });
+    setNewOpen(false);
+    setEditSku(id);
+    flash('New item created — add photos & publish when ready');
+  };
+
+  // Delete: custom items are removed outright; physical ledger lines are
+  // soft-deleted (hidden, restorable from the “Deleted” filter).
+  const deleteItem = (sku) => {
+    const custom = isCustom(sku);
+    const label = (overrides[sku] && overrides[sku].name) || (BASE[sku] && BASE[sku].name) || sku;
+    const ok = confirm(custom
+      ? `Delete “${label}” permanently? This custom item will be removed entirely.`
+      : `Delete “${label}”? It will be hidden from the storefront and the desk — you can restore it later from the “Deleted” filter.`);
+    if (!ok) return;
+    setOverrides((prev) => {
+      const next = { ...prev };
+      if (custom) {
+        delete next[sku];
+      } else {
+        next[sku] = { ...(next[sku] || {}), _deleted: true };
+        (BASE[sku].productIds || []).forEach((pid) => { delete next[pid]; });
+      }
+      saveOverrides(next);
+      return next;
+    });
+    setEditSku(null);
+    flash(custom ? 'Item deleted' : 'Item deleted — restore from the “Deleted” filter');
+  };
+
+  const restoreItem = (sku) => {
+    setOverrides((prev) => {
+      const next = { ...prev };
+      const o = { ...(next[sku] || {}) };
+      delete o._deleted;
+      if (Object.keys(o).length === 0) delete next[sku]; else next[sku] = o;
+      saveOverrides(next);
+      return next;
+    });
+    flash('Item restored');
+  };
+
   const rows = useMemo(() => {
     const q = search.trim().toLowerCase();
     let out = ORDER.map(resolve).filter((r) => {
+      const del = isDeleted(r.sku);
+      if (fAvail === 'deleted') { if (!del) return false; }
+      else if (del) return false;          // deleted lines are hidden everywhere else
       if (fCat && r.category !== fCat) return false;
+      if (fAvail === 'custom' && !isCustom(r.sku)) return false;
       if (fAvail === 'low' && !(r.qty != null && r.qty > 0 && r.qty <= 2)) return false;
       if (fAvail === 'out' && !(r.qty != null && r.qty <= 0)) return false;
       if (fAvail === 'in' && !(r.qty != null && r.qty > 2)) return false;
@@ -152,9 +250,7 @@ export default function StockLedger({ overrides, setOverrides }) {
       if (q && !(r.name.toLowerCase().includes(q) || r.salesCode.toLowerCase().includes(q) || r.productionCode.toLowerCase().includes(q))) return false;
       return true;
     });
-    const by = { units: (a, b) => (a.qty || 0) - (b.qty || 0), 'units-desc': (a, b) => (b.qty || 0) - (a.qty || 0), margin: (a, b) => (b.marginPct ?? -1) - (a.marginPct ?? -1), value: (a, b) => (b.retailValue ?? 0) - (a.retailValue ?? 0), name: (a, b) => a.name.localeCompare(b.name) };
-    if (by[sort]) out.sort(by[sort]);
-    return out;
+    return sortRows(out, sort);
   // eslint-disable-next-line
   }, [overrides, search, fCat, fAvail, sort]);
 
@@ -209,6 +305,7 @@ export default function StockLedger({ overrides, setOverrides }) {
             </div>
           </div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <button onClick={() => setNewOpen(true)} style={{ background: T.ink, color: T.panel, border: 'none', padding: '10px 16px', fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: T.sans }}>+ New item</button>
             <button onClick={() => exportLedger('csv')} style={ghost()}>Export CSV</button>
             <button onClick={() => exportLedger('json')} style={ghost()}>Export JSON</button>
           </div>
@@ -229,10 +326,10 @@ export default function StockLedger({ overrides, setOverrides }) {
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search name or code…" style={{ background: 'transparent', border: 'none', outline: 'none', color: T.ink, fontSize: 13, fontFamily: T.sans, flex: 1 }} />
         </div>
         <Pick value={fCat} onChange={setFCat} all="All categories" options={CATEGORIES} />
-        <Pick value={fAvail} onChange={setFAvail} all="All availability" options={[['online', 'Online'], ['offline', 'Offline'], ['noimage', 'No image'], ['low', 'Low stock'], ['out', 'Sold out'], ['in', 'In stock'], ['nocost', 'Missing cost']]} pairs />
-        <Pick value={sort} onChange={setSort} all="Sort: ledger order" options={[['units', 'Fewest units'], ['units-desc', 'Most units'], ['margin', 'Highest margin'], ['value', 'Highest value'], ['name', 'Name A–Z']]} pairs />
-        {(search || fCat || fAvail || sort !== 'default') &&
-          <button onClick={() => { setSearch(''); setFCat(''); setFAvail(''); setSort('default'); }} style={{ background: 'transparent', border: 'none', color: T.accent, fontSize: 12, cursor: 'pointer', letterSpacing: '0.06em' }}>Clear</button>}
+        <Pick value={fAvail} onChange={setFAvail} all="All availability" options={[['online', 'Online'], ['offline', 'Offline'], ['noimage', 'No image'], ['low', 'Low stock'], ['out', 'Sold out'], ['in', 'In stock'], ['nocost', 'Missing cost'], ['custom', 'New items'], ['deleted', 'Deleted']]} pairs />
+        <span style={{ fontSize: 11, color: T.faint, letterSpacing: '0.04em' }}>Click a column heading to sort</span>
+        {(search || fCat || fAvail || sort) &&
+          <button onClick={() => { setSearch(''); setFCat(''); setFAvail(''); clearSort(); }} style={{ background: 'transparent', border: 'none', color: T.accent, fontSize: 12, cursor: 'pointer', letterSpacing: '0.06em' }}>Clear</button>}
       </div>
 
       <div style={{ padding: '16px 28px 80px' }}>
@@ -240,20 +337,23 @@ export default function StockLedger({ overrides, setOverrides }) {
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
             <thead>
               <tr style={{ background: T.card }}>
-                {[['Item', 'left'], ['Units', 'right'], ['Unit cost', 'right'], ['Retail', 'right'], ['Margin', 'right'], ['Value', 'right'], ['Status', 'left'], ['', 'right']].map(([h, al], i) => (
-                  <th key={i} style={{ textAlign: al, padding: '11px 14px', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted, fontWeight: 600, borderBottom: `1px solid ${T.line2}`, position: 'sticky', top: 56, background: T.card, whiteSpace: 'nowrap' }}>{h}</th>
+                {[['name', 'Item', 'left'], ['salesCode', 'Sales code', 'left'], ['qty', 'Units', 'right'], ['unitCost', 'Unit cost', 'right'], ['retail', 'Retail', 'right'], ['marginPct', 'Margin', 'right'], ['retailValue', 'Value', 'right'], ['status', 'Status', 'left'], [null, '', 'right']].map(([key, h, al], i) => (
+                  <th key={i} style={{ textAlign: al, padding: '11px 14px', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted, fontWeight: 600, borderBottom: `1px solid ${T.line2}`, position: 'sticky', top: 56, background: T.card, whiteSpace: 'nowrap' }}>
+                    {key ? <SortLabel label={h} sortKey={key} sort={sort} onSort={toggleSort} align={al} /> : h}
+                  </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {rows.map((r) => <LedgerRow key={r.sku} r={r} edited={itemEdited(r.sku)} fieldEdited={fieldEdited} commit={commit} onEdit={() => setEditSku(r.sku)} />)}
-              {rows.length === 0 && <tr><td colSpan={8} style={{ padding: 56, textAlign: 'center', color: T.muted, fontFamily: T.serif, fontSize: 20 }}>No stock lines match the current filters.</td></tr>}
+              {rows.map((r) => <LedgerRow key={r.sku} r={r} edited={itemEdited(r.sku)} custom={isCustom(r.sku)} deleted={isDeleted(r.sku)} fieldEdited={fieldEdited} commit={commit} onEdit={() => setEditSku(r.sku)} onRestore={() => restoreItem(r.sku)} />)}
+              {rows.length === 0 && <tr><td colSpan={9} style={{ padding: 56, textAlign: 'center', color: T.muted, fontFamily: T.serif, fontSize: 20 }}>No stock lines match the current filters.</td></tr>}
             </tbody>
           </table>
         </div>
       </div>
 
-      {editing && <LedgerDrawer r={editing} base={BASE[editSku]} fieldEdited={fieldEdited} commit={commit} resetItem={resetItem} onClose={() => setEditSku(null)} />}
+      {editing && <LedgerDrawer r={editing} base={BASE[editSku]} custom={isCustom(editSku)} fieldEdited={fieldEdited} commit={commit} resetItem={resetItem} deleteItem={deleteItem} onClose={() => setEditSku(null)} />}
+      {newOpen && <NewItemModal exists={skuExists} onCreate={createItem} onClose={() => setNewOpen(false)} />}
       {toast && <div style={{ position: 'fixed', bottom: 26, left: '50%', transform: 'translateX(-50%)', zIndex: 60, background: T.ink, color: T.panel, padding: '12px 22px', fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', boxShadow: '0 10px 30px rgba(0,0,0,0.25)' }}>{toast}</div>}
     </div>
   );
@@ -269,21 +369,25 @@ function Stat({ label, value, sub, accent }) {
   );
 }
 
-function LedgerRow({ r, edited, fieldEdited, commit, onEdit }) {
+function LedgerRow({ r, edited, custom, deleted, fieldEdited, commit, onEdit, onRestore }) {
   const statusColor = { 'Sold out': T.danger, 'Archived': T.faint, 'Low stock': T.accent, 'Made to order': T.muted }[r.status] || T.good;
   const lowQty = r.qty != null && r.qty <= 2;
+  const rowBg = deleted ? 'rgba(164,80,43,0.05)' : (custom ? 'rgba(91,110,74,0.06)' : (edited ? 'rgba(138,106,59,0.045)' : 'transparent'));
   return (
-    <tr style={{ borderBottom: `1px solid ${T.line}`, background: edited ? 'rgba(138,106,59,0.045)' : 'transparent' }}>
+    <tr style={{ borderBottom: `1px solid ${T.line}`, background: rowBg, opacity: deleted ? 0.6 : 1 }}>
       <td style={{ padding: '10px 14px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ width: 42, height: 42, flexShrink: 0, background: T.card, border: `1px solid ${T.line}`, overflow: 'hidden', position: 'relative' }}>
             {r.img ? <img src={r.img} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} onError={(e) => { e.target.style.display = 'none'; }} />
-              : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: T.serif, fontSize: 13, color: T.faint }}>{r.productionCode.replace(/[^A-Za-z]/g, '').slice(0, 2)}</div>}
+              : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: T.serif, fontSize: 13, color: T.faint }}>{(r.productionCode || '').replace(/[^A-Za-z]/g, '').slice(0, 2)}</div>}
           </div>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontFamily: T.serif, fontSize: 15.5, lineHeight: 1.15, color: T.ink }}>{r.name}</div>
+            <div style={{ fontFamily: T.serif, fontSize: 15.5, lineHeight: 1.15, color: T.ink, display: 'flex', alignItems: 'center', gap: 8 }}>
+              {r.name || <span style={{ color: T.faint }}>Untitled item</span>}
+              {custom && <span style={{ fontSize: 8.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: T.good, border: `1px solid ${T.good}`, padding: '1px 5px', borderRadius: 2 }}>New</span>}
+              {deleted && <span style={{ fontSize: 8.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: T.danger, border: `1px solid ${T.danger}`, padding: '1px 5px', borderRadius: 2 }}>Deleted</span>}
+            </div>
             <div style={{ fontSize: 10, color: T.faint, letterSpacing: '0.1em', marginTop: 3, display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-              <span><span style={{ color: T.muted }}>SKU</span> {r.salesCode}</span>
               <span><span style={{ color: T.muted }}>MODEL</span> {r.productionCode}</span>
               <span style={{ color: r.published ? T.good : T.faint, letterSpacing: '0.06em' }}>{r.published ? '● online' : '○ offline'}</span>
               {!r.img && <span style={{ color: T.muted, letterSpacing: '0.06em' }}>no image</span>}
@@ -291,6 +395,7 @@ function LedgerRow({ r, edited, fieldEdited, commit, onEdit }) {
           </div>
         </div>
       </td>
+      <td style={{ padding: '10px 14px', whiteSpace: 'nowrap', fontFamily: mono, fontSize: 12, color: T.muted }}>{r.salesCode}</td>
       <td style={{ padding: '10px 14px', textAlign: 'right' }}><NumCell value={r.qty} edited={fieldEdited(r.sku, 'qty')} onCommit={(v) => commit(r.sku, { qty: v })} width={46} color={lowQty ? T.accent : T.ink} /></td>
       <td style={{ padding: '10px 14px', textAlign: 'right' }}><NumCell value={r.unitCost} edited={fieldEdited(r.sku, 'unitCost')} onCommit={(v) => commit(r.sku, { unitCost: v })} money placeholder="—" /></td>
       <td style={{ padding: '10px 14px', textAlign: 'right' }}>
@@ -311,10 +416,14 @@ function LedgerRow({ r, edited, fieldEdited, commit, onEdit }) {
         </span>
       </td>
       <td style={{ padding: '10px 14px', textAlign: 'right', whiteSpace: 'nowrap' }}>
-        <div style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
-          <PublishPill on={r.published} onToggle={() => commit(r.sku, { published: !r.published })} />
-          <button onClick={onEdit} style={{ ...ghost(), padding: '7px 12px', fontSize: 10 }}>Edit</button>
-        </div>
+        {deleted ? (
+          <button onClick={onRestore} style={{ ...ghost(), padding: '7px 12px', fontSize: 10, color: T.good, borderColor: T.good }}>Restore</button>
+        ) : (
+          <div style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
+            <PublishPill on={r.published} onToggle={() => commit(r.sku, { published: !r.published })} />
+            <button onClick={onEdit} style={{ ...ghost(), padding: '7px 12px', fontSize: 10 }}>Edit</button>
+          </div>
+        )}
       </td>
     </tr>
   );
@@ -345,7 +454,7 @@ function NumCell({ value, onCommit, edited, money, placeholder, width = 60, colo
   );
 }
 
-function LedgerDrawer({ r, base, fieldEdited, commit, resetItem, onClose }) {
+function LedgerDrawer({ r, base, custom, fieldEdited, commit, resetItem, deleteItem, onClose }) {
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(20,16,10,0.32)' }}>
       <aside onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: 460, maxWidth: '92vw', background: T.panel, borderLeft: `1px solid ${T.line2}`, display: 'flex', flexDirection: 'column', boxShadow: '-20px 0 50px rgba(0,0,0,0.18)' }}>
@@ -357,7 +466,7 @@ function LedgerDrawer({ r, base, fieldEdited, commit, resetItem, onClose }) {
             </div>
             <div style={{ minWidth: 0 }}>
               <div style={{ fontFamily: T.serif, fontSize: 21, lineHeight: 1.12 }}>{r.name}</div>
-              <div style={{ fontSize: 10, color: T.faint, letterSpacing: '0.1em', marginTop: 4 }}>{r.salesCode}{r.productId ? ` · catalogue ${r.productId.toUpperCase()}` : ' · ledger only'}</div>
+              <div style={{ fontSize: 10, color: T.faint, letterSpacing: '0.1em', marginTop: 4 }}>{r.salesCode}{custom ? ' · custom item' : (r.productId ? ` · catalogue ${r.productId.toUpperCase()}` : ' · ledger only')}</div>
             </div>
           </div>
           <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: T.muted, fontSize: 22, cursor: 'pointer', lineHeight: 1 }}>×</button>
@@ -430,7 +539,10 @@ function LedgerDrawer({ r, base, fieldEdited, commit, resetItem, onClose }) {
           )}
         </div>
         <div style={{ padding: '16px 24px', borderTop: `1px solid ${T.line}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-          <button onClick={() => resetItem(r.sku)} style={{ background: 'transparent', border: 'none', color: T.danger, fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', cursor: 'pointer' }}>Reset to ledger</button>
+          <div style={{ display: 'flex', gap: 18, alignItems: 'center' }}>
+            <button onClick={() => deleteItem(r.sku)} style={{ background: 'transparent', border: 'none', color: T.danger, fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', cursor: 'pointer' }}>Delete{custom ? '' : ' item'}</button>
+            {!custom && <button onClick={() => resetItem(r.sku)} style={{ background: 'transparent', border: 'none', color: T.muted, fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', cursor: 'pointer' }}>Reset to ledger</button>}
+          </div>
           <button onClick={onClose} style={{ background: T.ink, color: T.panel, border: 'none', padding: '13px 28px', fontSize: 11, letterSpacing: '0.24em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: T.sans }}>Done</button>
         </div>
       </aside>
@@ -566,6 +678,68 @@ function IconBtn({ label, title, onClick, disabled, danger }) {
   return (
     <button onClick={onClick} disabled={disabled} title={title}
       style={{ background: 'transparent', border: `1px solid ${T.line}`, color: disabled ? T.faint : (danger ? T.danger : T.muted), fontSize: 10, lineHeight: 1, padding: '3px 5px', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.5 : 1 }}>{label}</button>
+  );
+}
+
+// Create-a-new-item dialog. The sales code is the item's key, so it must be
+// non-empty and not collide with an existing ledger SKU or custom item.
+function NewItemModal({ exists, onCreate, onClose }) {
+  const [f, setF] = useState({ salesCode: '', name: '', category: 'Pendants', material: 'Silver', qty: '', unitCost: '', retail: '', productionCode: '' });
+  const set = (k) => (e) => setF((s) => ({ ...s, [k]: e.target.value }));
+  const code = f.salesCode.trim();
+  const dupe = code !== '' && exists(code);
+  const valid = code !== '' && !dupe;
+  const submit = () => { if (valid) onCreate(f); };
+  const label = { fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', color: T.muted, marginBottom: 7, display: 'block' };
+  const field = { width: '100%', background: T.card, border: `1px solid ${T.line2}`, color: T.ink, padding: '11px 12px', fontSize: 14, fontFamily: T.sans, outline: 'none', boxSizing: 'border-box' };
+  return (
+    <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(20,16,10,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ width: 480, maxWidth: '100%', background: T.panel, border: `1px solid ${T.line2}`, boxShadow: '0 30px 70px rgba(0,0,0,0.3)' }}>
+        <div style={{ padding: '20px 24px', borderBottom: `1px solid ${T.line}` }}>
+          <div style={{ fontFamily: T.serif, fontSize: 24 }}>New item</div>
+          <div style={{ fontSize: 12, color: T.muted, marginTop: 5, lineHeight: 1.6 }}>Create a stock line from scratch. You can add photos, a story and publish it once it's saved.</div>
+        </div>
+        <div style={{ padding: '22px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div>
+            <span style={label}>Sales code (SKU) *</span>
+            <input value={f.salesCode} onChange={set('salesCode')} placeholder="e.g. P200-S" autoFocus style={{ ...field, fontFamily: mono, borderColor: dupe ? T.danger : T.line2 }} />
+            {dupe && <span style={{ fontSize: 11, color: T.danger, marginTop: 6, display: 'block' }}>That sales code already exists — choose another.</span>}
+          </div>
+          <div>
+            <span style={label}>Item name</span>
+            <input value={f.name} onChange={set('name')} placeholder="e.g. Lotus Pendant, Silver" style={field} />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            <div>
+              <span style={label}>Category</span>
+              <select value={f.category} onChange={set('category')} style={{ ...field, cursor: 'pointer' }}>{CATEGORIES.map((o) => <option key={o} value={o}>{o}</option>)}</select>
+            </div>
+            <div>
+              <span style={label}>Material</span>
+              <select value={f.material} onChange={set('material')} style={{ ...field, cursor: 'pointer' }}>{MATERIALS.map((o) => <option key={o} value={o}>{o}</option>)}</select>
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+            <div>
+              <span style={label}>Units</span>
+              <input value={f.qty} onChange={(e) => setF((s) => ({ ...s, qty: e.target.value.replace(/[^0-9.]/g, '') }))} placeholder="0" inputMode="decimal" style={field} />
+            </div>
+            <div>
+              <span style={label}>Unit cost</span>
+              <input value={f.unitCost} onChange={(e) => setF((s) => ({ ...s, unitCost: e.target.value.replace(/[^0-9.]/g, '') }))} placeholder="—" inputMode="decimal" style={field} />
+            </div>
+            <div>
+              <span style={label}>Retail</span>
+              <input value={f.retail} onChange={(e) => setF((s) => ({ ...s, retail: e.target.value.replace(/[^0-9.]/g, '') }))} placeholder="0" inputMode="decimal" style={field} />
+            </div>
+          </div>
+        </div>
+        <div style={{ padding: '16px 24px', borderTop: `1px solid ${T.line}`, display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+          <button onClick={onClose} style={ghost()}>Cancel</button>
+          <button onClick={submit} disabled={!valid} style={{ background: T.ink, color: T.panel, border: 'none', padding: '12px 26px', fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase', cursor: valid ? 'pointer' : 'not-allowed', opacity: valid ? 1 : 0.4, fontFamily: T.sans }}>Create item</button>
+        </div>
+      </div>
+    </div>
   );
 }
 
