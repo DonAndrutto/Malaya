@@ -1,294 +1,397 @@
 sku,code,name,category,material,qty,cost,retail,images,productIds
+4022A.6G,4022A.6G,Oval Malaya Aquamarine Ring 14K White Gold gold 2.54g,Rings,White Gold,,,575.34,,
 4473A,4473A,,Accessories,,,,,4,
 31748.8.0,31748.8.0,,Accessories,,,,,4,
-B002-S,B002,1 skull bracelet silver,Bracelets,Silver,2,16.35,95.89,5,
-B002-YG18,B002,,Bracelets,18k Gold,,,,5,
-B003-S,B003,5 skull bracelet silver,Bracelets,Silver,1,60.23,287.67,8,
+B002-S,B002,"One Laughing Skull Silver Macrame Bracelet, 2.65g",Bracelets,Silver,2,16.35,95.89,5,
+B002-YG18,B002,"One Laughing Skull Yellow Gold 18k, Black Diamonds, Macrame Bracelet, 6.99g",Bracelets,18k Gold,,,1328.77,5,
+B003-S,B003,"Five Laughing Skulls Silver Macrame Bracelet, black diamonds, adjustable",Bracelets,Silver,1,60.23,287.67,8,
 B003-YG14,B003,,Bracelets,14k Gold,,,,4,
-B003-YG18,B003,,Bracelets,18k Gold,,,,3,
-B004-S,B004,"Single Small Double Dorje Bead Bracelet, Silver",Bracelets,Silver,1,17.45,95.89,4,
+B003-YG18,B003,"Five Laughing Skulls, Macrame Bracelet 15 black diamonds .10cts 18k solid gold 22.22g",Bracelets,18k Gold,,,4246.58,3,
+B004-S,B004,"Small single bead, double dorje macrame bracelet, silver, CZ",Bracelets,Silver,1,17.45,95.89,4,
 B004-YG14,B004,,Bracelets,14k Gold,,,,4,
-B004-YG18,B004,,Bracelets,18k Gold,,,,5,
-B004-YGP,B004,,Bracelets,Gold Plated,,,,4,
-B005-S,B005,5 Bead Small Double Dorje Bracelet Silver,Bracelets,Silver,1,67.62,260.27,5,
-B005-YGP,B005,,Bracelets,Gold Plated,,,,8,
+B004-YG18,B004,Eternal Knot 18k yellow gold bangle Mid Size 21.28g,Bracelets,18k Gold,,,4054.79,5,
+B004-YGP,B004,"Small Double Dorje Single Bead Macrame Bracelet, Silver Gold Plated",Bracelets,Gold Plated,,,109.59,4,
+B005-S,B005,"Small five bead, double dorje macrame bracelet, silver",Bracelets,Silver,1,67.62,410.96,5,
+B005-YGP,B005,"Small five bead, double dorje macrame bracelet, silver gold plated",Bracelets,Gold Plated,,,438.36,8,
 B006-A-S,B006,,Bracelets,Silver,,,,5,
 B006-C-S,B006,,Bracelets,Silver,,,,5,
-B007-YGP,B007,"Eight Auspicious Symbols Bracelet, YGP",Bracelets,Gold Plated,2,,397.26,3,
+B007-YGP,B007,"Eight Auspicious Symbols Bracelet, Silver, Gold plating 14.5g",Bracelets,Gold Plated,2,,397.26,3,
+B008-S,B008,"Silver, Oxidized Vajra Clasp Black Leather Bracelet",Bracelets,Silver,,,150.68,,p011
+B008B-S-BLK,B008B,"Silver Polished Vajra Clasp Bracelet, sting-ray leather, Noir color",Bracelets,Silver,,,246.58,,
+B008B-S-SNOW,B008B,"Silver Polished Vajra Clasp Bracelet, sting-ray leather, Natural color",Bracelets,Silver,,,246.58,,
+B008B-TT-BLK,B008B,"Silver Oxidized Vajra Clasp Bracelet what 18k solid gold vajra, sting-ray leather, Noir color",Bracelets,18k Gold,,,630.14,,
+B008B-TT-SNOW,B008B,"Silver Oxidized Vajra Clasp Bracelet what 18k solid gold vajra, sting-ray leather, SNOW color",Bracelets,18k Gold,,,589.04,,
+B009-RG14,B009,Rose 14k Gold leather bracelet 14k rose gold 22.36g,Bracelets,Rose Gold,,,2602.74,,
+B009-S-BLU,B009,"Silver, Polished Vajra Clasp, Blue Leather Bracelet",Bracelets,Silver,,,150.68,,
+B009-S-CHAIN,B009,Silver Polished Chain Vajra Clasp Bracelet,Bracelets,Silver,,,342.47,,p010
+B009-S-PNK,B009,"Silver, Polished Vajra Clasp, Pink Leather Bracelet",Bracelets,Silver,,,150.68,,
+B009-S-TAN,B009,"Silver, Polished Vajra Clasp Tan Leather Bracelet",Bracelets,Silver,,,150.68,,
+B009-S-TAN-OX,B009,"Silver, Oxidized Vajra Clasp Tan Leather Bracelet",Bracelets,Silver,,,150.68,,
+B009-S-WHITE,B009,"Silver, Polished Vajra Clasp, White Leather Bracelet",Bracelets,White Gold,,,150.68,,
+B009-YG14,B009,14k Yellow Gold Black Leather Vajra Clasp Bracelet 14k 31.6g,Bracelets,14k Gold,,,3561.64,,
+B010-S,B010,Endless Knot Bracelet Silver 3.73g,Bracelets,Silver,,,143.84,,
 B010-S-CZ,B010,,Bracelets,Silver,,,,4,
-B010-YG18,B010,,Bracelets,18k Gold,,,,1,
-B010-YG18-DIA,B010,,Bracelets,18k Gold,,,,4,
+B010-YG18,B010,"Endless Knot New Bracelet, YG18, 19cm, 4.64g",Bracelets,18k Gold,,,876.71,1,
+B010-YG18-DIA,B010,"Endless Knot New Bracelet, YG18 .20cts diamonds, 5.12g",Bracelets,18k Gold,,,1082.19,4,
 B013-S,B013,"Vajra Chain Bracelet, Silver, Medium, Flat 3 Prongs, 19cm",Bracelets,Silver,9,29.76,116.44,5,
 B013-YG14,B013,,Bracelets,14k Gold,,,,4,
+B013-YGP,B013,"Vajra Chain Bracelet, Yellow Gold 14K, Medium, Flat 3 Prongs, 19cm, 6.64g (Gold plated)",Bracelets,Gold Plated,,,136.99,,
+B014-S-PQ,B014,"Purple Milk Quartz Cabochon Bracelet, 5.39cts, CZ 0.23",Bracelets,Silver,,,191.78,,
 B015A-S,B015A,"Continuous Vajras Chain Bracelet, Silver, 19cm (Female Size)",Bracelets,Silver,1,48.57,164.38,6,
-B015B-S,B015B,,Bracelets,Silver,,,,4,
-B016-S,B016,,Bracelets,Silver,,,,6,
+B015B-S,B015B,"Continuous Vajras Chain Bracelet, Silver, 23cm (male size)",Bracelets,Silver,,,219.18,4,
+B016-S,B016,"Endless Knot Chain Adjustable Bracelet, Silver 4.71g",Bracelets,Silver,,,68.49,6,
 B017-S-PQ,B017,,Bracelets,Silver,,,,6,
 BA001-RGP,BA001,,Bangles,Rose Gold,,,,4,
-BA001-S,BA001,Infinity edges bangle Bangle Silver,Bangles,Silver,2,26.51,109.59,4,
-BA001-YG14,BA001,,Bangles,14k Gold,,,,5,
-BA002-S,BA002,,Bangles,Silver,,,,4,
-BA002-YGP,BA002,Infinity in middle stainless bangle YGP,Bangles,Gold Plated,2,27.88,109.59,8,
-BA004-S,BA004,,Bangles,Silver,,,,3,
+BA001-S,BA001,Infinity edges bangle Silver 4.62g,Bangles,Silver,2,26.51,123.29,4,
+BA001-YG14,BA001,"Infinity Edges Bangle, Solid 14k yellow gold 5.5g",Bangles,14k Gold,,,821.92,5,
+BA002-S,BA002,Infinity in middle stainless bangle Silver,Bangles,Silver,,,109.59,4,
+BA002-YG14,BA002,"Infinity in middle stainless bangle , Solid 14k Yellow gold, 5.2g",Bangles,14k Gold,,,671.23,,
+BA002-YGP,BA002,"Infinity in middle stainless bangle , Yellow Gold Plated",Bangles,Gold Plated,2,27.88,123.29,8,
+BA003-S,BA003,"Solid “Dobchu” Vajra bangle silver 37.5g, clasp",Bangles,Silver,,,301.37,,
+BA004-S,BA004,"Endless Knot bangle, Silver, smaller 13.89g",Bangles,Silver,,,301.37,3,
 BA005-RGP,BA005,,Bangles,Rose Gold,,,,1,
+BA005-S,BA005,"Vajra Bangle Silver, CZ 18.59g, regular size",Bangles,Silver,,,410.96,,
 BA005-S-CZ,BA005,,Bangles,Silver,,,,5,
+BA005-YGP,BA005,"Vajra Bangle Gold Plated, CZ 19.14g",Bangles,Gold Plated,,,438.36,,
 BA005-YGP-CZ,BA005,,Bangles,Gold Plated,,,,4,
+BA007-S,BA007,"Flexible Double skull bangle black diamonds, Sterling Silver",Bangles,Silver,,,260.27,,
 BA007-S-BD,BA007,,Bangles,Silver,,,,3,
 BR001-S,BR001,,Brooches,Silver,,,,2,
 BR001-TT,BR001,,Brooches,,,,,5,
-BR001-YGP,BR001,,Brooches,Gold Plated,,,,7,
-BR002-YGP,BR002,,Brooches,Gold Plated,,,,5,
-BR003-S,BR003,"Tam Syllable Brooch, Larger Silver",Brooches,Silver,2,,109.59,3,
-BR003-YGP,BR003,"Tam brooch, Large, YGP",Brooches,Gold Plated,2,,123.29,5,
-BR003B-S,BR003B,"Tam Brooch Small, Silver",Brooches,Silver,1,,68.49,2,
-BR003B-YGP,BR003B,"Tam Brooch Small, YGP",Brooches,Gold Plated,1,,82.19,2,
-BR004-S,BR004,,Brooches,Silver,,,,2,
-BR004-YGP,BR004,,Brooches,Gold Plated,,,,3,
-BR004B-S,BR004B,"Hung Syllable Brooch, Smaller Silver",Brooches,Silver,1,,89.04,2,
+BR001-YGP,BR001,"Eight Auspicious Symbols Brooch, Round, Silver Gold Plated 21.3g",Brooches,Gold Plated,,,273.97,7,
+BR002-YGP,BR002,"Eight Auspicious Symbols Brooch, Elongated, Silver Gold Plated 17.7g",Brooches,Gold Plated,,,301.37,5,
+BR003-S,BR003,"Tam Syllable Brooch, Larger, Silver, 46mm 5.6g",Brooches,Silver,2,,109.59,3,
+BR003-YGP,BR003,"Tam Syllable Brooch, Larger, Yellow Gold Plated, 46mm 5.5g",Brooches,Gold Plated,2,,123.29,5,
+BR003B-S,BR003B,"Tam Syllable Brooch, Smaller, Silver, 37mm 2.7g",Brooches,Silver,1,,68.49,2,
+BR003B-YGP,BR003B,"Tam Syllable Brooch, Smaller, Gold Plated, 37mm 2.7g",Brooches,Gold Plated,1,,82.19,2,
+BR004-S,BR004,"Hung Syllable Brooch, Larger, 53mm, Silver 7.6g",Brooches,Silver,,,123.29,2,
+BR004-YGP,BR004,"Hung Syllable Brooch, 53mm, Larger, Yellow Gold Plated, 7.6g",Brooches,Gold Plated,,,136.99,3,
+BR004B-S,BR004B,"Hung Syllable Brooch, Smaller, Silver , 37mm 3.8g",Brooches,Silver,1,,89.04,2,
 BR004B-YGP,BR004B,,Brooches,Gold Plated,,,,2,
+BR005,BR005,"Dhi Syllable Brooch, Silver, Larger, 55mm 10.2g",Brooches,Silver,,,136.99,,
 BR005-S,BR005,,Brooches,Silver,,,,4,
-BR005-YGP,BR005,,Brooches,Gold Plated,,,,2,
-BR005B-S,BR005B,,Brooches,Silver,,,,2,
-BR005B-YGP,BR005B,,Brooches,Gold Plated,,,,2,
-BR006-RGP,BR006,,Brooches,Rose Gold,,,,1,
-BR006-S,BR006,"Hri Syllable Brooch Larger, Silver",Brooches,Silver,2,,123.29,2,
-BR006-YGP,BR006,,Brooches,Gold Plated,,,,5,
-BR006B-S,BR006B,,Brooches,Silver,,,,1,
-BR007-S,BR007,,Brooches,Silver,,,,2,
-BR007-YGP,BR007,,Brooches,Gold Plated,,,,2,
-BR008-S,BR008,"Ah Syllable Brooch, Silver",Brooches,Silver,2,,68.49,2,
-BR008-YGP,BR008,"Ah Syllable Brooch, Gold Plated",Brooches,Gold Plated,3,,82.19,2,
+BR005-YGP,BR005,"Dhi Syllable Brooch, Gold Plated, Larger, 55mm 10.37g",Brooches,Gold Plated,,,150.68,2,
+BR005B-S,BR005B,"Dhi Syllable Brooch, Silver Smaller, 35mm",Brooches,Silver,,,89.04,2,
+BR005B-YGP,BR005B,"Dhi Syllable Brooch, Gold Plated, Smaller, 35mm",Brooches,Gold Plated,,,102.74,2,
+BR006-RGP,BR006,"Hri Syllable Brooch Larger Rose Gold Plated, 43mm 9.19g",Brooches,Rose Gold,,,136.99,1,
+BR006-S,BR006,"Hri Syllable Brooch Larger, Silver, 43mm",Brooches,Silver,2,,123.29,2,
+BR006-YGP,BR006,"Hri Syllable Brooch Larger Gold Plated, 43mm, 9.21g",Brooches,Gold Plated,,,136.99,5,
+BR006B-S,BR006B,"Hri Syllable Brooch Silver, Smaller, 36mm 3.9g",Brooches,Silver,,,75.34,1,
+BR006B-YGP,BR006B,"Hri Syllable Brooch, Gold Plated, Smaller, 36mm 3.9g",Brooches,Gold Plated,,,95.89,,
+BR007-RGP,BR007,"Bam Syllable Brooch, Rose Gold Plated 28mm, 3g",Brooches,Rose Gold,,,68.49,,
+BR007-S,BR007,"Bam Syllable Brooch, Silver, 28mm 3g",Brooches,Silver,,,61.64,2,
+BR007-YGP,BR007,"Bam Syllable Brooch, Yellow Gold Plated 28mm, 3g",Brooches,Gold Plated,,,68.49,2,
+BR008-S,BR008,"Ah Syllable Brooch, Silver 4g",Brooches,Silver,2,,68.49,2,
+BR008-YGP,BR008,"Ah Syllable Brooch, Gold Plated 4g",Brooches,Gold Plated,3,,82.19,2,
+BR009,BR009,"Om Syllable Brooch, Silver, 26mm 2.8g",Brooches,Silver,,,68.49,,
 BR009-S,BR009,,Brooches,Silver,,,,2,
-BR009-YGP,BR009,,Brooches,Gold Plated,,,,2,
-BR010-S,BR010,"Dzam Syllable Brooch, Silver",Brooches,Silver,1,,68.49,2,
-BR010-YGP,BR010,"Dzam Syllable Brooch,YGP",Brooches,Gold Plated,1,,82.19,2,
-BR011-S,BR011,"Double Vajra Brooch, Silver, CZ",Brooches,Silver,1,35.42,116.44,2,
-BR011-YGP,BR011,"Double Vajra Brooch, YGP, CZ",Brooches,Gold Plated,2,36.63,136.99,3,
-BR012-S,BR012,,Brooches,Silver,,,,6,
-C003-S,C003,,Accessories,Silver,,,,5,
-C004-S,C004,,Accessories,Silver,,,,1,
-C004-YG14,C004,,Accessories,14k Gold,,,,5,
-C005-RGP,C005,,Accessories,Rose Gold,,,,3,
-C005-S,C005,,Accessories,Silver,,,,1,
-C005-YG14,C005,,Accessories,14k Gold,,,,4,
-C006-RGP,C006,,Accessories,Rose Gold,,,,3,
-C006-S,C006,,Accessories,Silver,,,,3,
-C006-YG14,C006,,Accessories,14k Gold,,,,5,
-C007-S,C007,,Accessories,Silver,,,,3,
-C007-YGP,C007,,Accessories,Gold Plated,,,,3,
-C008-S,C008,,Accessories,Silver,,,,3,
-C008-YGP,C008,,Accessories,Gold Plated,,,,3,
-CL002-S,CL002,,Cufflinks,Silver,,,,1,
-CL002-YGP,CL002,,Cufflinks,Gold Plated,,,,2,
-CL003-YGP,CL003,,Cufflinks,Gold Plated,,,,2,
-CL004-S,CL004,,Cufflinks,Silver,,,,5,
-CL004-YGP,CL004,,Cufflinks,Gold Plated,,,,1,
-CL005-S,CL005,,Cufflinks,Silver,,,,2,
-CL005-S-CZ,CL005,,Cufflinks,Silver,,,,2,p123
-CL005-YGP,CL005,,Cufflinks,Gold Plated,,,,8,
-CL005-YGP-CZ,CL005,,Cufflinks,Gold Plated,,,,3,
-CL006-S,CL006,,Cufflinks,Silver,,,,6,
-CL006-YGP,CL006,,Cufflinks,Gold Plated,,,,2,
-CL006-YGP-CZ,CL006,,Cufflinks,Gold Plated,,,,2,
+BR009-YGP,BR009,"Om Syllable Brooch, Yellow Gold Plated, 26mm 2.8g",Brooches,Gold Plated,,,82.19,2,
+BR010-S,BR010,"Dzam Syllable Brooch, Silver 3.38g",Brooches,Silver,1,,68.49,2,
+BR010-YGP,BR010,"Dzam Syllable Brooch, Gold Plated 3.39g",Brooches,Gold Plated,1,,82.19,2,
+BR011-S,BR011,"Double Vajra Brooch, Silver, CZ, 5.25g",Brooches,Silver,1,35.42,116.44,2,
+BR011-YGP,BR011,"Double Vajra Brooch, YGP, CZ, 5.15g",Brooches,Gold Plated,2,36.63,136.99,3,
+BR012-S,BR012,Blue Poppy Silver Enamel Brooch National Flower,Brooches,Silver,,,424.66,6,
+C003-S,C003,"Vajra and Bell Mala Counters, Large, Silver, Rhodium",Accessories,Silver,,,219.18,5,
+C004-RGP,C004,"Vajra and Bell Mala counters, Rose/Yellow Gold Plated",Accessories,Rose Gold,,,232.88,,
+C004-S,C004,"Vajra and Bell Mala Counters, Silver, Silver, Rhodium",Accessories,Silver,,,164.38,1,
+C004-YG14,C004,"Vajra and Bell Mala Counters, Yellow 14k Gold, 8.87g",Accessories,14k Gold,,,1712.33,5,
+C005-RGP,C005,"Phurba mala counter Rose Gold Plated, 3.81g",Accessories,Rose Gold,,,109.59,3,
+C005-S,C005,"Phurba mala counter Silver, Rhodium, 3.81g",Accessories,Silver,,,82.19,1,
+C005-YG14,C005,"Mala Counter - Phurba, 14k Yellow Gold, 4.78g",Accessories,14k Gold,,,821.92,4,
+C006-RGP,C006,"Drigug mala tally counter Rose Gold Plated, 3.82g",Accessories,Rose Gold,,,109.59,3,
+C006-S,C006,"Drigug mala tally counter Silver, Rhodium, 3.82g",Accessories,Silver,,,82.19,3,
+C006-YG14,C006,"Mala Counter - Drigug, Yellow 14k Gold, 4.73g",Accessories,14k Gold,,,821.92,5,
+C007-S,C007,"Phurba mala counter, Large Silver, Rhodium, 3.81g",Accessories,Silver,,,109.59,3,
+C007-YGP,C007,"Mala Counter - Phurba, Large. Yellow Gold Plated 8.48g, (Vermeil Gold)",Accessories,Gold Plated,,,150.68,3,
+C008-S,C008,"Drigug mala tally counter, Large Silver, Rhodium, 8.44g",Accessories,Silver,,,109.59,3,
+C008-YGP,C008,"Mala Counter - Drigug, Large. Yellow Gold Plated 8.47g, (Vermeil Gold)",Accessories,Gold Plated,,,150.68,3,
+CA040-YG14,CA040,"CA040 Yellow 14k Gold chain, 2.66g",Chains,14k Gold,,,397.26,,
+CC028-RG14-45,CC028,"Chain 14k Rose gold, 45cm, spring-lock",Chains,Rose Gold,,,219.18,,
+CC028-YG14,CC028,"Gold 14k Chain CC028, 38-42-45cm, 1.64g",Chains,14k Gold,,,246.58,,
+CC3100,CC3100,"Silver Chain CC3100, 45cm, 1.47g",Chains,Silver,,,34.25,,
+CH040-YGP,CH040,Chain CH040 Silver Yellow Gold Plated,Chains,Gold Plated,,,54.79,,
+CH060-S,CH060,"Silver Chain, 45cm CH060, 7.31g",Chains,Silver,,,47.95,,
+CL002-S,CL002,"Double Vajra Full Diamond Cufflinks Silver, CZ 14g",Cufflinks,Silver,,,219.18,1,
+CL002-YGP,CL002,"Double Vajra Full Diamond Cufflinks Gold Plated, CZ 14.46g",Cufflinks,Gold Plated,,,232.88,2,
+CL003-YGP,CL003,"Malaya Emblem Cufflinks, Yellow Gold Plated, CZ Diamonds",Cufflinks,Gold Plated,,,232.88,2,
+CL004-S,CL004,Sun and Moon Tashi Mannox Cufflinks Silver 13.64g,Cufflinks,Silver,,,260.27,5,
+CL004-YGP,CL004,Sun and Moon Tashi Mannox Cufflinks Gold Plated 13.8g,Cufflinks,Gold Plated,,,287.67,1,
+CL005-S,CL005,"Double Dorje Cufflink, Silver 10.45g",Cufflinks,Silver,,,178.08,2,
+CL005-S-CZ,CL005,"Double Dorje Cufflink, Silver, CZ Diamonds 10.76g",Cufflinks,Silver,,,184.93,2,p123
+CL005-YGP,CL005,"Double Dorje Cufflink, Yellow Gold Plated 10.51g",Cufflinks,Gold Plated,,,191.78,8,
+CL005-YGP-CZ,CL005,"Double Dorje Cufflink, YGP, CZ 10.49g",Cufflinks,Gold Plated,,,198.63,3,
+CL006-S,CL006,"Double Dorje Cufflink, Enamel, Silver 10.67g",Cufflinks,Silver,,,198.63,6,
+CL006-S-CZ,CL006,"Double Dorje Cufflink, Enamel, Silver, CZ 10.69g",Cufflinks,Silver,,,205.48,,
+CL006-YGP,CL006,"Double Dorje Cufflink, Enamel, Yellow Gold Plated 10.36g",Cufflinks,Gold Plated,,,212.33,2,
+CL006-YGP-CZ,CL006,"Double Dorje Cufflink, Enamel, YGP, CZ 10.59g",Cufflinks,Gold Plated,,,219.18,2,
+E005-YGP-CZ,E005,"AH Syllable Earrings, Yellow Gold plated, CZ Diamonds",Earrings,Gold Plated,,,136.99,,
 E006-RGP,E006,,Earrings,Rose Gold,,,,2,
-E006-S,E006,"Small Endless Knot Earrings, Silver",Earrings,Silver,3,19.8,82.19,3,
+E006-S,E006,"Infinity Knot Hanging Earrings, Silver",Earrings,Silver,3,19.8,82.19,3,
 E006-YG14,E006,,Earrings,14k Gold,,,,4,
-E006-YGP,E006,,Earrings,Gold Plated,,,,3,p120
-E006B-S,E006B,"Endless Knot Earrings Large, Silver",Earrings,Silver,2,24.82,95.89,6,p086 p119 p121
-E006B-YGP,E006B,"Endless Knot Earrings Large, YGP",Earrings,Gold Plated,2,26.74,109.59,5,
-E007-YG14,E007,,Earrings,14k Gold,,,,5,
-E008-BS-YG14,E008,,Earrings,14k Gold,,,,1,
-E008-DIA-YG14,E008,"Double Dorje Stud Earrings, 29 White Diamonds, .197cts 14k Yellow Gold",Earrings,14k Gold,1.5,,1136.99,4,
+E006-YG18,E006,"Infinity Knot Hanging Earrings, 18k Yellow Gold 6.95g",Earrings,18k Gold,,,1328.77,,
+E006-YGP,E006,"Infinity Knot Hanging Earrings, Gold Plated 4.07g",Earrings,Gold Plated,,,102.74,3,p120
+E006B-S,E006B,"Endless Knot Earrings Large, Silver 6.2g",Earrings,Silver,2,24.82,95.89,6,p086 p119 p121
+E006B-YGP,E006B,"Endless Knot Earrings Large, YGP 6.23g",Earrings,Gold Plated,2,26.74,109.59,5,
+E007-YG14,E007,"Double Dorje Stud Earrings, Single Diamond, .01cts 14k Yellow Gold 2.36g",Earrings,14k Gold,,,410.96,5,
+E008-BS-YG14,E008,"Double Dorje Stud Earrings, 29 Blue Sapphires, .2cts 14k Yellow Gold 4.3g",Earrings,14k Gold,,,1136.99,1,
+E008-DIA-YG14,E008,"Double Dorje Stud Earrings, 14k gold, 4.33g: 29 White Diamonds, .197cts",Earrings,14k Gold,1.5,,1136.99,4,
+E008-GE-YG14,E008,"Double Dorje Stud Earrings, 29 Green Emeralds, .2cts 14k Yellow Gold 4.33g",Earrings,14k Gold,,,1136.99,,
 E008-GT-YG14,E008,,Earrings,14k Gold,,,,1,
-E008-RR-YG14,E008,,Earrings,14k Gold,,,,1,
-E009-YG14,E009,,Earrings,14k Gold,,,,3,
-E010A-YG14,E010A,,Earrings,14k Gold,,,,3,
-E010B-YG14,E010B,,Earrings,14k Gold,,,,2,
-E010C-YG14,E010C,,Earrings,14k Gold,,,,4,
-E010D-YG14,E010D,,Earrings,14k Gold,,,,5,
-E011AA-YG18,E011AA,,Earrings,18k Gold,,,,3,
-E011AB-YG18,E011AB,,Earrings,18k Gold,,,,4,
-E012-YGP,E012,,Earrings,Gold Plated,,,,4,p001 p013
-E013-YG14,E013,,Earrings,14k Gold,,,,8,
-E014-YG18,E014,,Earrings,18k Gold,,,,4,
-E015-YG14,E015,,Earrings,14k Gold,,,,5,
-E015-YGP,E015,,Earrings,Gold Plated,,,,4,
-E016-14K-TQ,E016,,Earrings,14k Gold,,,,7,p025 p117
+E008-RR-YG14,E008,"Double Dorje Stud Earrings, 14k Yellow Gold, 29 red rubies .2cts",Earrings,14k Gold,,,1136.99,1,
+E009-S,E009,AH Syllable Stud Earrings silver 1.16g,Earrings,Silver,,,34.25,,
+E009-YG14,E009,"AH Syllable Stud Earrings 14K Yellow Gold, 1.42g",Earrings,14k Gold,,,246.58,3,
+E010A-YG14,E010A,"White Enamel OM syllable stud earrings 14K yellow gold, 1.95g",Earrings,14k Gold,,,287.67,3,
+E010B-YG14,E010B,"Blue Enamel HUNG syllable stud earrings 14K yellow gold, 1.88g",Earrings,14k Gold,,,287.67,2,
+E010C-YG14,E010C,"Green Enamel TAM syllable stud earrings 14K yellow gold, 1.83g",Earrings,14k Gold,,,287.67,4,
+E010D-YG14,E010D,"Red Enamel BAM syllable stud earrings 14K yellow gold, 1.93g",Earrings,14k Gold,,,287.67,5,
+E011AA-YG18,E011AA,"Vajra Earrings , 2 diamonds .026cts 18 Yellow Gold 6.84g",Earrings,18k Gold,,,1958.9,3,
+E011AB-YG18,E011AB,"Vajra and Bell Earrings, 3 diamonds, .039cts 18 Yellow Gold 7.25g",Earrings,18k Gold,,,2082.19,4,
+E012-YGP,E012,"Large Melong earrings, silver, gold plated, CZ Diamonds 14.6",Earrings,Gold Plated,,,178.08,4,p001 p013
+E013-YG14,E013,"Endless Band Earrings, Solid Gold 14k, 19mm 6.74g",Earrings,14k Gold,,,1150.68,8,
+E014-YG14,E014,"Tam Syllable earrings Solid 14k Gold, 7.79g 2 diamonds (.025cts)",Earrings,14k Gold,,,1931.51,,p035
+E014-YG18,E014,"Tam Syllable earrings 18k gold, 9.39g",Earrings,18k Gold,,,2856.16,4,
+E015-S,E015,Hung Syllable Earrings Silver,Earrings,Silver,,,82.19,,
+E015-YG14,E015,"Hung Syllable Earrings Solid 14k Gold, 4.19g:",Earrings,14k Gold,,,712.33,5,
+E015-YGP,E015,Hung Syllable Earrings Gold Plated 3.35g,Earrings,Gold Plated,,,95.89,4,
+E016-14K-TQ,E016,"Bumpa Earrings, Turquoise, 14K Gold, clasp 7.15g, Diamonds .038cts 8.28g",Earrings,14k Gold,,,1424.66,7,p025 p117
 E016-YG14-COR,E016,,Earrings,14k Gold,,,,3,
-E017-YG14-TQ,E017,,Earrings,14k Gold,,,,6,
-E018-S-BCZ,E018,"5 Pronged Silver Vajra Earring, Black Diamonds",Earrings,Silver,1,150.99,397.26,4,p098 p114
+E017-YG14-TQ,E017,"Turquoise 14K Gold Earrings, Gold 9.1 Diamonds .21cts Total Weight 13.72g",Earrings,14k Gold,,,2219.18,6,
+E018-S-BCZ,E018,Five pronged vajra earrings silver black diamonds 6g,Earrings,Silver,1,150.99,397.26,4,p098 p114
+E018BB-S-BD,E018BB,Five Pronged Bell EarringsSilver Black CZ 6.25g,Earrings,Silver,,,410.96,,
 E019BB-S-BD,E019BB,,Earrings,Silver,,,,4,
-E021-YG18,E021,,Earrings,18k Gold,,,,3,
-E023-YG14-TQ,E023,,Earrings,14k Gold,,,,5,
-E025-S,E025,,Earrings,Silver,,,,2,
-E025-YG18,E025,,Earrings,18k Gold,,,,2,
-E025-YGP,E025,,Earrings,Gold Plated,,,,3,
-E026-S,E026,,Earrings,Silver,,,,5,p012
+E021-YG18,E021,Hanging Endless Knot Earrings 18k Yellow Gold 1.3cts diamonds 13.34g,Earrings,18k Gold,,,3595.89,3,
+E023-YG14-TQ,E023,"14K Blue Sapphire & Turquoise, Double Dorje, Endless Knot Earrings. Total weight 10.07g, Gold weight 6.44g",Earrings,14k Gold,,,1575.34,5,
+E025-S,E025,"Tam Earrings, Small, Silver",Earrings,Silver,,,82.19,2,
+E025-YG18,E025,"Tam Earrings, Small, Yellow 18k Gold, 3.92g",Earrings,18k Gold,,,1123.29,2,
+E025-YGP,E025,"Tam Earrings, Small, Yellow Gold Plated",Earrings,Gold Plated,,,95.89,3,
+E026-S,E026,"Malaya Logo Earrings, Silver, CZ",Earrings,Silver,,,61.64,5,p012
+E026-YG14,E026,"Malaya Logo Earrings, Yellow 14k Gold, diamond 2.36g .025 CTS.",Earrings,14k Gold,,,356.16,,p122
 E026-YG14-DIA,E026,,Earrings,14k Gold,,,,5,
-E026-YGP,E026,,Earrings,Gold Plated,,,,5,p101
-E027-S,E027,"Endless Knot Stud Earrings, Silver",Earrings,Silver,5,25.19,82.19,5,
-E027-YGP,E027,"Endless Knot Stud Earrings, YGP",Earrings,Gold Plated,5,28.44,95.89,5,
-E028-S,E028,,Earrings,Silver,,,,3,
-E028-YG18,E028,,Earrings,18k Gold,,,,3,
+E026-YG18,E026,"Malaya Logo Earrings, Yellow 18k Gold, diamond 2.74g .025 CTS.",Earrings,18k Gold,,,547.95,,
+E026-YGP,E026,"Malaya Logo Earrings, Yellow Gold Plated, CZ Diamonds",Earrings,Gold Plated,,,68.49,5,p101
+E027-S,E027,"Endless Knot Stud Earrings, Silver, omega clip",Earrings,Silver,5,25.19,82.19,5,
+E027-YGP,E027,"Endless Knot Stud Earrings, Yellow Gold Plated, omega clip",Earrings,Gold Plated,5,28.44,102.74,5,
+E028-S,E028,"Phurba Earrings Smaller, Silver, clip 39mm",Earrings,Silver,,,123.29,3,
+E028-YG18,E028,"Phurba Earrings Larger, GOLD 18K, 14.05g 47mm",Earrings,18k Gold,,,2684.93,3,
+E029-YG14-TQ,E029,"Turquoise Earrings. Diamonds: 0.45 CTS. 14k gold: 4.61g, total weight: 5.86g turquoise: 6.27cts",Earrings,14k Gold,,,1424.66,,
 E029-YG18-TQ,E029,,Earrings,18k Gold,,,,3,
-E030-YG14,E030,,Earrings,14k Gold,,,,2,p115
-E032-S-CZ,E032,"Endless Knot Earrings, Silver, CZ",Earrings,Silver,2,42.14,150.68,4,p021 p107
-E033-S-GREEN,E033,,Earrings,Silver,,,,4,
-E034-S-BLUE,E034,,Earrings,Silver,,,,4,
+E030-YG14,E030,"Endless Knot Earrings, Larger GOLD 14K, 23mm, 9.05g",Earrings,14k Gold,,,1547.95,2,p115
+E032-S-CZ,E032,"Endless Knot Earrings Silver, CZ",Earrings,Silver,2,42.14,150.68,4,p021 p107
+E033-S-GREEN,E033,"Tam Syllable Earrings, Silver, Green Enamel",Earrings,Silver,,,82.19,4,
+E034-S-BLUE,E034,"Hung Syllable Earrings, Silver, Blue Enamel",Earrings,Silver,,,82.19,4,
 E035-S-CZ,E035,"Om syllable earrings, Silver, CZ",Earrings,Silver,1,,164.38,4,
-E035-YGP-CZ,E035,"Om syllable earrings, YGP, CZ",Earrings,Gold Plated,1,,178.08,2,p074 p109 p118
-E036-S,E036,,Earrings,Silver,,,,4,
-E037-S-CZ,E037,,Earrings,Silver,,,,3,
-E038-S-CZ,E038,"Double Dorje Earrings, Silver, CZ",Earrings,Silver,2,19.61,82.19,3,
-E038-YGP-CZ,E038,,Earrings,Gold Plated,,,,4,
+E035-YGP-CZ,E035,"Om syllable earrings, Vermeil Gold, CZ",Earrings,Gold Plated,1,,178.08,2,p074 p109 p118
+E036-S,E036,"Drigug, Curved Knife Earrings, Silver",Earrings,Silver,,,123.29,4,
+E037-S-CZ,E037,"Tam Earrings, Silver, CZ",Earrings,Silver,,,178.08,3,
+E038-S-CZ,E038,"Double Dorje Earrings, Silver, CZ, 3.13g",Earrings,Silver,2,19.61,82.19,3,
+E038-YGP-CZ,E038,"Double Dorje Earrings, Yellow Gold Plated CZ, 3.03g",Earrings,Gold Plated,,,95.89,4,
 E039-S,E039,,Earrings,Silver,,,,1,
-E039-YG18-DIA,E039,,Earrings,18k Gold,,,,4,p124
-E039-YGP-CZ,E039,,Earrings,Gold Plated,,,,4,
-E040-YG14-DIA,E040,,Earrings,14k Gold,,,,6,p064
+E039-YG18-DIA,E039,"Long Hanging Endless Knot Earrings, Yellow Gold 18k, 7.56g 0.64cts Diamonds",Earrings,18k Gold,,,1479.45,4,p124
+E039-YGP-CZ,E039,"Long Hanging Endless Knot Earrings, Yellow Gold Plated, CZ",Earrings,Gold Plated,,,164.38,4,
+E040-YG14-DIA,E040,"Double Dorje Earrings, Clover, Diamonds 0.37 CTS. Gold 14k: 6.85g, Total: 8.34g",Earrings,14k Gold,,,1767.12,6,p064
 E041-YGP-BQ,E041,,Earrings,Gold Plated,,,,2,
-E042-S-ENAMEL,E042,,Earrings,Silver,,,,5,p127
+E042-S-ENAMEL,E042,"Blue Poppy, Earrings Sterling Silver, Hand Applied Enamel, 6.26g",Earrings,Silver,,,376.71,5,p127
 E044-YG14-COR,E044,,Earrings,14k Gold,,,,3,
-E045-YG18-COR,E045,,Earrings,18k Gold,,,,5,p125 p126
-E054-YG14-TQ,E054,,Earrings,14k Gold,,,,3,
-E056-YG18-BS-DIA,E056,,Earrings,18k Gold,,,,3,p015 p116
-N002-S,N002,,Necklaces,Silver,,,,5,p112
-N002-S-CZ,N002,,Necklaces,Silver,,,,3,p093
+E045-YG18-COR,E045,"Life Force Coral Gold Earrings with Diamonds 1.01 CTS. YG18: 16.71g, Total: 19.48g",Earrings,18k Gold,,,4602.74,5,p125 p126
+E052-YG14-AMB,E052,"Amber bead Earrings, lotus Cap, Bumpa (vase) clasp, vajra Yellow Gold 14k",Earrings,14k Gold,,,1506.85,,
+E054-YG14-TQ,E054,Intricate Turquoise and Diamond Earrings 3.23 cts. Diamonds .292 cts.,Earrings,14k Gold,,,2438.36,3,
+E056-YG18-BS-DIA,E056,"Bumpa, Longevity Vase Earrings 18k Yellow Gold 12.74g with Sapphires .285cts, & .Diamonds .254cts.",Earrings,18k Gold,,,3369.86,3,p015 p116
+EXT 15cm-YG14,EXT 15cm,"Chain Extension 15cm, adjustable to 10cm and 5cm, Yellow Gold 14k, 0.92g:",Chains,14k Gold,,,102.74,,
+EXT 15cm-YG18,EXT 15cm,"Chain Extension 15cm, Yellow Gold 18k, 1.15g:",Chains,18k Gold,,,150.68,,
+N002-S,N002,"Tara Mantra Necklace, Silver, White Rhodium, chain CH060, 50cm",Necklaces,Silver,,,273.97,5,p112
+N002-S-CZ,N002,"Tara Mantra Necklace, Silver, White Rhodium, chain CH060, CZ Diamonds 50cm",Necklaces,Silver,,,328.77,3,p093
 N002-YG18,N002,,Necklaces,18k Gold,,,,3,
-N002-YGP,N002,"Tara mantra necklace, New Version, Gold Plated",Necklaces,Gold Plated,5,55.36,205.48,3,p104 p108 p111 p113
-N002-YGP-CZ,N002,,Necklaces,Gold Plated,,,,5,
+N002-YGP,N002,"Tara Mantra Necklace, Silver, Gold Plated, chain CH060, 50cm, chain CH040",Necklaces,Gold Plated,5,55.36,356.16,3,p104 p108 p111 p113
+N002-YGP-CZ,N002,"Tara Mantra Necklace, Silver Gold Plated, White CZ Diamonds",Necklaces,Gold Plated,,,383.56,5,
+N003-YGP,N003,"Eight Auspicious Signs Necklace, Silver, Vermeil Gold",Necklaces,Gold Plated,,,397.26,,p110
 N003-YGP-CZ,N003,"Eight Auspicious Symbols Necklace, YGP CZ",Necklaces,Gold Plated,2,,397.26,6,
+N004-S,N004,"Silver Vajra necklace, large, 48cm",Necklaces,Silver,,,273.97,,p095 p097
+N004-YG18-DIA,N004,"Vajra Necklace Yellow Gold 18k, Diamonds 0.24 cts with Chain ength 45-50 cm + 20.9 grams",Necklaces,18k Gold,,,4041.1,,
+N005-S,N005,"Silver Vajra necklace, Medium 3 Dimensional design - 5 Prongs, Black Diamonds .118 CTS.",Necklaces,Silver,,,260.27,,
 N005B-S,N005B,,Necklaces,Silver,,,,5,
+N005B-YG14,N005B,"Mid Vajra Necklace, 3 Dimensional design - 5 Prongs, 14K Yellow Gold 8.46g .115cts diamonds",Necklaces,14k Gold,,,1753.42,,p068 p103
 N005B-YG14-DIA,N005B,,Necklaces,14k Gold,,,,7,
+N006-AMB-B,N006,"14K Gold Amber Necklace, With Vajras, 55cm Chain 13.4g/ 12.6g",Necklaces,14k Gold,,,1109.59,,
 N007-YGP-CZ,N007,,Necklaces,Gold Plated,,,,5,
-N007C-YGP,N007C,,Necklaces,Gold Plated,,,,2,
+N007B-YGP,N007B,"Vajra Guru Mantra Necklace Gold Plated, Large 17.6g",Necklaces,Gold Plated,,,328.77,,p102
+N007C-YGP,N007C,"Vajra Guru Mantra New, Small, Yellow Gold Plated, CZ Diamonds",Necklaces,Gold Plated,,,246.58,2,
+N008-YGP,N008,"Dzambhala mantra Necklace, Gold Plated, CZ Diamonds, Large",Necklaces,Gold Plated,,,328.77,,
 N008-YGP-CZ,N008,,Necklaces,Gold Plated,,,,2,
-N009B-S,N009B,,Necklaces,Silver,,,,3,p100
+N009B-S,N009B,"Mani Mantra Necklace Small, Silver Tashi Mannox Design",Necklaces,Silver,,,164.38,3,p100
+N009B-YGP,N009B,"Mani Mantra Necklace Gold Plated small, CZ Diamonds 9.84g",Necklaces,Gold Plated,,,246.58,,p106
 N009B-YGP-CZ,N009B,,Necklaces,Gold Plated,,,,5,
+N010-S,N010,"Endless Knot Hanging Necklace silver, CZ Diamonds",Necklaces,Silver,,,239.73,,
 N010-S-CZ,N010,,Necklaces,Silver,,,,3,
+N010-YG14,N010,"Hanging Endless Knot Necklace, 14K Yellow Gold 6.48g, Diamonds, .653cts",Necklaces,14k Gold,,,1643.84,,p105
 N010-YG14-DIA,N010,,Necklaces,14k Gold,,,,3,
-N013-S,N013,,Necklaces,Silver,,,,3,
-N014-YGP,N014,,Necklaces,Gold Plated,,,,4,
-N015-S,N015,"Vajra Necklace Small 5 prongs, Silver, chain 45cm",Necklaces,Silver,6,28.05,95.89,4,
-N016-YG18,N016,,Necklaces,18k Gold,,,,3,p099
-N017-S,N017,,Necklaces,Silver,,,,4,
-N020-YG18-TQ,N020,,Necklaces,18k Gold,,,,1,p094
-N022-YG18-COR,N022,,Necklaces,18k Gold,,,,4,
-N024-S,N024,"Om Ah Hung Necklace, Silver, 48cm",Necklaces,Silver,1,34.4,102.74,2,p002
-N025-YG14-TQ-DIA,N025,,Necklaces,14k Gold,,,,4,p092
-P012-YG14,P012,"Tam syllable pendant OLD version, YG14. small without",Pendants,14k Gold,1,85.64,239.73,5,p070 p090
+N013-S,N013,"Malaya Logo chain with CZ diamonds, Silver, Rhodium",Necklaces,Silver,,,219.18,3,
+N013-YGP,N013,"Malaya Logo chain with CZ diamonds, Yellow Gold Plated",Necklaces,Gold Plated,,,232.88,,
+N014-YGP,N014,"Double Vajra, Endless Knot and Malaya Logo chain layered necklace",Necklaces,Gold Plated,,,547.95,4,
+N015-S,N015,"Vajra Necklace Small 5 prongs, Silver, chain 45cm",Necklaces,Silver,6,28.05,109.59,4,
+N016-YG18,N016,"Vajra Necklace Medium Flat Design - 3 Prongs, Yellow 18k Gold 10.46g",Necklaces,18k Gold,,,2000,3,p099
+N017-S,N017,"Vajra Necklace, Medium, Silver, 3 Dimensional design - 5 Prongs, Chain 45cm",Necklaces,Silver,,,123.29,4,
+N020-YG18-TQ,N020,"Necklace, Turquoise with Diamonds .212cts, Yellow 18k gold, 10.52g",Necklaces,18k Gold,,,2438.36,1,p094
+N022-YG18-COR,N022,"Life Force Coral Gold Necklace with Diamonds, 0.77 CTS. YG18: 20.24g, Total: 22.42g",Necklaces,18k Gold,,,4589.04,4,
+N024-S,N024,"Om Ah Hung sacred syllables Necklace, Silver, 48cm",Necklaces,Silver,1,34.4,102.74,2,p002
+N025-YG14-TQ-DIA,N025,"Oval Turquoise Necklace, Yellow 14k Gold, Turquoise: 6.01cts, Diamonds: .15cts 5.62g",Necklaces,14k Gold,,,1246.58,4,p092
+P005-S,P005,"Large Phurba pendant, Three faces, 82mm, silver, with chain 70cm 17.5 grams",Pendants,Silver,,,356.16,,p042
+P005-YG14,P005,"Phurba Pendant, Size 82mm, just pendant: 14k Solid Gold 19.9g",Pendants,14k Gold,,,3000,,p055
+P005-YG18,P005,"Phurba Pendant, Size 82mm, just pendant: 18k solid gold, 25.6g:",Pendants,18k Gold,,,3972.6,,
+P005-YG18-DIA1,P005,"Phurba Pendant, Size 82mm, just pendant 18k Solid Gold, 18 diamonds (.31cts) 22.59g",Pendants,18k Gold,,,7547.95,,
+P005-YG18-DIA2,P005,"Phurba Pendant, Size 82mm, just pendant 18k full diamond set 25.28g (1.86cts)",Pendants,18k Gold,,,10712.33,,
+P012-YG14,P012,"Tam syllable pendant small size, 24.5mm, Yellow 14k gold, 1.21g",Pendants,14k Gold,1,85.64,239.73,5,p070 p090
 P016-WG14-DIA,P016,,Pendants,White Gold,,,,3,
-P018-RGP,P018,LOVE CHARM PENDANT HRI RGP,Pendants,Rose Gold,1,25.9,95.89,5,p089
-P019-S,P019,Infinity Knot Pendant Silver With Chain,Pendants,Silver,4,26.37,82.19,5,
-P019-YG14,P019,,Pendants,14k Gold,,,,5,
-P020-S,P020,"Hung Syllable Pendant, Bigger, Silver, with chain",Pendants,Silver,2,25.84,82.19,5,p087
-P021-PT,P021,,Pendants,Platinum,,,,4,p080
+P016-YG14,P016,"Om Syllable Pendant 14k gold, .343 cts white diamonds, pendant only, 1.56g",Pendants,14k Gold,,,835.62,,p088
+P018-RGP,P018,"Sanskrit HRI syllable in a semi circle. Silver, rose gold plated. With chain.",Pendants,Rose Gold,1,25.9,95.89,5,p089
+P019-S,P019,"Infinity knot pendant Silver, with chain",Pendants,Silver,4,26.37,82.19,5,
+P019-YG14,P019,"Infinity knot pendant 14k Solid yellow gold, pendant only - 3.75g",Pendants,14k Gold,,,643.84,5,
+P020-S,P020,"New HUNG syllable pendant, silver, white rhodium, 44mm, with chain",Pendants,Silver,2,25.84,82.19,5,p087
+P020-YG14,P020,"New hung syllable pendant solid gold, size 44mm, pendant only 14k Yellow Gold - 3.82g",Pendants,14k Gold,,,602.74,,p083 p084 p085
+P021-PT,P021,"New HUNG syllable pendant, solid Platinum, size 35mm, Pendant only, 3.89",Pendants,Platinum,,,1164.38,4,p080
 P021-RG14,P021,,Pendants,Rose Gold,,,,4,
-P021-WG14,P021,,Pendants,White Gold,,,,4,p082
+P021-WG14,P021,"New HUNG syllable pendant, solid 14k white gold, size 35mm, With 45cm Chain, 4.48g",Pendants,White Gold,,,712.33,4,p082
 P021-YG14,P021,,Pendants,14k Gold,,,,5,
-P021-YG18,P021,,Pendants,18k Gold,,,,3,p057 p066
+P021-YG14-CH,P021,"New HUNG syllable pendant, solid 14k yellow gold, size 35mm, With 45cm Chain, 4.44g",Pendants,14k Gold,,,753.42,,
+P021-YG18,P021,"New HUNG syllable pendant, solid gold, size 35mm, pendant only: 18k yellow gold 2.70g",Pendants,18k Gold,,,506.85,3,p057 p066
 P023-WH18-BS,P023,,Pendants,,,,,7,
-P026-S,P026,,Pendants,Silver,,,,4,p065
+P024-S,P024,"Large Silver Vajra Pendant, with chain, Hung syllable engraved",Pendants,Silver,,,493.15,,p017
+P025-YG18-3C,P025,"Large 18K Solid Gold Vajra Pendant, Natural Red Rubies, white diamonds, blue sapphires, 21.6g",Pendants,18k Gold,,,4246.58,,
+P026-S,P026,Large Bell pendant Silver with chain,Pendants,Silver,,,246.58,4,p065
+P026-YG18,P026,"18K Yellow Gold Gold 8.31g, Diamond: .025cts, pendant only",Pendants,18k Gold,,,1986.3,,
 P026-YGP,P026,,Pendants,Gold Plated,,,,5,
 P027-DIA-14KY,P027,,Pendants,,,,,5,
 P027-S,P027,"Vajra Pendant, Medium Size. Silver, with chain 62-45cm",Pendants,Silver,1,63.98,205.48,6,
-P027-YG14,P027,,Pendants,14k Gold,,,,7,p076
-P028-YG14,P028,,Pendants,14k Gold,,,,5,p075
-P029-YG18,P029,,Pendants,18k Gold,,,,3,p023
-P030-S,P030,,Pendants,Silver,,,,6,
-P030-YG18,P030,,Pendants,18k Gold,,,,8,p077
+P027-YG14,P027,"Vajra Pendant, Medium Size. pendant only 14k yellow gold 5.77g",Pendants,14k Gold,,,1123.29,7,p076
+P027-YG18,P027,"Vajra Pendant, Medium Size. 18k gold, 7.00",Pendants,18k Gold,,,1575.34,,
+P027-YG18-DIA,P027,"Vajra Pendant, Medium .076cts white Diamonds 18k Yellow Gold 7.94g",Pendants,18k Gold,,,1479.45,,
+P028-YG14,P028,Bell pendant Small Size pendant only 14k Yellow Gold 3.18g,Pendants,14k Gold,,,698.63,5,p075
+P029-YG18,P029,"Vajra Pendant, Small Size. pendant only 18 karat yellow gold, 3.36g:",Pendants,18k Gold,,,767.12,3,p023
+P030-S,P030,"Melong Pendant, Silver, CZ, With Chain",Pendants,Silver,,,198.63,6,
+P030-YG18,P030,"Melong (Mirror), 12 white diamonds, .06cts 18K Yellow Gold 9.8g",Pendants,18k Gold,,,1780.82,8,p077
 P031-14K-DIA,P031,,Pendants,14k Gold,,,,4,
-P031A-S,P031A,,Pendants,Silver,,,,5,p050
-P031B-S,P031B,,Pendants,Silver,,,,5,p051
-P031C-S,P031C,,Pendants,Silver,,,,6,p049
-P031D-S,P031D,,Pendants,Silver,,,,7,p046
-P031E-S,P031E,,Pendants,Silver,,,,6,p047
+P031A-S,P031A,"Single Auspicious Pendant, Parasol, Gold Plated, With chain",Pendants,Silver,,,102.74,5,p050
+P031B-S,P031B,"Single Auspicious Pendant, Pair Of Golden Fish, Gold Plated, With chain",Pendants,Silver,,,102.74,5,p051
+P031C-S,P031C,"Single Auspicious Pendant, Vase, Gold Plated, With chain",Pendants,Silver,,,102.74,6,p049
+P031D-S,P031D,"Single Auspicious Pendant, Lotus, Gold Plated, With chain",Pendants,Silver,,,102.74,7,p046
+P031E-S,P031E,"Single Auspicious Pendant, Right Turning Conch, Gold Plated, With chain",Pendants,Silver,,,102.74,6,p047
+P031F,P031F,"Single Auspicious Pendant, Endless Knot, Gold Plated, With chain",Pendants,Gold Plated,,,102.74,,p078
+P031F-YG14-DIA,P031F,"Single Auspicious Victory Banner, (or any other of the 8 signs), 14Karat white & yellow gold 2.62g Diamonds 0.11 CTS. Pendant Only",Pendants,14k Gold,,,712.33,,p040
 P031G-14K-DIA,P031G,,Pendants,14k Gold,,,,1,
-P031G-S,P031G,,Pendants,Silver,,,,6,p045
-P031H-S,P031H,,Pendants,Silver,,,,5,p048
+P031G-S,P031G,"Single Auspicious Pendant, Victory Banner, Gold Plated, With chain",Pendants,Silver,,,102.74,6,p045
+P031H-S,P031H,"Single Auspicious Pendant, Dharma Wheel, Gold Plated, With chain",Pendants,Silver,,,102.74,5,p048
 P031S-A,P031S,,Pendants,,,,,4,
+P032-14K-MOP,P032,"Laughing Skull Pendant, Gold, Mother Of Pearl 3.2g, .128cts",Pendants,14k Gold,,,767.12,,p073
 P032-YG14-MOP,P032,,Pendants,14k Gold,,,,5,
 P033-14K-MOP,P033,,Pendants,14k Gold,,,,8,
+P033-TT14-MOP,P033,"Clover shaped vajra pendant, white gold, yellow gold, diamonds 3.43g, .153cts",Pendants,White Gold,,,821.92,,
 P034-RG14,P034,,Pendants,Rose Gold,,,,3,
+P034-RG14-DIA,P034,Endless Knot Diamond Pendant 14k Rose Gold 2.15.g .26cts Diamonds,Pendants,Rose Gold,,,1000,,p053 p061
 P034-WG14,P034,,Pendants,White Gold,,,,3,
+P034-WG14-DIA,P034,Endless Knot Diamond Pendant 14k White Gold 2.15.g .26cts Diamonds,Pendants,White Gold,,,1000,,p030 p063
 P034-YG14,P034,,Pendants,14k Gold,,,,6,
-P035-S,P035,,Pendants,Silver,,,,4,p091
-P035-YG14,P035,,Pendants,14k Gold,,,,4,
+P034-YG14-DIA,P034,Endless Knot Diamond Pendant 14k Yellow Gold 2.15.g .26cts Diamonds,Pendants,14k Gold,,,972.6,,p062 p072
+P035-S,P035,Silver Tam Syllable Pendant With Chain TASHI MANNOX DESIGN,Pendants,Silver,,,82.19,4,p091
+P035-YG14,P035,"Solid 14K Gold Tam syllable pendant, Pendant only 4.32 grams",Pendants,14k Gold,,,739.73,4,
 P036-06-S,P036,,Pendants,Silver,,,,5,
 P036-08-YGP,P036,,Pendants,Gold Plated,,,,4,
-P037-S,P037,"Ah Syllable Pendant, New Silver, With Chain",Pendants,Silver,4,20.5,82.19,5,p071
-P037-YG14,P037,,Pendants,14k Gold,,,,4,p069
-P038-S,P038,,Pendants,Silver,,,,5,p067
-P040-YG18,P040,,Pendants,18k Gold,,,,6,
-P041-CZ-S,P041,"TAM BIG PENDANT CZ, With Chain",Pendants,Silver,5,53.75,205.48,5,p018 p059
-P042-WG14-DIA,P042,,Pendants,White Gold,,,,7,p034
-P042-YG14-DIA,P042,,Pendants,14k Gold,,,,7,
-P044-YGP,P044,,Pendants,Gold Plated,,,,9,p032 p060
+P037-S,P037,New Ah syllable Pendant Tashi Mannox Design Silver with chain,Pendants,Silver,4,20.5,68.49,5,p071
+P037-YG14,P037,New Ah syllable Pendant Tashi Mannox Design 3.40 grams Solid 14k Gold,Pendants,14k Gold,,,582.19,4,p069
+P038-S,P038,New Tashi Mannox OM AH HUNG/ Vajra Dogtag pendant,Pendants,Silver,,,191.78,5,p067
+P040-YG18,P040,"Hung Syllable Pendant XXL Solid 18k Yellow Gold 7.63g 50mm, 1.191cts",Pendants,18k Gold,,,2726.03,6,
+P041-CZ-S,P041,"Tam Syllable Pendant, Silver, CZ Diamonds, With Chain",Pendants,Silver,5,53.75,205.48,5,p018 p059
+P042-WG14-DIA,P042,"Tam syllable Pendant White Gold 14k, Diamonds, .262 CTS. With Chain, 1.2g",Pendants,White Gold,,,671.23,7,p034
+P042-YG14-DIA,P042,"Tam Syllable Pendant YG14, Diamonds, .25cts, Pendant only, 1.18g",Pendants,14k Gold,,,643.84,7,
+P044-YGP,P044,"Tsipatta/ Hung Syllable Gau, openable, Silver, Gold Plated, With Chain 21.68g",Pendants,Gold Plated,,,547.95,9,p032 p060
 P045-S,P045,,Pendants,Silver,,,,3,
-P045-YGP,P045,,Pendants,Gold Plated,,,,9,p014 p058
-P047B-YG14,P047B,"Phurba Pendant Medium New, YG14, No Chain, 5.09",Pendants,14k Gold,1,378.61,849.13,6,
-P049-S,P049,,Pendants,Silver,,,,6,
-P049-YG14,P049,,Pendants,14k Gold,,,,6,p043
-P050-S,P050,"Drigug Pendant, Silver, With chain",Pendants,Silver,4,25.18,82.19,3,p041
-P050-YG14,P050,,Pendants,14k Gold,,,,6,p044
+P045-YGP,P045,"Tara Mantra Pendant Green Agate Tashi Mannox Design silver, gold plated. 34.19g",Pendants,Gold Plated,,,630.14,9,p014 p058
+P047B-YG14,P047B,"Phurba Pendant medium, 14k yellow & white gold, 4.98g, Pendant only",Pendants,14k Gold,1,378.61,849.32,6,
+P049-S,P049,"Phurba Pendant Small, Silver, With chain 45cm 4.04g",Pendants,Silver,,,82.19,6,
+P049-YG14,P049,"Phurba Pendant Small, Yellow Gold 14k , 2.42g: Pendant only",Pendants,14k Gold,,,424.66,6,p043
+P050-S,P050,"Drigug Pendant Small, Silver, With chain 45cm 4.02g",Pendants,Silver,4,25.18,82.19,3,p041
+P050-YG14,P050,"Drigug Pendant Small, Yellow Gold 14k, 2.44g Pendant only",Pendants,14k Gold,,,424.66,6,p044
 P051-RG14,P051,,Pendants,Rose Gold,,,,3,
-P051-WG18,P051,,Pendants,White Gold,,,,5,p016
-P051-YG14,P051,,Pendants,14k Gold,,,,5,p054 p081
-P052-S,P052,,Pendants,Silver,,,,5,p027
-P052-YG14,P052,,Pendants,14k Gold,,,,5,p036
-P055-S,P055,"Double Dorje Pendant, Silver CZ, with chain",Pendants,Silver,7,35.87,109.59,2,p029
-P055-YG14,P055,,Pendants,14k Gold,,,,4,p052
+P051-WG18,P051,"Endless Knot Pendant, Small, White Gold 18k, With Chain 50cm, 5.07g",Pendants,White Gold,,,1095.89,5,p016
+P051-YG14,P051,"Endless Knot Pendant, Small, Yellow Gold 14k With Chain, 3.94g",Pendants,14k Gold,,,671.23,5,p054 p081
+P052-S,P052,"Bam Syllable Pendant, Silver, with chain 2.59g",Pendants,Silver,,,82.19,5,p027
+P052-YG14,P052,"Bam Syllable Pendant, Yellow Gold 14k, 3.23g",Pendants,14k Gold,,,561.64,5,p036
+P055-S,P055,"Double Dorje Pendant, Silver, CZ Diamond, With Chain",Pendants,Silver,7,35.87,109.59,2,p029
+P055-YG14,P055,"Double Dorje Pendant, Yellow 14K Gold, 2.72g, central diamond .029cts, pendant only",Pendants,14k Gold,,,479.45,4,p052
+P056-WG18-BS,P056,"New Hung Syllable Pendant, Natural Blue Sapphires, 43mm, with chain 18k White Gold - 5.35g",Pendants,White Gold,,,1643.84,,p079
 P057-S-CZ,P057,,Pendants,Silver,,,,4,
-P057-WG14-DIA,P057,,Pendants,White Gold,,,,4,
-P058-S-B,P058,Hung Syllable Pendant Silver Blue Enamel,Pendants,Silver,4,37.78,116.44,6,p039
-P059-S-G,P059,,Pendants,Silver,,,,4,p038
-P060-YGP-R,P060,,Pendants,Gold Plated,,,,6,p037
-P061-S,P061,,Pendants,Silver,,,,5,p022
-P064-YGP-CZ,P064,"Double Vajra Medallion, Gold Plated, CZ, With Chain",Pendants,Gold Plated,2,46.58,219.18,5,p033
+P057-WG14-DIA,P057,"Hung Syllable Pendant Diamond 0.41 CTS, Small WG14 With Chain",Pendants,White Gold,,,1438.36,4,
+P058-S-B,P058,Hung Syllable Pendant Silver Blue Enamel with chain,Pendants,Silver,4,37.78,116.44,6,p039
+P059-S-G,P059,"Tam Syllable Pendant, Silver, Green Enamel, with chain",Pendants,Silver,,,95.89,4,p038
+P060-YGP-R,P060,"Bam Syllable Pendant, Yellow Gold Plated, Red Enamel with chain",Pendants,Gold Plated,,,109.59,6,p037
+P061-S,P061,"Hri Syllable Pendant Silver, Larger, With Chain",Pendants,Silver,,,95.89,5,p022
+P064-YGP-CZ,P064,"Double Vajra Medallion, Gold Plated, CZ, With Chain 55cm",Pendants,Gold Plated,2,46.58,219.18,5,p033
 P065-S,P065,"Om syllable pendant, no frame, Tashi Mannox Design, Silver, with chain",Pendants,Silver,5,25.09,82.19,5,p026
-P065-YG18,P065,,Pendants,18k Gold,,,,4,p028
+P065-YG18,P065,"Om Syllable Pendant, NEW, Yellow Gold 18k, Pendant Only 4.3g",Pendants,18k Gold,,,767.12,4,p028
 P066-YG14-RR,P066,"Longevity Vase Bumpa Pendant, Yellow Gold 14k: 13.72g, Red Rubies .14cts, Openable",Pendants,14k Gold,1,793.95,2082.19,7,
-P067-S,P067,,Pendants,Silver,,,,6,p019 p020
-P068-YG14-TQ,P068,,Pendants,14k Gold,,,,3,p024
-P069-S,P069,,Pendants,Silver,,,,6,
-P070-YG14-TQ,P070,,Pendants,14k Gold,,,,5,
-P071-YG18-BSDIA,P071,,Pendants,18k Gold,,,,7,
-P073-YG14-TQ-DIA,P073,,Pendants,14k Gold,,,,5,
+P066-YG14-SRB,P066,"Longevity Vase Bumpa Pendant, Yellow Gold 14k: 13.72g, Red Rubies, Openable",Pendants,14k Gold,,,2356.16,,p031
+P067-S,P067,"Ratna Pendant Purple Quartz, Silver, CZ Diamonds, with chain",Pendants,Silver,,,130.14,6,p019 p020
+P068-YG14-TQ,P068,"Turquoise Oval Pendant,Yellow Gold 14k, Diamonds 0.216 CTS. 1.88g",Pendants,14k Gold,,,739.73,3,p024
+P069-S,P069,"Three Dimensional Endless knot pendant studded with CZ diamonds, with chain",Pendants,Silver,,,390.41,6,
+P070-YG14-TQ,P070,"Bumpa Turquoise Pendant with a diamond .008cts, 3.76g",Pendants,14k Gold,,,726.03,5,
+P071-YG18-BSDIA,P071,"18K Longevity Vase, Larger, with Large sapphires and diamonds .14 CTS. 45.95g",Pendants,18k Gold,,,8835.62,7,
+P072-S,P072,"Silver Buddha Shakyamuni Medallion Pendant, Rhodinated, With Chain, 42-45-55 cm",Pendants,Silver,,,109.59,,
+P072-YGP,P072,"Yellow Gold Plated Buddha Shakyamuni Medallion Pendant, With Chain, 42-45-55 cm",Pendants,Gold Plated,,,205.48,,
+P073-YG14-TQ-DIA,P073,Intricate Diamond Turquoise Pendant 2.64 CTS./ Diamonds .188 CTS.,Pendants,14k Gold,,,1260.27,5,
+R001-DIA,R001,"Silver Mahakala ring with 32 white and black diamonds 0.34cts, 23g",Rings,Silver,,,1041.1,,
+R001-S,R001,"Wrathful Protector Ring, Sterling Silver, Oxidized, 23g",Rings,Silver,,,547.95,,
 R001-S-DIA,R001,,Rings,Silver,,,,7,
-R005-S-YG14,R005,,Rings,14k Gold,,,,3,
+R005-S-YG14,R005,"Rahu Ring Ring, Silver, 14K Yellow Gold Ring (2.8g) with white topaz + Black Diamonds",Rings,14k Gold,,,424.66,3,
+R014-S,R014,"Laughing Skull Ring, Silver Black Diamonds 6g",Rings,Silver,,,123.29,,
 R014-S-BD,R014,,Rings,Silver,,,,3,
+R014-YG14,R014,"Laughing Skull Ring, Black Diamonds, .036 cts 14k Gold 7.50g",Rings,14k Gold,,,1315.07,,
 R014-YG14-BD,R014,,Rings,14k Gold,,,,5,
-R017A-S,R017A,"Samaya Ring, silver, black enamel, vajra bell",Rings,Silver,1,43.8,150.68,6,
-R017A-S-T,R017A,,Rings,Silver,,,,4,
+R017A-S,R017A,"Vajra and bell Ring, silver, black enamel, brushed finished surface, sanded insert, polished edges",Rings,Silver,1,43.8,150.68,6,
+R017A-S-T,R017A,"Vajra and bell Ring, silver, Tiffany blue enamel, brushed finished surface, sanded insert, polished edges",Rings,Silver,,,150.68,4,
 R017A-YG18,R017A,,Rings,18k Gold,,,,4,
 R017B-S,R017B,,Rings,Silver,,,,1,
+R017B-YG14,R017B,"Dorje Bell Samaya Ring, male size 14K Yellow Gold, brushed finished surface, sanded insert, polished edges Central Diamond .025 CTS. 10.49 grams",Rings,14k Gold,,,1780.82,,
+R017B-YG18,R017B,"Dorje Bell Samaya Ring, male size 18K Yellow Gold, brushed finished surface, sanded insert, polished edges Central Diamond .025 CTS. 12.5 grams",Rings,18k Gold,,,2397.26,,
 R017B-YG18-DIA,R017B,,Rings,18k Gold,,,,6,
 R017C-S,R017C,,Rings,Silver,,,,1,
-R019A-WG18,R019A,,Rings,White Gold,,,,4,
+R017D-S,R017D,"Double Dorje Ring, silver, brushed finished surface, sanded insert, polished edges",Rings,Silver,,,143.84,,
+R019-YG18,R019,"Infinity Knot Eternal Band, 18k Gold 4.8g, female size (51-55)",Rings,18k Gold,,,917.81,,
+R019-YG18-DIA,R019,"Infinity Knot Eternal Band, 18k Gold, diamonds .05cts, 5.64 female size (51-55)",Rings,18k Gold,,,1150.68,,
+R019A-WG18,R019A,"Ring eternity infinity auspicious 18k White Gold, male size (59-60), 6g",Rings,White Gold,,,1150.68,4,
 R019A-YG18,R019A,,Rings,18k Gold,,,,4,
 R019B-YG18,R019B,,Rings,18k Gold,,,,5,
-R020-YG18,R020,,Rings,18k Gold,,,,6,
-R020B-YG18,R020B,,Rings,18k Gold,,,,4,
-R021-WG14-DIA,R021,,Rings,White Gold,,,,5,
-R021-YG14,R021,,Rings,14k Gold,,,,4,
-R021-YG18-DIA,R021,,Rings,18k Gold,,,,4,
-R022-YG14-RR,R022,,Rings,14k Gold,,,,8,
+R020-YG18,R020,"Infinity Knot Eternal Band, Thinner, With Background, 18k Yellow Gold 4.7g female size (51-55)",Rings,18k Gold,,,1000,6,
+R020B-YG18,R020B,"Large endless knot ring, THICKER, 18k yellow gold, Size 53 (female), 5.34g",Rings,18k Gold,,,1013.7,4,
+R021-WG14-DIA,R021,"Infinity Knot Ring, 14k White Gold, Diamonds 5.1g .71cts",Rings,White Gold,,,1643.84,5,
+R021-YG14,R021,"Infinity Knot Ring, 14k Gold 4.9g",Rings,14k Gold,,,931.51,4,
+R021-YG18-DIA,R021,"Endless Knot Ring 18k Yellow Gold, Diamonds 5.79g, .71cts",Rings,18k Gold,,,2150.68,4,
+R022-YG14-RR,R022,Red Ruby Jewels Ring Ruby - 5.5cts 0.494cts diamonds 14k yellow gold 4.37g,Rings,14k Gold,,,2136.99,8,
+R023-YG14-CIT,R023,Citrine “Sunshine” Diamond 14K Vajra Ring Citrine - 3.34cts 0.598cts Diamonds 14k yellow gold 3.59g,Rings,14k Gold,,,2041.1,,
 R023-YG14-CIT-DIA,R023,,Rings,14k Gold,,,,10,
-R023-YG14-RR,R023,,Rings,14k Gold,,,,5,
+R023-YG14-RR,R023,Red Ruby Vajras Ring Ruby - 3.34cts 0.598cts Diamonds 14k yellow gold 3.59g,Rings,14k Gold,,,2041.1,5,
 R025-26-A-YG18,R025,,Rings,18k Gold,,,,7,
+R025A-YG18,R025A,"A pair of Dorje and Bell Wedding Bands, Sanded Finish, Simple Design 4 diamonds... 18k Yellow Gold: approx 17g",Rings,18k Gold,,,3287.67,,
+R025C-YG18,R025C,"A pair of Dorje and Bell Wedding Bands, Brushed Finish, Protruding Design, 14 diamonds... 18k Yellow Gold: approx 19g",Rings,18k Gold,,,3356.16,,
+R026-WG14-AQ,R026,"Aquamarine Ring, .28cts White Diamonds, 14k White Gold 5.29g",Rings,White Gold,,,2383.56,,
 R026-WG14-AQ-DIA,R026,,Rings,White Gold,,,,7,
 R027-YG14-COR,R027,,Rings,14k Gold,,,,6,
-R029-S,R029,,Rings,Silver,,,,5,
+R029-S,R029,"Malaya Dream Ring, CZ Diamonds Sterling Rhodinated Silver",Rings,Silver,,,200,5,
+R029-YG18,R029,"Malaya Dream Ring, .255cts Diamonds 18k gold 9.77g",Rings,18k Gold,,,1917.81,,
 R029-YG18-DIA,R029,,Rings,18k Gold,,,,5,
+R030-18KY,R030,"Large endless knot ring, THICKER, 18k yellow gold, Size 59 (male) 5.72g",Rings,18k Gold,,,1095.89,,
 R030-YG18,R030,,Rings,18k Gold,,,,8,
 R032-YG18,R032,,Rings,18k Gold,,,,8,
-R033-S-BDS,R033,,Rings,Silver,,,,4,
-R039-YG18,R039,,Rings,18k Gold,,,,7,
-R041-YG14-TQ,R041,,Rings,14k Gold,,,,3,p003
-R042-YG18-TQ-DIA,R042,,Rings,18k Gold,,,,6,p007 p008
+R032-YG18-CO,R032,"Endless Knot Ring Thicker, Seamless 18K Yellow Gold 11.37 Male size (size 61)",Rings,18k Gold,,,2178.08,,p096
+R033-S-BDS,R033,"Kirtimukha (Tsipatta) Ring Silver 20g Black diamonds, yellow sapphire .08cts",Rings,Silver,,,246.58,4,
+R034-YG18,R034,"Infinity Knot Eternal Band, Thinner, With Background, 18k Yellow Gold Size 59 and above (male) 6.25g",Rings,18k Gold,,,1191.78,,
+R039-S-CZ,R039,"Samaya Ring, Dorje & Bell, JUMBO CZ Silver",Rings,Silver,,,178.08,,
+R039-YG18,R039,"Samaya Ring Jumbo, Size 65, Yellow 18K Gold: 18.08g, Diamond: .015cts",Rings,18k Gold,,,3493.15,7,
+R041-YG14-TQ,R041,"Oval Cabochon Turquoise Malaya Ring with Diamonds 0.22 CTS. total: 3.57g, 14k: 2.94g Turquoise: 3.15cts",Rings,14k Gold,,,1013.7,3,p003
+R042-YG18-TQ-DIA,R042,“Ratna” Turquoise Ring 5.53cts With Diamonds .043cts. Yellow 18k Gold 5.01g,Rings,18k Gold,,,1013.7,6,p007 p008
 R044-18KY-TQ,R044,,Rings,,,,,4,
 R044-YG14-COR,R044,,Rings,14k Gold,,,,6,
-R046-S-ON,R046,"Dharmachakra Octagonal ring, Silver, Black Onyx",Rings,Silver,1,64.5,260.27,5,p009
-R046-S-ON-DIA,R046,,Rings,Silver,,,,4,
-R047-WG18,R047,,Rings,White Gold,,,,2,
-R047-YG18,R047,,Rings,18k Gold,,,,4,
-R048-YG14-TQ-DIA-BT,R048,,Rings,14k Gold,,,,4,p006
+R044-YG18-TQ,R044,"Oval Turquoise Diamond Ring, Endless knot design in gallery, 3.25 CTS. Turquoise. Diamonds 0.28 CTS. 3.86g",Rings,18k Gold,,,1301.37,,
+R045-YG18,R045,"Brushed/polished band ring, Yellow 18k Gold, 4.14g (female size)",Rings,18k Gold,,,1027.4,,
+R046-S-ON,R046,"Dharmachakra, “The Dharma Wheel” Octagonal ring, Silver, Black Onyx",Rings,Silver,1,64.5,438.36,5,p009
+R046-S-ON-DIA,R046,"Dharmachakra, “The Dharma Wheel” Octagonal ring, Silver, Black Onyx & black Diamonds",Rings,Silver,,,493.15,4,
+R047-WG18,R047,"Gold bands sizes 50-54, bell engravings, white 18k gold Small sizes",Rings,White Gold,,,342.47,2,
+R047-YG18,R047,"Gold bands sizes 50-61, vajra & bell engravings, yellow 18k gold Small sizes",Rings,18k Gold,,,328.77,4,
+R048-YG14-TQ-DIA-BT,R048,"Intricate Ring, Turquoise, 14k Gold, Diamonds, Blue Topaz Turquoise 2.60 CTS. Blue Topaz .22 CTS. Diamonds .17 CTS. 6.16g",Rings,14k Gold,,,1424.66,4,p006
