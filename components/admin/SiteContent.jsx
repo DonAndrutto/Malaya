@@ -82,10 +82,20 @@ const SECTIONS = [
   ]],
   ['Contact & social', [
     ['Address — one line each', ['contact', 'address'], 'lines'],
-    ['WhatsApp number', ['contact', 'whatsapp'], 'text'],
+    ['WhatsApp numbers — one per line', ['contact', 'whatsapp'], 'lines'],
     ['Email', ['contact', 'email'], 'text'],
     ['Facebook URL', ['contact', 'facebook'], 'text'],
     ['Instagram URL', ['contact', 'instagram'], 'text'],
+  ]],
+  ['Legal pages', [
+    ['Privacy Policy — title', ['legal', 'privacy', 'title'], 'text'],
+    ['Privacy Policy — body (blank line between paragraphs)', ['legal', 'privacy', 'body'], 'paras'],
+    ['Terms and Conditions — title', ['legal', 'terms', 'title'], 'text'],
+    ['Terms and Conditions — body (blank line between paragraphs)', ['legal', 'terms', 'body'], 'paras'],
+    ['Cookie Policy — title', ['legal', 'cookie', 'title'], 'text'],
+    ['Cookie Policy — body (blank line between paragraphs)', ['legal', 'cookie', 'body'], 'paras'],
+    ['Refund Policy — title', ['legal', 'refund', 'title'], 'text'],
+    ['Refund Policy — body (blank line between paragraphs)', ['legal', 'refund', 'body'], 'paras'],
   ]],
 ];
 
@@ -128,7 +138,7 @@ export default function SiteContent() {
           ? <textarea value={cur || ''} placeholder={ph} rows={rows} onChange={(e) => set(path, e.target.value)} style={{ ...fieldStyle(edited), resize: 'vertical', lineHeight: 1.6 }} />
           : <input value={cur || ''} placeholder={ph} onChange={(e) => set(path, e.target.value)} style={fieldStyle(edited)} />}
         {path[0] === 'contact' && path[1] === 'whatsapp' && (
-          <div style={{ fontSize: 10.5, color: T.faint, marginTop: 5 }}>WhatsApp links use this number automatically: {whatsappUrlFor(cur || ph).split('&')[0]}…</div>
+          <div style={{ fontSize: 10.5, color: T.faint, marginTop: 5 }}>One number per line — each gets its own chat link. The first is used for one-tap links: {whatsappUrlFor((cur || ph).split('\n')[0]).split('&')[0]}…</div>
         )}
       </div>
     );

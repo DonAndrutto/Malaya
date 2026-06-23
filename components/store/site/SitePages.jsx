@@ -16,7 +16,7 @@ import {
 import {
   useCart, addToCart, setCartQty, removeFromCart, cartTotal, showToast, useSiteData,
 } from './store';
-import { SiteImg, SiteProductCard, PageBanner } from './SiteShell';
+import { SiteImg, SiteProductCard, PageBanner, SocialIcon } from './SiteShell';
 
 const catHref = (c) => `/catalogue?category=${encodeURIComponent(c)}`;
 const colHref = (c) => `/catalogue?collection=${encodeURIComponent(c)}`;
@@ -389,14 +389,16 @@ export function ContactPage() {
           <h2 className="section-title" style={{ textAlign: 'left' }}>Visit Us</h2>
           {ct.address.map((l) => <p key={l} className="ftr-line" style={{ color: '#555' }}>{l}</p>)}
           <h4 className="shop-filter-head" style={{ marginTop: 26 }}>WhatsApp</h4>
-          <p><a className="contact-link" href={ct.whatsappUrl} target="_blank" rel="noreferrer">{ct.whatsapp}</a></p>
+          {ct.whatsappList.map((w) => (
+            <p key={w.number}><a className="contact-link" href={w.url} target="_blank" rel="noreferrer">{w.number}</a></p>
+          ))}
           <h4 className="shop-filter-head">Email</h4>
           <p><a className="contact-link" href={'mailto:' + ct.email}>{ct.email}</a></p>
           <h4 className="shop-filter-head">Follow</h4>
           <div className="ftr-social ftr-social-dark">
-            <a href={ct.facebook} target="_blank" rel="noreferrer" title="Facebook">f</a>
-            <a href={ct.instagram} target="_blank" rel="noreferrer" title="Instagram">IG</a>
-            <a href={ct.whatsappUrl} target="_blank" rel="noreferrer" title="WhatsApp">✆</a>
+            <a href={ct.facebook} target="_blank" rel="noreferrer" title="Facebook" aria-label="Facebook"><SocialIcon name="facebook" /></a>
+            <a href={ct.instagram} target="_blank" rel="noreferrer" title="Instagram" aria-label="Instagram"><SocialIcon name="instagram" /></a>
+            <a href={ct.whatsappUrl} target="_blank" rel="noreferrer" title="WhatsApp" aria-label="WhatsApp"><SocialIcon name="whatsapp" /></a>
           </div>
         </div>
         <form className="contact-form" onSubmit={submit}>
@@ -469,6 +471,32 @@ export function OrderPage() {
           </div>
         )}
       </div>
+    </main>
+  );
+}
+
+// ── Legal / policy pages (Privacy, Terms, Cookie, Refund) ────────────────────
+// Title and body are admin-editable from the Content tab (content.legal[slug]).
+export function PolicyPage({ slug }) {
+  const { content } = useSiteData();
+  const data = content.legal && content.legal[slug];
+  if (!data) {
+    return (
+      <main className="malaya-page" data-screen-label="Policy not found">
+        <PageBanner title="Not found" subtitle="Malaya Jewelry" />
+        <div className="site-container" style={{ padding: '60px 24px' }}>
+          <p>This page could not be found. <Link href="/">Back to the home page.</Link></p>
+        </div>
+      </main>
+    );
+  }
+  return (
+    <main className="malaya-page" data-screen-label={'Policy · ' + data.title}>
+      <PageBanner title={data.title} subtitle="Malaya Jewelry" />
+      <article className="site-container about-article">
+        <h1 className="about-title">{data.title}</h1>
+        {data.body.map((para, i) => <p key={i} className="about-para">{para}</p>)}
+      </article>
     </main>
   );
 }
