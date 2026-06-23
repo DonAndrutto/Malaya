@@ -1,20 +1,15 @@
 'use client';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Shared shell for the Malaya storefront: header (mega menu, account & cart
-// dropdowns), footer, product card, page banner, and image-with-fallback.
+// Shared shell for the Malaya storefront: header (logo + centred nav + cart),
+// footer, product card, page banner, and image-with-fallback.
 // Navigation uses the Next.js App Router (next/link + usePathname).
 // ─────────────────────────────────────────────────────────────────────────────
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  CATEGORIES, COLLECTIONS, fmtPrice, siteImg, cdnFallback, posFor,
-} from '@/lib/data/site-data';
+import { fmtPrice, siteImg, cdnFallback, posFor } from '@/lib/data/site-data';
 import { useCart, removeFromCart, cartTotal, useSiteData } from './store';
-
-const catHref = (c) => `/catalogue?category=${encodeURIComponent(c)}`;
-const colHref = (c) => `/catalogue?collection=${encodeURIComponent(c)}`;
 
 // ── Inline icons (crisp at any size, no extra image assets) ──────────────────
 export function BasketIcon({ size = 21 }) {
@@ -122,42 +117,6 @@ export function PageBanner({ title, subtitle, img }) {
 }
 
 // ── Header ───────────────────────────────────────────────────────────────────
-function MegaMenu() {
-  const { MEGA_FEATURED, content } = useSiteData();
-  return (
-    <div className="mega">
-      <div className="mega-inner">
-        <div className="mega-col">
-          <h4 className="mega-head">Categories</h4>
-          {CATEGORIES.map((c) => <Link key={c} href={catHref(c)} className="mega-link">{c}</Link>)}
-        </div>
-        <div className="mega-col">
-          <h4 className="mega-head">Collections</h4>
-          {COLLECTIONS.map((c) => <Link key={c} href={colHref(c)} className="mega-link">{c}</Link>)}
-        </div>
-        <div className="mega-col mega-col-wide">
-          <h4 className="mega-head">Shop Collection</h4>
-          <div className="mega-products">
-            {MEGA_FEATURED.map((p) => (
-              <Link key={p.id} className="mega-product" href={`/product/${p.id}`}>
-                <SiteImg src={p.img} alt={p.name} />
-                <span className="mega-product-name">{p.name}</span>
-                <span className="mega-product-sub">{p.sub}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-        <div className="mega-col mega-col-promo">
-          <img src={siteImg('mega4.jpg')} alt={content.mega.promoTitle} />
-          <h4 className="mega-promo-title">{content.mega.promoTitle}</h4>
-          <p className="mega-promo-desc">{content.mega.promoDesc}</p>
-          <Link href={colHref('Mystical Beings')} className="btn-malaya btn-malaya-sm">{content.mega.promoCta}</Link>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function CartDropdown({ items }) {
   const { SITE_BY_ID } = useSiteData();
   const total = cartTotal(items, SITE_BY_ID);
@@ -195,13 +154,12 @@ export function SiteHeader() {
   const { settings, content } = useSiteData();
   const items = useCart();
   const count = items.reduce((s, i) => s + i.qty, 0);
-  // On the home page the header is superimposed over the hero slideshow (a white
-  // gradient keeps the logo and links readable); every other page keeps the solid
-  // header above the content.
+  // The header is brown brand-wide. On the home page it is superimposed over the
+  // hero slideshow with a brown→transparent gradient; every other page shows it
+  // as a solid brown bar above the content.
   const overlay = pathname === '/';
   const NAV = [
     { label: content.nav.home, path: '/' },
-    { label: content.nav.catalogue, path: '/catalogue', mega: true },
     { label: content.nav.tashi, path: '/tashi' },
     { label: content.nav.contact, path: '/contact' },
     { label: content.nav.about, path: '/about' },
@@ -209,46 +167,31 @@ export function SiteHeader() {
   ];
   return (
     <header className={'site-header' + (overlay ? ' site-header--overlay' : '')}>
-      <div className="hdr-top">
-        <div className="site-container hdr-top-inner">
-          <Link href="/" className="hdr-logo">
-            <img src={settings.logo || siteImg('logo.png')} alt="Malaya Jewelry" />
-          </Link>
-          <div className="hdr-icons">
-            <div className="hdr-icon-wrap">
-              <Link className="hdr-icon-btn" href="/order" title="My order">
-                <BasketIcon />
-                <span className="hdr-cart-count">{count}</span>
-              </Link>
-              <CartDropdown items={items} />
-            </div>
-          </div>
-        </div>
-      </div>
-      <nav className="hdr-nav">
-        <div className="site-container hdr-nav-inner">
+      <div className="site-container hdr-bar">
+        <Link href="/" className="hdr-logo">
+          <img src={settings.logo || siteImg('logo.png')} alt="Malaya Jewelry" />
+        </Link>
+        <nav className="hdr-nav">
           {NAV.map((item) => {
             if (item.href) {
               return <a key={item.label} className="hdr-nav-link" href={item.href} target="_blank" rel="noreferrer">{item.label}</a>;
             }
-            if (item.mega) {
-              const active = pathname.startsWith('/catalogue') || pathname.startsWith('/product');
-              return (
-                <div key={item.label} className="hdr-nav-mega">
-                  <Link className={'hdr-nav-link' + (active ? ' active' : '')} href={item.path}>
-                    {item.label} <span className="hdr-caret">▾</span>
-                  </Link>
-                  <MegaMenu />
-                </div>
-              );
-            }
-            const active = pathname === item.path;
+            const active = item.path === '/' ? pathname === '/' : pathname.startsWith(item.path);
             return (
               <Link key={item.label} className={'hdr-nav-link' + (active ? ' active' : '')} href={item.path}>{item.label}</Link>
             );
           })}
+        </nav>
+        <div className="hdr-icons">
+          <div className="hdr-icon-wrap">
+            <Link className="hdr-icon-btn" href="/order" title="My order">
+              <BasketIcon />
+              <span className="hdr-cart-count">{count}</span>
+            </Link>
+            <CartDropdown items={items} />
+          </div>
         </div>
-      </nav>
+      </div>
     </header>
   );
 }

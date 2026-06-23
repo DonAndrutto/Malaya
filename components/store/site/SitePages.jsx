@@ -1,25 +1,39 @@
 'use client';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Storefront pages: Home, Catalogue (filters + pagination), Product detail,
-// Tashi Mannox, About, Contact, and the order/cart page. Route-driven via the
-// Next.js App Router; admin-managed images come from `settings` on the context.
+// Storefront pages: Home (slideshow + full category-grouped catalogue scroll),
+// Product detail, Tashi Mannox, About, Contact, and the order/cart page.
+// Route-driven via the Next.js App Router; admin-managed images come from
+// `settings` on the context.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  CATEGORIES, COLLECTIONS, fmtPrice, siteImg, posFor,
-  HOME_HERO, HOME_TILES,
+  CATEGORIES, fmtPrice, siteImg, posFor, HOME_HERO,
 } from '@/lib/data/site-data';
 import {
   useCart, addToCart, setCartQty, removeFromCart, cartTotal, showToast, useSiteData,
 } from './store';
 import { SiteImg, SiteProductCard, PageBanner, SocialIcon } from './SiteShell';
 
-const catHref = (c) => `/catalogue?category=${encodeURIComponent(c)}`;
-const colHref = (c) => `/catalogue?collection=${encodeURIComponent(c)}`;
+// The combined catalogue is shown as one long scroll, grouped by category in
+// this fixed order. Some categories are merged into a single section.
+const CATALOGUE_SECTIONS = [
+  { key: 'Pendants',    label: 'Pendants',            cats: ['Pendants'] },
+  { key: 'Rings',       label: 'Rings',               cats: ['Rings'] },
+  { key: 'Earrings',    label: 'Earrings',            cats: ['Earrings'] },
+  { key: 'Necklaces',   label: 'Necklaces',           cats: ['Necklaces', 'Chains'] },
+  { key: 'Bracelets',   label: 'Bracelets & Bangles', cats: ['Bracelets', 'Bangles'] },
+  { key: 'Brooches',    label: 'Brooches',            cats: ['Brooches'] },
+  { key: 'Accessories', label: 'Accessories',         cats: ['Accessories'] },
+  { key: 'Cufflinks',   label: 'Cufflinks',           cats: ['Cufflinks'] },
+];
+// Map any category → the section that hosts it, for /#cat-<key> deep links.
+const CATEGORY_TO_SECTION = {};
+CATALOGUE_SECTIONS.forEach((s) => s.cats.forEach((c) => { CATEGORY_TO_SECTION[c] = s.key; }));
+const sectionAnchor = (cat) => `/#cat-${CATEGORY_TO_SECTION[cat] || cat}`;
 
 // ── Home ─────────────────────────────────────────────────────────────────────
 function HeroSlider({ slides, settings, content }) {
@@ -37,7 +51,7 @@ function HeroSlider({ slides, settings, content }) {
       <div className="hero-overlay">
         <h2 className="hero-title">{content.hero.title}</h2>
         <span className="hero-sub">{content.hero.subtitle}</span>
-        <Link className="btn-malaya" href="/catalogue">{content.hero.cta}</Link>
+        <a className="btn-malaya" href="#catalogue">{content.hero.cta}</a>
       </div>
       <button className="hero-arrow hero-arrow-l" onClick={() => setIdx((idx + slides.length - 1) % slides.length)}>‹</button>
       <button className="hero-arrow hero-arrow-r" onClick={() => setIdx((idx + 1) % slides.length)}>›</button>
@@ -52,153 +66,148 @@ function HeroSlider({ slides, settings, content }) {
 }
 
 export function HomePage() {
-  const { HOME_BEST, settings, content } = useSiteData();
+  const { settings, content } = useSiteData();
   const slides = settings.heroSlides && settings.heroSlides.length ? settings.heroSlides : HOME_HERO;
   const homeBannerSrc = settings.homeBanner || siteImg('banner12.jpg');
   return (
     <main className="malaya-page" data-screen-label="Home">
       <HeroSlider slides={slides} settings={settings} content={content} />
 
-      <section className="home-tiles site-container">
-        {HOME_TILES.map((t) => {
-          const tileSrc = (settings.homeTiles && settings.homeTiles[t.cat]) || t.img;
-          return (
-          <Link key={t.cat} className="home-tile" href={catHref(t.cat)}>
-            <SiteImg src={tileSrc} alt={content.home.tiles[t.cat] || t.title} style={{ objectPosition: posFor(settings, tileSrc) }} />
-            <span className="home-tile-body">
-              <span className="home-tile-title">{content.home.tiles[t.cat] || t.title}</span>
-              <span className="home-tile-cta">View All</span>
-            </span>
-          </Link>
-          );
-        })}
-      </section>
-
-      <section className="home-best site-container">
-        <h2 className="section-title">{content.home.sectionTitle}</h2>
-        <div className="rule-dot" />
-        <div className="pgrid pgrid-3">
-          {HOME_BEST.map((p) => <SiteProductCard key={p.id} p={p} />)}
-        </div>
-        <div className="home-best-cta">
-          <Link className="btn-malaya" href="/catalogue">{content.hero.cta}</Link>
-        </div>
-      </section>
+      <CatalogueScroll />
 
       <section className="home-banner" style={{ backgroundImage: `url(${homeBannerSrc})`, backgroundPosition: posFor(settings, homeBannerSrc) }}>
         <div className="home-banner-inner">
           <h2>{content.home.bannerTitle}</h2>
-          <Link className="btn-malaya btn-malaya-light" href="/catalogue">{content.home.bannerCta}</Link>
+          <a className="btn-malaya btn-malaya-light" href="#catalogue">{content.home.bannerCta}</a>
         </div>
       </section>
     </main>
   );
 }
 
-// ── Catalogue ────────────────────────────────────────────────────────────────
-const PAGE_SIZE = 24;
+// ── Combined catalogue scroll ─────────────────────────────────────────────────
+// The full catalogue as one continuous scroll, grouped by category. A sticky
+// bar announces the current category (updated by a scroll-spy) and can be tapped
+// to jump to any category; a typeahead search jumps straight to a product page.
+function CatalogueScroll() {
+  const { SITE_PRODUCTS } = useSiteData();
+  const router = useRouter();
 
-export function CataloguePage({ category, collection, q }) {
-  const { SITE_PRODUCTS, content } = useSiteData();
-  const [cats, setCats] = useState(category ? [category] : []);
-  const [cols, setCols] = useState(collection ? [collection] : []);
-  const [search, setSearch] = useState(q || '');
-  const [sort, setSort] = useState('featured');
-  const [page, setPage] = useState(0);
+  const sections = useMemo(() => (
+    CATALOGUE_SECTIONS
+      .map((s) => ({ ...s, items: SITE_PRODUCTS.filter((p) => s.cats.includes(p.category)) }))
+      .filter((s) => s.items.length > 0)
+  ), [SITE_PRODUCTS]);
 
-  // Re-seed filters when the URL query changes (e.g. a mega-menu / tile click).
+  const [active, setActive] = useState('');
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [q, setQ] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  useEffect(() => { if (sections.length && !active) setActive(sections[0].key); }, [sections, active]);
+
+  // Scroll-spy: highlight whichever category sits just below the sticky bar.
   useEffect(() => {
-    setCats(category ? [category] : []);
-    setCols(collection ? [collection] : []);
-    setSearch(q || '');
-    setPage(0);
-  }, [category, collection, q]);
-  useEffect(() => { setPage(0); }, [cats, cols, search, sort]);
+    if (!sections.length || typeof IntersectionObserver === 'undefined') return;
+    const els = sections.map((s) => document.getElementById('cat-' + s.key)).filter(Boolean);
+    if (!els.length) return;
+    const tops = new Map();
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) tops.set(e.target.id, e.boundingClientRect.top);
+        else tops.delete(e.target.id);
+      });
+      let topId = null; let topY = Infinity;
+      tops.forEach((y, id) => { if (y < topY) { topY = y; topId = id; } });
+      if (topId) setActive(topId.replace('cat-', ''));
+    }, { rootMargin: '-80px 0px -65% 0px', threshold: 0 });
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [sections]);
 
-  const toggle = (list, setList, v) =>
-    setList(list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
+  // Honour /#cat-<key> deep links once the sections exist in the DOM.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const hash = window.location.hash;
+    if (hash && hash.indexOf('#cat-') === 0) {
+      const el = document.getElementById(hash.slice(1));
+      if (el) requestAnimationFrame(() => el.scrollIntoView({ block: 'start' }));
+    }
+  }, [sections.length]);
 
-  let out = SITE_PRODUCTS.slice();
-  if (cats.length) out = out.filter((p) => cats.includes(p.category));
-  if (cols.length) out = out.filter((p) => cols.includes(p.collection));
-  if (search) {
-    const s = search.toLowerCase();
-    out = out.filter((p) => (p.name + ' ' + p.sub).toLowerCase().includes(s));
-  }
-  switch (sort) {
-    case 'new':        out.sort((a, b) => (b.tag === 'new') - (a.tag === 'new')); break;
-    case 'price-asc':  out.sort((a, b) => a.price - b.price); break;
-    case 'price-desc': out.sort((a, b) => b.price - a.price); break;
-    case 'name':       out.sort((a, b) => a.name.localeCompare(b.name)); break;
-    default: break;
-  }
-  const pages = Math.max(1, Math.ceil(out.length / PAGE_SIZE));
-  const safePage = Math.min(page, pages - 1);
-  const visible = out.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE);
-  const bannerTitle = cats.length === 1 ? cats[0] : (cols.length === 1 ? cols[0] : 'Catalogue');
+  const jumpTo = (key) => {
+    setMenuOpen(false);
+    const el = document.getElementById('cat-' + key);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const query = q.trim().toLowerCase();
+  const matches = query
+    ? SITE_PRODUCTS.filter((p) => `${p.name} ${p.sub || ''} ${p.salesCode || ''}`.toLowerCase().includes(query)).slice(0, 8)
+    : [];
+  const goToProduct = (id) => { setQ(''); setSearchOpen(false); router.push('/product/' + id); };
+
+  if (!sections.length) return null;
+  const activeLabel = (sections.find((s) => s.key === active) || sections[0]).label;
 
   return (
-    <main className="malaya-page" data-screen-label="Catalogue">
-      <PageBanner title={bannerTitle} subtitle={content.banners.catalogueSubtitle} />
-      <div className="site-container shop-layout">
-        <aside className="shop-sidebar">
-          <input className="shop-search" type="search" placeholder="Search…" value={search}
-            onChange={(e) => setSearch(e.target.value)} />
-          <h4 className="shop-filter-head">Categories</h4>
-          {CATEGORIES.map((c) => {
-            const n = SITE_PRODUCTS.filter((p) => p.category === c).length;
-            if (!n) return null;
-            return (
-              <label key={c} className="shop-check">
-                <input type="checkbox" checked={cats.includes(c)} onChange={() => toggle(cats, setCats, c)} />
-                <span>{c}</span><em>{n}</em>
-              </label>
-            );
-          })}
-          <h4 className="shop-filter-head">Collections</h4>
-          {COLLECTIONS.map((c) => {
-            const n = SITE_PRODUCTS.filter((p) => p.collection === c).length;
-            if (!n) return null;
-            return (
-              <label key={c} className="shop-check">
-                <input type="checkbox" checked={cols.includes(c)} onChange={() => toggle(cols, setCols, c)} />
-                <span>{c}</span><em>{n}</em>
-              </label>
-            );
-          })}
-          {(cats.length > 0 || cols.length > 0 || search) && (
-            <button className="shop-clear" onClick={() => { setCats([]); setCols([]); setSearch(''); }}>Clear filters</button>
-          )}
-        </aside>
-        <div className="shop-main">
-          <div className="shop-toolbar">
-            <span className="shop-count">{out.length} items</span>
-            <select className="shop-sort" value={sort} onChange={(e) => setSort(e.target.value)}>
-              <option value="featured">Featured</option>
-              <option value="new">New first</option>
-              <option value="price-asc">Price: low to high</option>
-              <option value="price-desc">Price: high to low</option>
-              <option value="name">Name A–Z</option>
-            </select>
+    <div className="cat-scroll" id="catalogue">
+      <div className="cat-bar">
+        <div className="site-container cat-bar-inner">
+          <div className="cat-current-wrap">
+            <button type="button" className="cat-current" onClick={() => setMenuOpen((o) => !o)} aria-expanded={menuOpen}>
+              <span>{activeLabel}</span><span className="cat-caret">▾</span>
+            </button>
+            {menuOpen && (
+              <>
+                <div className="cat-overlay" onClick={() => setMenuOpen(false)} />
+                <div className="cat-menu">
+                  {sections.map((s) => (
+                    <button key={s.key} type="button" className={'cat-menu-item' + (s.key === active ? ' on' : '')} onClick={() => jumpTo(s.key)}>
+                      <span>{s.label}</span><em>{s.items.length}</em>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
-          {visible.length === 0 ? (
-            <p className="shop-count" style={{ padding: '40px 0' }}>Nothing matches those filters yet.</p>
-          ) : (
-            <div className="pgrid pgrid-3">
-              {visible.map((p) => <SiteProductCard key={p.id} p={p} />)}
-            </div>
-          )}
-          {pages > 1 && (
-            <div className="shop-pager">
-              {Array.from({ length: pages }, (_, i) => (
-                <button key={i} className={'shop-page' + (i === safePage ? ' on' : '')}
-                  onClick={() => { setPage(i); window.scrollTo({ top: 0 }); }}>{i + 1}</button>
-              ))}
-            </div>
-          )}
+          <div className="cat-search-wrap">
+            <input className="cat-search" type="search" placeholder="Search by name or code…" value={q}
+              onChange={(e) => { setQ(e.target.value); setSearchOpen(true); }}
+              onFocus={() => setSearchOpen(true)}
+              onKeyDown={(e) => { if (e.key === 'Enter' && matches[0]) goToProduct(matches[0].id); if (e.key === 'Escape') setSearchOpen(false); }} />
+            {searchOpen && query && (
+              <>
+                <div className="cat-overlay" onClick={() => setSearchOpen(false)} />
+                <div className="cat-search-results">
+                  {matches.length === 0 ? (
+                    <div className="cat-search-empty">No matches</div>
+                  ) : matches.map((p) => (
+                    <button key={p.id} type="button" className="cat-search-row" onClick={() => goToProduct(p.id)}>
+                      {p.img ? <SiteImg src={p.img} alt="" /> : <span className="cat-search-noimg" />}
+                      <span className="cat-search-text">
+                        <span className="cat-search-name">{p.name}</span>
+                        <span className="cat-search-sub">{p.sub}{p.salesCode ? ' · ' + p.salesCode : ''}</span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
-    </main>
+
+      {sections.map((s) => (
+        <section key={s.key} id={'cat-' + s.key} className="cat-section site-container">
+          <h2 className="section-title cat-section-title">{s.label}</h2>
+          <div className="rule-dot" />
+          <div className="pgrid pgrid-3">
+            {s.items.map((p) => <SiteProductCard key={p.id} p={p} />)}
+          </div>
+        </section>
+      ))}
+    </div>
   );
 }
 
@@ -218,7 +227,7 @@ export function ProductPage({ id }) {
       <main className="malaya-page" data-screen-label="Product not found">
         <PageBanner title="Not found" subtitle="Malaya Jewelry" />
         <div className="site-container" style={{ padding: '60px 24px' }}>
-          <p>This item could not be found. <Link href="/catalogue">Back to the catalogue.</Link></p>
+          <p>This item could not be found. <Link href="/">Back to the catalogue.</Link></p>
         </div>
       </main>
     );
@@ -265,8 +274,7 @@ export function ProductPage({ id }) {
         <div className="pd-info">
           <nav className="pd-crumbs">
             <Link href="/">Home</Link><span>/</span>
-            <Link href="/catalogue">Catalogue</Link><span>/</span>
-            <Link href={catHref(p.category)}>{p.category}</Link>
+            <Link href={sectionAnchor(p.category)}>{p.category}</Link>
           </nav>
           <h1 className="pd-name">{p.name}</h1>
           <p className="pd-sub">{p.sub}</p>
@@ -281,7 +289,7 @@ export function ProductPage({ id }) {
               {p.salesCode && <tr><th>Reference</th><td>{p.salesCode}</td></tr>}
               <tr><th>Material</th><td>{p.material}</td></tr>
               <tr><th>Category</th><td>{p.category}</td></tr>
-              <tr><th>Collection</th><td><Link href={colHref(p.collection)}>{p.collection}</Link></td></tr>
+              <tr><th>Collection</th><td>{p.collection}</td></tr>
               {p.tashi && <tr><th>Design</th><td>Calligraphy by Tashi Mannox</td></tr>}
             </tbody>
           </table>
@@ -355,7 +363,7 @@ export function AboutPage() {
         <h1 className="about-title">{about.title}</h1>
         <p className="about-lead">{about.lead}</p>
         <div className="about-tags">
-          {CATEGORIES.map((c) => <Link key={c} href={catHref(c)}>{c}</Link>)}
+          {CATEGORIES.map((c) => <Link key={c} href={sectionAnchor(c)}>{c}</Link>)}
         </div>
         <p className="about-from">{about.from}</p>
         <p className="about-para">{about.body[0]}</p>
@@ -425,7 +433,7 @@ export function OrderPage() {
         {items.length === 0 ? (
           <div className="order-empty">
             <p>Your order is empty.</p>
-            <Link className="btn-malaya" href="/catalogue">Browse the Catalogue</Link>
+            <Link className="btn-malaya" href="/">Browse the Catalogue</Link>
           </div>
         ) : (
           <div className="order-grid">
