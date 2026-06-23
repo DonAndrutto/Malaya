@@ -1,20 +1,53 @@
 'use client';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Shared shell for the Malaya storefront: header (mega menu, account & cart
-// dropdowns), footer, product card, page banner, and image-with-fallback.
+// Shared shell for the Malaya storefront: header (logo + centred nav + cart),
+// footer, product card, page banner, and image-with-fallback.
 // Navigation uses the Next.js App Router (next/link + usePathname).
 // ─────────────────────────────────────────────────────────────────────────────
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  CATEGORIES, COLLECTIONS, fmtPrice, siteImg, cdnFallback, posFor,
-} from '@/lib/data/site-data';
+import { fmtPrice, siteImg, cdnFallback, posFor } from '@/lib/data/site-data';
 import { useCart, removeFromCart, cartTotal, useSiteData } from './store';
 
-const catHref = (c) => `/catalogue?category=${encodeURIComponent(c)}`;
-const colHref = (c) => `/catalogue?collection=${encodeURIComponent(c)}`;
+// ── Inline icons (crisp at any size, no extra image assets) ──────────────────
+export function BasketIcon({ size = 21 }) {
+  return (
+    <svg className="hdr-icon-svg" viewBox="0 0 24 24" width={size} height={size} fill="none"
+      stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 8h16l-1.1 11.1a2 2 0 0 1-2 1.9H7.1a2 2 0 0 1-2-1.9L4 8z" />
+      <path d="M8.5 8 12 3l3.5 5" />
+      <path d="M9 11.5v4M15 11.5v4" />
+    </svg>
+  );
+}
+
+export function SocialIcon({ name, size = 17 }) {
+  if (name === 'facebook') {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden="true">
+        <path d="M13.5 21v-7h2.4l.4-2.9h-2.8V9.27c0-.84.24-1.42 1.45-1.42l1.45-.01V5.13a20.7 20.7 0 0 0-2.12-.11c-2.1 0-3.54 1.28-3.54 3.64v2.05H8.3V14h2.4v7h2.8z" />
+      </svg>
+    );
+  }
+  if (name === 'instagram') {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor"
+        strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect x="3.5" y="3.5" width="17" height="17" rx="4.6" />
+        <circle cx="12" cy="12" r="3.7" />
+        <circle cx="17.2" cy="6.8" r="0.9" fill="currentColor" stroke="none" />
+      </svg>
+    );
+  }
+  // whatsapp
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden="true">
+      <path d="M12 2a10 10 0 0 0-8.53 15.2L2 22l4.92-1.27A10 10 0 1 0 12 2zm0 1.83a8.17 8.17 0 0 1 6.9 12.55l-.2.32.6 2.18-2.24-.59-.31.18A8.17 8.17 0 1 1 12 3.83zM8.9 7.6c-.16 0-.42.06-.64.3-.22.24-.85.83-.85 2.02 0 1.2.87 2.35 1 2.51.12.16 1.7 2.7 4.18 3.68 2.06.81 2.48.65 2.93.6.45-.04 1.43-.58 1.63-1.15.2-.57.2-1.05.14-1.15-.06-.1-.22-.16-.46-.28-.24-.12-1.43-.71-1.65-.79-.22-.08-.38-.12-.54.12-.16.24-.62.79-.76.95-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.93-1.19-.71-.63-1.2-1.42-1.34-1.66-.14-.24-.01-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.47-.4-.4-.54-.41z" />
+    </svg>
+  );
+}
 
 // ── Image with local→CDN→smaller-size fallback ───────────────────────────────
 export function SiteImg({ src, alt, style, className }) {
@@ -60,9 +93,6 @@ export function SiteProductCard({ p }) {
           <img className="pcard-tashi" src={siteImg('tashi.jpg')} alt="Tashi Mannox"
             title="Malaya Jewelry Collaboration with Tashi Mannox" />
         )}
-        <span className="pcard-quick">
-          <img src={siteImg('icon/malaya.jpg')} alt="" style={{ objectFit: 'scale-down', width: 65 }} />
-        </span>
       </Link>
       <h5 className="pcard-text">
         <Link href={`/product/${p.id}`} className="pcard-name">{p.name}</Link>
@@ -87,42 +117,6 @@ export function PageBanner({ title, subtitle, img }) {
 }
 
 // ── Header ───────────────────────────────────────────────────────────────────
-function MegaMenu() {
-  const { MEGA_FEATURED, content } = useSiteData();
-  return (
-    <div className="mega">
-      <div className="mega-inner">
-        <div className="mega-col">
-          <h4 className="mega-head">Categories</h4>
-          {CATEGORIES.map((c) => <Link key={c} href={catHref(c)} className="mega-link">{c}</Link>)}
-        </div>
-        <div className="mega-col">
-          <h4 className="mega-head">Collections</h4>
-          {COLLECTIONS.map((c) => <Link key={c} href={colHref(c)} className="mega-link">{c}</Link>)}
-        </div>
-        <div className="mega-col mega-col-wide">
-          <h4 className="mega-head">Shop Collection</h4>
-          <div className="mega-products">
-            {MEGA_FEATURED.map((p) => (
-              <Link key={p.id} className="mega-product" href={`/product/${p.id}`}>
-                <SiteImg src={p.img} alt={p.name} />
-                <span className="mega-product-name">{p.name}</span>
-                <span className="mega-product-sub">{p.sub}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-        <div className="mega-col mega-col-promo">
-          <img src={siteImg('mega4.jpg')} alt={content.mega.promoTitle} />
-          <h4 className="mega-promo-title">{content.mega.promoTitle}</h4>
-          <p className="mega-promo-desc">{content.mega.promoDesc}</p>
-          <Link href={colHref('Mystical Beings')} className="btn-malaya btn-malaya-sm">{content.mega.promoCta}</Link>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function CartDropdown({ items }) {
   const { SITE_BY_ID } = useSiteData();
   const total = cartTotal(items, SITE_BY_ID);
@@ -155,83 +149,49 @@ function CartDropdown({ items }) {
   );
 }
 
-function AccountDropdown() {
-  const { content } = useSiteData();
-  return (
-    <div className="hdr-drop hdr-drop-account">
-      <a href="#" className="hdr-drop-link" onClick={(e) => e.preventDefault()}>Log In</a>
-      <a href="#" className="hdr-drop-link" onClick={(e) => e.preventDefault()}>Create an account</a>
-      <h4 className="hdr-drop-head" style={{ marginTop: 10 }}>Support Centre</h4>
-      <a href="#" className="hdr-drop-link" onClick={(e) => e.preventDefault()}>FAQs</a>
-      <a href="#" className="hdr-drop-link" onClick={(e) => e.preventDefault()}>Shipping &amp; Returns</a>
-      <Link href="/contact" className="hdr-drop-link">Contact Us</Link>
-      <a href={'mailto:' + content.contact.email} className="hdr-drop-link">Send an Email</a>
-      <span className="hdr-drop-note">Call us on WhatsApp: {content.contact.whatsapp}</span>
-    </div>
-  );
-}
-
 export function SiteHeader() {
   const pathname = usePathname() || '/';
   const { settings, content } = useSiteData();
   const items = useCart();
   const count = items.reduce((s, i) => s + i.qty, 0);
+  // The header is brown brand-wide. On the home page it is superimposed over the
+  // hero slideshow with a brown→transparent gradient; every other page shows it
+  // as a solid brown bar above the content.
+  const overlay = pathname === '/';
   const NAV = [
     { label: content.nav.home, path: '/' },
-    { label: content.nav.catalogue, path: '/catalogue', mega: true },
     { label: content.nav.tashi, path: '/tashi' },
     { label: content.nav.contact, path: '/contact' },
     { label: content.nav.about, path: '/about' },
     { label: content.nav.instagram, href: content.contact.instagram },
   ];
   return (
-    <header className="site-header">
-      <div className="hdr-top">
-        <div className="site-container hdr-top-inner">
-          <Link href="/" className="hdr-logo">
-            <img src={settings.logo || siteImg('logo.png')} alt="Malaya Jewelry" />
-          </Link>
-          <div className="hdr-icons">
-            <div className="hdr-icon-wrap">
-              <button className="hdr-icon-btn" title="Account">
-                <img src={siteImg('icon/icon-lock.png')} alt="Account" />
-              </button>
-              <AccountDropdown />
-            </div>
-            <div className="hdr-icon-wrap">
-              <Link className="hdr-icon-btn" href="/order" title="My order">
-                <img src={siteImg('icon/icon-cart.png')} alt="Cart" />
-                <span className="hdr-cart-count">{count}</span>
-              </Link>
-              <CartDropdown items={items} />
-            </div>
-          </div>
-        </div>
-      </div>
-      <nav className="hdr-nav">
-        <div className="site-container hdr-nav-inner">
+    <header className={'site-header' + (overlay ? ' site-header--overlay' : '')}>
+      <div className="site-container hdr-bar">
+        <Link href="/" className="hdr-logo">
+          <img src={settings.logo || siteImg('logo.png')} alt="Malaya Jewelry" />
+        </Link>
+        <nav className="hdr-nav">
           {NAV.map((item) => {
             if (item.href) {
               return <a key={item.label} className="hdr-nav-link" href={item.href} target="_blank" rel="noreferrer">{item.label}</a>;
             }
-            if (item.mega) {
-              const active = pathname.startsWith('/catalogue') || pathname.startsWith('/product');
-              return (
-                <div key={item.label} className="hdr-nav-mega">
-                  <Link className={'hdr-nav-link' + (active ? ' active' : '')} href={item.path}>
-                    {item.label} <span className="hdr-caret">▾</span>
-                  </Link>
-                  <MegaMenu />
-                </div>
-              );
-            }
-            const active = pathname === item.path;
+            const active = item.path === '/' ? pathname === '/' : pathname.startsWith(item.path);
             return (
               <Link key={item.label} className={'hdr-nav-link' + (active ? ' active' : '')} href={item.path}>{item.label}</Link>
             );
           })}
+        </nav>
+        <div className="hdr-icons">
+          <div className="hdr-icon-wrap">
+            <Link className="hdr-icon-btn" href="/order" title="My order">
+              <BasketIcon />
+              <span className="hdr-cart-count">{count}</span>
+            </Link>
+            <CartDropdown items={items} />
+          </div>
         </div>
-      </nav>
+      </div>
     </header>
   );
 }
@@ -252,25 +212,27 @@ export function SiteFooter() {
           <h4 className="ftr-head">Malaya Information</h4>
           {ct.address.map((l) => <p key={l} className="ftr-line">{l}</p>)}
           <p className="ftr-line" style={{ marginTop: 14 }}>Call us now on WhatsApp:<br />
-            <a href={ct.whatsappUrl} target="_blank" rel="noreferrer">{ct.whatsapp}</a></p>
+            {ct.whatsappList.map((w) => (
+              <a key={w.number} href={w.url} target="_blank" rel="noreferrer" style={{ display: 'block' }}>{w.number}</a>
+            ))}</p>
           <p className="ftr-line">Email: <a href={'mailto:' + ct.email}>{ct.email}</a></p>
         </div>
         <div className="ftr-col">
           <h4 className="ftr-head">Info Links</h4>
           <Link className="ftr-link" href="/about">About</Link>
           <Link className="ftr-link" href="/contact">Contact</Link>
-          <a className="ftr-link" href="#" onClick={(e) => e.preventDefault()}>Privacy Policy</a>
-          <a className="ftr-link" href="#" onClick={(e) => e.preventDefault()}>Terms and Conditions</a>
-          <a className="ftr-link" href="#" onClick={(e) => e.preventDefault()}>Cookie policy</a>
-          <a className="ftr-link" href="#" onClick={(e) => e.preventDefault()}>Refund policy</a>
+          <Link className="ftr-link" href="/policy/privacy">{content.legal.privacy.title}</Link>
+          <Link className="ftr-link" href="/policy/terms">{content.legal.terms.title}</Link>
+          <Link className="ftr-link" href="/policy/cookie">{content.legal.cookie.title}</Link>
+          <Link className="ftr-link" href="/policy/refund">{content.legal.refund.title}</Link>
         </div>
         <div className="ftr-col">
           <h4 className="ftr-head">Follow Us</h4>
           <p className="ftr-line">{content.footer.followNote}</p>
           <div className="ftr-social">
-            <a href={ct.facebook} target="_blank" rel="noreferrer" title="Malaya Jewelry on Facebook">f</a>
-            <a href={ct.instagram} target="_blank" rel="noreferrer" title="Malaya Jewelry on Instagram">IG</a>
-            <a href={ct.whatsappUrl} target="_blank" rel="noreferrer" title="Chat on WhatsApp">✆</a>
+            <a href={ct.facebook} target="_blank" rel="noreferrer" title="Malaya Jewelry on Facebook" aria-label="Facebook"><SocialIcon name="facebook" /></a>
+            <a href={ct.instagram} target="_blank" rel="noreferrer" title="Malaya Jewelry on Instagram" aria-label="Instagram"><SocialIcon name="instagram" /></a>
+            <a href={ct.whatsappUrl} target="_blank" rel="noreferrer" title="Chat on WhatsApp" aria-label="WhatsApp"><SocialIcon name="whatsapp" /></a>
           </div>
         </div>
       </div>
