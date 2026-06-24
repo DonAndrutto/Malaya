@@ -9,7 +9,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { T, ghostBtn } from './theme';
-import { siteImg, HOME_HERO, HOME_TILES } from '@/lib/data/site-data';
+import { siteImg, HOME_HERO, HOME_TILES, CATEGORIES } from '@/lib/data/site-data';
 import { subscribeSiteSettings, saveSiteSettings } from '@/lib/site-settings';
 import { uploadImage } from '@/lib/upload';
 import { resizeImageFile } from '@/lib/image-resize';
@@ -133,6 +133,13 @@ export default function SiteImages() {
   const setTile = (cat, url) => apply({ homeTiles: { ...(settings.homeTiles || {}), [cat]: url } });
   const resetTile = (cat) => { const t = { ...(settings.homeTiles || {}) }; delete t[cat]; apply({ homeTiles: t }); };
 
+  // Per-category product-page banners (keyed by category). Shown atop every
+  // /product/<id> page of that category; falls back to the default page banner.
+  const catBanner = (cat) => (settings.categoryBanners && settings.categoryBanners[cat]) || null;
+  const setCatBanner = (cat, url) => apply({ categoryBanners: { ...(settings.categoryBanners || {}), [cat]: url } });
+  const resetCatBanner = (cat) => { const t = { ...(settings.categoryBanners || {}) }; delete t[cat]; apply({ categoryBanners: t }); };
+  const defaultBanner = settings.pageBanner || siteImg('banner33.jpg');
+
   return (
     <div style={{ maxWidth: 880, margin: '0 auto', padding: '30px 28px 80px' }}>
       <h2 style={{ fontFamily: T.serif, fontSize: 30, color: T.ink, margin: '0 0 6px' }}>Site images</h2>
@@ -189,9 +196,34 @@ export default function SiteImages() {
 
       <h3 style={{ ...headStyle, marginTop: 24, color: T.muted }}>Banners &amp; portrait</h3>
       {single({ k: 'homeBanner', label: 'Home “Order Now” banner', hint: 'Full-width banner near the foot of the home page.', folder: 'site/banners', current: settings.homeBanner, fallback: siteImg('banner12.jpg'), focal: '3 / 1' })}
-      {single({ k: 'pageBanner', label: 'Default page banner', hint: 'Breadcrumb banner on Catalogue, Contact, Order, etc.', folder: 'site/banners', current: settings.pageBanner, fallback: siteImg('banner33.jpg'), focal: '3 / 1' })}
+      {single({ k: 'pageBanner', label: 'Default page banner', hint: 'Breadcrumb banner on Contact, Order, and any category without its own banner.', folder: 'site/banners', current: settings.pageBanner, fallback: siteImg('banner33.jpg'), focal: '3 / 1' })}
       {single({ k: 'aboutBanner', label: 'About page banner', hint: 'Banner at the top of the About page.', folder: 'site/banners', current: settings.aboutBanner, fallback: siteImg('banner31.jpg'), focal: '3 / 1' })}
       {single({ k: 'tashiPhoto', label: 'Tashi Mannox portrait', hint: 'Portrait on the Tashi Mannox collaboration page.', folder: 'site/tashi', current: settings.tashiPhoto, fallback: siteImg('Tashi-Mannox.jpg') })}
+
+      <h3 style={{ ...headStyle, marginTop: 24, color: T.muted }}>Category product-page banners</h3>
+      <p style={{ fontSize: 12, color: T.muted, margin: '0 0 12px' }}>
+        Each category shows its own banner at the top of every product page (e.g. /product/N024-S). Categories without a banner use the default page banner above.
+      </p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: 14, marginBottom: 16 }}>
+        {CATEGORIES.map((cat) => {
+          const cur = catBanner(cat);
+          return (
+            <div key={cat} style={{ border: `1px solid ${T.line}`, padding: 12, background: T.panel }}>
+              <FocalPicker url={cur || defaultBanner} aspect="3 / 1" pos={posOf(cur || defaultBanner)} onChange={(v) => setPos(cur || defaultBanner, v)} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, margin: '10px 0 0' }}>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: T.ink }}>{cat}</div>
+                  <div style={{ fontSize: 10.5, color: cur ? T.good : T.faint }}>{cur ? 'Custom banner set' : 'Using default'}</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' }}>
+                  <PickButton label={cur ? 'Replace' : 'Upload'} busy={busy === `catban-${cat}`} onFile={(f) => upload(`catban-${cat}`, 'site/banners', f, (url) => setCatBanner(cat, url))} />
+                  {cur && <button onClick={() => resetCatBanner(cat)} style={linkBtn}>Reset</button>}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

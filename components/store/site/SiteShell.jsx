@@ -73,7 +73,9 @@ export function SiteImg({ src, alt, style, className }) {
 
 // ── Product card — bordered photo, centred name/subtitle (matches live site) ──
 export function SiteProductCard({ p }) {
-  const onSale = p.onSale || p.tag === 'sale';
+  const specials = p.specials || [];
+  const onSale = p.onSale || specials.includes('sale') || p.tag === 'sale';
+  const isNew = specials.includes('new') || p.tag === 'new';
   const monogram = (p.productionCode || p.salesCode || p.name || 'M').replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'M';
   return (
     <div className="pcard">
@@ -86,7 +88,7 @@ export function SiteProductCard({ p }) {
         )}
         {onSale ? (
           <span className="pcard-label pcard-label-sale">SALE</span>
-        ) : p.tag === 'new' ? (
+        ) : isNew ? (
           <span className="pcard-label">NEW</span>
         ) : null}
         {p.tashi && (
@@ -103,9 +105,12 @@ export function SiteProductCard({ p }) {
 }
 
 // ── Page banner (admin-overridable default image via settings.pageBanner) ────
-export function PageBanner({ title, subtitle, img }) {
+// `category` opts a page into a per-category banner (settings.categoryBanners),
+// falling back to the explicit `img`, then the default page banner.
+export function PageBanner({ title, subtitle, img, category }) {
   const { settings } = useSiteData();
-  const bg = img || settings.pageBanner || siteImg('banner33.jpg');
+  const catBanner = category && settings.categoryBanners ? settings.categoryBanners[category] : null;
+  const bg = catBanner || img || settings.pageBanner || siteImg('banner33.jpg');
   return (
     <div className="page-banner" style={{ backgroundImage: `url(${bg})`, backgroundPosition: posFor(settings, bg) }}>
       <div className="site-container">

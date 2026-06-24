@@ -233,7 +233,8 @@ export function ProductPage({ id }) {
     );
   }
 
-  const related = SITE_PRODUCTS.filter((x) => x.collection === p.collection && x.id !== p.id).slice(0, 4);
+  // Cross-sell within the same category, always excluding the item being viewed.
+  const related = SITE_PRODUCTS.filter((x) => x.category === p.category && x.id !== p.id).slice(0, 4);
   const sold = p.stock === 'Sold out' || p.stock === 'Archived';
 
   // Gallery: every uploaded image, falling back to the single primary photo.
@@ -249,7 +250,7 @@ export function ProductPage({ id }) {
 
   return (
     <main className="malaya-page" data-screen-label={'Product · ' + p.name}>
-      <PageBanner title={p.name} subtitle={p.sub} />
+      <PageBanner title={p.name} subtitle={p.sub} category={p.category} />
       <div className="site-container pd-layout">
         <div className="pd-media">
           <div className="pd-photo">

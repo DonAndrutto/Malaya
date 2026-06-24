@@ -1,24 +1,29 @@
 'use client';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Inventory — the single, unified list of items for the admin desk. It replaces
-// the old separate "Stock ledger" and "Catalogue prices" tabs (see
-// lib/data/inventory.js for how the two are merged into one de-duplicated list).
+// Inventory — the single, unified desk for every item the studio sells. It now
+// replaces the legacy "Mass edit" tab too: the full catalogue, every stock SKU,
+// the live-site extras and any studio-created item live in one sortable, inline-
+// editable, mobile-friendly list (see lib/data/inventory.js for the merge).
 //
 // Every row edits the same override layer the live storefront reads, so changes
 // flow straight to the site:
-//   • catalogue entities save under their product id (the catalogue override)
-//   • ledger-only entities save under their SKU (and publish takes them online)
+//   • catalogue / extra / custom items save under their id (the catalogue override)
+//   • ledger-only items save under their SKU (and publish takes them online)
+//   • a catalogue listing also reads photos/story uploaded under a linked SKU
+//     (legacy uploads), so they finally show here as well as on the site.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { T } from './theme';
 import { CATEGORIES, MATERIALS, STOCK_OPTIONS } from '@/lib/data/products';
+import { SPECIALS, SPECIAL_KEYS, resolveSpecials, normalizeMaterial } from '@/lib/data/materials';
 import { stockStatus } from '@/lib/data/stock-data';
 import { resolveProduct } from '@/lib/data/resolve';
 import {
   INVENTORY, INVENTORY_BY_KEY, isBlankEntity,
   METAL_SCOPES, matchesMetalScope, dupKey, pickMaster,
+  customEntities, customEntity, isCustomOverride, newCustomKey,
 } from '@/lib/data/inventory';
 import { saveOverrides } from '@/lib/overrides';
 import { uploadImage } from '@/lib/upload';
@@ -28,6 +33,7 @@ import { FIREBASE_ENABLED } from '@/lib/firebase';
 function m0(n) { return '$' + Math.round(Number(n) || 0).toLocaleString('en-US'); }
 function m2(n) { if (n == null || n === '' || isNaN(Number(n))) return '—'; return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 function numOrNull(v) { if (v === '' || v === null || v === undefined) return null; const n = Number(v); return isNaN(n) ? null : n; }
+function sameArr(a, b) { return a.length === b.length && a.every((x, i) => x === b[i]); }
 
 function ghost(disabled) {
   return { background: 'transparent', border: `1px solid ${T.line2}`, color: disabled ? T.faint : T.ink, padding: '9px 14px', fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', cursor: disabled ? 'not-allowed' : 'pointer', fontFamily: T.sans, opacity: disabled ? 0.5 : 1 };
@@ -37,16 +43,26 @@ function ghost(disabled) {
 // its list price under `listPrice`; the ledger under `retail`).
 const ovField = (kind, g) => (kind !== 'ledger' && g === 'retail' ? 'listPrice' : g);
 const NUMERIC = ['retail', 'salePrice', 'qty', 'unitCost'];
+const STOCK_RANK = Object.fromEntries(STOCK_OPTIONS.map((s, i) => [s, i]));
 
 export default function Inventory({ overrides, setOverrides }) {
-  const ENTITIES = useMemo(() => INVENTORY, []);
+  const customs = useMemo(() => customEntities(overrides), [overrides]);
+  const ENTITIES = useMemo(() => [...INVENTORY, ...customs], [customs]);
+  const ENTITY_BY_KEY = useMemo(() => {
+    const m = { ...INVENTORY_BY_KEY };
+    customs.forEach((e) => { m[e.key] = e; });
+    return m;
+  }, [customs]);
   const ORDER = useMemo(() => ENTITIES.map((e) => e.key), [ENTITIES]);
+  const entityFor = (key, src) => ENTITY_BY_KEY[key] || (isCustomOverride((src || overrides)[key]) ? customEntity(key) : null);
 
   const [search, setSearch] = useState('');
   const [fCat, setFCat] = useState('');
   const [fMat, setFMat] = useState('');
   const [fAvail, setFAvail] = useState('');
-  const [sort, setSort] = useState('default');
+  const [fSpecial, setFSpecial] = useState('');
+  const [sortKey, setSortKey] = useState('');
+  const [sortDir, setSortDir] = useState('asc');
   const [showBlank, setShowBlank] = useState(false);
   const [showMerged, setShowMerged] = useState(false);
   const [editKey, setEditKey] = useState(null);
@@ -59,21 +75,35 @@ export default function Inventory({ overrides, setOverrides }) {
 
   const blankCount = useMemo(() => ENTITIES.filter(isBlankEntity).length, [ENTITIES]);
 
+  const toggleSort = (k) => {
+    if (sortKey === k) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    else { setSortKey(k); setSortDir('asc'); }
+  };
+
   // ── Resolve an entity (base + its override) into a display record ───────────
   const resolve = (key) => {
-    const e = INVENTORY_BY_KEY[key];
+    const e = ENTITY_BY_KEY[key];
     const b = e.base;
-    const o = overrides[key] || {};
-    let name, sub, category, collection, material, salesCode, productionCode, stock, retail, salePrice, onSale, images, img, story;
+    const own = overrides[key] || {};
+    // Read photos/story uploaded under a linked stock SKU so legacy uploads show
+    // here (and editing then writes them to the canonical id).
+    let o = own;
+    if (e.linkedSku && overrides[e.linkedSku]) {
+      const lo = overrides[e.linkedSku];
+      o = { ...own };
+      ['images', 'img', 'story'].forEach((f) => { if (!(f in o) && f in lo) o[f] = lo[f]; });
+    }
+    let name, sub, category, collection, material, salesCode, productionCode, stock, retail, salePrice, onSale, images, img, story, specials;
 
     if (e.kind !== 'ledger') {
-      const rp = resolveProduct({ ...b, id: e.key, listPrice: b.retail, salePrice: b.salePrice, tag: null }, o);
+      const rp = resolveProduct({ ...b, id: e.key, listPrice: b.retail, salePrice: b.salePrice, tag: b.tag || null }, o);
       name = rp.name; sub = rp.sub; category = rp.category; collection = rp.collection; material = rp.material;
       salesCode = rp.salesCode; productionCode = rp.productionCode; stock = rp.stock;
       retail = rp.listPrice; salePrice = rp.salePrice; onSale = rp.onSale; images = rp.images; img = rp.img; story = rp.story;
+      specials = rp.specials;
     } else {
       const val = (f) => (f in o ? o[f] : b[f]);
-      name = val('name'); sub = val('sub'); category = val('category'); collection = b.collection; material = val('material');
+      name = val('name'); sub = val('sub'); category = val('category'); collection = b.collection; material = normalizeMaterial(val('material'));
       salesCode = val('salesCode'); productionCode = val('productionCode');
       retail = numOrNull(val('retail')); salePrice = numOrNull(val('salePrice'));
       onSale = salePrice != null && retail != null && salePrice > 0 && salePrice < retail;
@@ -81,6 +111,7 @@ export default function Inventory({ overrides, setOverrides }) {
       images = Array.isArray(o.images) && o.images.length ? o.images : (o.img ? [o.img] : (b.images || []));
       img = images[0] || b.img || null;
       story = 'story' in o && o.story != null ? o.story : '';
+      specials = resolveSpecials(null, o);
     }
 
     const qty = numOrNull('qty' in o ? o.qty : b.qty);
@@ -90,10 +121,11 @@ export default function Inventory({ overrides, setOverrides }) {
     const marginPct = unitCost != null && sellRetail ? (1 - unitCost / sellRetail) * 100 : null;
     const markupPct = unitCost != null && unitCost > 0 && sellRetail != null ? (sellRetail / unitCost - 1) * 100 : null;
     return {
-      key, kind: e.kind, sku: e.sku, productId: e.kind !== 'ledger' ? e.key : null,
-      mergedInto: o.mergedInto || null,
+      key, kind: e.kind, custom: !!e.custom, sku: e.sku, productId: e.kind !== 'ledger' ? e.key : null,
+      mergedInto: own.mergedInto || null, deleted: !!own.deleted,
       name, sub, category, collection, material, salesCode, productionCode,
       qty, unitCost, retail, salePrice, onSale, sellRetail, stock, online,
+      specials, tashi: specials.includes('tashi'),
       marginUnit: unitCost != null && sellRetail != null ? sellRetail - unitCost : null,
       marginPct, markupPct,
       costValue: unitCost != null && qty != null ? unitCost * qty : null,
@@ -102,9 +134,9 @@ export default function Inventory({ overrides, setOverrides }) {
     };
   };
 
-  const itemEdited = (key) => { const o = overrides[key]; return !!(o && Object.keys(o).length); };
+  const itemEdited = (key) => { const o = overrides[key]; return !!(o && Object.keys(o).filter((k) => k !== '_custom').length); };
   const fieldEdited = (key, g) => {
-    const e = INVENTORY_BY_KEY[key]; const o = overrides[key]; if (!o) return false;
+    const e = entityFor(key); const o = overrides[key]; if (!e || !o) return false;
     const f = ovField(e.kind, g);
     if (!(f in o)) return false;
     const baseV = e.base[g];
@@ -119,7 +151,7 @@ export default function Inventory({ overrides, setOverrides }) {
   // ── Commit a generic patch to an entity's override ─────────────────────────
   const commit = (key, patch) => {
     setOverrides((prev) => {
-      const e = INVENTORY_BY_KEY[key];
+      const e = entityFor(key, prev) || customEntity(key);
       const next = { ...prev };
       const o = { ...(next[key] || {}) };
       const p = { ...patch };
@@ -130,9 +162,17 @@ export default function Inventory({ overrides, setOverrides }) {
         else o.published = p.online === true;
         delete p.online;
       }
-
       // Merge alias (set from the "Merge into…" picker; reversible).
       if ('mergedInto' in p) { if (p.mergedInto) o.mergedInto = p.mergedInto; else delete o.mergedInto; delete p.mergedInto; }
+      // Soft-delete flag (static items); custom items are removed outright elsewhere.
+      if ('deleted' in p) { if (p.deleted) o.deleted = true; else delete o.deleted; delete p.deleted; }
+      // Special attributes (Sale / Tashi Mannox / New).
+      if ('specials' in p) {
+        const arr = (Array.isArray(p.specials) ? p.specials : []).filter((k) => SPECIAL_KEYS.includes(k));
+        const baseArr = resolveSpecials(e.base.tag, null);
+        if (sameArr(arr, baseArr)) delete o.specials; else o.specials = arr;
+        delete p.specials;
+      }
 
       Object.keys(p).forEach((g) => {
         const f = ovField(e.kind, g);
@@ -145,11 +185,11 @@ export default function Inventory({ overrides, setOverrides }) {
         else if (NUMERIC.includes(g)) same = (v == null && baseV == null) || Number(v) === Number(baseV);
         else same = v === baseV;
         const dropNullPrice = f === 'listPrice' && v == null; // never store a blank catalogue list price
-        if (same || dropNullPrice) delete o[f]; else o[f] = v;
+        if ((same && !e.custom) || dropNullPrice) delete o[f]; else o[f] = v;
       });
 
-      // Tidy publish flag if it fell back to default.
       if (e.kind === 'ledger' && o.published !== true) delete o.published;
+      if (e.custom) o._custom = true; // a custom item's doc always carries its marker
 
       if (Object.keys(o).length === 0) delete next[key]; else next[key] = o;
       saveOverrides(next);
@@ -157,18 +197,54 @@ export default function Inventory({ overrides, setOverrides }) {
     });
   };
 
+  const toggleSpecial = (key, sk, current) => {
+    const set = new Set(current || []);
+    if (set.has(sk)) set.delete(sk); else set.add(sk);
+    commit(key, { specials: SPECIAL_KEYS.filter((k) => set.has(k)) });
+  };
+
   const resetItem = (key) => {
     setOverrides((prev) => { const n = { ...prev }; delete n[key]; saveOverrides(n); return n; });
     flash('Item reset to original');
   };
   const resetAll = () => {
-    if (!confirm('Reset every item back to its original studio values? This clears all manual edits.')) return;
-    setOverrides(() => { saveOverrides({}); return {}; });
+    if (!confirm('Reset every item back to its original studio values? This clears all manual edits (studio-created items are kept).')) return;
+    setOverrides((prev) => {
+      const next = {};
+      Object.keys(prev).forEach((k) => { if (isCustomOverride(prev[k])) next[k] = prev[k]; });
+      saveOverrides(next);
+      return next;
+    });
     flash('All edits cleared');
   };
 
+  // ── CRUD: add a brand-new item / permanently delete an item ────────────────
+  const addItem = () => {
+    const key = newCustomKey();
+    setOverrides((prev) => {
+      const next = { ...prev, [key]: { _custom: true, name: '', category: 'Pendants', material: 'Silver 925', stock: 'In stock' } };
+      saveOverrides(next);
+      return next;
+    });
+    setEditKey(key);
+    flash('New item — add its details, photo and price');
+  };
+  const deleteItem = (key) => {
+    const e = entityFor(key);
+    const custom = e && e.custom;
+    const label = displayName(key);
+    if (!confirm(custom
+      ? `Permanently delete “${label}”? This removes the item completely.`
+      : `Delete “${label}”? It will be removed from the storefront and the inventory list. You can restore it later via the “Deleted” filter.`)) return;
+    if (custom) setOverrides((prev) => { const n = { ...prev }; delete n[key]; saveOverrides(n); return n; });
+    else commit(key, { deleted: true });
+    setEditKey(null);
+    flash('Item deleted');
+  };
+  const restoreItem = (key) => { commit(key, { deleted: false }); flash('Item restored'); };
+
   // ── Merge / de-duplicate ───────────────────────────────────────────────────
-  const displayName = (key) => { const e = INVENTORY_BY_KEY[key]; if (!e) return key; const o = overrides[key] || {}; return (o.name != null && o.name !== '' ? o.name : e.base.name) || key; };
+  const displayName = (key) => { const e = entityFor(key); if (!e) return key; const o = overrides[key] || {}; return (o.name != null && o.name !== '' ? o.name : e.base.name) || key; };
   const mergeInto = (dupK, masterK) => {
     if (!masterK || masterK === dupK) return;
     commit(dupK, { mergedInto: masterK });
@@ -179,9 +255,10 @@ export default function Inventory({ overrides, setOverrides }) {
   };
   const unmerge = (key) => { commit(key, { mergedInto: null }); flash('Un-merged'); };
 
-  // Active (non-merged, non-blank) items — used by the merge picker & suggestions.
-  const activeItems = useMemo(() => ORDER.map(resolve).filter((r) => !r.mergedInto && !isBlankEntity(INVENTORY_BY_KEY[r.key])), [overrides]); // eslint-disable-line
+  // Active (non-merged, non-blank, non-deleted) items — for merge picker & suggestions.
+  const activeItems = useMemo(() => ORDER.map(resolve).filter((r) => !r.mergedInto && !r.deleted && !isBlankEntity(ENTITY_BY_KEY[r.key])), [overrides, ORDER]); // eslint-disable-line
   const mergedCount = useMemo(() => ORDER.filter((k) => (overrides[k] || {}).mergedInto).length, [overrides, ORDER]);
+  const deletedCount = useMemo(() => ORDER.filter((k) => (overrides[k] || {}).deleted).length, [overrides, ORDER]);
   const dupGroups = useMemo(() => {
     const m = {};
     activeItems.forEach((r) => { const k = dupKey(r); (m[k] = m[k] || []).push(r); });
@@ -192,14 +269,16 @@ export default function Inventory({ overrides, setOverrides }) {
   const rows = useMemo(() => {
     const q = search.trim().toLowerCase();
     let out = ORDER.map(resolve).filter((r) => {
-      const e = INVENTORY_BY_KEY[r.key];
+      const e = ENTITY_BY_KEY[r.key];
+      if (fAvail === 'deleted') { if (!r.deleted) return false; } else if (r.deleted) return false;
       if (!showBlank && isBlankEntity(e)) return false;
       if (!showMerged && r.mergedInto) return false;
       if (fCat && r.category !== fCat) return false;
       if (fMat && r.material !== fMat) return false;
-      if (fAvail === 'low' && !(r.qty != null && r.qty > 0 && r.qty <= 2)) return false;
+      if (fSpecial && !r.specials.includes(fSpecial)) return false;
       if (fAvail === 'out' && !(r.qty != null && r.qty <= 0)) return false;
-      if (fAvail === 'in' && !(r.qty != null && r.qty > 2)) return false;
+      if (fAvail === 'in' && !(r.qty != null && r.qty > 0)) return false;
+      if (fAvail === 'low' && !(r.qty != null && r.qty > 0 && r.qty <= 2)) return false;
       if (fAvail === 'nocost' && r.unitCost != null) return false;
       if (fAvail === 'online' && !r.online) return false;
       if (fAvail === 'offline' && r.online) return false;
@@ -208,32 +287,34 @@ export default function Inventory({ overrides, setOverrides }) {
       if (q && !(r.name.toLowerCase().includes(q) || (r.salesCode || '').toLowerCase().includes(q) || (r.productionCode || '').toLowerCase().includes(q) || r.key.toLowerCase().includes(q))) return false;
       return true;
     });
-    const by = {
-      units: (a, b) => (a.qty || 0) - (b.qty || 0),
-      'units-desc': (a, b) => (b.qty || 0) - (a.qty || 0),
-      'price-desc': (a, b) => (b.retail || 0) - (a.retail || 0),
-      'price-asc': (a, b) => (a.retail || 0) - (b.retail || 0),
-      margin: (a, b) => (b.marginPct ?? -1) - (a.marginPct ?? -1),
-      value: (a, b) => (b.retailValue ?? 0) - (a.retailValue ?? 0),
-      name: (a, b) => a.name.localeCompare(b.name),
+    const cmp = {
+      name: (a, b) => (a.name || '').localeCompare(b.name || ''),
+      material: (a, b) => (a.material || '').localeCompare(b.material || ''),
+      qty: (a, b) => (a.qty ?? -Infinity) - (b.qty ?? -Infinity),
+      unitCost: (a, b) => (a.unitCost ?? -Infinity) - (b.unitCost ?? -Infinity),
+      retail: (a, b) => (a.retail ?? -Infinity) - (b.retail ?? -Infinity),
+      salePrice: (a, b) => (a.salePrice ?? -Infinity) - (b.salePrice ?? -Infinity),
+      stock: (a, b) => (STOCK_RANK[a.stock] ?? 9) - (STOCK_RANK[b.stock] ?? 9),
     };
-    if (by[sort]) out.sort(by[sort]);
+    if (sortKey && cmp[sortKey]) { out.sort(cmp[sortKey]); if (sortDir === 'desc') out.reverse(); }
     return out;
   // eslint-disable-next-line
-  }, [overrides, search, fCat, fMat, fAvail, sort, showBlank, showMerged]);
+  }, [overrides, search, fCat, fMat, fAvail, fSpecial, sortKey, sortDir, showBlank, showMerged]);
 
   const stats = useMemo(() => {
-    let items = 0, units = 0, retailVal = 0, online = 0, low = 0, out = 0;
+    let items = 0, units = 0, retailVal = 0, online = 0, out = 0;
     ENTITIES.forEach((e) => {
       if (isBlankEntity(e)) return;
+      const o = overrides[e.key] || {};
+      if (o.deleted) return;
       const r = resolve(e.key);
       items++;
       units += r.qty || 0;
       if (r.online) online++;
-      if (r.qty != null && r.qty <= 0) out++; else if (r.qty != null && r.qty <= 2) low++;
+      if (r.qty != null && r.qty <= 0) out++;
       if (r.retailValue != null) retailVal += r.retailValue;
     });
-    return { items, units, retailVal, online, low, out };
+    return { items, units, retailVal, online, out };
   // eslint-disable-next-line
   }, [overrides, ENTITIES]);
 
@@ -265,12 +346,12 @@ export default function Inventory({ overrides, setOverrides }) {
       name: r.name, category: r.category, material: r.material, units: r.qty,
       unitCost: r.unitCost, retail: r.retail, salePrice: r.salePrice,
       marginPct: r.marginPct == null ? '' : r.marginPct.toFixed(1), status: r.stock,
-      online: r.online ? 'yes' : 'no', images: r.images.length,
+      online: r.online ? 'yes' : 'no', specials: r.specials.join('|'), images: r.images.length,
     }));
     let blob, fname;
     if (fmt === 'json') { blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }); fname = 'malaya-inventory.json'; }
     else {
-      const cols = ['key', 'type', 'salesCode', 'productionCode', 'name', 'category', 'material', 'units', 'unitCost', 'retail', 'salePrice', 'marginPct', 'status', 'online', 'images'];
+      const cols = ['key', 'type', 'salesCode', 'productionCode', 'name', 'category', 'material', 'units', 'unitCost', 'retail', 'salePrice', 'marginPct', 'status', 'online', 'specials', 'images'];
       const esc = (v) => { v = v == null ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
       const csv = [cols.join(',')].concat(data.map((row) => cols.map((c) => esc(row[c])).join(','))).join('\n');
       blob = new Blob([csv], { type: 'text/csv' }); fname = 'malaya-inventory.csv';
@@ -280,48 +361,60 @@ export default function Inventory({ overrides, setOverrides }) {
   };
 
   const editing = editKey ? resolve(editKey) : null;
-  const anyFilter = search || fCat || fMat || fAvail || sort !== 'default';
+  const anyFilter = search || fCat || fMat || fAvail || fSpecial || sortKey;
+
+  const HEADS = [
+    { k: 'name', label: 'Item', cls: 'inv-cell-item' },
+    { k: 'material', label: 'Material' },
+    { k: 'qty', label: 'Units', num: true },
+    { k: 'unitCost', label: 'Cost', num: true },
+    { k: 'retail', label: 'Retail', num: true },
+    { k: 'salePrice', label: 'Sale', num: true },
+    { k: 'stock', label: 'Status' },
+    { k: '', label: 'Special' },
+    { k: '', label: '' },
+  ];
 
   return (
     <div>
-      <div style={{ padding: '22px 28px 0' }}>
+      <div className="adm-pad" style={{ padding: '22px 28px 0' }}>
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 20, flexWrap: 'wrap', marginBottom: 16 }}>
           <div>
             <h1 style={{ fontFamily: T.serif, fontSize: 38, margin: 0, lineHeight: 1 }}>Inventory</h1>
             <div style={{ fontSize: 12, color: T.muted, marginTop: 8, letterSpacing: '0.04em' }}>
               {rows.length} of {stats.items} items · <span style={{ color: stats.online ? T.good : T.muted }}>{stats.online} online</span>
-              {editedCount > 0 && <> · <span style={{ color: T.accent }}>{editedCount} edited</span></>} · one list of every catalogue piece &amp; stock SKU
+              {editedCount > 0 && <> · <span style={{ color: T.accent }}>{editedCount} edited</span></>} · every catalogue piece, stock SKU &amp; studio-added item in one list
             </div>
           </div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <button onClick={addItem} style={{ background: T.ink, color: T.panel, border: 'none', padding: '9px 16px', fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: T.sans }}>+ Add item</button>
             <button onClick={() => setSuggestOpen(true)} style={ghost()}>Find duplicates{dupGroups.length ? ` (${dupGroups.length})` : ''}…</button>
             <button onClick={() => setBulkOpen(true)} style={ghost()}>Bulk adjust…</button>
             <button onClick={() => exportData('csv')} style={ghost()}>Export CSV</button>
-            <button onClick={() => exportData('json')} style={ghost()}>Export JSON</button>
             <button onClick={resetAll} disabled={!editedCount} style={ghost(!editedCount)}>Reset all</button>
           </div>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 1, background: T.line2, border: `1px solid ${T.line2}` }}>
-          <Stat label="Items" value={stats.items.toLocaleString('en-US')} sub="catalogue + stock" />
+          <Stat label="Items" value={stats.items.toLocaleString('en-US')} sub="catalogue + stock + added" />
           <Stat label="Units on hand" value={stats.units.toLocaleString('en-US')} />
           <Stat label="Retail value" value={m0(stats.retailVal)} sub="stocked lines" />
           <Stat label="Online" value={stats.online.toLocaleString('en-US')} sub="live on storefront" accent />
-          <Stat label="Low / sold out" value={`${stats.low} / ${stats.out}`} />
+          <Stat label="Sold out" value={stats.out.toLocaleString('en-US')} />
         </div>
       </div>
 
-      <div style={{ padding: '16px 28px 0', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: T.card, border: `1px solid ${T.line2}`, padding: '9px 12px', minWidth: 240 }}>
+      <div className="adm-pad" style={{ padding: '16px 28px 0', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: T.card, border: `1px solid ${T.line2}`, padding: '9px 12px', minWidth: 220, flex: '1 1 220px', maxWidth: 320 }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.muted} strokeWidth="1.6"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg>
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search name or code…" style={{ background: 'transparent', border: 'none', outline: 'none', color: T.ink, fontSize: 13, fontFamily: T.sans, flex: 1 }} />
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search name or code…" style={{ background: 'transparent', border: 'none', outline: 'none', color: T.ink, fontSize: 13, fontFamily: T.sans, flex: 1, minWidth: 0 }} />
         </div>
         <Pick value={fCat} onChange={setFCat} all="All categories" options={CATEGORIES} />
         <Pick value={fMat} onChange={setFMat} all="All materials" options={MATERIALS} />
-        <Pick value={fAvail} onChange={setFAvail} all="All availability" options={[['online', 'Online'], ['offline', 'Offline'], ['onsale', 'On sale'], ['noimage', 'No image'], ['low', 'Low stock'], ['out', 'Sold out'], ['in', 'In stock'], ['nocost', 'Missing cost']]} pairs />
-        <Pick value={sort} onChange={setSort} all="Sort: default order" options={[['name', 'Name A–Z'], ['price-desc', 'Highest price'], ['price-asc', 'Lowest price'], ['units', 'Fewest units'], ['units-desc', 'Most units'], ['margin', 'Highest margin'], ['value', 'Highest value']]} pairs />
-        {anyFilter && <button onClick={() => { setSearch(''); setFCat(''); setFMat(''); setFAvail(''); setSort('default'); }} style={{ background: 'transparent', border: 'none', color: T.accent, fontSize: 12, cursor: 'pointer', letterSpacing: '0.06em' }}>Clear</button>}
-        <div style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 16 }}>
+        <Pick value={fSpecial} onChange={setFSpecial} all="Any special" options={SPECIALS.map((s) => [s.key, s.label])} pairs />
+        <Pick value={fAvail} onChange={setFAvail} all="All availability" options={[['online', 'Online'], ['offline', 'Offline'], ['onsale', 'On sale'], ['noimage', 'No image'], ['in', 'In stock'], ['low', 'Low (≤2)'], ['out', 'Sold out'], ['nocost', 'Missing cost'], ['deleted', `Deleted${deletedCount ? ` (${deletedCount})` : ''}`]]} pairs />
+        {anyFilter && <button onClick={() => { setSearch(''); setFCat(''); setFMat(''); setFAvail(''); setFSpecial(''); setSortKey(''); }} style={{ background: 'transparent', border: 'none', color: T.accent, fontSize: 12, cursor: 'pointer', letterSpacing: '0.06em' }}>Clear</button>}
+        <div style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
           {mergedCount > 0 &&
             <label style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 12, color: T.muted, cursor: 'pointer', letterSpacing: '0.04em', userSelect: 'none' }}>
               <input type="checkbox" checked={showMerged} onChange={(e) => setShowMerged(e.target.checked)} style={{ accentColor: T.accent }} />
@@ -335,25 +428,29 @@ export default function Inventory({ overrides, setOverrides }) {
         </div>
       </div>
 
-      <div style={{ padding: '16px 28px 80px' }}>
-        <div style={{ border: `1px solid ${T.line}`, background: T.panel }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-            <thead>
-              <tr style={{ background: T.card }}>
-                {[['Item', 'left'], ['Material', 'left'], ['Units', 'right'], ['Cost', 'right'], ['Retail', 'right'], ['Sale', 'right'], ['Margin', 'right'], ['Status', 'left'], ['', 'right']].map(([h, al], i) => (
-                  <th key={i} style={{ textAlign: al, padding: '11px 14px', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: T.muted, fontWeight: 600, borderBottom: `1px solid ${T.line2}`, position: 'sticky', top: 56, background: T.card, whiteSpace: 'nowrap' }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => <ItemRow key={r.key} r={r} edited={itemEdited(r.key)} fieldEdited={fieldEdited} commit={commit} onEdit={() => setEditKey(r.key)} onMerge={() => setMergeKey(r.key)} onUnmerge={() => unmerge(r.key)} masterName={r.mergedInto ? displayName(r.mergedInto) : null} />)}
-              {rows.length === 0 && <tr><td colSpan={9} style={{ padding: 56, textAlign: 'center', color: T.muted, fontFamily: T.serif, fontSize: 20 }}>No items match the current filters.</td></tr>}
-            </tbody>
-          </table>
+      <div className="adm-pad" style={{ padding: '16px 28px 90px' }}>
+        <div className="inv-list">
+          <div className="inv-head">
+            {HEADS.map((h, i) => (
+              h.k
+                ? <button key={i} className={'inv-th' + (h.num ? ' num' : '')} onClick={() => toggleSort(h.k)}>
+                    {h.label}{sortKey === h.k && <span className="inv-th-arrow">{sortDir === 'asc' ? '▲' : '▼'}</span>}
+                  </button>
+                : <span key={i} className="inv-th" style={{ cursor: 'default', textAlign: i === HEADS.length - 1 ? 'right' : 'left' }}>{h.label}</span>
+            ))}
+          </div>
+          {rows.map((r) => (
+            <ItemRow key={r.key} r={r} edited={itemEdited(r.key)} fieldEdited={fieldEdited} commit={commit}
+              onToggleSpecial={(sk) => toggleSpecial(r.key, sk, r.specials)}
+              onEdit={() => setEditKey(r.key)} onDelete={() => deleteItem(r.key)} onRestore={() => restoreItem(r.key)}
+              onMerge={() => setMergeKey(r.key)} onUnmerge={() => unmerge(r.key)}
+              masterName={r.mergedInto ? displayName(r.mergedInto) : null} />
+          ))}
+          {rows.length === 0 && <div style={{ padding: 56, textAlign: 'center', color: T.muted, fontFamily: T.serif, fontSize: 20, background: T.panel }}>No items match the current filters.</div>}
         </div>
       </div>
 
-      {editing && <ItemDrawer r={editing} base={INVENTORY_BY_KEY[editKey].base} fieldEdited={fieldEdited} commit={commit} resetItem={resetItem} onClose={() => setEditKey(null)} />}
+      {editing && <ItemDrawer r={editing} base={entityFor(editKey).base} fieldEdited={fieldEdited} commit={commit} resetItem={resetItem} onDelete={() => deleteItem(editKey)} onToggleSpecial={(sk) => toggleSpecial(editKey, sk, editing.specials)} onClose={() => setEditKey(null)} />}
       {bulkOpen && <BulkModal rows={rows} onApply={applyBulk} onClose={() => setBulkOpen(false)} />}
       {mergeKey && <MergePicker row={resolve(mergeKey)} candidates={activeItems.filter((c) => c.key !== mergeKey)} onPick={(masterK) => mergeInto(mergeKey, masterK)} onClose={() => setMergeKey(null)} />}
       {suggestOpen && <SuggestModal groups={dupGroups} onMerge={mergeInto} onClose={() => setSuggestOpen(false)} />}
@@ -372,66 +469,116 @@ function Stat({ label, value, sub, accent }) {
   );
 }
 
-function ItemRow({ r, edited, fieldEdited, commit, onEdit, onMerge, onUnmerge, masterName }) {
-  const statusColor = { 'Sold out': T.danger, 'Archived': T.faint, 'Low stock': T.accent, 'Made to order': T.muted }[r.stock] || T.good;
+function ItemRow({ r, edited, fieldEdited, commit, onToggleSpecial, onEdit, onDelete, onRestore, onMerge, onUnmerge, masterName }) {
+  const statusColor = { 'Sold out': T.danger, 'Archived': T.faint, 'Made to order': T.muted }[r.stock] || T.good;
   const lowQty = r.qty != null && r.qty <= 2;
   return (
-    <tr style={{ borderBottom: `1px solid ${T.line}`, background: edited ? 'rgba(138,106,59,0.045)' : 'transparent', opacity: r.mergedInto ? 0.55 : 1 }}>
-      <td style={{ padding: '10px 14px' }}>
+    <div className="inv-row" style={{ background: r.deleted ? 'rgba(164,80,43,0.06)' : (edited ? 'rgba(138,106,59,0.045)' : T.panel), opacity: r.mergedInto ? 0.6 : 1 }}>
+      <div className="inv-cell inv-cell-item">
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ width: 42, height: 42, flexShrink: 0, background: T.card, border: `1px solid ${T.line}`, overflow: 'hidden', position: 'relative' }}>
             {r.img ? <img src={r.img} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} onError={(e) => { e.target.style.display = 'none'; }} />
               : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: T.serif, fontSize: 13, color: T.faint }}>{(r.productionCode || r.key).replace(/[^A-Za-z]/g, '').slice(0, 2) || '—'}</div>}
           </div>
-          <div style={{ minWidth: 0 }}>
-            <div style={{ fontFamily: T.serif, fontSize: 15.5, lineHeight: 1.15, color: T.ink }}>{r.name || <span style={{ color: T.faint }}>Unnamed SKU</span>}</div>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <InlineName value={r.name} edited={fieldEdited(r.key, 'name')} onCommit={(v) => commit(r.key, { name: v })} />
             <div style={{ fontSize: 10, color: T.faint, letterSpacing: '0.1em', marginTop: 3, display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
               <span><span style={{ color: T.muted }}>SKU</span> {r.salesCode || r.key}</span>
-              {r.productionCode && <span><span style={{ color: T.muted }}>MODEL</span> {r.productionCode}</span>}
-              {r.mergedInto
-                ? <span style={{ color: T.accent, letterSpacing: '0.06em' }}>merged → {masterName}</span>
-                : <span style={{ color: r.online ? T.good : T.faint, letterSpacing: '0.06em' }}>{r.online ? '● online' : '○ offline'}</span>}
+              {r.custom && <span style={{ color: T.accent }}>added</span>}
+              {r.deleted
+                ? <span style={{ color: T.danger, letterSpacing: '0.06em' }}>deleted</span>
+                : r.mergedInto
+                  ? <span style={{ color: T.accent, letterSpacing: '0.06em' }}>merged → {masterName}</span>
+                  : <span style={{ color: r.online ? T.good : T.faint, letterSpacing: '0.06em' }}>{r.online ? '● online' : '○ offline'}</span>}
             </div>
           </div>
         </div>
-      </td>
-      <td style={{ padding: '10px 14px' }}>
+      </div>
+
+      <div className="inv-cell">
+        <span className="inv-cell-label">Material</span>
         <select value={MATERIALS.includes(r.material) ? r.material : ''} onChange={(e) => commit(r.key, { material: e.target.value })}
-          style={{ background: 'transparent', border: `1px solid ${fieldEdited(r.key, 'material') ? T.accent : T.line}`, color: fieldEdited(r.key, 'material') ? T.accent : T.ink, fontSize: 12, padding: '5px 6px', fontFamily: T.sans, cursor: 'pointer', maxWidth: 116 }}>
+          style={{ width: '100%', maxWidth: 128, background: 'transparent', border: `1px solid ${fieldEdited(r.key, 'material') ? T.accent : T.line}`, color: fieldEdited(r.key, 'material') ? T.accent : T.ink, fontSize: 12, padding: '5px 6px', fontFamily: T.sans, cursor: 'pointer' }}>
           <option value="">{r.material || '—'}</option>
           {MATERIALS.map((m) => <option key={m} value={m}>{m}</option>)}
         </select>
-      </td>
-      <td style={{ padding: '10px 14px', textAlign: 'right' }}><NumCell value={r.qty} edited={fieldEdited(r.key, 'qty')} onCommit={(v) => commit(r.key, { qty: v })} width={46} placeholder="—" color={lowQty ? T.accent : T.ink} /></td>
-      <td style={{ padding: '10px 14px', textAlign: 'right' }}><NumCell value={r.unitCost} edited={fieldEdited(r.key, 'unitCost')} onCommit={(v) => commit(r.key, { unitCost: v })} money placeholder="—" /></td>
-      <td style={{ padding: '10px 14px', textAlign: 'right' }}><NumCell value={r.retail} edited={fieldEdited(r.key, 'retail')} onCommit={(v) => commit(r.key, { retail: v })} money placeholder="—" /></td>
-      <td style={{ padding: '10px 14px', textAlign: 'right' }}>
+      </div>
+
+      <div className="inv-cell num"><span className="inv-cell-label">Units</span><NumCell value={r.qty} edited={fieldEdited(r.key, 'qty')} onCommit={(v) => commit(r.key, { qty: v })} width={46} placeholder="—" color={lowQty ? T.accent : T.ink} /></div>
+      <div className="inv-cell num"><span className="inv-cell-label">Cost</span><NumCell value={r.unitCost} edited={fieldEdited(r.key, 'unitCost')} onCommit={(v) => commit(r.key, { unitCost: v })} money placeholder="—" /></div>
+      <div className="inv-cell num"><span className="inv-cell-label">Retail</span><NumCell value={r.retail} edited={fieldEdited(r.key, 'retail')} onCommit={(v) => commit(r.key, { retail: v })} money placeholder="—" /></div>
+      <div className="inv-cell num">
+        <span className="inv-cell-label">Sale</span>
         <NumCell value={r.salePrice} edited={fieldEdited(r.key, 'salePrice')} onCommit={(v) => commit(r.key, { salePrice: v })} money placeholder="—" />
         {r.onSale && <div style={{ fontSize: 10, color: T.accent, marginTop: 2 }}>−{Math.round((1 - r.salePrice / r.retail) * 100)}%</div>}
-      </td>
-      <td style={{ padding: '10px 14px', textAlign: 'right', whiteSpace: 'nowrap' }}>
-        {r.marginPct == null ? <span style={{ color: T.faint }}>—</span> : <span style={{ color: r.marginPct < 40 ? T.danger : T.ink, fontWeight: 500 }}>{r.marginPct.toFixed(0)}%</span>}
-        {r.marginUnit != null && <div style={{ fontSize: 10, color: T.faint, marginTop: 2 }}>{m2(r.marginUnit)}/ea</div>}
-      </td>
-      <td style={{ padding: '10px 14px' }}>
+      </div>
+
+      <div className="inv-cell">
+        <span className="inv-cell-label">Status</span>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, color: statusColor, whiteSpace: 'nowrap' }}>
           <span style={{ width: 7, height: 7, borderRadius: '50%', background: statusColor }} />{r.stock}
         </span>
-      </td>
-      <td style={{ padding: '10px 14px', textAlign: 'right', whiteSpace: 'nowrap' }}>
-        <div style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
-          {r.mergedInto ? (
-            <button onClick={onUnmerge} style={{ ...ghost(), padding: '7px 12px', fontSize: 10 }}>Un-merge</button>
-          ) : (
-            <>
-              <button onClick={onMerge} title="Merge this into another item" style={{ ...ghost(), padding: '7px 10px', fontSize: 10 }}>Merge…</button>
-              <PublishPill on={r.online} onToggle={() => commit(r.key, { online: !r.online })} />
-            </>
-          )}
-          <button onClick={onEdit} style={{ ...ghost(), padding: '7px 12px', fontSize: 10 }}>Edit</button>
-        </div>
-      </td>
-    </tr>
+      </div>
+
+      <div className="inv-cell">
+        <span className="inv-cell-label">Special</span>
+        <SpecialsCell value={r.specials} onToggle={onToggleSpecial} />
+      </div>
+
+      <div className="inv-cell inv-cell-actions">
+        {r.deleted ? (
+          <button onClick={onRestore} style={{ ...ghost(), padding: '7px 12px', fontSize: 10 }}>Restore</button>
+        ) : r.mergedInto ? (
+          <button onClick={onUnmerge} style={{ ...ghost(), padding: '7px 12px', fontSize: 10 }}>Un-merge</button>
+        ) : (
+          <>
+            <PublishPill on={r.online} onToggle={() => commit(r.key, { online: !r.online })} />
+            <button onClick={onEdit} style={{ ...ghost(), padding: '7px 12px', fontSize: 10 }}>Edit</button>
+          </>
+        )}
+        {!r.deleted && <button onClick={onDelete} title="Delete item" style={{ background: 'transparent', border: `1px solid ${T.line2}`, color: T.danger, padding: '7px 9px', fontSize: 11, lineHeight: 1, cursor: 'pointer', fontFamily: T.sans }}>🗑</button>}
+      </div>
+    </div>
+  );
+}
+
+function InlineName({ value, edited, onCommit }) {
+  const [v, setV] = useState(value || '');
+  const [focus, setFocus] = useState(false);
+  useEffect(() => { setV(value || ''); }, [value]);
+  return (
+    <input value={v} placeholder="Unnamed item"
+      onChange={(e) => setV(e.target.value)} onFocus={() => setFocus(true)}
+      onBlur={() => { setFocus(false); onCommit(v); }} onKeyDown={(e) => { if (e.key === 'Enter') e.target.blur(); }}
+      style={{ width: '100%', background: 'transparent', border: 'none', borderBottom: `1px solid ${edited ? T.accent : (focus ? T.line2 : 'transparent')}`, color: edited ? T.accent : T.ink, fontFamily: T.serif, fontSize: 15.5, lineHeight: 1.2, padding: '1px 0', outline: 'none' }} />
+  );
+}
+
+function SpecialsCell({ value, onToggle }) {
+  const [open, setOpen] = useState(false);
+  const active = value || [];
+  const label = active.length ? SPECIALS.filter((s) => active.includes(s.key)).map((s) => s.label).join(', ') : 'None';
+  return (
+    <div style={{ position: 'relative' }}>
+      <button onClick={() => setOpen((o) => !o)} title="Set special attributes"
+        style={{ display: 'inline-flex', alignItems: 'center', gap: 6, maxWidth: 124, padding: '6px 9px', fontSize: 11, cursor: 'pointer', fontFamily: T.sans, border: `1px solid ${active.length ? T.accent : T.line2}`, background: active.length ? 'rgba(138,106,59,0.08)' : 'transparent', color: active.length ? T.accent : T.muted }}>
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</span>
+        <span style={{ fontSize: 9 }}>▾</span>
+      </button>
+      {open && (
+        <>
+          <div onClick={() => setOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 20 }} />
+          <div style={{ position: 'absolute', zIndex: 21, top: 'calc(100% + 4px)', left: 0, minWidth: 168, background: T.panel, border: `1px solid ${T.line2}`, boxShadow: '0 14px 34px rgba(0,0,0,0.18)', padding: 6 }}>
+            {SPECIALS.map((s) => (
+              <label key={s.key} style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '8px 9px', cursor: 'pointer', fontSize: 12.5, color: T.ink }}>
+                <input type="checkbox" checked={active.includes(s.key)} onChange={() => onToggle(s.key)} style={{ accentColor: T.accent }} />
+                {s.label}
+              </label>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
   );
 }
 
@@ -449,7 +596,7 @@ function NumCell({ value, onCommit, edited, money, placeholder, width = 60, colo
   useEffect(() => { setV(value == null ? '' : String(value)); }, [value]);
   const done = () => { const t = v.trim(); onCommit(t === '' ? null : t); };
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+    <div style={{ display: 'inline-flex', alignItems: 'center' }}>
       {money && <span style={{ color: edited ? T.accent : T.faint, fontSize: 12, marginRight: 1 }}>$</span>}
       <input value={v} placeholder={placeholder || '0'} inputMode="decimal"
         onChange={(e) => setV(e.target.value.replace(/[^0-9.]/g, ''))}
@@ -492,7 +639,7 @@ function BulkModal({ rows, onApply, onClose }) {
 
           <div style={{ fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', color: T.muted, marginBottom: 8 }}>Metal</div>
           <select value={scope} onChange={(e) => setScope(e.target.value)} style={{ width: '100%', background: T.card, border: `1px solid ${scope ? T.accent : T.line2}`, color: scope ? T.accent : T.ink, fontSize: 13, padding: '11px 12px', fontFamily: T.sans, cursor: 'pointer', marginBottom: 20 }}>
-            {METAL_SCOPES.map((s) => <option key={s.value} value={s.value}>{s.group ? `${s.label}` : (s.value.startsWith('mat:') ? `  ${s.label}` : s.label)}</option>)}
+            {METAL_SCOPES.map((s) => <option key={s.value} value={s.value}>{s.group ? `${s.label}` : (s.value.startsWith('mat:') ? `  ${s.label}` : s.label)}</option>)}
           </select>
 
           {needsPct && (
@@ -526,7 +673,6 @@ function BulkModal({ rows, onApply, onClose }) {
 }
 
 // ─────────────────────────────────────────────────── MergePicker ────
-// Pick the master to merge the current row into (searchable list of active items).
 function MergePicker({ row, candidates, onPick, onClose }) {
   const [q, setQ] = useState('');
   const s = q.trim().toLowerCase();
@@ -564,8 +710,6 @@ function MergePicker({ row, candidates, onPick, onClose }) {
 }
 
 // ─────────────────────────────────────────────────── SuggestModal ────
-// Auto-grouped duplicate suggestions: same category + same normalised name. The
-// master is pre-selected (most photos, then a real code); the admin confirms.
 function SuggestModal({ groups, onMerge, onClose }) {
   const [masters, setMasters] = useState({});
   const [done, setDone] = useState({});
@@ -621,10 +765,10 @@ function SuggestModal({ groups, onMerge, onClose }) {
 }
 
 // ─────────────────────────────────────────────────── ItemDrawer ────
-function ItemDrawer({ r, base, fieldEdited, commit, resetItem, onClose }) {
+function ItemDrawer({ r, base, fieldEdited, commit, resetItem, onDelete, onToggleSpecial, onClose }) {
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(20,16,10,0.32)' }}>
-      <aside onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: 460, maxWidth: '92vw', background: T.panel, borderLeft: `1px solid ${T.line2}`, display: 'flex', flexDirection: 'column', boxShadow: '-20px 0 50px rgba(0,0,0,0.18)' }}>
+      <aside onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: 460, maxWidth: '94vw', background: T.panel, borderLeft: `1px solid ${T.line2}`, display: 'flex', flexDirection: 'column', boxShadow: '-20px 0 50px rgba(0,0,0,0.18)' }}>
         <div style={{ padding: '20px 24px', borderBottom: `1px solid ${T.line}`, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 14 }}>
           <div style={{ display: 'flex', gap: 14, minWidth: 0 }}>
             <div style={{ width: 56, height: 56, flexShrink: 0, background: T.card, border: `1px solid ${T.line}`, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -632,8 +776,8 @@ function ItemDrawer({ r, base, fieldEdited, commit, resetItem, onClose }) {
                 : <span style={{ fontFamily: T.serif, fontSize: 16, color: T.faint }}>{(r.productionCode || r.key).slice(0, 3)}</span>}
             </div>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontFamily: T.serif, fontSize: 21, lineHeight: 1.12 }}>{r.name || 'Unnamed SKU'}</div>
-              <div style={{ fontSize: 10, color: T.faint, letterSpacing: '0.1em', marginTop: 4 }}>{r.salesCode || r.key} · {r.kind === 'ledger' ? 'stock SKU' : (r.kind === 'extra' ? 'collaboration item' : 'catalogue item')}</div>
+              <div style={{ fontFamily: T.serif, fontSize: 21, lineHeight: 1.12 }}>{r.name || 'Unnamed item'}</div>
+              <div style={{ fontSize: 10, color: T.faint, letterSpacing: '0.1em', marginTop: 4 }}>{r.salesCode || r.key} · {r.kind === 'ledger' ? 'stock SKU' : (r.kind === 'extra' ? 'collaboration item' : (r.kind === 'custom' ? 'studio-created item' : 'catalogue item'))}</div>
             </div>
           </div>
           <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: T.muted, fontSize: 22, cursor: 'pointer', lineHeight: 1 }}>×</button>
@@ -650,11 +794,12 @@ function ItemDrawer({ r, base, fieldEdited, commit, resetItem, onClose }) {
             <div style={{ fontSize: 11.5, color: T.muted, lineHeight: 1.6, marginTop: 10 }}>
               {r.online
                 ? <>Live on the storefront. <a href={`/product/${encodeURIComponent(r.key)}`} target="_blank" rel="noreferrer" style={{ color: T.accent }}>View on site →</a></>
-                : (r.kind !== 'ledger' ? 'Offline (archived) — switch on to list it on the live storefront again.' : 'Publish to list this stock line on the live storefront. You can publish now and add images later.')}
+                : (r.kind === 'ledger' ? 'Publish to list this stock line on the live storefront. You can publish now and add images later.' : 'Offline (archived) — switch on to list it on the live storefront again.')}
             </div>
           </div>
 
           <DField label="Item name" value={r.name} edited={fieldEdited(r.key, 'name')} base={base.name} onCommit={(v) => commit(r.key, { name: v })} onRevert={() => commit(r.key, { name: base.name })} />
+          <DField label="Subtitle / detail" value={r.sub} edited={fieldEdited(r.key, 'sub')} base={base.sub} onCommit={(v) => commit(r.key, { sub: v })} onRevert={() => commit(r.key, { sub: base.sub })} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
             <DField label="Sales code (SKU)" value={r.salesCode} edited={fieldEdited(r.key, 'salesCode')} base={base.salesCode} onCommit={(v) => commit(r.key, { salesCode: v })} onRevert={() => commit(r.key, { salesCode: base.salesCode })} />
             <DField label="Production code" value={r.productionCode} edited={fieldEdited(r.key, 'productionCode')} base={base.productionCode} onCommit={(v) => commit(r.key, { productionCode: v })} onRevert={() => commit(r.key, { productionCode: base.productionCode })} />
@@ -665,6 +810,22 @@ function ItemDrawer({ r, base, fieldEdited, commit, resetItem, onClose }) {
           </div>
 
           <div style={{ borderTop: `1px solid ${T.line}`, marginTop: 6, paddingTop: 18 }}>
+            <div style={{ fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', color: T.accent, marginBottom: 12 }}>Special attributes</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {SPECIALS.map((s) => {
+                const on = r.specials.includes(s.key);
+                return (
+                  <button key={s.key} onClick={() => onToggleSpecial(s.key)}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '8px 14px', fontSize: 12, cursor: 'pointer', fontFamily: T.sans, border: `1px solid ${on ? T.accent : T.line2}`, background: on ? 'rgba(138,106,59,0.12)' : T.card, color: on ? T.accent : T.muted }}>
+                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: on ? T.accent : T.line2 }} />{s.label}
+                  </button>
+                );
+              })}
+            </div>
+            <div style={{ fontSize: 11, color: T.faint, marginTop: 8, lineHeight: 1.6 }}>“Tashi Mannox” lists this piece on the Tashi Mannox page. An item can carry several.</div>
+          </div>
+
+          <div style={{ borderTop: `1px solid ${T.line}`, marginTop: 18, paddingTop: 18 }}>
             <div style={{ fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', color: T.accent, marginBottom: 14 }}>Inventory</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               <DNum label="Units on hand" value={r.qty} placeholder="—" edited={fieldEdited(r.key, 'qty')} base={base.qty} onCommit={(v) => commit(r.key, { qty: v })} onRevert={() => commit(r.key, { qty: base.qty })} />
@@ -687,7 +848,7 @@ function ItemDrawer({ r, base, fieldEdited, commit, resetItem, onClose }) {
 
           <div style={{ borderTop: `1px solid ${T.line}`, marginTop: 6, paddingTop: 18 }}>
             <div style={{ fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', color: T.accent, marginBottom: 12 }}>Story</div>
-            <DTextArea value={r.story} edited={fieldEdited(r.key, 'story')} onCommit={(v) => commit(r.key, { story: v })} onRevert={() => commit(r.key, { story: '' })}
+            <DTextArea value={r.story} edited={fieldEdited(r.key, 'story')} commit={commit} keyId={r.key}
               placeholder="Tell this piece's story — materials, symbolism, craft. Shown on the product page (blank lines start a new paragraph)." />
           </div>
 
@@ -700,7 +861,10 @@ function ItemDrawer({ r, base, fieldEdited, commit, resetItem, onClose }) {
           </div>
         </div>
         <div style={{ padding: '16px 24px', borderTop: `1px solid ${T.line}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-          <button onClick={() => resetItem(r.key)} style={{ background: 'transparent', border: 'none', color: T.danger, fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', cursor: 'pointer' }}>Reset to original</button>
+          <div style={{ display: 'flex', gap: 16 }}>
+            <button onClick={() => resetItem(r.key)} style={{ background: 'transparent', border: 'none', color: T.muted, fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', cursor: 'pointer' }}>Reset</button>
+            <button onClick={onDelete} style={{ background: 'transparent', border: 'none', color: T.danger, fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', cursor: 'pointer' }}>Delete</button>
+          </div>
           <button onClick={onClose} style={{ background: T.ink, color: T.panel, border: 'none', padding: '13px 28px', fontSize: 11, letterSpacing: '0.24em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: T.sans }}>Done</button>
         </div>
       </aside>
@@ -724,7 +888,7 @@ function DShell({ label, edited, base, onRevert, children }) {
     <div style={{ marginBottom: 16 }}>
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 7 }}>
         <span style={{ fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', color: edited ? T.accent : T.muted }}>{label}{edited ? ' ·' : ''}</span>
-        {edited && <button onClick={onRevert} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 10, color: T.faint, letterSpacing: '0.04em' }}>was <span style={{ textDecoration: 'line-through' }}>{base == null || base === '' ? '—' : String(base)}</span> · revert</button>}
+        {edited && onRevert && <button onClick={onRevert} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 10, color: T.faint, letterSpacing: '0.04em' }}>was <span style={{ textDecoration: 'line-through' }}>{base == null || base === '' ? '—' : String(base)}</span> · revert</button>}
       </div>
       {children}
     </div>
@@ -755,12 +919,12 @@ function DNum({ label, value, edited, base, onCommit, onRevert, placeholder, mon
     </DShell>
   );
 }
-function DTextArea({ value, edited, onCommit, onRevert, placeholder }) {
+function DTextArea({ value, edited, commit, keyId, placeholder }) {
   const [v, setV] = useState(value || '');
   useEffect(() => setV(value || ''), [value]);
   return (
-    <DShell label="Narrative" edited={edited} base="" onRevert={onRevert}>
-      <textarea value={v} onChange={(e) => setV(e.target.value)} onBlur={() => onCommit(v)} placeholder={placeholder} rows={5}
+    <DShell label="Narrative" edited={edited} base="" onRevert={() => commit(keyId, { story: '' })}>
+      <textarea value={v} onChange={(e) => setV(e.target.value)} onBlur={() => commit(keyId, { story: v })} placeholder={placeholder} rows={5}
         style={{ ...dFieldStyle(edited), resize: 'vertical', lineHeight: 1.6, minHeight: 116, fontFamily: T.sans }} />
     </DShell>
   );
@@ -835,10 +999,9 @@ function IconBtn({ label, title, onClick, disabled, danger }) {
 }
 
 function Pick({ value, onChange, all, options, pairs }) {
-  const isSort = all.startsWith('Sort');
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value)} style={{ background: T.card, border: `1px solid ${value && value !== 'default' ? T.accent : T.line2}`, color: value && value !== 'default' ? T.accent : T.ink, fontSize: 12, padding: '9px 10px', fontFamily: T.sans, cursor: 'pointer', letterSpacing: '0.02em' }}>
-      <option value={isSort ? 'default' : ''}>{all}</option>
+    <select value={value} onChange={(e) => onChange(e.target.value)} style={{ background: T.card, border: `1px solid ${value ? T.accent : T.line2}`, color: value ? T.accent : T.ink, fontSize: 12, padding: '9px 10px', fontFamily: T.sans, cursor: 'pointer', letterSpacing: '0.02em' }}>
+      <option value="">{all}</option>
       {options.map((o) => pairs ? <option key={o[0]} value={o[0]}>{o[1]}</option> : <option key={o} value={o}>{o}</option>)}
     </select>
   );
