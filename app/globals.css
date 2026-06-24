@@ -26,7 +26,9 @@ button, input, select { font-family: inherit; }
 .malaya-site .btn-malaya-light { background: #fff; color: #1d1d1d; }
 .malaya-site .btn-malaya-light:hover { background: var(--gold); color: #fff; }
 .malaya-site .section-title { font-size: 30px; font-weight: 300; text-align: center; color: var(--brown); letter-spacing: .04em; text-wrap: pretty; }
-.malaya-site .rule-dot { width: 64px; border-bottom: 2px dotted var(--gold); margin: 14px auto 34px; }
+/* Short, clean gold divider under section titles (previously a broken-looking
+   dotted line). Centred by default; width follows its container otherwise. */
+.malaya-site .rule-dot { width: 64px; height: 0; border: 0; border-top: 2px solid var(--gold); margin: 14px auto 34px; }
 .malaya-site .site-header { background: var(--brown); position: relative; z-index: 40; }
 /* Single brand-brown bar: logo (left) · centred nav · cart (right). On the home
    page it is superimposed over the hero slideshow with a brown→transparent
@@ -115,7 +117,8 @@ button, input, select { font-family: inherit; }
 .malaya-site .cat-search-sub { font-size: 11.5px; color: var(--muted); line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .malaya-site .cat-search-empty { padding: 16px; font-size: 13px; color: var(--muted); text-align: center; }
 .malaya-site .cat-section { padding-top: 40px; padding-bottom: 14px; scroll-margin-top: 70px; }
-.malaya-site .cat-section-title { text-align: left; }
+/* Category names (Pendants, Rings, …) centred on the home catalogue scroll. */
+.malaya-site .cat-section-title { text-align: center; }
 .malaya-site .pgrid { display: grid; gap: 30px 24px; }
 .malaya-site .pcard { min-width: 0; }
 .malaya-site .pgrid-3 { grid-template-columns: repeat(3, 1fr); }
@@ -249,6 +252,58 @@ button, input, select { font-family: inherit; }
 .malaya-site .ftr-bottom .site-container { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
 #site-toast { position: fixed; bottom: 28px; left: 50%; transform: translate(-50%, 16px); background: #1d1d1d; color: #fff; font-size: 13px; letter-spacing: .06em; padding: 13px 26px; opacity: 0; pointer-events: none; transition: all .25s; z-index: 200; }
 #site-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Admin studio console — responsive unified Inventory grid. Scoped under
+   .malaya-admin so it never touches the storefront (.malaya-site). The grid
+   reflows to stacked, labelled cards on tablet/phone so full-row edits,
+   toggles and data entry stay usable on small screens.
+   ───────────────────────────────────────────────────────────────────────── */
+.malaya-admin .inv-list { border: 1px solid rgba(42,37,32,0.12); background: #f4eee3; }
+.malaya-admin .inv-head,
+.malaya-admin .inv-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 2.4fr) 120px 58px 82px 92px 92px 116px 128px minmax(116px, auto);
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+}
+.malaya-admin .inv-head { background: #fbf7ee; border-bottom: 1px solid rgba(42,37,32,0.2); position: sticky; top: 56px; z-index: 6; }
+.malaya-admin .inv-row { border-bottom: 1px solid rgba(42,37,32,0.12); }
+.malaya-admin .inv-row:last-child { border-bottom: 0; }
+.malaya-admin .inv-th {
+  font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: #7a6f63; font-weight: 600;
+  background: none; border: none; cursor: pointer; text-align: left; padding: 2px 0; font-family: inherit;
+  display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
+}
+.malaya-admin .inv-th:hover { color: #2a2520; }
+.malaya-admin .inv-th.num { justify-content: flex-end; }
+.malaya-admin .inv-th-arrow { font-size: 9px; color: #8a6a3b; }
+.malaya-admin .inv-cell.num { text-align: right; }
+.malaya-admin .inv-cell-actions { display: flex; gap: 6px; justify-content: flex-end; align-items: center; flex-wrap: wrap; }
+.malaya-admin .inv-cell-label { display: none; }
+
+@media (max-width: 1024px) {
+  .malaya-admin .inv-head { display: none; }
+  .malaya-admin .inv-list { border: none; background: none; }
+  .malaya-admin .inv-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+    padding: 14px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(42,37,32,0.18);
+    background: #fbf7ee;
+  }
+  .malaya-admin .inv-cell-item { grid-column: 1 / -1; }
+  .malaya-admin .inv-cell-actions { grid-column: 1 / -1; justify-content: flex-start; border-top: 1px solid rgba(42,37,32,0.1); padding-top: 10px; }
+  .malaya-admin .inv-cell.num { text-align: left; }
+  .malaya-admin .inv-cell-label { display: block; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #7a6f63; margin-bottom: 4px; }
+}
+@media (max-width: 560px) {
+  .malaya-admin .inv-row { grid-template-columns: 1fr; }
+  .malaya-admin .adm-header { padding: 0 14px !important; }
+  .malaya-admin .adm-pad { padding-left: 14px !important; padding-right: 14px !important; }
+}
 @media (max-width: 1100px) {
   .malaya-site .pgrid-4 { grid-template-columns: repeat(3, 1fr); }
   .malaya-site .order-grid { grid-template-columns: 1fr; }
