@@ -11,12 +11,13 @@ import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  CATEGORIES, fmtPrice, siteImg, posFor, HOME_HERO,
+  CATEGORIES, fmtPrice, siteImg, posFor, HOME_HERO, relatedProducts,
 } from '@/lib/data/site-data';
+import { materialFamilyOf } from '@/lib/data/materials';
 import {
   useCart, addToCart, setCartQty, removeFromCart, cartTotal, showToast, useSiteData,
 } from './store';
-import { SiteImg, SiteProductCard, PageBanner, SocialIcon } from './SiteShell';
+import { SiteImg, SiteProductCard, PageBanner, SocialLinks } from './SiteShell';
 
 // The combined catalogue is shown as one long scroll, grouped by category in
 // this fixed order. Some categories are merged into a single section.
@@ -93,16 +94,17 @@ function CatalogueScroll() {
   const { SITE_PRODUCTS } = useSiteData();
   const router = useRouter();
 
-  const sections = useMemo(() => (
-    CATALOGUE_SECTIONS
-      .map((s) => ({ ...s, items: SITE_PRODUCTS.filter((p) => s.cats.includes(p.category)) }))
-      .filter((s) => s.items.length > 0)
-  ), [SITE_PRODUCTS]);
-
   const [active, setActive] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   const [q, setQ] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
+  const [fam, setFam] = useState(''); // '' | 'gold' | 'silver' — metal filter
+
+  const sections = useMemo(() => (
+    CATALOGUE_SECTIONS
+      .map((s) => ({ ...s, items: SITE_PRODUCTS.filter((p) => s.cats.includes(p.category) && (!fam || materialFamilyOf(p.material) === fam)) }))
+      .filter((s) => s.items.length > 0)
+  ), [SITE_PRODUCTS, fam]);
 
   useEffect(() => { if (sections.length && !active) setActive(sections[0].key); }, [sections, active]);
 
@@ -147,8 +149,8 @@ function CatalogueScroll() {
     : [];
   const goToProduct = (id) => { setQ(''); setSearchOpen(false); router.push('/product/' + id); };
 
-  if (!sections.length) return null;
-  const activeLabel = (sections.find((s) => s.key === active) || sections[0]).label;
+  if (!SITE_PRODUCTS.length) return null;
+  const activeLabel = (sections.find((s) => s.key === active) || sections[0] || { label: '' }).label;
 
   return (
     <div className="cat-scroll" id="catalogue">
@@ -170,6 +172,12 @@ function CatalogueScroll() {
                 </div>
               </>
             )}
+          </div>
+          <div className="cat-fam-group" role="group" aria-label="Filter by metal">
+            <button type="button" className={'cat-fam' + (fam === 'gold' ? ' on' : '')}
+              aria-pressed={fam === 'gold'} onClick={() => setFam(fam === 'gold' ? '' : 'gold')}>Gold</button>
+            <button type="button" className={'cat-fam' + (fam === 'silver' ? ' on' : '')}
+              aria-pressed={fam === 'silver'} onClick={() => setFam(fam === 'silver' ? '' : 'silver')}>Silver</button>
           </div>
           <div className="cat-search-wrap">
             <input className="cat-search" type="search" placeholder="Search by name or code…" value={q}
@@ -198,6 +206,11 @@ function CatalogueScroll() {
         </div>
       </div>
 
+      {sections.length === 0 && (
+        <div className="site-container" style={{ padding: '64px 24px', textAlign: 'center', color: 'var(--muted)' }}>
+          No pieces in this metal yet.
+        </div>
+      )}
       {sections.map((s) => (
         <section key={s.key} id={'cat-' + s.key} className="cat-section site-container">
           <h2 className="section-title cat-section-title">{s.label}</h2>
@@ -213,7 +226,7 @@ function CatalogueScroll() {
 
 // ── Product detail ───────────────────────────────────────────────────────────
 export function ProductPage({ id }) {
-  const { SITE_PRODUCTS, SITE_BY_ID, content } = useSiteData();
+  const { SITE_PRODUCTS, SITE_BY_ID, content, settings } = useSiteData();
   const router = useRouter();
   const p = SITE_BY_ID[id];
   const [qty, setQty] = useState(1);
@@ -233,8 +246,9 @@ export function ProductPage({ id }) {
     );
   }
 
-  // Cross-sell within the same category, always excluding the item being viewed.
-  const related = SITE_PRODUCTS.filter((x) => x.category === p.category && x.id !== p.id).slice(0, 4);
+  // Cross-sell by shared motif keywords (Dorje, Syllable, …), falling back to the
+  // same category then anything; always excludes the item being viewed.
+  const related = relatedProducts(p, SITE_PRODUCTS, 4);
   const sold = p.stock === 'Sold out' || p.stock === 'Archived';
 
   // Gallery: every uploaded image, falling back to the single primary photo.
@@ -243,10 +257,11 @@ export function ProductPage({ id }) {
   const heroAlt = images.length > 1 ? images[(Math.min(active, images.length - 1) + 1) % images.length] : null;
   const monogram = (p.productionCode || p.salesCode || p.name || 'M').replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'M';
 
-  // Editable story (admin-saved), split into paragraphs; default Malaya blurb.
+  // Editable story (admin-saved), split into paragraphs; falls back to the global
+  // credit line (admin Content → Product page).
   const story = (p.story && p.story.trim())
     ? p.story.trim().split(/\n\s*\n|\n/).map((s) => s.trim()).filter(Boolean)
-    : ['Designed and crafted by Malaya Jewelry in Thimphu, Bhutan — inspired by the spiritual traditions of the Himalayas.'];
+    : [content.product.credit];
 
   return (
     <main className="malaya-page" data-screen-label={'Product · ' + p.name}>
@@ -258,7 +273,7 @@ export function ProductPage({ id }) {
               ? <SiteImg src={hero} alt={p.name} />
               : <div className="pd-noimg"><span>{monogram}</span></div>}
             {heroAlt && <SiteImg className="pd-alt" src={heroAlt} alt={p.name} />}
-            {p.tashi && <img className="pd-tashi" src={siteImg('tashi.jpg')} alt="Tashi Mannox"
+            {p.tashi && <img className="pd-tashi" src={settings.tashiBadge || siteImg('tashi.jpg')} alt="Tashi Mannox"
               title="Malaya Jewelry Collaboration with Tashi Mannox" />}
           </div>
           {images.length > 1 && (
@@ -404,11 +419,7 @@ export function ContactPage() {
           <h4 className="shop-filter-head">Email</h4>
           <p><a className="contact-link" href={'mailto:' + ct.email}>{ct.email}</a></p>
           <h4 className="shop-filter-head">Follow</h4>
-          <div className="ftr-social ftr-social-dark">
-            <a href={ct.facebook} target="_blank" rel="noreferrer" title="Facebook" aria-label="Facebook"><SocialIcon name="facebook" /></a>
-            <a href={ct.instagram} target="_blank" rel="noreferrer" title="Instagram" aria-label="Instagram"><SocialIcon name="instagram" /></a>
-            <a href={ct.whatsappUrl} target="_blank" rel="noreferrer" title="WhatsApp" aria-label="WhatsApp"><SocialIcon name="whatsapp" /></a>
-          </div>
+          <SocialLinks />
         </div>
         <form className="contact-form" onSubmit={submit}>
           <h2 className="section-title" style={{ textAlign: 'left' }}>Send a Message</h2>

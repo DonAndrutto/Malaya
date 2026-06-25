@@ -23,7 +23,7 @@ export function BasketIcon({ size = 21 }) {
   );
 }
 
-export function SocialIcon({ name, size = 17 }) {
+export function SocialIcon({ name, size = 18 }) {
   if (name === 'facebook') {
     return (
       <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden="true">
@@ -34,10 +34,24 @@ export function SocialIcon({ name, size = 17 }) {
   if (name === 'instagram') {
     return (
       <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor"
-        strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <rect x="3.5" y="3.5" width="17" height="17" rx="4.6" />
         <circle cx="12" cy="12" r="3.7" />
         <circle cx="17.2" cy="6.8" r="0.9" fill="currentColor" stroke="none" />
+      </svg>
+    );
+  }
+  if (name === 'pinterest') {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden="true">
+        <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.748-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12.017 24c6.624 0 11.99-5.367 11.99-11.987C24.007 5.367 18.641.001 12.017.001z" />
+      </svg>
+    );
+  }
+  if (name === 'linktree') {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden="true">
+        <path d="M13.736 5.853l4.005-4.117 2.325 2.38-4.2 4.005h5.908v3.305h-5.937l4.229 4.108-2.325 2.334-5.74-5.769-5.741 5.769-2.325-2.334 4.229-4.108H2.226V8.121h5.909l-4.2-4.005 2.324-2.38 4.005 4.117V0h3.472zM10.264 18.715h3.472V24h-3.472z" />
       </svg>
     );
   }
@@ -46,6 +60,31 @@ export function SocialIcon({ name, size = 17 }) {
     <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden="true">
       <path d="M12 2a10 10 0 0 0-8.53 15.2L2 22l4.92-1.27A10 10 0 1 0 12 2zm0 1.83a8.17 8.17 0 0 1 6.9 12.55l-.2.32.6 2.18-2.24-.59-.31.18A8.17 8.17 0 1 1 12 3.83zM8.9 7.6c-.16 0-.42.06-.64.3-.22.24-.85.83-.85 2.02 0 1.2.87 2.35 1 2.51.12.16 1.7 2.7 4.18 3.68 2.06.81 2.48.65 2.93.6.45-.04 1.43-.58 1.63-1.15.2-.57.2-1.05.14-1.15-.06-.1-.22-.16-.46-.28-.24-.12-1.43-.71-1.65-.79-.22-.08-.38-.12-.54.12-.16.24-.62.79-.76.95-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.93-1.19-.71-.63-1.2-1.42-1.34-1.66-.14-.24-.01-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.47-.4-.4-.54-.41z" />
     </svg>
+  );
+}
+
+// Brand-coloured social row used in the footer and on the Contact page. Reads the
+// admin-editable links from site content; the Linktree icon shows a hover tooltip.
+export function SocialLinks() {
+  const { content } = useSiteData();
+  const ct = content.contact;
+  const links = [
+    { name: 'facebook', url: ct.facebook, label: 'Malaya Jewelry on Facebook' },
+    { name: 'instagram', url: ct.instagram, label: 'Malaya Jewelry on Instagram' },
+    { name: 'whatsapp', url: ct.whatsappUrl, label: 'Chat on WhatsApp' },
+    { name: 'pinterest', url: ct.pinterest, label: 'Malaya Jewelry on Pinterest' },
+    { name: 'linktree', url: ct.linktree, label: 'All Links to Social Media', tip: true },
+  ].filter((l) => l.url);
+  return (
+    <div className="ftr-social">
+      {links.map((l) => (
+        <a key={l.name} className={'soc soc-' + l.name + (l.tip ? ' soc-tip' : '')}
+          href={l.url} target="_blank" rel="noreferrer" title={l.label} aria-label={l.label}
+          data-tip={l.tip ? l.label : undefined}>
+          <SocialIcon name={l.name} size={20} />
+        </a>
+      ))}
+    </div>
   );
 }
 
@@ -73,6 +112,7 @@ export function SiteImg({ src, alt, style, className }) {
 
 // ── Product card — bordered photo, centred name/subtitle (matches live site) ──
 export function SiteProductCard({ p }) {
+  const { settings } = useSiteData();
   const specials = p.specials || [];
   const onSale = p.onSale || specials.includes('sale') || p.tag === 'sale';
   const isNew = specials.includes('new') || p.tag === 'new';
@@ -92,7 +132,7 @@ export function SiteProductCard({ p }) {
           <span className="pcard-label">NEW</span>
         ) : null}
         {p.tashi && (
-          <img className="pcard-tashi" src={siteImg('tashi.jpg')} alt="Tashi Mannox"
+          <img className="pcard-tashi" src={settings.tashiBadge || siteImg('tashi.jpg')} alt="Tashi Mannox"
             title="Malaya Jewelry Collaboration with Tashi Mannox" />
         )}
       </Link>
@@ -166,6 +206,7 @@ export function SiteHeader() {
   const NAV = [
     { label: content.nav.home, path: '/' },
     { label: content.nav.tashi, path: '/tashi' },
+    { label: content.nav.blog, path: '/blog' },
     { label: content.nav.contact, path: '/contact' },
     { label: content.nav.about, path: '/about' },
     { label: content.nav.instagram, href: content.contact.instagram },
@@ -234,11 +275,7 @@ export function SiteFooter() {
         <div className="ftr-col">
           <h4 className="ftr-head">Follow Us</h4>
           <p className="ftr-line">{content.footer.followNote}</p>
-          <div className="ftr-social">
-            <a href={ct.facebook} target="_blank" rel="noreferrer" title="Malaya Jewelry on Facebook" aria-label="Facebook"><SocialIcon name="facebook" /></a>
-            <a href={ct.instagram} target="_blank" rel="noreferrer" title="Malaya Jewelry on Instagram" aria-label="Instagram"><SocialIcon name="instagram" /></a>
-            <a href={ct.whatsappUrl} target="_blank" rel="noreferrer" title="Chat on WhatsApp" aria-label="WhatsApp"><SocialIcon name="whatsapp" /></a>
-          </div>
+          <SocialLinks />
         </div>
       </div>
       <div className="ftr-bottom">
