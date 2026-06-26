@@ -495,7 +495,7 @@ function ItemRow({ r, edited, fieldEdited, commit, onToggleSpecial, onEdit, onDe
         </div>
       </div>
 
-      <div className="inv-cell">
+      <div className="inv-cell inv-cell-material">
         <span className="inv-cell-label">Material</span>
         <select value={MATERIALS.includes(r.material) ? r.material : ''} onChange={(e) => commit(r.key, { material: e.target.value })}
           style={{ width: '100%', maxWidth: 128, background: 'transparent', border: `1px solid ${fieldEdited(r.key, 'material') ? T.accent : T.line}`, color: fieldEdited(r.key, 'material') ? T.accent : T.ink, fontSize: 12, padding: '5px 6px', fontFamily: T.sans, cursor: 'pointer' }}>
@@ -504,23 +504,23 @@ function ItemRow({ r, edited, fieldEdited, commit, onToggleSpecial, onEdit, onDe
         </select>
       </div>
 
-      <div className="inv-cell num"><span className="inv-cell-label">Units</span><NumCell value={r.qty} edited={fieldEdited(r.key, 'qty')} onCommit={(v) => commit(r.key, { qty: v })} width={46} placeholder="—" color={lowQty ? T.accent : T.ink} /></div>
-      <div className="inv-cell num"><span className="inv-cell-label">Cost</span><NumCell value={r.unitCost} edited={fieldEdited(r.key, 'unitCost')} onCommit={(v) => commit(r.key, { unitCost: v })} money placeholder="—" /></div>
-      <div className="inv-cell num"><span className="inv-cell-label">Retail</span><NumCell value={r.retail} edited={fieldEdited(r.key, 'retail')} onCommit={(v) => commit(r.key, { retail: v })} money placeholder="—" /></div>
-      <div className="inv-cell num">
+      <div className="inv-cell num inv-cell-units"><span className="inv-cell-label">Units</span><NumCell value={r.qty} edited={fieldEdited(r.key, 'qty')} onCommit={(v) => commit(r.key, { qty: v })} width={46} placeholder="—" color={lowQty ? T.accent : T.ink} /></div>
+      <div className="inv-cell num inv-cell-cost"><span className="inv-cell-label">Cost</span><NumCell value={r.unitCost} edited={fieldEdited(r.key, 'unitCost')} onCommit={(v) => commit(r.key, { unitCost: v })} money placeholder="—" /></div>
+      <div className="inv-cell num inv-cell-retail"><span className="inv-cell-label">Retail</span><NumCell value={r.retail} edited={fieldEdited(r.key, 'retail')} onCommit={(v) => commit(r.key, { retail: v })} money placeholder="—" /></div>
+      <div className="inv-cell num inv-cell-sale">
         <span className="inv-cell-label">Sale</span>
         <NumCell value={r.salePrice} edited={fieldEdited(r.key, 'salePrice')} onCommit={(v) => commit(r.key, { salePrice: v })} money placeholder="—" />
         {r.onSale && <div style={{ fontSize: 10, color: T.accent, marginTop: 2 }}>−{Math.round((1 - r.salePrice / r.retail) * 100)}%</div>}
       </div>
 
-      <div className="inv-cell">
+      <div className="inv-cell inv-cell-status">
         <span className="inv-cell-label">Status</span>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, color: statusColor, whiteSpace: 'nowrap' }}>
           <span style={{ width: 7, height: 7, borderRadius: '50%', background: statusColor }} />{r.stock}
         </span>
       </div>
 
-      <div className="inv-cell">
+      <div className="inv-cell inv-cell-special">
         <span className="inv-cell-label">Special</span>
         <SpecialsCell value={r.specials} onToggle={onToggleSpecial} />
       </div>

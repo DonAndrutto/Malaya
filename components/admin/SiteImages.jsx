@@ -153,7 +153,8 @@ export default function SiteImages() {
       )}
 
       <h3 style={{ ...headStyle, marginTop: 24, color: T.muted }}>Brand</h3>
-      {single({ k: 'logo', label: 'Header logo', hint: 'Shown in the site header.', folder: 'site/logo', current: settings.logo, fallback: siteImg('logo.png') })}
+      {single({ k: 'logo', label: 'Header logo', hint: 'Shown in the site header. A transparent PNG keeps its transparency.', folder: 'site/logo', current: settings.logo, fallback: siteImg('logo.png') })}
+      {single({ k: 'tashiBadge', label: 'Tashi Mannox badge', hint: 'Corner badge on collaboration pieces (catalogue cards & product pages). Transparent PNG recommended.', folder: 'site/tashi', current: settings.tashiBadge, fallback: siteImg('tashi.jpg') })}
 
       <h3 style={{ ...headStyle, marginTop: 24, color: T.muted }}>Home hero slideshow</h3>
       <div style={card}>

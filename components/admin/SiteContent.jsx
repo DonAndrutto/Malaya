@@ -31,6 +31,7 @@ const SECTIONS = [
     ['Home', ['nav', 'home'], 'text'],
     ['Catalogue', ['nav', 'catalogue'], 'text'],
     ['Tashi Mannox', ['nav', 'tashi'], 'text'],
+    ['Blog', ['nav', 'blog'], 'text'],
     ['Contact', ['nav', 'contact'], 'text'],
     ['About', ['nav', 'about'], 'text'],
     ['Instagram (nav label)', ['nav', 'instagram'], 'text'],
@@ -69,6 +70,9 @@ const SECTIONS = [
     ['Intro — blank line between paragraphs', ['tashi', 'intro'], 'paras'],
     ['Products section title', ['tashi', 'productsTitle'], 'text'],
   ]],
+  ['Product page', [
+    ['Default credit line — shown on items without their own Story', ['product', 'credit'], 'area'],
+  ]],
   ['Mega-menu promo', [
     ['Title', ['mega', 'promoTitle'], 'text'],
     ['Description', ['mega', 'promoDesc'], 'area'],
@@ -86,6 +90,8 @@ const SECTIONS = [
     ['Email', ['contact', 'email'], 'text'],
     ['Facebook URL', ['contact', 'facebook'], 'text'],
     ['Instagram URL', ['contact', 'instagram'], 'text'],
+    ['Pinterest URL', ['contact', 'pinterest'], 'text'],
+    ['Linktree URL', ['contact', 'linktree'], 'text'],
   ]],
   ['Legal pages', [
     ['Privacy Policy — title', ['legal', 'privacy', 'title'], 'text'],

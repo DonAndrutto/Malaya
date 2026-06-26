@@ -8,6 +8,7 @@ import { signIn, signOutUser, subscribeAuth, friendlyAuthError } from '@/lib/aut
 import Inventory from './Inventory';
 import SiteContent from './SiteContent';
 import SiteImages from './SiteImages';
+import BlogAdmin from './BlogAdmin';
 
 const SESSION_KEY = 'malaya:admin:session';
 
@@ -95,7 +96,7 @@ function Console({ user, onLogout }) {
     try { localStorage.setItem('malaya:admin:tab', tab); } catch {}
   }, [tab]);
 
-  const TABS = [['inventory', 'Inventory'], ['content', 'Content'], ['site', 'Site images']];
+  const TABS = [['inventory', 'Inventory'], ['content', 'Content'], ['site', 'Site images'], ['blog', 'Blog']];
   const tabBtn = (active) => ({ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: T.sans, fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', padding: '6px 2px', color: active ? T.ink : T.muted, borderBottom: `2px solid ${active ? T.accent : 'transparent'}` });
 
   return (
@@ -116,6 +117,7 @@ function Console({ user, onLogout }) {
       {tab === 'inventory' && <Inventory overrides={overrides} setOverrides={update} />}
       {tab === 'content' && <SiteContent />}
       {tab === 'site' && <SiteImages />}
+      {tab === 'blog' && <BlogAdmin />}
     </div>
   );
 }

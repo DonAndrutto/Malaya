@@ -99,6 +99,10 @@ button, input, select { font-family: inherit; }
 .malaya-site .cat-current { display: inline-flex; align-items: center; gap: 10px; background: transparent; border: 1px solid rgba(243,236,224,.34); color: #f3ece0; font-family: 'Raleway', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: .04em; padding: 9px 16px; cursor: pointer; transition: border-color .2s, background .2s; }
 .malaya-site .cat-current:hover { border-color: #f3ece0; background: rgba(255,255,255,.06); }
 .malaya-site .cat-caret { font-size: 10px; opacity: .8; }
+.malaya-site .cat-fam-group { display: inline-flex; gap: 8px; flex: none; }
+.malaya-site .cat-fam { background: transparent; border: 1px solid rgba(243,236,224,.34); color: #f3ece0; font-family: 'Raleway', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: .04em; padding: 9px 16px; cursor: pointer; transition: border-color .2s, background .2s, color .2s; }
+.malaya-site .cat-fam:hover { border-color: #f3ece0; background: rgba(255,255,255,.06); }
+.malaya-site .cat-fam.on { background: var(--gold); border-color: var(--gold); color: #fff; }
 .malaya-site .cat-overlay { position: fixed; inset: 0; z-index: 35; background: transparent; }
 .malaya-site .cat-menu { position: absolute; top: calc(100% + 6px); left: 0; min-width: 232px; background: #fff; border: 1px solid var(--line); box-shadow: 0 18px 40px rgba(0,0,0,.18); z-index: 40; padding: 6px; }
 .malaya-site .cat-menu-item { display: flex; align-items: center; justify-content: space-between; gap: 14px; width: 100%; background: transparent; border: none; cursor: pointer; text-align: left; font-size: 13px; letter-spacing: .02em; color: #444; padding: 9px 12px; font-family: 'Poppins', sans-serif; }
@@ -111,7 +115,7 @@ button, input, select { font-family: inherit; }
 .malaya-site .cat-search-results { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: #fff; border: 1px solid var(--line); box-shadow: 0 18px 40px rgba(0,0,0,.18); z-index: 40; max-height: 60vh; overflow: auto; }
 .malaya-site .cat-search-row { display: flex; align-items: center; gap: 12px; width: 100%; background: transparent; border: none; border-bottom: 1px solid #f0f0f0; cursor: pointer; text-align: left; padding: 8px 12px; }
 .malaya-site .cat-search-row:hover { background: #f6f1e8; }
-.malaya-site .cat-search-row img, .malaya-site .cat-search-noimg { width: 44px; height: 44px; object-fit: cover; border: 1px solid var(--line); flex: none; background: #f4eee3; }
+.malaya-site .cat-search-row img, .malaya-site .cat-search-noimg { width: 44px; height: 44px; object-fit: cover; border: 1px solid var(--line); flex: none; background: #fff; }
 .malaya-site .cat-search-text { display: flex; flex-direction: column; min-width: 0; }
 .malaya-site .cat-search-name { font-size: 13px; color: #222; line-height: 1.35; }
 .malaya-site .cat-search-sub { font-size: 11.5px; color: var(--muted); line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -127,7 +131,7 @@ button, input, select { font-family: inherit; }
 .malaya-site .pcard-thumb img:first-child { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; transition: transform .5s; }
 .malaya-site .pcard-thumb .pcard-alt { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .4s; }
 .malaya-site .pcard:hover .pcard-thumb .pcard-alt { opacity: 1; }
-.malaya-site .pcard-noimg { width: 100%; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; background: #f4eee3; color: var(--muted); font-family: "Cormorant Garamond", "Times New Roman", serif; font-size: 40px; letter-spacing: .1em; }
+.malaya-site .pcard-noimg { width: 100%; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; background: #fff; color: var(--muted); font-family: "Cormorant Garamond", "Times New Roman", serif; font-size: 40px; letter-spacing: .1em; }
 .malaya-site .pcard:hover .pcard-thumb img:first-child { transform: scale(1.04); }
 .malaya-site .pcard-label { position: absolute; top: 12px; left: 12px; background: var(--brown); color: #fff; font-size: 9.5px; letter-spacing: .2em; padding: 4px 10px; }
 .malaya-site .pcard-label-sale { background: #a4502b; }
@@ -164,7 +168,7 @@ button, input, select { font-family: inherit; }
 .malaya-site .pd-photo .pd-alt { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .4s; }
 .malaya-site .pd-photo:hover .pd-alt { opacity: 1; }
 .malaya-site .pd-tashi { position: absolute; left: 16px; bottom: 16px; width: 64px; border: 1px solid var(--line); }
-.malaya-site .pd-noimg { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; background: #f4eee3; color: var(--muted); }
+.malaya-site .pd-noimg { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; background: #fff; color: var(--muted); }
 .malaya-site .pd-noimg span { font-size: 64px; font-family: "Cormorant Garamond", "Times New Roman", serif; letter-spacing: .12em; }
 .malaya-site .pd-thumbs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 .malaya-site .pd-thumb { width: 74px; height: 74px; padding: 0; border: 1px solid var(--line); background: #fff; cursor: pointer; overflow: hidden; }
@@ -244,14 +248,67 @@ button, input, select { font-family: inherit; }
 .malaya-site .ftr-line a { color: var(--gold); }
 .malaya-site .ftr-link { display: block; padding: 3.5px 0; font-size: 13.5px; color: #666; }
 .malaya-site .ftr-link:hover { color: var(--gold); }
-.malaya-site .ftr-social { display: flex; gap: 10px; margin-top: 14px; }
-.malaya-site .ftr-social a { width: 38px; height: 38px; border: 1px solid #d8d2c8; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: #8a8275; }
-.malaya-site .ftr-social a:hover { border-color: var(--gold); color: var(--gold); }
-.malaya-site .ftr-social a svg { display: block; }
+.malaya-site .ftr-social { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+.malaya-site .ftr-social .soc { position: relative; width: 44px; height: 44px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.14); transition: transform .18s ease, box-shadow .18s ease, filter .18s ease; }
+.malaya-site .ftr-social .soc:hover { transform: translateY(-3px); box-shadow: 0 9px 20px rgba(0,0,0,.22); filter: saturate(1.08); }
+.malaya-site .ftr-social .soc svg { display: block; }
+.malaya-site .ftr-social .soc-facebook { background: #1877F2; }
+.malaya-site .ftr-social .soc-instagram { background: radial-gradient(circle at 28% 108%, #FED576 0%, #F47133 28%, #BC3081 62%, #4C63D2 100%); }
+.malaya-site .ftr-social .soc-whatsapp { background: #25D366; }
+.malaya-site .ftr-social .soc-pinterest { background: #E60023; }
+.malaya-site .ftr-social .soc-linktree { background: #43E660; color: #1A2E05; }
+.malaya-site .ftr-social .soc-tip::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translateX(-50%) translateY(4px); background: #1d1d1d; color: #fff; font-size: 10.5px; letter-spacing: .03em; white-space: nowrap; padding: 6px 10px; border-radius: 4px; opacity: 0; pointer-events: none; transition: opacity .18s ease, transform .18s ease; z-index: 5; }
+.malaya-site .ftr-social .soc-tip:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
 .malaya-site .ftr-bottom { border-top: 1px solid var(--line); padding: 16px 0; }
 .malaya-site .ftr-bottom .site-container { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
 #site-toast { position: fixed; bottom: 28px; left: 50%; transform: translate(-50%, 16px); background: #1d1d1d; color: #fff; font-size: 13px; letter-spacing: .06em; padding: 13px 26px; opacity: 0; pointer-events: none; transition: all .25s; z-index: 200; }
 #site-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ── Blog (magazine grid + article) ────────────────────────────────────────── */
+.malaya-site .blog-wrap { padding-top: 48px; padding-bottom: 72px; }
+.malaya-site .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 34px 26px; }
+.malaya-site .blog-card { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); transition: box-shadow .25s ease, transform .25s ease; }
+.malaya-site .blog-card:hover { box-shadow: 0 14px 30px rgba(59,35,26,.12); transform: translateY(-2px); }
+.malaya-site .blog-card-thumb { display: block; aspect-ratio: 3 / 2; overflow: hidden; background: #faf8f5; }
+.malaya-site .blog-card-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s ease; }
+.malaya-site .blog-card:hover .blog-card-thumb img { transform: scale(1.04); }
+.malaya-site .blog-card-noimg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--gold); font-family: 'Raleway', sans-serif; font-size: 30px; letter-spacing: .2em; }
+.malaya-site .blog-card-body { padding: 18px 20px 22px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.malaya-site .blog-card-date { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+.malaya-site .blog-card-title { font-family: 'Raleway', sans-serif; font-size: 20px; font-weight: 600; color: var(--brown); line-height: 1.3; }
+.malaya-site .blog-card:hover .blog-card-title { color: var(--gold); }
+.malaya-site .blog-card-excerpt { font-size: 13.5px; color: #666; line-height: 1.7; }
+.malaya-site .blog-empty { text-align: center; color: var(--muted); padding: 64px 0; }
+.malaya-site .blog-hero { width: 100%; aspect-ratio: 16 / 6; object-fit: cover; display: block; }
+.malaya-site .blog-article { max-width: 760px; margin: 0 auto; padding: 40px 24px 72px; }
+.malaya-site .blog-meta { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.malaya-site .blog-title { font-size: 38px; font-weight: 700; color: var(--brown); line-height: 1.2; margin-bottom: 8px; text-wrap: pretty; }
+.malaya-site .blog-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 26px; }
+.malaya-site .blog-tags span { font-size: 11px; letter-spacing: .08em; border: 1px solid var(--line); padding: 4px 11px; color: #777; border-radius: 999px; }
+.malaya-site .blog-back { display: inline-block; margin-top: 30px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+
+/* Rendered Markdown typography */
+.malaya-site .md-content { color: #444; font-size: 15.5px; line-height: 1.85; }
+.malaya-site .md-content > *:first-child { margin-top: 0; }
+.malaya-site .md-content h1, .malaya-site .md-content h2, .malaya-site .md-content h3, .malaya-site .md-content h4 { font-family: 'Raleway', sans-serif; color: var(--brown); line-height: 1.3; margin: 1.8em 0 .55em; scroll-margin-top: 92px; }
+.malaya-site .md-content h1 { font-size: 30px; font-weight: 700; }
+.malaya-site .md-content h2 { font-size: 25px; font-weight: 600; }
+.malaya-site .md-content h3 { font-size: 20px; font-weight: 600; }
+.malaya-site .md-content h4 { font-size: 16px; font-weight: 600; letter-spacing: .02em; }
+.malaya-site .md-content p { margin: 0 0 1.1em; }
+.malaya-site .md-content a { color: var(--gold); border-bottom: 1px solid rgba(176,141,87,.4); transition: border-color .18s; }
+.malaya-site .md-content a:hover { border-bottom-color: var(--gold); }
+.malaya-site .md-content ul, .malaya-site .md-content ol { margin: 0 0 1.1em; padding-left: 1.4em; }
+.malaya-site .md-content li { margin: .35em 0; }
+.malaya-site .md-content blockquote { margin: 1.4em 0; padding: 4px 20px; border-left: 3px solid var(--gold); color: #666; font-style: italic; }
+.malaya-site .md-content img { display: block; max-width: 100%; height: auto; margin: 1.6em auto; }
+.malaya-site .md-content hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
+.malaya-site .md-content code { background: #f4eee3; padding: 2px 6px; border-radius: 3px; font-size: .9em; font-family: ui-monospace, Menlo, Consolas, monospace; }
+.malaya-site .md-content pre { background: #2a2520; color: #f3ece0; padding: 16px 18px; overflow: auto; border-radius: 6px; margin: 1.4em 0; }
+.malaya-site .md-content pre code { background: none; padding: 0; color: inherit; }
+.malaya-site .md-content table { border-collapse: collapse; width: 100%; margin: 1.4em 0; font-size: 14px; }
+.malaya-site .md-content th, .malaya-site .md-content td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; }
+.malaya-site .md-content th { background: #faf8f5; }
 
 /* ─────────────────────────────────────────────────────────────────────────
    Admin studio console — responsive unified Inventory grid. Scoped under
@@ -283,24 +340,50 @@ button, input, select { font-family: inherit; }
 .malaya-admin .inv-cell-actions { display: flex; gap: 6px; justify-content: flex-end; align-items: center; flex-wrap: wrap; }
 .malaya-admin .inv-cell-label { display: none; }
 
+/* Mobile: a compact multi-line card that keeps every field visible & editable in
+   far less vertical space than one-cell-per-line. Cells are placed with named
+   grid areas (classes added in Inventory.jsx ItemRow). */
 @media (max-width: 1024px) {
   .malaya-admin .inv-head { display: none; }
   .malaya-admin .inv-list { border: none; background: none; }
   .malaya-admin .inv-row {
-    grid-template-columns: 1fr 1fr;
-    gap: 10px 16px;
-    padding: 14px;
-    margin-bottom: 10px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-areas:
+      "item item item item"
+      "material material status special"
+      "units cost retail sale"
+      "actions actions actions actions";
+    gap: 8px 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
     border: 1px solid rgba(42,37,32,0.18);
     background: #fbf7ee;
   }
-  .malaya-admin .inv-cell-item { grid-column: 1 / -1; }
-  .malaya-admin .inv-cell-actions { grid-column: 1 / -1; justify-content: flex-start; border-top: 1px solid rgba(42,37,32,0.1); padding-top: 10px; }
+  .malaya-admin .inv-cell-item { grid-area: item; }
+  .malaya-admin .inv-cell-material { grid-area: material; }
+  .malaya-admin .inv-cell-status { grid-area: status; }
+  .malaya-admin .inv-cell-special { grid-area: special; }
+  .malaya-admin .inv-cell-units { grid-area: units; }
+  .malaya-admin .inv-cell-cost { grid-area: cost; }
+  .malaya-admin .inv-cell-retail { grid-area: retail; }
+  .malaya-admin .inv-cell-sale { grid-area: sale; }
+  .malaya-admin .inv-cell-actions { grid-area: actions; justify-content: flex-start; border-top: 1px solid rgba(42,37,32,0.1); padding-top: 9px; margin-top: 2px; }
   .malaya-admin .inv-cell.num { text-align: left; }
-  .malaya-admin .inv-cell-label { display: block; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #7a6f63; margin-bottom: 4px; }
+  .malaya-admin .inv-cell-material select { max-width: none; width: 100%; }
+  .malaya-admin .inv-cell-label { display: block; font-size: 8.5px; letter-spacing: .14em; text-transform: uppercase; color: #7a6f63; margin-bottom: 3px; }
 }
 @media (max-width: 560px) {
-  .malaya-admin .inv-row { grid-template-columns: 1fr; }
+  /* Roomier 2-column metrics so number inputs stay tappable on a phone. */
+  .malaya-admin .inv-row {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "item item"
+      "material material"
+      "units cost"
+      "retail sale"
+      "status special"
+      "actions actions";
+  }
   .malaya-admin .adm-header { padding: 0 14px !important; }
   .malaya-admin .adm-pad { padding-left: 14px !important; padding-right: 14px !important; }
 }
@@ -311,6 +394,7 @@ button, input, select { font-family: inherit; }
 @media (max-width: 880px) {
   .malaya-site .home-tiles { grid-template-columns: repeat(2, 1fr); }
   .malaya-site .pgrid-3, .malaya-site .pgrid-4 { grid-template-columns: repeat(2, 1fr); }
+  .malaya-site .blog-grid { grid-template-columns: repeat(2, 1fr); }
   .malaya-site .shop-layout, .malaya-site .pd-layout, .malaya-site .tashi-intro, .malaya-site .contact-layout { grid-template-columns: 1fr; }
   .malaya-site .ftr-cols { grid-template-columns: 1fr; gap: 30px; }
   /* Header collapses to two rows: logo + cart, then the nav centred below. */
@@ -327,8 +411,11 @@ button, input, select { font-family: inherit; }
   .malaya-site .cat-current-wrap { width: 100%; }
   .malaya-site .cat-current { width: 100%; justify-content: space-between; }
   .malaya-site .cat-search-wrap { max-width: none; width: 100%; margin-left: 0; }
-  .malaya-site .cat-section { padding-top: 30px; scroll-margin-top: 128px; }
+  .malaya-site .cat-section { padding-top: 30px; scroll-margin-top: 170px; }
   .malaya-site .section-title { font-size: 24px; }
+  .malaya-site .blog-grid { grid-template-columns: 1fr; }
+  .malaya-site .cat-fam-group { width: 100%; }
+  .malaya-site .cat-fam { flex: 1; text-align: center; }
 }
 @media (max-width: 380px) {
   .malaya-site .site-container { padding: 0 10px; }
