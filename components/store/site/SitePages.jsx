@@ -11,7 +11,7 @@ import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  CATEGORIES, fmtPrice, siteImg, posFor, HOME_HERO, relatedProducts,
+  CATEGORIES, fmtPrice, posFor, bgImage, HOME_HERO, HOME_TILES, relatedProducts, whatsappUrlFor,
 } from '@/lib/data/site-data';
 import { materialFamilyOf } from '@/lib/data/materials';
 import {
@@ -35,6 +35,8 @@ const CATALOGUE_SECTIONS = [
 const CATEGORY_TO_SECTION = {};
 CATALOGUE_SECTIONS.forEach((s) => s.cats.forEach((c) => { CATEGORY_TO_SECTION[c] = s.key; }));
 const sectionAnchor = (cat) => `/#cat-${CATEGORY_TO_SECTION[cat] || cat}`;
+// Built-in fallback tile image per category (admin can override via settings.homeTiles).
+const HOME_TILE_IMG = Object.fromEntries(HOME_TILES.map((t) => [t.cat, t.img]));
 
 // ── Home ─────────────────────────────────────────────────────────────────────
 function HeroSlider({ slides, settings, content }) {
@@ -47,7 +49,7 @@ function HeroSlider({ slides, settings, content }) {
     <div className="hero">
       {slides.map((src, i) => (
         <div key={src + i} className={'hero-slide' + (i === idx ? ' on' : '')}
-          style={{ backgroundImage: `url(${src})`, backgroundPosition: posFor(settings, src) }} />
+          style={{ backgroundImage: bgImage(src), backgroundPosition: posFor(settings, src) }} />
       ))}
       <div className="hero-overlay">
         <h2 className="hero-title">{content.hero.title}</h2>
@@ -69,14 +71,14 @@ function HeroSlider({ slides, settings, content }) {
 export function HomePage() {
   const { settings, content } = useSiteData();
   const slides = settings.heroSlides && settings.heroSlides.length ? settings.heroSlides : HOME_HERO;
-  const homeBannerSrc = settings.homeBanner || siteImg('banner12.jpg');
+  const homeBannerSrc = settings.homeBanner || null;
   return (
     <main className="malaya-page" data-screen-label="Home">
       <HeroSlider slides={slides} settings={settings} content={content} />
 
       <CatalogueScroll />
 
-      <section className="home-banner" style={{ backgroundImage: `url(${homeBannerSrc})`, backgroundPosition: posFor(settings, homeBannerSrc) }}>
+      <section className="home-banner" style={{ backgroundImage: bgImage(homeBannerSrc), backgroundPosition: posFor(settings, homeBannerSrc) }}>
         <div className="home-banner-inner">
           <h2>{content.home.bannerTitle}</h2>
           <a className="btn-malaya btn-malaya-light" href="#catalogue">{content.home.bannerCta}</a>
@@ -238,7 +240,7 @@ export function ProductPage({ id }) {
   if (!p) {
     return (
       <main className="malaya-page" data-screen-label="Product not found">
-        <PageBanner title="Not found" subtitle="Malaya Jewelry" />
+        <PageBanner title="Not found" subtitle="Malaya Jewellery" />
         <div className="site-container" style={{ padding: '60px 24px' }}>
           <p>This item could not be found. <Link href="/">Back to the catalogue.</Link></p>
         </div>
@@ -251,10 +253,28 @@ export function ProductPage({ id }) {
   const related = relatedProducts(p, SITE_PRODUCTS, 4);
   const sold = p.stock === 'Sold out' || p.stock === 'Archived';
 
+  // "Order Now" banner background (shared with the home page banner) and the
+  // "Explore <category>" tile image (admin Home category tiles → fallbacks).
+  // All Firebase-hosted via settings; null when unset (no external CDN).
+  const orderBannerSrc = settings.homeBanner || null;
+  const exploreImg = (settings.homeTiles && settings.homeTiles[p.category])
+    || HOME_TILE_IMG[p.category]
+    || (settings.categoryBanners && settings.categoryBanners[p.category])
+    || settings.pageBanner || null;
+
+  // WhatsApp enquiry pre-filled with this item (name, code and its URL).
+  const waText = `Hi, I contacted you through Malaya Jewellery website. I'd like to ask about ${p.name}`
+    + `${p.salesCode ? ` (${p.salesCode})` : ''}.`
+    + (typeof window !== 'undefined' ? ` ${window.location.href}` : '');
+  const waUrl = whatsappUrlFor(content.contact.whatsapp, waText);
+
   // Gallery: every uploaded image, falling back to the single primary photo.
   const images = (p.images && p.images.length) ? p.images : (p.img ? [p.img] : []);
   const hero = images[Math.min(active, images.length - 1)] || images[0] || null;
-  const heroAlt = images.length > 1 ? images[(Math.min(active, images.length - 1) + 1) % images.length] : null;
+  // Hover/tap "peek the second photo" only applies to the default (first) view —
+  // catalogue-style. Once a thumbnail is picked, the chosen photo stays put so a
+  // tap reveals exactly that image, never the next one.
+  const heroAlt = (active === 0 && images.length > 1) ? images[1] : null;
   const monogram = (p.productionCode || p.salesCode || p.name || 'M').replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'M';
 
   // Editable story (admin-saved), split into paragraphs; falls back to the global
@@ -273,8 +293,8 @@ export function ProductPage({ id }) {
               ? <SiteImg src={hero} alt={p.name} />
               : <div className="pd-noimg"><span>{monogram}</span></div>}
             {heroAlt && <SiteImg className="pd-alt" src={heroAlt} alt={p.name} />}
-            {p.tashi && <img className="pd-tashi" src={settings.tashiBadge || siteImg('tashi.jpg')} alt="Tashi Mannox"
-              title="Malaya Jewelry Collaboration with Tashi Mannox" />}
+            {p.tashi && settings.tashiBadge && <img className="pd-tashi" src={settings.tashiBadge} alt="Tashi Mannox"
+              title="Malaya Jewellery Collaboration with Tashi Mannox" />}
           </div>
           {images.length > 1 && (
             <div className="pd-thumbs">
@@ -312,20 +332,41 @@ export function ProductPage({ id }) {
           <div className="pd-story">
             {story.map((para, i) => <p key={i} className="pd-desc">{para}</p>)}
           </div>
-          <div className="pd-buy">
-            <div className="pd-qty">
-              <button onClick={() => setQty(Math.max(1, qty - 1))}>−</button>
-              <span>{qty}</span>
-              <button onClick={() => setQty(qty + 1)}>+</button>
-            </div>
-            <button className="btn-malaya" disabled={sold}
-              onClick={() => addToCart(p.id, qty)}>{sold ? 'Sold Out' : 'Add to Order'}</button>
-          </div>
-          <a className="pd-whatsapp" href={content.contact.whatsappUrl} target="_blank" rel="noreferrer">
+          <a className="pd-whatsapp" href={waUrl} target="_blank" rel="noreferrer">
             Ask about this piece on WhatsApp →
           </a>
         </div>
       </div>
+
+      <section className="pd-order-banner" style={{ backgroundImage: bgImage(orderBannerSrc), backgroundPosition: posFor(settings, orderBannerSrc) }}>
+        <div className="pd-order-card">
+          <div className="pd-order-head">
+            <span className="pd-order-kicker">Order Now</span>
+            <span className="pd-order-price">
+              {p.onSale && <s>{fmtPrice(p.listPrice)}</s>}
+              <strong>{fmtPrice(p.price)}</strong>
+            </span>
+          </div>
+          <div className="pd-order-buy">
+            <div className="pd-qty">
+              <button type="button" aria-label="Decrease quantity" onClick={() => setQty(Math.max(1, qty - 1))}>−</button>
+              <span>{qty}</span>
+              <button type="button" aria-label="Increase quantity" onClick={() => setQty(qty + 1)}>+</button>
+            </div>
+            <button className="btn-malaya" disabled={sold}
+              onClick={() => addToCart(p.id, qty)}>{sold ? 'Sold Out' : 'Add to Order'}</button>
+          </div>
+        </div>
+      </section>
+
+      <Link className="pd-explore" href={sectionAnchor(p.category)}
+        style={{ backgroundImage: bgImage(exploreImg), backgroundPosition: posFor(settings, exploreImg) }}>
+        <span className="pd-explore-inner">
+          <em className="pd-explore-kicker">Discover more</em>
+          <strong className="pd-explore-title">Explore {p.category}</strong>
+        </span>
+      </Link>
+
       {related.length > 0 && (
         <section className="site-container pd-related">
           <h2 className="section-title">You May Also Like</h2>
@@ -353,7 +394,7 @@ export function TashiPage() {
           {content.tashi.intro.map((para, i) => <p key={i} className="tashi-para">{para}</p>)}
         </div>
         <div className="tashi-photo">
-          <SiteImg src={settings.tashiPhoto || siteImg('Tashi-Mannox.jpg')} alt={content.tashi.name} />
+          <SiteImg src={settings.tashiPhoto || null} alt={content.tashi.name} />
         </div>
       </div>
       <section className="site-container tashi-products">
@@ -373,7 +414,7 @@ export function AboutPage() {
   const about = content.about;
   return (
     <main className="malaya-page" data-screen-label="About">
-      <PageBanner title={content.banners.about.title} subtitle={content.banners.about.subtitle} img={settings.aboutBanner || siteImg('banner31.jpg')} />
+      <PageBanner title={content.banners.about.title} subtitle={content.banners.about.subtitle} img={settings.aboutBanner || null} />
       <article className="site-container about-article">
         <p className="about-date">{about.date}</p>
         <h1 className="about-title">{about.title}</h1>
@@ -382,12 +423,7 @@ export function AboutPage() {
           {CATEGORIES.map((c) => <Link key={c} href={sectionAnchor(c)}>{c}</Link>)}
         </div>
         <p className="about-from">{about.from}</p>
-        <p className="about-para">{about.body[0]}</p>
-        <figure className="about-figure">
-          <SiteImg src={siteImg('malaya-jewelry-hand-craft.jpg')} alt="Malaya Jewelry hand craft" />
-          <figcaption>{about.caption}</figcaption>
-        </figure>
-        {about.body.slice(1).map((para, i) => <p key={i} className="about-para">{para}</p>)}
+        {about.body.map((para, i) => <p key={i} className="about-para">{para}</p>)}
       </article>
     </main>
   );
@@ -402,7 +438,7 @@ export function ContactPage() {
   const submit = (e) => {
     e.preventDefault();
     const body = encodeURIComponent(form.message + '\n\n— ' + form.name + ' (' + form.email + ')');
-    window.open('mailto:' + ct.email + '?subject=' + encodeURIComponent('Malaya Jewelry enquiry') + '&body=' + body);
+    window.open('mailto:' + ct.email + '?subject=' + encodeURIComponent('Malaya Jewellery enquiry') + '&body=' + body);
     showToast('Opening your email app…');
   };
   return (
@@ -503,7 +539,7 @@ export function PolicyPage({ slug }) {
   if (!data) {
     return (
       <main className="malaya-page" data-screen-label="Policy not found">
-        <PageBanner title="Not found" subtitle="Malaya Jewelry" />
+        <PageBanner title="Not found" subtitle="Malaya Jewellery" />
         <div className="site-container" style={{ padding: '60px 24px' }}>
           <p>This page could not be found. <Link href="/">Back to the home page.</Link></p>
         </div>
@@ -512,7 +548,7 @@ export function PolicyPage({ slug }) {
   }
   return (
     <main className="malaya-page" data-screen-label={'Policy · ' + data.title}>
-      <PageBanner title={data.title} subtitle="Malaya Jewelry" />
+      <PageBanner title={data.title} subtitle="Malaya Jewellery" />
       <article className="site-container about-article">
         <h1 className="about-title">{data.title}</h1>
         {data.body.map((para, i) => <p key={i} className="about-para">{para}</p>)}

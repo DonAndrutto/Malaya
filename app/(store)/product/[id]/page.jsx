@@ -8,8 +8,8 @@ export function generateMetadata({ params }) {
   const name = p ? p.name : (row ? row.name : null);
   const sub = p ? p.sub : (row ? row.material : '');
   return {
-    title: (name || 'Product') + ' · Malaya Jewelry',
-    description: name ? `${name}${sub ? ' — ' + sub : ''}. Handcrafted by Malaya Jewelry in Bhutan.` : undefined,
+    title: (name || 'Product') + ' · Malaya Jewellery',
+    description: name ? `${name}${sub ? ' — ' + sub : ''}. Handcrafted by Malaya Jewellery in Bhutan.` : undefined,
   };
 }
 

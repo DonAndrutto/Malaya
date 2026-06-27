@@ -10,8 +10,8 @@ const TITLES = {
 export function generateMetadata({ params }) {
   const title = TITLES[params.slug] || 'Policy';
   return {
-    title: title + ' · Malaya Jewelry',
-    description: `${title} — Malaya Jewelry, handcrafted Buddhist jewellery from Bhutan.`,
+    title: title + ' · Malaya Jewellery',
+    description: `${title} — Malaya Jewellery, handcrafted Buddhist jewellery from Bhutan.`,
   };
 }
 
