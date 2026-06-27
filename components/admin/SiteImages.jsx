@@ -15,6 +15,9 @@ import { uploadImage } from '@/lib/upload';
 import { resizeImageFile } from '@/lib/image-resize';
 import { FIREBASE_ENABLED } from '@/lib/firebase';
 
+// Built-in fallback image for the original category tiles (Rings, Bracelets, …).
+const TILE_DEFAULTS = Object.fromEntries(HOME_TILES.map((t) => [t.cat, t.img]));
+
 const card = { background: T.panel, border: `1px solid ${T.line}`, padding: 20, marginBottom: 16 };
 const thumbBox = { width: 92, height: 92, flexShrink: 0, background: T.card, border: `1px solid ${T.line2}`, overflow: 'hidden' };
 const thumbImg = { width: '100%', height: '100%', objectFit: 'cover', display: 'block' };
@@ -179,16 +182,21 @@ export default function SiteImages() {
       </div>
 
       <h3 style={{ ...headStyle, marginTop: 24, color: T.muted }}>Home category tiles</h3>
+      <p style={{ fontSize: 12, color: T.muted, margin: '0 0 12px' }}>
+        One image per category, reused as the &ldquo;Explore&rdquo; tile at the foot of every product page in that category.
+      </p>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: 14, marginBottom: 16 }}>
-        {HOME_TILES.map((t) => {
-          const cur = tileUrl(t.cat);
+        {CATEGORIES.map((cat) => {
+          const cur = tileUrl(cat);
+          const preview = cur || TILE_DEFAULTS[cat] || null;
           return (
-            <div key={t.cat} style={{ border: `1px solid ${T.line}`, padding: 12, background: T.panel }}>
-              <FocalPicker url={cur || t.img} aspect="3 / 4" pos={posOf(cur || t.img)} onChange={(v) => setPos(cur || t.img, v)} />
-              <div style={{ fontSize: 12, fontWeight: 600, color: T.ink, margin: '10px 0 8px' }}>{t.title}</div>
+            <div key={cat} style={{ border: `1px solid ${T.line}`, padding: 12, background: T.panel }}>
+              <FocalPicker url={preview} aspect="3 / 4" pos={posOf(preview)} onChange={(v) => setPos(preview, v)} />
+              <div style={{ fontSize: 12, fontWeight: 600, color: T.ink, margin: '10px 0 4px' }}>{cat}</div>
+              <div style={{ fontSize: 10.5, color: cur ? T.good : T.faint, marginBottom: 8 }}>{cur ? 'Custom image set' : (TILE_DEFAULTS[cat] ? 'Using default' : 'No image yet')}</div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                <PickButton label={cur ? 'Replace' : 'Upload'} busy={busy === `tile-${t.cat}`} onFile={(f) => upload(`tile-${t.cat}`, 'site/tiles', f, (url) => setTile(t.cat, url))} />
-                {cur && <button onClick={() => resetTile(t.cat)} style={linkBtn}>Reset</button>}
+                <PickButton label={cur ? 'Replace' : 'Upload'} busy={busy === `tile-${cat}`} onFile={(f) => upload(`tile-${cat}`, 'site/tiles', f, (url) => setTile(cat, url))} />
+                {cur && <button onClick={() => resetTile(cat)} style={linkBtn}>Reset</button>}
               </div>
             </div>
           );

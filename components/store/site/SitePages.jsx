@@ -11,9 +11,10 @@ import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  CATEGORIES, fmtPrice, siteImg, posFor, HOME_HERO, relatedProducts,
+  CATEGORIES, fmtPrice, siteImg, posFor, HOME_HERO, HOME_TILES, relatedProducts,
 } from '@/lib/data/site-data';
 import { materialFamilyOf } from '@/lib/data/materials';
+import { subscribeAuth } from '@/lib/auth';
 import {
   useCart, addToCart, setCartQty, removeFromCart, cartTotal, showToast, useSiteData,
 } from './store';
@@ -35,6 +36,16 @@ const CATALOGUE_SECTIONS = [
 const CATEGORY_TO_SECTION = {};
 CATALOGUE_SECTIONS.forEach((s) => s.cats.forEach((c) => { CATEGORY_TO_SECTION[c] = s.key; }));
 const sectionAnchor = (cat) => `/#cat-${CATEGORY_TO_SECTION[cat] || cat}`;
+// Built-in fallback tile image per category (admin can override via settings.homeTiles).
+const HOME_TILE_IMG = Object.fromEntries(HOME_TILES.map((t) => [t.cat, t.img]));
+
+// True once an admin (Firebase Auth) is signed in, so product pages can show a
+// quick "Edit in admin" shortcut. Stays false when Firebase isn't configured.
+function useIsAdmin() {
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => subscribeAuth((user) => setIsAdmin(!!user)), []);
+  return isAdmin;
+}
 
 // ── Home ─────────────────────────────────────────────────────────────────────
 function HeroSlider({ slides, settings, content }) {
@@ -228,6 +239,7 @@ function CatalogueScroll() {
 export function ProductPage({ id }) {
   const { SITE_PRODUCTS, SITE_BY_ID, content, settings } = useSiteData();
   const router = useRouter();
+  const isAdmin = useIsAdmin();
   const p = SITE_BY_ID[id];
   const [qty, setQty] = useState(1);
   const [active, setActive] = useState(0);
@@ -250,6 +262,14 @@ export function ProductPage({ id }) {
   // same category then anything; always excludes the item being viewed.
   const related = relatedProducts(p, SITE_PRODUCTS, 4);
   const sold = p.stock === 'Sold out' || p.stock === 'Archived';
+
+  // "Order Now" banner background (shared with the home page banner) and the
+  // "Explore <category>" tile image (admin Home category tiles → fallbacks).
+  const orderBannerSrc = settings.homeBanner || siteImg('banner12.jpg');
+  const exploreImg = (settings.homeTiles && settings.homeTiles[p.category])
+    || HOME_TILE_IMG[p.category]
+    || (settings.categoryBanners && settings.categoryBanners[p.category])
+    || settings.pageBanner || siteImg('banner33.jpg');
 
   // Gallery: every uploaded image, falling back to the single primary photo.
   const images = (p.images && p.images.length) ? p.images : (p.img ? [p.img] : []);
@@ -291,6 +311,9 @@ export function ProductPage({ id }) {
           <nav className="pd-crumbs">
             <Link href="/">Home</Link><span>/</span>
             <Link href={sectionAnchor(p.category)}>{p.category}</Link>
+            {isAdmin && (
+              <a className="pd-admin-edit" href={`/admin?edit=${encodeURIComponent(p.id)}`}>Edit in admin →</a>
+            )}
           </nav>
           <h1 className="pd-name">{p.name}</h1>
           <p className="pd-sub">{p.sub}</p>
@@ -312,20 +335,40 @@ export function ProductPage({ id }) {
           <div className="pd-story">
             {story.map((para, i) => <p key={i} className="pd-desc">{para}</p>)}
           </div>
-          <div className="pd-buy">
-            <div className="pd-qty">
-              <button onClick={() => setQty(Math.max(1, qty - 1))}>−</button>
-              <span>{qty}</span>
-              <button onClick={() => setQty(qty + 1)}>+</button>
-            </div>
-            <button className="btn-malaya" disabled={sold}
-              onClick={() => addToCart(p.id, qty)}>{sold ? 'Sold Out' : 'Add to Order'}</button>
-          </div>
           <a className="pd-whatsapp" href={content.contact.whatsappUrl} target="_blank" rel="noreferrer">
             Ask about this piece on WhatsApp →
           </a>
         </div>
       </div>
+
+      <section className="pd-order-banner" style={{ backgroundImage: `url(${orderBannerSrc})`, backgroundPosition: posFor(settings, orderBannerSrc) }}>
+        <div className="pd-order-card">
+          <span className="pd-order-kicker">Order Now</span>
+          <strong className="pd-order-name">{p.name}</strong>
+          <div className="pd-price pd-order-price">
+            {p.onSale && <s>{fmtPrice(p.listPrice)}</s>}
+            <strong>{fmtPrice(p.price)}</strong>
+          </div>
+          <div className="pd-order-buy">
+            <div className="pd-qty">
+              <button type="button" aria-label="Decrease quantity" onClick={() => setQty(Math.max(1, qty - 1))}>−</button>
+              <span>{qty}</span>
+              <button type="button" aria-label="Increase quantity" onClick={() => setQty(qty + 1)}>+</button>
+            </div>
+            <button className="btn-malaya" disabled={sold}
+              onClick={() => addToCart(p.id, qty)}>{sold ? 'Sold Out' : 'Add to Order'}</button>
+          </div>
+        </div>
+      </section>
+
+      <Link className="pd-explore" href={sectionAnchor(p.category)}
+        style={{ backgroundImage: `url(${exploreImg})`, backgroundPosition: posFor(settings, exploreImg) }}>
+        <span className="pd-explore-inner">
+          <em className="pd-explore-kicker">Discover more</em>
+          <strong className="pd-explore-title">Explore {p.category}</strong>
+        </span>
+      </Link>
+
       {related.length > 0 && (
         <section className="site-container pd-related">
           <h2 className="section-title">You May Also Like</h2>

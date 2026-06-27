@@ -73,6 +73,23 @@ export default function Inventory({ overrides, setOverrides }) {
   const flash = (m) => setToast(m);
   useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), 2200); return () => clearTimeout(t); }, [toast]);
 
+  // Honour /admin?edit=<id> deep-links ("Edit in admin" from a product page):
+  // open that item's editor once it resolves, then strip the param so a refresh
+  // or closing the drawer doesn't reopen it.
+  const deepLinkDone = useRef(false);
+  useEffect(() => {
+    if (deepLinkDone.current || typeof window === 'undefined') return;
+    const key = new URLSearchParams(window.location.search).get('edit');
+    if (!key) { deepLinkDone.current = true; return; }
+    if (ENTITY_BY_KEY[key] || isCustomOverride(overrides[key])) {
+      deepLinkDone.current = true;
+      setEditKey(key);
+      const url = new URL(window.location.href);
+      url.searchParams.delete('edit');
+      window.history.replaceState({}, '', url);
+    }
+  }, [ENTITY_BY_KEY, overrides]);
+
   const blankCount = useMemo(() => ENTITIES.filter(isBlankEntity).length, [ENTITIES]);
 
   const toggleSort = (k) => {
@@ -537,6 +554,10 @@ function ItemRow({ r, edited, fieldEdited, commit, onToggleSpecial, onEdit, onDe
           </>
         )}
         {!r.deleted && <button onClick={onDelete} title="Delete item" style={{ background: 'transparent', border: `1px solid ${T.line2}`, color: T.danger, padding: '7px 9px', fontSize: 11, lineHeight: 1, cursor: 'pointer', fontFamily: T.sans }}>🗑</button>}
+        {!r.deleted && !r.mergedInto && (
+          <a href={`/product/${encodeURIComponent(r.key)}`} target="_blank" rel="noreferrer" title="Preview this item on the storefront"
+            style={{ ...ghost(), padding: '7px 12px', fontSize: 10, textDecoration: 'none' }}>View ↗</a>
+        )}
       </div>
     </div>
   );
