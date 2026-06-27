@@ -344,7 +344,6 @@ export function ProductPage({ id }) {
       <section className="pd-order-banner" style={{ backgroundImage: `url(${orderBannerSrc})`, backgroundPosition: posFor(settings, orderBannerSrc) }}>
         <div className="pd-order-card">
           <span className="pd-order-kicker">Order Now</span>
-          <strong className="pd-order-name">{p.name}</strong>
           <div className="pd-price pd-order-price">
             {p.onSale && <s>{fmtPrice(p.listPrice)}</s>}
             <strong>{fmtPrice(p.price)}</strong>

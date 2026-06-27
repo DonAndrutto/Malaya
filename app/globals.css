@@ -200,15 +200,20 @@ button, input, select { font-family: inherit; }
 .malaya-site .pd-admin-edit:hover { background: var(--gold); color: #fff; }
 .malaya-site .pd-related { padding-top: 34px; padding-bottom: 64px; }
 
-/* Product-page "Order Now" banner with a centred white add-to-order card. */
-.malaya-site .pd-order-banner { position: relative; background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; padding: 80px 24px; }
-.malaya-site .pd-order-banner::before { content: ''; position: absolute; inset: 0; background: rgba(30, 18, 10, .42); }
-.malaya-site .pd-order-card { position: relative; background: #fff; width: 100%; max-width: 460px; padding: 40px 36px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; box-shadow: 0 24px 60px rgba(20, 12, 8, .28); }
-.malaya-site .pd-order-kicker { font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: var(--gold); }
-.malaya-site .pd-order-name { font-family: 'Raleway', sans-serif; font-size: 22px; font-weight: 600; color: var(--brown); line-height: 1.25; text-wrap: pretty; }
-.malaya-site .pd-order-price { justify-content: center; font-size: 22px; }
-.malaya-site .pd-order-buy { display: flex; gap: 14px; align-items: stretch; justify-content: center; width: 100%; margin-top: 4px; }
-.malaya-site .pd-order-buy .btn-malaya { flex: 1; max-width: 240px; }
+/* Product-page "Order Now" banner with a compact frosted-glass add-to-order card. */
+.malaya-site .pd-order-banner { position: relative; background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; padding: 60px 24px; }
+.malaya-site .pd-order-banner::before { content: ''; position: absolute; inset: 0; background: rgba(30, 18, 10, .30); }
+.malaya-site .pd-order-card { position: relative; width: 100%; max-width: 320px; padding: 22px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; border-radius: 16px; background: rgba(255, 255, 255, .12); -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%); border: 1px solid rgba(255, 255, 255, .35); box-shadow: 0 12px 40px rgba(20, 12, 8, .30); }
+.malaya-site .pd-order-kicker { font-size: 10.5px; letter-spacing: .26em; text-transform: uppercase; color: #fff; }
+.malaya-site .pd-order-price { justify-content: center; font-size: 21px; }
+.malaya-site .pd-order-price strong { color: #fff; }
+.malaya-site .pd-order-price s { color: rgba(255, 255, 255, .6); }
+.malaya-site .pd-order-buy { display: flex; gap: 12px; align-items: stretch; justify-content: center; width: 100%; margin-top: 2px; }
+.malaya-site .pd-order-buy .btn-malaya { flex: 1; }
+.malaya-site .pd-order-card .pd-qty { border-color: rgba(255, 255, 255, .5); }
+.malaya-site .pd-order-card .pd-qty button { color: #fff; }
+.malaya-site .pd-order-card .pd-qty button:hover { color: var(--gold); }
+.malaya-site .pd-order-card .pd-qty span { color: #fff; }
 
 /* "Explore <category>" tile linking back to the catalogue section. */
 .malaya-site .pd-explore { position: relative; display: block; background-size: cover; background-position: center; min-height: 220px; margin-top: 6px; overflow: hidden; }
@@ -218,10 +223,7 @@ button, input, select { font-family: inherit; }
 .malaya-site .pd-explore-kicker { font-style: normal; font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: rgba(255,255,255,.82); }
 .malaya-site .pd-explore-title { font-family: 'Raleway', sans-serif; font-size: 28px; font-weight: 600; letter-spacing: .04em; }
 @media (max-width: 600px) {
-  .malaya-site .pd-order-banner { padding: 48px 18px; }
-  .malaya-site .pd-order-card { padding: 32px 22px; }
-  .malaya-site .pd-order-buy { flex-direction: column; align-items: center; }
-  .malaya-site .pd-order-buy .pd-qty { width: 100%; max-width: 240px; justify-content: center; }
+  .malaya-site .pd-order-banner { padding: 44px 18px; }
   .malaya-site .pd-explore-title { font-size: 22px; }
 }
 .malaya-site .tashi-intro { display: grid; grid-template-columns: 1.1fr 1fr; gap: 54px; padding-top: 48px; padding-bottom: 26px; align-items: start; }
@@ -290,6 +292,21 @@ button, input, select { font-family: inherit; }
 .malaya-site .ftr-bottom .site-container { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
 #site-toast { position: fixed; bottom: 28px; left: 50%; transform: translate(-50%, 16px); background: #1d1d1d; color: #fff; font-size: 13px; letter-spacing: .06em; padding: 13px 26px; opacity: 0; pointer-events: none; transition: all .25s; z-index: 200; }
 #site-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* "Added to your order" notice — actionable card (Close / Go to basket). */
+.malaya-site .cart-notice { position: fixed; z-index: 210; right: 24px; bottom: 24px; width: 340px; max-width: calc(100vw - 32px); display: flex; align-items: center; gap: 14px; background: #fff; border: 1px solid var(--line); box-shadow: 0 18px 50px rgba(20, 12, 8, .26); padding: 14px 16px; animation: cart-notice-in .28s ease both; }
+@keyframes cart-notice-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+.malaya-site .cart-notice-img { width: 52px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid var(--line); }
+.malaya-site .cart-notice-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.malaya-site .cart-notice-text { font-size: 13px; color: #444; line-height: 1.4; }
+.malaya-site .cart-notice-text strong { color: var(--brown); font-weight: 600; }
+.malaya-site .cart-notice-basket { align-self: flex-start; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+.malaya-site .cart-notice-basket:hover { color: var(--brown); }
+.malaya-site .cart-notice-x { flex-shrink: 0; align-self: flex-start; background: none; border: none; font-size: 20px; line-height: 1; color: var(--muted); cursor: pointer; padding: 0 2px; }
+.malaya-site .cart-notice-x:hover { color: var(--brown); }
+@media (max-width: 600px) {
+  .malaya-site .cart-notice { right: 12px; left: 12px; bottom: 12px; width: auto; }
+}
 
 /* ── Blog (magazine grid + article) ────────────────────────────────────────── */
 .malaya-site .blog-wrap { padding-top: 48px; padding-bottom: 72px; }

@@ -6,10 +6,11 @@
 // Navigation uses the Next.js App Router (next/link + usePathname).
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { fmtPrice, siteImg, cdnFallback, posFor } from '@/lib/data/site-data';
-import { useCart, removeFromCart, cartTotal, useSiteData } from './store';
+import { useCart, removeFromCart, cartTotal, useSiteData, useAddedNotice } from './store';
 
 // ── Inline icons (crisp at any size, no extra image assets) ──────────────────
 export function BasketIcon({ size = 21 }) {
@@ -157,6 +158,33 @@ export function PageBanner({ title, subtitle, img, category }) {
         <strong className="page-banner-title">{title}</strong>
         {subtitle && <span className="page-banner-sub">{subtitle}</span>}
       </div>
+    </div>
+  );
+}
+
+// ── "Added to your order" notice ─────────────────────────────────────────────
+// Mounted once in the store layout. Shows an actionable card when something is
+// added to the cart: the item name, a Go-to-basket link, and a close button.
+// Auto-dismisses after a few seconds (timer resets on each new add).
+export function CartNotice() {
+  const [notice, clear] = useAddedNotice();
+  const { SITE_BY_ID } = useSiteData();
+  useEffect(() => {
+    if (!notice) return undefined;
+    const t = setTimeout(clear, 6000);
+    return () => clearTimeout(t);
+  }, [notice]); // eslint-disable-line react-hooks/exhaustive-deps
+  if (!notice) return null;
+  const p = SITE_BY_ID[notice.id];
+  const name = (p && p.name) || 'This item';
+  return (
+    <div className="cart-notice" role="status" aria-live="polite">
+      {p && p.img && <SiteImg className="cart-notice-img" src={p.img} alt={name} />}
+      <div className="cart-notice-body">
+        <span className="cart-notice-text">Added <strong>{name}</strong> to your order</span>
+        <Link href="/order" className="cart-notice-basket" onClick={clear}>Go to basket →</Link>
+      </div>
+      <button type="button" className="cart-notice-x" onClick={clear} aria-label="Dismiss">×</button>
     </div>
   );
 }
