@@ -14,7 +14,6 @@ import {
   CATEGORIES, fmtPrice, posFor, bgImage, HOME_HERO, HOME_TILES, relatedProducts, whatsappUrlFor,
 } from '@/lib/data/site-data';
 import { materialFamilyOf } from '@/lib/data/materials';
-import { subscribeAuth } from '@/lib/auth';
 import {
   useCart, addToCart, setCartQty, removeFromCart, cartTotal, showToast, useSiteData,
 } from './store';
@@ -38,14 +37,6 @@ CATALOGUE_SECTIONS.forEach((s) => s.cats.forEach((c) => { CATEGORY_TO_SECTION[c]
 const sectionAnchor = (cat) => `/#cat-${CATEGORY_TO_SECTION[cat] || cat}`;
 // Built-in fallback tile image per category (admin can override via settings.homeTiles).
 const HOME_TILE_IMG = Object.fromEntries(HOME_TILES.map((t) => [t.cat, t.img]));
-
-// True once an admin (Firebase Auth) is signed in, so product pages can show a
-// quick "Edit in admin" shortcut. Stays false when Firebase isn't configured.
-function useIsAdmin() {
-  const [isAdmin, setIsAdmin] = useState(false);
-  useEffect(() => subscribeAuth((user) => setIsAdmin(!!user)), []);
-  return isAdmin;
-}
 
 // ── Home ─────────────────────────────────────────────────────────────────────
 function HeroSlider({ slides, settings, content }) {
@@ -239,7 +230,6 @@ function CatalogueScroll() {
 export function ProductPage({ id }) {
   const { SITE_PRODUCTS, SITE_BY_ID, content, settings } = useSiteData();
   const router = useRouter();
-  const isAdmin = useIsAdmin();
   const p = SITE_BY_ID[id];
   const [qty, setQty] = useState(1);
   const [active, setActive] = useState(0);
@@ -281,7 +271,10 @@ export function ProductPage({ id }) {
   // Gallery: every uploaded image, falling back to the single primary photo.
   const images = (p.images && p.images.length) ? p.images : (p.img ? [p.img] : []);
   const hero = images[Math.min(active, images.length - 1)] || images[0] || null;
-  const heroAlt = images.length > 1 ? images[(Math.min(active, images.length - 1) + 1) % images.length] : null;
+  // Hover/tap "peek the second photo" only applies to the default (first) view —
+  // catalogue-style. Once a thumbnail is picked, the chosen photo stays put so a
+  // tap reveals exactly that image, never the next one.
+  const heroAlt = (active === 0 && images.length > 1) ? images[1] : null;
   const monogram = (p.productionCode || p.salesCode || p.name || 'M').replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'M';
 
   // Editable story (admin-saved), split into paragraphs; falls back to the global
@@ -318,9 +311,6 @@ export function ProductPage({ id }) {
           <nav className="pd-crumbs">
             <Link href="/">Home</Link><span>/</span>
             <Link href={sectionAnchor(p.category)}>{p.category}</Link>
-            {isAdmin && (
-              <a className="pd-admin-edit" href={`/admin?edit=${encodeURIComponent(p.id)}`}>Edit in admin →</a>
-            )}
           </nav>
           <h1 className="pd-name">{p.name}</h1>
           <p className="pd-sub">{p.sub}</p>
@@ -350,10 +340,12 @@ export function ProductPage({ id }) {
 
       <section className="pd-order-banner" style={{ backgroundImage: bgImage(orderBannerSrc), backgroundPosition: posFor(settings, orderBannerSrc) }}>
         <div className="pd-order-card">
-          <span className="pd-order-kicker">Order Now</span>
-          <div className="pd-price pd-order-price">
-            {p.onSale && <s>{fmtPrice(p.listPrice)}</s>}
-            <strong>{fmtPrice(p.price)}</strong>
+          <div className="pd-order-head">
+            <span className="pd-order-kicker">Order Now</span>
+            <span className="pd-order-price">
+              {p.onSale && <s>{fmtPrice(p.listPrice)}</s>}
+              <strong>{fmtPrice(p.price)}</strong>
+            </span>
           </div>
           <div className="pd-order-buy">
             <div className="pd-qty">

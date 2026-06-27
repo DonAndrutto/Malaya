@@ -267,6 +267,11 @@ export function SiteHeader() {
 export function SiteFooter() {
   const { content } = useSiteData();
   const ct = content.contact;
+  // The small "Studio admin" link is the only admin entry point. On a product
+  // page it deep-links straight to that item's editor in the admin.
+  const pathname = usePathname() || '/';
+  const productId = pathname.startsWith('/product/') ? pathname.slice('/product/'.length).split('/')[0] : '';
+  const adminHref = productId ? `/admin?edit=${encodeURIComponent(productId)}` : '/admin';
   return (
     <footer className="site-footer">
       <div className="ftr-contact-strip">
@@ -302,7 +307,7 @@ export function SiteFooter() {
       <div className="ftr-bottom">
         <div className="site-container">
           <span>{content.footer.copyright}</span>
-          <span>{content.footer.location} · <Link href="/admin" title="Studio administration" style={{ color: 'inherit' }}>Studio admin</Link></span>
+          <span>{content.footer.location} · <Link href={adminHref} title="Studio administration" style={{ color: 'inherit' }}>Studio admin</Link></span>
         </div>
       </div>
     </footer>
