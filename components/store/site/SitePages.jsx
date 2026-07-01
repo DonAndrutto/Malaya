@@ -262,9 +262,9 @@ export function ProductPage({ id }) {
     || (settings.categoryBanners && settings.categoryBanners[p.category])
     || settings.pageBanner || null;
 
-  // WhatsApp enquiry pre-filled with this item (name, code and its URL).
-  const waText = `Hi, I contacted you through Malaya Jewellery website. I'd like to ask about ${p.name}`
-    + `${p.salesCode ? ` (${p.salesCode})` : ''}.`
+  // WhatsApp enquiry pre-filled with this item (name, sales code and its URL).
+  const waText = `I've contacted you via Malaya Jewellery International website. I'd like to ask about ${p.name}`
+    + `${p.salesCode ? ` (sales code: ${p.salesCode})` : ''}.`
     + (typeof window !== 'undefined' ? ` ${window.location.href}` : '');
   const waUrl = whatsappUrlFor(content.contact.whatsapp, waText);
 

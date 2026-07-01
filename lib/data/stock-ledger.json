@@ -7,7 +7,7 @@
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": 575.34,
+    "retail": 576,
     "productId": null,
     "productIds": []
   },
@@ -43,7 +43,7 @@
     "material": "Silver",
     "qty": 2,
     "cost": 16.35,
-    "retail": 95.89,
+    "retail": 96,
     "productId": null,
     "productIds": []
   },
@@ -55,7 +55,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1328.77,
+    "retail": 1329,
     "productId": null,
     "productIds": []
   },
@@ -67,7 +67,7 @@
     "material": "Silver",
     "qty": 1,
     "cost": 60.23,
-    "retail": 287.67,
+    "retail": 288,
     "productId": null,
     "productIds": []
   },
@@ -91,7 +91,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 4246.58,
+    "retail": 4247,
     "productId": null,
     "productIds": []
   },
@@ -103,7 +103,7 @@
     "material": "Silver",
     "qty": 1,
     "cost": 17.45,
-    "retail": 95.89,
+    "retail": 96,
     "productId": null,
     "productIds": []
   },
@@ -122,12 +122,12 @@
   {
     "sku": "B004-YG18",
     "code": "B004",
-    "name": "Eternal Knot 18k yellow gold bangle Mid Size 21.28g",
+    "name": "Eternal Knot 18k yellow gold bangle Mid Size 21.28g (Large size 27.03g: 376,000)",
     "category": "Bracelets",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 4054.79,
+    "retail": 4055,
     "productId": null,
     "productIds": []
   },
@@ -139,7 +139,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 109.59,
+    "retail": 110,
     "productId": null,
     "productIds": []
   },
@@ -151,7 +151,7 @@
     "material": "Silver",
     "qty": 1,
     "cost": 67.62,
-    "retail": 410.96,
+    "retail": 411,
     "productId": null,
     "productIds": []
   },
@@ -163,7 +163,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 438.36,
+    "retail": 439,
     "productId": null,
     "productIds": []
   },
@@ -199,7 +199,7 @@
     "material": "Gold Plated",
     "qty": 2,
     "cost": null,
-    "retail": 397.26,
+    "retail": 398,
     "productId": null,
     "productIds": []
   },
@@ -211,7 +211,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 150.68,
+    "retail": 151,
     "productId": "p011",
     "productIds": [
       "p011"
@@ -225,7 +225,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 246.58,
+    "retail": 247,
     "productId": null,
     "productIds": []
   },
@@ -237,7 +237,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 246.58,
+    "retail": 247,
     "productId": null,
     "productIds": []
   },
@@ -249,7 +249,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 630.14,
+    "retail": 631,
     "productId": null,
     "productIds": []
   },
@@ -261,7 +261,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 589.04,
+    "retail": 590,
     "productId": null,
     "productIds": []
   },
@@ -273,7 +273,7 @@
     "material": "Rose Gold",
     "qty": null,
     "cost": null,
-    "retail": 2602.74,
+    "retail": 2603,
     "productId": null,
     "productIds": []
   },
@@ -285,7 +285,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 150.68,
+    "retail": 151,
     "productId": null,
     "productIds": []
   },
@@ -297,7 +297,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 342.47,
+    "retail": 343,
     "productId": "p010",
     "productIds": [
       "p010"
@@ -311,7 +311,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 150.68,
+    "retail": 151,
     "productId": null,
     "productIds": []
   },
@@ -323,7 +323,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 150.68,
+    "retail": 151,
     "productId": null,
     "productIds": []
   },
@@ -335,7 +335,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 150.68,
+    "retail": 151,
     "productId": null,
     "productIds": []
   },
@@ -347,7 +347,7 @@
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": 150.68,
+    "retail": 151,
     "productId": null,
     "productIds": []
   },
@@ -359,7 +359,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 3561.64,
+    "retail": 3562,
     "productId": null,
     "productIds": []
   },
@@ -371,19 +371,19 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 143.84,
+    "retail": 144,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "B010-S-CZ",
     "code": "B010",
-    "name": "",
+    "name": "Endless Knot Bracelet Silver 3.73g",
     "category": "Bracelets",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 144,
     "productId": null,
     "productIds": []
   },
@@ -395,7 +395,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 876.71,
+    "retail": 877,
     "productId": null,
     "productIds": []
   },
@@ -407,7 +407,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1082.19,
+    "retail": 1083,
     "productId": null,
     "productIds": []
   },
@@ -419,19 +419,19 @@
     "material": "Silver",
     "qty": 9,
     "cost": 29.76,
-    "retail": 116.44,
+    "retail": 117,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "B013-YG14",
     "code": "B013",
-    "name": "",
+    "name": "Vajra Chain Bracelet, Yellow Gold 14K, Medium, Flat 3 Prongs, 19cm, 6.64g",
     "category": "Bracelets",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1137,
     "productId": null,
     "productIds": []
   },
@@ -443,7 +443,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 136.99,
+    "retail": 137,
     "productId": null,
     "productIds": []
   },
@@ -455,7 +455,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 191.78,
+    "retail": 192,
     "productId": null,
     "productIds": []
   },
@@ -467,7 +467,7 @@
     "material": "Silver",
     "qty": 1,
     "cost": 48.57,
-    "retail": 164.38,
+    "retail": 165,
     "productId": null,
     "productIds": []
   },
@@ -479,7 +479,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 219.18,
+    "retail": 220,
     "productId": null,
     "productIds": []
   },
@@ -491,7 +491,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 68.49,
+    "retail": 69,
     "productId": null,
     "productIds": []
   },
@@ -527,7 +527,7 @@
     "material": "Silver",
     "qty": 2,
     "cost": 26.51,
-    "retail": 123.29,
+    "retail": 124,
     "productId": null,
     "productIds": []
   },
@@ -539,7 +539,19 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 821.92,
+    "retail": 822,
+    "productId": null,
+    "productIds": []
+  },
+  {
+    "sku": "BA001-YG18",
+    "code": "BA001",
+    "name": "Infinity Edges Bangle Solid 18k yellow gold 6.4g",
+    "category": "Bangles",
+    "material": "18k Gold",
+    "qty": null,
+    "cost": null,
+    "retail": 1083,
     "productId": null,
     "productIds": []
   },
@@ -551,7 +563,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 109.59,
+    "retail": 110,
     "productId": null,
     "productIds": []
   },
@@ -563,7 +575,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 671.23,
+    "retail": 672,
     "productId": null,
     "productIds": []
   },
@@ -575,7 +587,7 @@
     "material": "Gold Plated",
     "qty": 2,
     "cost": 27.88,
-    "retail": 123.29,
+    "retail": 124,
     "productId": null,
     "productIds": []
   },
@@ -587,7 +599,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 301.37,
+    "retail": 302,
     "productId": null,
     "productIds": []
   },
@@ -599,7 +611,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 301.37,
+    "retail": 302,
     "productId": null,
     "productIds": []
   },
@@ -618,48 +630,48 @@
   {
     "sku": "BA005-S",
     "code": "BA005",
-    "name": "Vajra Bangle Silver, CZ 18.59g, regular size",
+    "name": "Vajra Bangle Silver, CZ 18.59g, regular size (Size L, 23.27g: 31,000)",
     "category": "Bangles",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 410.96,
+    "retail": 411,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BA005-S-CZ",
     "code": "BA005",
-    "name": "",
+    "name": "Vajra Bangle Silver, CZ 18.59g, regular size (Size L, 23.27g: 31,000)",
     "category": "Bangles",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 411,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BA005-YGP",
     "code": "BA005",
-    "name": "Vajra Bangle Gold Plated, CZ 19.14g",
+    "name": "Vajra Bangle Gold Plated, CZ 19.14g (Size L, 23.69g: 33,000)",
     "category": "Bangles",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 438.36,
+    "retail": 439,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BA005-YGP-CZ",
     "code": "BA005",
-    "name": "",
+    "name": "Vajra Bangle Gold Plated, CZ 19.14g (Size L, 23.69g: 33,000)",
     "category": "Bangles",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 439,
     "productId": null,
     "productIds": []
   },
@@ -671,19 +683,19 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 260.27,
+    "retail": 261,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "BA007-S-BD",
     "code": "BA007",
-    "name": "",
+    "name": "Flexible Double skull bangle black diamonds, Sterling Silver",
     "category": "Bangles",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 261,
     "productId": null,
     "productIds": []
   },
@@ -719,7 +731,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 273.97,
+    "retail": 274,
     "productId": null,
     "productIds": []
   },
@@ -731,7 +743,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 301.37,
+    "retail": 302,
     "productId": null,
     "productIds": []
   },
@@ -743,7 +755,7 @@
     "material": "Silver",
     "qty": 2,
     "cost": null,
-    "retail": 109.59,
+    "retail": 110,
     "productId": null,
     "productIds": []
   },
@@ -755,7 +767,7 @@
     "material": "Gold Plated",
     "qty": 2,
     "cost": null,
-    "retail": 123.29,
+    "retail": 124,
     "productId": null,
     "productIds": []
   },
@@ -767,7 +779,7 @@
     "material": "Silver",
     "qty": 1,
     "cost": null,
-    "retail": 68.49,
+    "retail": 69,
     "productId": null,
     "productIds": []
   },
@@ -779,7 +791,7 @@
     "material": "Gold Plated",
     "qty": 1,
     "cost": null,
-    "retail": 82.19,
+    "retail": 83,
     "productId": null,
     "productIds": []
   },
@@ -791,7 +803,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 123.29,
+    "retail": 124,
     "productId": null,
     "productIds": []
   },
@@ -803,7 +815,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 136.99,
+    "retail": 137,
     "productId": null,
     "productIds": []
   },
@@ -815,7 +827,7 @@
     "material": "Silver",
     "qty": 1,
     "cost": null,
-    "retail": 89.04,
+    "retail": 90,
     "productId": null,
     "productIds": []
   },
@@ -846,12 +858,12 @@
   {
     "sku": "BR005-S",
     "code": "BR005",
-    "name": "",
+    "name": "Dhi Syllable Brooch, Silver, Larger, 55mm 10.2g",
     "category": "Brooches",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 137,
     "productId": null,
     "productIds": []
   },
@@ -863,7 +875,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 150.68,
+    "retail": 151,
     "productId": null,
     "productIds": []
   },
@@ -875,7 +887,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 89.04,
+    "retail": 90,
     "productId": null,
     "productIds": []
   },
@@ -887,7 +899,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 102.74,
+    "retail": 103,
     "productId": null,
     "productIds": []
   },
@@ -899,7 +911,7 @@
     "material": "Rose Gold",
     "qty": null,
     "cost": null,
-    "retail": 136.99,
+    "retail": 137,
     "productId": null,
     "productIds": []
   },
@@ -911,7 +923,7 @@
     "material": "Silver",
     "qty": 2,
     "cost": null,
-    "retail": 123.29,
+    "retail": 124,
     "productId": null,
     "productIds": []
   },
@@ -923,7 +935,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 136.99,
+    "retail": 137,
     "productId": null,
     "productIds": []
   },
@@ -935,7 +947,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 75.34,
+    "retail": 76,
     "productId": null,
     "productIds": []
   },
@@ -947,7 +959,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 95.89,
+    "retail": 96,
     "productId": null,
     "productIds": []
   },
@@ -959,7 +971,7 @@
     "material": "Rose Gold",
     "qty": null,
     "cost": null,
-    "retail": 68.49,
+    "retail": 69,
     "productId": null,
     "productIds": []
   },
@@ -971,7 +983,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 61.64,
+    "retail": 62,
     "productId": null,
     "productIds": []
   },
@@ -983,7 +995,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 68.49,
+    "retail": 69,
     "productId": null,
     "productIds": []
   },
@@ -995,7 +1007,7 @@
     "material": "Silver",
     "qty": 2,
     "cost": null,
-    "retail": 68.49,
+    "retail": 69,
     "productId": null,
     "productIds": []
   },
@@ -1007,7 +1019,7 @@
     "material": "Gold Plated",
     "qty": 3,
     "cost": null,
-    "retail": 82.19,
+    "retail": 83,
     "productId": null,
     "productIds": []
   },
@@ -1026,12 +1038,12 @@
   {
     "sku": "BR009-S",
     "code": "BR009",
-    "name": "",
+    "name": "Om Syllable Brooch, Silver, 26mm 2.8g",
     "category": "Brooches",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 69,
     "productId": null,
     "productIds": []
   },
@@ -1043,7 +1055,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 82.19,
+    "retail": 83,
     "productId": null,
     "productIds": []
   },
@@ -1055,7 +1067,7 @@
     "material": "Silver",
     "qty": 1,
     "cost": null,
-    "retail": 68.49,
+    "retail": 69,
     "productId": null,
     "productIds": []
   },
@@ -1067,7 +1079,7 @@
     "material": "Gold Plated",
     "qty": 1,
     "cost": null,
-    "retail": 82.19,
+    "retail": 83,
     "productId": null,
     "productIds": []
   },
@@ -1079,7 +1091,7 @@
     "material": "Silver",
     "qty": 1,
     "cost": 35.42,
-    "retail": 116.44,
+    "retail": 117,
     "productId": null,
     "productIds": []
   },
@@ -1091,7 +1103,7 @@
     "material": "Gold Plated",
     "qty": 2,
     "cost": 36.63,
-    "retail": 136.99,
+    "retail": 137,
     "productId": null,
     "productIds": []
   },
@@ -1103,7 +1115,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 424.66,
+    "retail": 425,
     "productId": null,
     "productIds": []
   },
@@ -1115,7 +1127,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 219.18,
+    "retail": 220,
     "productId": null,
     "productIds": []
   },
@@ -1127,7 +1139,7 @@
     "material": "Rose Gold",
     "qty": null,
     "cost": null,
-    "retail": 232.88,
+    "retail": 233,
     "productId": null,
     "productIds": []
   },
@@ -1139,7 +1151,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 164.38,
+    "retail": 165,
     "productId": null,
     "productIds": []
   },
@@ -1151,7 +1163,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1712.33,
+    "retail": 1713,
     "productId": null,
     "productIds": []
   },
@@ -1163,7 +1175,7 @@
     "material": "Rose Gold",
     "qty": null,
     "cost": null,
-    "retail": 109.59,
+    "retail": 110,
     "productId": null,
     "productIds": []
   },
@@ -1175,7 +1187,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 82.19,
+    "retail": 83,
     "productId": null,
     "productIds": []
   },
@@ -1187,7 +1199,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 821.92,
+    "retail": 822,
     "productId": null,
     "productIds": []
   },
@@ -1199,7 +1211,7 @@
     "material": "Rose Gold",
     "qty": null,
     "cost": null,
-    "retail": 109.59,
+    "retail": 110,
     "productId": null,
     "productIds": []
   },
@@ -1211,7 +1223,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 82.19,
+    "retail": 83,
     "productId": null,
     "productIds": []
   },
@@ -1223,7 +1235,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 821.92,
+    "retail": 822,
     "productId": null,
     "productIds": []
   },
@@ -1235,7 +1247,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 109.59,
+    "retail": 110,
     "productId": null,
     "productIds": []
   },
@@ -1247,7 +1259,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 150.68,
+    "retail": 151,
     "productId": null,
     "productIds": []
   },
@@ -1259,7 +1271,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 109.59,
+    "retail": 110,
     "productId": null,
     "productIds": []
   },
@@ -1271,7 +1283,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 150.68,
+    "retail": 151,
     "productId": null,
     "productIds": []
   },
@@ -1283,7 +1295,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 397.26,
+    "retail": 398,
     "productId": null,
     "productIds": []
   },
@@ -1295,7 +1307,7 @@
     "material": "Rose Gold",
     "qty": null,
     "cost": null,
-    "retail": 219.18,
+    "retail": 220,
     "productId": null,
     "productIds": []
   },
@@ -1307,7 +1319,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 246.58,
+    "retail": 247,
     "productId": null,
     "productIds": []
   },
@@ -1319,7 +1331,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 34.25,
+    "retail": 35,
     "productId": null,
     "productIds": []
   },
@@ -1331,7 +1343,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 54.79,
+    "retail": 55,
     "productId": null,
     "productIds": []
   },
@@ -1343,7 +1355,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 47.95,
+    "retail": 48,
     "productId": null,
     "productIds": []
   },
@@ -1355,7 +1367,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 219.18,
+    "retail": 220,
     "productId": null,
     "productIds": []
   },
@@ -1367,7 +1379,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 232.88,
+    "retail": 233,
     "productId": null,
     "productIds": []
   },
@@ -1379,7 +1391,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 232.88,
+    "retail": 233,
     "productId": null,
     "productIds": []
   },
@@ -1391,7 +1403,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 260.27,
+    "retail": 261,
     "productId": null,
     "productIds": []
   },
@@ -1403,7 +1415,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 287.67,
+    "retail": 288,
     "productId": null,
     "productIds": []
   },
@@ -1415,7 +1427,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 178.08,
+    "retail": 179,
     "productId": null,
     "productIds": []
   },
@@ -1427,7 +1439,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 184.93,
+    "retail": 185,
     "productId": "p123",
     "productIds": [
       "p123"
@@ -1441,7 +1453,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 191.78,
+    "retail": 192,
     "productId": null,
     "productIds": []
   },
@@ -1453,7 +1465,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 198.63,
+    "retail": 199,
     "productId": null,
     "productIds": []
   },
@@ -1465,7 +1477,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 198.63,
+    "retail": 199,
     "productId": null,
     "productIds": []
   },
@@ -1477,7 +1489,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 205.48,
+    "retail": 206,
     "productId": null,
     "productIds": []
   },
@@ -1489,7 +1501,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 212.33,
+    "retail": 213,
     "productId": null,
     "productIds": []
   },
@@ -1501,7 +1513,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 219.18,
+    "retail": 220,
     "productId": null,
     "productIds": []
   },
@@ -1513,7 +1525,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 136.99,
+    "retail": 137,
     "productId": null,
     "productIds": []
   },
@@ -1537,7 +1549,7 @@
     "material": "Silver",
     "qty": 3,
     "cost": 19.8,
-    "retail": 82.19,
+    "retail": 83,
     "productId": null,
     "productIds": []
   },
@@ -1573,7 +1585,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 102.74,
+    "retail": 103,
     "productId": "p120",
     "productIds": [
       "p120"
@@ -1587,7 +1599,7 @@
     "material": "Silver",
     "qty": 2,
     "cost": 24.82,
-    "retail": 95.89,
+    "retail": 96,
     "productId": "p086",
     "productIds": [
       "p086",
@@ -1603,7 +1615,7 @@
     "material": "Gold Plated",
     "qty": 2,
     "cost": 26.74,
-    "retail": 109.59,
+    "retail": 110,
     "productId": null,
     "productIds": []
   },
@@ -1615,7 +1627,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 410.96,
+    "retail": 411,
     "productId": null,
     "productIds": []
   },
@@ -1627,7 +1639,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1136.99,
+    "retail": 1137,
     "productId": null,
     "productIds": []
   },
@@ -1639,7 +1651,7 @@
     "material": "14k Gold",
     "qty": 1.5,
     "cost": null,
-    "retail": 1136.99,
+    "retail": 1137,
     "productId": null,
     "productIds": []
   },
@@ -1651,7 +1663,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1136.99,
+    "retail": 1137,
     "productId": null,
     "productIds": []
   },
@@ -1675,7 +1687,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1136.99,
+    "retail": 1137,
     "productId": null,
     "productIds": []
   },
@@ -1687,7 +1699,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 34.25,
+    "retail": 35,
     "productId": null,
     "productIds": []
   },
@@ -1699,7 +1711,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 246.58,
+    "retail": 247,
     "productId": null,
     "productIds": []
   },
@@ -1711,7 +1723,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 287.67,
+    "retail": 288,
     "productId": null,
     "productIds": []
   },
@@ -1723,7 +1735,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 287.67,
+    "retail": 288,
     "productId": null,
     "productIds": []
   },
@@ -1735,7 +1747,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 287.67,
+    "retail": 288,
     "productId": null,
     "productIds": []
   },
@@ -1747,7 +1759,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 287.67,
+    "retail": 288,
     "productId": null,
     "productIds": []
   },
@@ -1759,7 +1771,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1958.9,
+    "retail": 1959,
     "productId": null,
     "productIds": []
   },
@@ -1771,7 +1783,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 2082.19,
+    "retail": 2083,
     "productId": null,
     "productIds": []
   },
@@ -1783,7 +1795,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 178.08,
+    "retail": 179,
     "productId": "p001",
     "productIds": [
       "p001",
@@ -1798,7 +1810,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1150.68,
+    "retail": 1151,
     "productId": null,
     "productIds": []
   },
@@ -1810,7 +1822,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1931.51,
+    "retail": 1932,
     "productId": "p035",
     "productIds": [
       "p035"
@@ -1824,7 +1836,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 2856.16,
+    "retail": 2857,
     "productId": null,
     "productIds": []
   },
@@ -1836,7 +1848,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 82.19,
+    "retail": 83,
     "productId": null,
     "productIds": []
   },
@@ -1848,7 +1860,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 712.33,
+    "retail": 713,
     "productId": null,
     "productIds": []
   },
@@ -1860,7 +1872,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 95.89,
+    "retail": 96,
     "productId": null,
     "productIds": []
   },
@@ -1872,7 +1884,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1424.66,
+    "retail": 1425,
     "productId": "p025",
     "productIds": [
       "p025",
@@ -1899,7 +1911,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 2219.18,
+    "retail": 2220,
     "productId": null,
     "productIds": []
   },
@@ -1911,7 +1923,7 @@
     "material": "Silver",
     "qty": 1,
     "cost": 150.99,
-    "retail": 397.26,
+    "retail": 398,
     "productId": "p098",
     "productIds": [
       "p098",
@@ -1926,7 +1938,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 410.96,
+    "retail": 411,
     "productId": null,
     "productIds": []
   },
@@ -1950,7 +1962,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 3595.89,
+    "retail": 3596,
     "productId": null,
     "productIds": []
   },
@@ -1962,7 +1974,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1575.34,
+    "retail": 1576,
     "productId": null,
     "productIds": []
   },
@@ -1974,7 +1986,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 82.19,
+    "retail": 83,
     "productId": null,
     "productIds": []
   },
@@ -1986,7 +1998,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1123.29,
+    "retail": 1124,
     "productId": null,
     "productIds": []
   },
@@ -1998,7 +2010,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 95.89,
+    "retail": 96,
     "productId": null,
     "productIds": []
   },
@@ -2010,7 +2022,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 61.64,
+    "retail": 62,
     "productId": "p012",
     "productIds": [
       "p012"
@@ -2024,7 +2036,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 356.16,
+    "retail": 357,
     "productId": "p122",
     "productIds": [
       "p122"
@@ -2033,12 +2045,12 @@
   {
     "sku": "E026-YG14-DIA",
     "code": "E026",
-    "name": "",
+    "name": "Malaya Logo Earrings, Yellow Gold Plated, CZ Diamonds Yellow 14k Gold, diamond 2.36g .025 CTS.:",
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 357,
     "productId": null,
     "productIds": []
   },
@@ -2050,7 +2062,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 547.95,
+    "retail": 548,
     "productId": null,
     "productIds": []
   },
@@ -2062,7 +2074,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 68.49,
+    "retail": 69,
     "productId": "p101",
     "productIds": [
       "p101"
@@ -2076,7 +2088,7 @@
     "material": "Silver",
     "qty": 5,
     "cost": 25.19,
-    "retail": 82.19,
+    "retail": 83,
     "productId": null,
     "productIds": []
   },
@@ -2088,7 +2100,7 @@
     "material": "Gold Plated",
     "qty": 5,
     "cost": 28.44,
-    "retail": 102.74,
+    "retail": 103,
     "productId": null,
     "productIds": []
   },
@@ -2100,7 +2112,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 123.29,
+    "retail": 124,
     "productId": null,
     "productIds": []
   },
@@ -2112,7 +2124,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 2684.93,
+    "retail": 2685,
     "productId": null,
     "productIds": []
   },
@@ -2124,7 +2136,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1424.66,
+    "retail": 1425,
     "productId": null,
     "productIds": []
   },
@@ -2148,7 +2160,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1547.95,
+    "retail": 1548,
     "productId": "p115",
     "productIds": [
       "p115"
@@ -2162,7 +2174,7 @@
     "material": "Silver",
     "qty": 2,
     "cost": 42.14,
-    "retail": 150.68,
+    "retail": 151,
     "productId": "p021",
     "productIds": [
       "p021",
@@ -2177,7 +2189,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 82.19,
+    "retail": 83,
     "productId": null,
     "productIds": []
   },
@@ -2189,7 +2201,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 82.19,
+    "retail": 83,
     "productId": null,
     "productIds": []
   },
@@ -2201,7 +2213,7 @@
     "material": "Silver",
     "qty": 1,
     "cost": null,
-    "retail": 164.38,
+    "retail": 165,
     "productId": null,
     "productIds": []
   },
@@ -2213,7 +2225,7 @@
     "material": "Gold Plated",
     "qty": 1,
     "cost": null,
-    "retail": 178.08,
+    "retail": 179,
     "productId": "p074",
     "productIds": [
       "p074",
@@ -2229,7 +2241,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 123.29,
+    "retail": 124,
     "productId": null,
     "productIds": []
   },
@@ -2241,7 +2253,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 178.08,
+    "retail": 179,
     "productId": null,
     "productIds": []
   },
@@ -2253,7 +2265,7 @@
     "material": "Silver",
     "qty": 2,
     "cost": 19.61,
-    "retail": 82.19,
+    "retail": 83,
     "productId": null,
     "productIds": []
   },
@@ -2265,7 +2277,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 95.89,
+    "retail": 96,
     "productId": null,
     "productIds": []
   },
@@ -2289,7 +2301,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1479.45,
+    "retail": 1480,
     "productId": "p124",
     "productIds": [
       "p124"
@@ -2303,7 +2315,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 164.38,
+    "retail": 165,
     "productId": null,
     "productIds": []
   },
@@ -2315,7 +2327,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1767.12,
+    "retail": 1768,
     "productId": "p064",
     "productIds": [
       "p064"
@@ -2341,7 +2353,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 376.71,
+    "retail": 377,
     "productId": "p127",
     "productIds": [
       "p127"
@@ -2367,7 +2379,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 4602.74,
+    "retail": 4603,
     "productId": "p125",
     "productIds": [
       "p125",
@@ -2382,7 +2394,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1506.85,
+    "retail": 1507,
     "productId": null,
     "productIds": []
   },
@@ -2394,7 +2406,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 2438.36,
+    "retail": 2439,
     "productId": null,
     "productIds": []
   },
@@ -2406,7 +2418,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 3369.86,
+    "retail": 3370,
     "productId": "p015",
     "productIds": [
       "p015",
@@ -2421,7 +2433,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 102.74,
+    "retail": 103,
     "productId": null,
     "productIds": []
   },
@@ -2433,7 +2445,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 150.68,
+    "retail": 151,
     "productId": null,
     "productIds": []
   },
@@ -2445,7 +2457,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 273.97,
+    "retail": 274,
     "productId": "p112",
     "productIds": [
       "p112"
@@ -2459,7 +2471,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 328.77,
+    "retail": 329,
     "productId": "p093",
     "productIds": [
       "p093"
@@ -2485,7 +2497,7 @@
     "material": "Gold Plated",
     "qty": 5,
     "cost": 55.36,
-    "retail": 356.16,
+    "retail": 357,
     "productId": "p104",
     "productIds": [
       "p104",
@@ -2502,7 +2514,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 383.56,
+    "retail": 384,
     "productId": null,
     "productIds": []
   },
@@ -2514,7 +2526,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 397.26,
+    "retail": 398,
     "productId": "p110",
     "productIds": [
       "p110"
@@ -2540,7 +2552,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 273.97,
+    "retail": 274,
     "productId": "p095",
     "productIds": [
       "p095",
@@ -2555,7 +2567,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 4041.1,
+    "retail": 4042,
     "productId": null,
     "productIds": []
   },
@@ -2567,7 +2579,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 260.27,
+    "retail": 261,
     "productId": null,
     "productIds": []
   },
@@ -2591,7 +2603,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1753.42,
+    "retail": 1754,
     "productId": "p068",
     "productIds": [
       "p068",
@@ -2601,12 +2613,12 @@
   {
     "sku": "N005B-YG14-DIA",
     "code": "N005B",
-    "name": "",
+    "name": "Mid Vajra Necklace, 3 Dimensional design - 5 Prongs, 14K Yellow Gold 8.46g .115cts diamonds",
     "category": "Necklaces",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1754,
     "productId": null,
     "productIds": []
   },
@@ -2618,7 +2630,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1109.59,
+    "retail": 1110,
     "productId": null,
     "productIds": []
   },
@@ -2642,7 +2654,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 328.77,
+    "retail": 329,
     "productId": "p102",
     "productIds": [
       "p102"
@@ -2656,7 +2668,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 246.58,
+    "retail": 247,
     "productId": null,
     "productIds": []
   },
@@ -2668,19 +2680,19 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 328.77,
+    "retail": 329,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "N008-YGP-CZ",
     "code": "N008",
-    "name": "",
+    "name": "Dzambhala mantra Necklace, Gold Plated, CZ Diamonds, Large",
     "category": "Necklaces",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 329,
     "productId": null,
     "productIds": []
   },
@@ -2692,7 +2704,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 164.38,
+    "retail": 165,
     "productId": "p100",
     "productIds": [
       "p100"
@@ -2706,7 +2718,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 246.58,
+    "retail": 247,
     "productId": "p106",
     "productIds": [
       "p106"
@@ -2715,12 +2727,12 @@
   {
     "sku": "N009B-YGP-CZ",
     "code": "N009B",
-    "name": "",
+    "name": "Mani Mantra Necklace Gold Plated small, CZ Diamonds 9.84g",
     "category": "Necklaces",
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 247,
     "productId": null,
     "productIds": []
   },
@@ -2732,19 +2744,19 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 239.73,
+    "retail": 240,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "N010-S-CZ",
     "code": "N010",
-    "name": "",
+    "name": "Endless Knot Hanging Necklace silver, CZ Diamonds",
     "category": "Necklaces",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 240,
     "productId": null,
     "productIds": []
   },
@@ -2756,7 +2768,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1643.84,
+    "retail": 1644,
     "productId": "p105",
     "productIds": [
       "p105"
@@ -2765,12 +2777,12 @@
   {
     "sku": "N010-YG14-DIA",
     "code": "N010",
-    "name": "",
+    "name": "Hanging Endless Knot Necklace, 14K Yellow Gold 6.48g, Diamonds, .653cts",
     "category": "Necklaces",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1644,
     "productId": null,
     "productIds": []
   },
@@ -2782,7 +2794,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 219.18,
+    "retail": 220,
     "productId": null,
     "productIds": []
   },
@@ -2794,7 +2806,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 232.88,
+    "retail": 233,
     "productId": null,
     "productIds": []
   },
@@ -2806,7 +2818,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 547.95,
+    "retail": 548,
     "productId": null,
     "productIds": []
   },
@@ -2818,7 +2830,7 @@
     "material": "Silver",
     "qty": 6,
     "cost": 28.05,
-    "retail": 109.59,
+    "retail": 110,
     "productId": null,
     "productIds": []
   },
@@ -2844,7 +2856,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 123.29,
+    "retail": 124,
     "productId": null,
     "productIds": []
   },
@@ -2856,7 +2868,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 2438.36,
+    "retail": 2439,
     "productId": "p094",
     "productIds": [
       "p094"
@@ -2870,7 +2882,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 4589.04,
+    "retail": 4590,
     "productId": null,
     "productIds": []
   },
@@ -2882,7 +2894,7 @@
     "material": "Silver",
     "qty": 1,
     "cost": 34.4,
-    "retail": 102.74,
+    "retail": 103,
     "productId": "p002",
     "productIds": [
       "p002"
@@ -2896,7 +2908,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1246.58,
+    "retail": 1247,
     "productId": "p092",
     "productIds": [
       "p092"
@@ -2910,7 +2922,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 356.16,
+    "retail": 357,
     "productId": "p042",
     "productIds": [
       "p042"
@@ -2938,7 +2950,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 3972.6,
+    "retail": 3973,
     "productId": null,
     "productIds": []
   },
@@ -2950,7 +2962,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 7547.95,
+    "retail": 7548,
     "productId": null,
     "productIds": []
   },
@@ -2962,7 +2974,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 10712.33,
+    "retail": 10713,
     "productId": null,
     "productIds": []
   },
@@ -2974,7 +2986,7 @@
     "material": "14k Gold",
     "qty": 1,
     "cost": 85.64,
-    "retail": 239.73,
+    "retail": 240,
     "productId": "p070",
     "productIds": [
       "p070",
@@ -3001,7 +3013,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 835.62,
+    "retail": 836,
     "productId": "p088",
     "productIds": [
       "p088"
@@ -3015,7 +3027,7 @@
     "material": "Rose Gold",
     "qty": 1,
     "cost": 25.9,
-    "retail": 95.89,
+    "retail": 96,
     "productId": "p089",
     "productIds": [
       "p089"
@@ -3029,7 +3041,7 @@
     "material": "Silver",
     "qty": 4,
     "cost": 26.37,
-    "retail": 82.19,
+    "retail": 83,
     "productId": null,
     "productIds": []
   },
@@ -3041,7 +3053,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 643.84,
+    "retail": 644,
     "productId": null,
     "productIds": []
   },
@@ -3053,7 +3065,7 @@
     "material": "Silver",
     "qty": 2,
     "cost": 25.84,
-    "retail": 82.19,
+    "retail": 83,
     "productId": "p087",
     "productIds": [
       "p087"
@@ -3067,7 +3079,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 602.74,
+    "retail": 603,
     "productId": "p083",
     "productIds": [
       "p083",
@@ -3083,7 +3095,7 @@
     "material": "Platinum",
     "qty": null,
     "cost": null,
-    "retail": 1164.38,
+    "retail": 1165,
     "productId": "p080",
     "productIds": [
       "p080"
@@ -3109,7 +3121,7 @@
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": 712.33,
+    "retail": 713,
     "productId": "p082",
     "productIds": [
       "p082"
@@ -3118,12 +3130,12 @@
   {
     "sku": "P021-YG14",
     "code": "P021",
-    "name": "",
+    "name": "New HUNG syllable pendant, solid 14k yellow gold, size 35mm, With 45cm Chain, 4.44g",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 754,
     "productId": null,
     "productIds": []
   },
@@ -3135,7 +3147,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 753.42,
+    "retail": 754,
     "productId": null,
     "productIds": []
   },
@@ -3147,7 +3159,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 506.85,
+    "retail": 507,
     "productId": "p057",
     "productIds": [
       "p057",
@@ -3174,7 +3186,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 493.15,
+    "retail": 494,
     "productId": "p017",
     "productIds": [
       "p017"
@@ -3188,7 +3200,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 4246.58,
+    "retail": 4247,
     "productId": null,
     "productIds": []
   },
@@ -3200,7 +3212,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 246.58,
+    "retail": 247,
     "productId": "p065",
     "productIds": [
       "p065"
@@ -3214,7 +3226,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1986.3,
+    "retail": 1987,
     "productId": null,
     "productIds": []
   },
@@ -3250,7 +3262,7 @@
     "material": "Silver",
     "qty": 1,
     "cost": 63.98,
-    "retail": 205.48,
+    "retail": 206,
     "productId": null,
     "productIds": []
   },
@@ -3262,7 +3274,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1123.29,
+    "retail": 1124,
     "productId": "p076",
     "productIds": [
       "p076"
@@ -3288,7 +3300,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1479.45,
+    "retail": 1480,
     "productId": null,
     "productIds": []
   },
@@ -3300,7 +3312,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 698.63,
+    "retail": 699,
     "productId": "p075",
     "productIds": [
       "p075"
@@ -3314,7 +3326,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 767.12,
+    "retail": 768,
     "productId": "p023",
     "productIds": [
       "p023"
@@ -3328,7 +3340,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 198.63,
+    "retail": 199,
     "productId": null,
     "productIds": []
   },
@@ -3340,7 +3352,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1780.82,
+    "retail": 1781,
     "productId": "p077",
     "productIds": [
       "p077"
@@ -3366,7 +3378,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 102.74,
+    "retail": 103,
     "productId": "p050",
     "productIds": [
       "p050"
@@ -3380,7 +3392,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 102.74,
+    "retail": 103,
     "productId": "p051",
     "productIds": [
       "p051"
@@ -3394,7 +3406,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 102.74,
+    "retail": 103,
     "productId": "p049",
     "productIds": [
       "p049"
@@ -3408,7 +3420,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 102.74,
+    "retail": 103,
     "productId": "p046",
     "productIds": [
       "p046"
@@ -3422,7 +3434,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 102.74,
+    "retail": 103,
     "productId": "p047",
     "productIds": [
       "p047"
@@ -3436,7 +3448,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 102.74,
+    "retail": 103,
     "productId": "p078",
     "productIds": [
       "p078"
@@ -3450,7 +3462,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 712.33,
+    "retail": 713,
     "productId": "p040",
     "productIds": [
       "p040"
@@ -3476,7 +3488,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 102.74,
+    "retail": 103,
     "productId": "p045",
     "productIds": [
       "p045"
@@ -3490,7 +3502,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 102.74,
+    "retail": 103,
     "productId": "p048",
     "productIds": [
       "p048"
@@ -3516,7 +3528,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 767.12,
+    "retail": 768,
     "productId": "p073",
     "productIds": [
       "p073"
@@ -3554,19 +3566,19 @@
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": 821.92,
+    "retail": 822,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "P034-RG14",
     "code": "P034",
-    "name": "",
+    "name": "Endless Knot Diamond Pendant 14k Rose Gold 2.15.g .26cts Diamonds",
     "category": "Pendants",
     "material": "Rose Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1000,
     "productId": null,
     "productIds": []
   },
@@ -3588,12 +3600,12 @@
   {
     "sku": "P034-WG14",
     "code": "P034",
-    "name": "",
+    "name": "Endless Knot Diamond Pendant 14k White Gold 2.15.g .26cts Diamonds",
     "category": "Pendants",
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1000,
     "productId": null,
     "productIds": []
   },
@@ -3615,12 +3627,12 @@
   {
     "sku": "P034-YG14",
     "code": "P034",
-    "name": "",
+    "name": "Endless Knot Diamond Pendant 14k Yellow Gold 2.15.g .26cts Diamonds",
     "category": "Pendants",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 973,
     "productId": null,
     "productIds": []
   },
@@ -3632,7 +3644,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 972.6,
+    "retail": 973,
     "productId": "p062",
     "productIds": [
       "p062",
@@ -3647,7 +3659,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 82.19,
+    "retail": 83,
     "productId": "p091",
     "productIds": [
       "p091"
@@ -3661,7 +3673,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 739.73,
+    "retail": 740,
     "productId": null,
     "productIds": []
   },
@@ -3697,7 +3709,7 @@
     "material": "Silver",
     "qty": 4,
     "cost": 20.5,
-    "retail": 68.49,
+    "retail": 69,
     "productId": "p071",
     "productIds": [
       "p071"
@@ -3711,7 +3723,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 582.19,
+    "retail": 583,
     "productId": "p069",
     "productIds": [
       "p069"
@@ -3725,7 +3737,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 191.78,
+    "retail": 192,
     "productId": "p067",
     "productIds": [
       "p067"
@@ -3739,7 +3751,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 2726.03,
+    "retail": 2727,
     "productId": null,
     "productIds": []
   },
@@ -3751,7 +3763,7 @@
     "material": "Silver",
     "qty": 5,
     "cost": 53.75,
-    "retail": 205.48,
+    "retail": 206,
     "productId": "p018",
     "productIds": [
       "p018",
@@ -3766,7 +3778,7 @@
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": 671.23,
+    "retail": 672,
     "productId": "p034",
     "productIds": [
       "p034"
@@ -3780,7 +3792,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 643.84,
+    "retail": 644,
     "productId": null,
     "productIds": []
   },
@@ -3792,7 +3804,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 547.95,
+    "retail": 548,
     "productId": "p032",
     "productIds": [
       "p032",
@@ -3802,12 +3814,12 @@
   {
     "sku": "P045-S",
     "code": "P045",
-    "name": "",
+    "name": "Tara Mantra Pendant Green Agate Tashi Mannox Design silver,",
     "category": "Pendants",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 576,
     "productId": null,
     "productIds": []
   },
@@ -3819,7 +3831,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 630.14,
+    "retail": 631,
     "productId": "p014",
     "productIds": [
       "p014",
@@ -3834,7 +3846,7 @@
     "material": "14k Gold",
     "qty": 1,
     "cost": 378.61,
-    "retail": 849.32,
+    "retail": 850,
     "productId": null,
     "productIds": []
   },
@@ -3846,7 +3858,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 82.19,
+    "retail": 83,
     "productId": null,
     "productIds": []
   },
@@ -3858,7 +3870,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 424.66,
+    "retail": 425,
     "productId": "p043",
     "productIds": [
       "p043"
@@ -3872,7 +3884,7 @@
     "material": "Silver",
     "qty": 4,
     "cost": 25.18,
-    "retail": 82.19,
+    "retail": 83,
     "productId": "p041",
     "productIds": [
       "p041"
@@ -3886,7 +3898,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 424.66,
+    "retail": 425,
     "productId": "p044",
     "productIds": [
       "p044"
@@ -3912,7 +3924,7 @@
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": 1095.89,
+    "retail": 1096,
     "productId": "p016",
     "productIds": [
       "p016"
@@ -3926,7 +3938,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 671.23,
+    "retail": 672,
     "productId": "p054",
     "productIds": [
       "p054",
@@ -3941,7 +3953,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 82.19,
+    "retail": 83,
     "productId": "p027",
     "productIds": [
       "p027"
@@ -3955,7 +3967,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 561.64,
+    "retail": 562,
     "productId": "p036",
     "productIds": [
       "p036"
@@ -3969,7 +3981,7 @@
     "material": "Silver",
     "qty": 7,
     "cost": 35.87,
-    "retail": 109.59,
+    "retail": 110,
     "productId": "p029",
     "productIds": [
       "p029"
@@ -3983,7 +3995,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 479.45,
+    "retail": 480,
     "productId": "p052",
     "productIds": [
       "p052"
@@ -3997,7 +4009,7 @@
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": 1643.84,
+    "retail": 1644,
     "productId": "p079",
     "productIds": [
       "p079"
@@ -4023,7 +4035,7 @@
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": 1438.36,
+    "retail": 1439,
     "productId": null,
     "productIds": []
   },
@@ -4035,7 +4047,7 @@
     "material": "Silver",
     "qty": 4,
     "cost": 37.78,
-    "retail": 116.44,
+    "retail": 117,
     "productId": "p039",
     "productIds": [
       "p039"
@@ -4049,7 +4061,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 95.89,
+    "retail": 96,
     "productId": "p038",
     "productIds": [
       "p038"
@@ -4063,7 +4075,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 109.59,
+    "retail": 110,
     "productId": "p037",
     "productIds": [
       "p037"
@@ -4077,7 +4089,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 95.89,
+    "retail": 96,
     "productId": "p022",
     "productIds": [
       "p022"
@@ -4091,7 +4103,7 @@
     "material": "Gold Plated",
     "qty": 2,
     "cost": 46.58,
-    "retail": 219.18,
+    "retail": 220,
     "productId": "p033",
     "productIds": [
       "p033"
@@ -4105,7 +4117,7 @@
     "material": "Silver",
     "qty": 5,
     "cost": 25.09,
-    "retail": 82.19,
+    "retail": 83,
     "productId": "p026",
     "productIds": [
       "p026"
@@ -4119,7 +4131,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 767.12,
+    "retail": 768,
     "productId": "p028",
     "productIds": [
       "p028"
@@ -4145,7 +4157,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 2356.16,
+    "retail": 2357,
     "productId": "p031",
     "productIds": [
       "p031"
@@ -4159,7 +4171,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 130.14,
+    "retail": 131,
     "productId": "p019",
     "productIds": [
       "p019",
@@ -4174,7 +4186,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 739.73,
+    "retail": 740,
     "productId": "p024",
     "productIds": [
       "p024"
@@ -4188,7 +4200,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 390.41,
+    "retail": 391,
     "productId": null,
     "productIds": []
   },
@@ -4200,7 +4212,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 726.03,
+    "retail": 727,
     "productId": null,
     "productIds": []
   },
@@ -4212,7 +4224,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 8835.62,
+    "retail": 8836,
     "productId": null,
     "productIds": []
   },
@@ -4224,7 +4236,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 109.59,
+    "retail": 110,
     "productId": null,
     "productIds": []
   },
@@ -4236,7 +4248,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": 205.48,
+    "retail": 206,
     "productId": null,
     "productIds": []
   },
@@ -4248,7 +4260,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1260.27,
+    "retail": 1261,
     "productId": null,
     "productIds": []
   },
@@ -4260,7 +4272,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 1041.1,
+    "retail": 1042,
     "productId": null,
     "productIds": []
   },
@@ -4272,31 +4284,31 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 547.95,
+    "retail": 548,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R001-S-DIA",
     "code": "R001",
-    "name": "",
+    "name": "Silver Mahakala ring with 32 white and black diamonds 0.34cts, 23g",
     "category": "Rings",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1042,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R005-S-YG14",
     "code": "R005",
-    "name": "Rahu Ring Ring, Silver, 14K Yellow Gold Ring (2.8g) with white topaz + Black Diamonds",
+    "name": "Rahu Ring Silver+ 14K Yellow Gold Ring (2.8g) with white topaz + Black Diamonds",
     "category": "Rings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 424.66,
+    "retail": 425,
     "productId": null,
     "productIds": []
   },
@@ -4308,19 +4320,19 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 123.29,
+    "retail": 124,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R014-S-BD",
     "code": "R014",
-    "name": "",
+    "name": "Laughing Skull Ring, Silver Black Diamonds 6g",
     "category": "Rings",
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 124,
     "productId": null,
     "productIds": []
   },
@@ -4332,19 +4344,19 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1315.07,
+    "retail": 1316,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R014-YG14-BD",
     "code": "R014",
-    "name": "",
+    "name": "Laughing Skull Ring, Black Diamonds, .036 cts 14k Gold 7.50g",
     "category": "Rings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1316,
     "productId": null,
     "productIds": []
   },
@@ -4356,7 +4368,7 @@
     "material": "Silver",
     "qty": 1,
     "cost": 43.8,
-    "retail": 150.68,
+    "retail": 151,
     "productId": null,
     "productIds": []
   },
@@ -4368,7 +4380,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 150.68,
+    "retail": 151,
     "productId": null,
     "productIds": []
   },
@@ -4404,7 +4416,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1780.82,
+    "retail": 1781,
     "productId": null,
     "productIds": []
   },
@@ -4416,19 +4428,19 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 2397.26,
+    "retail": 2398,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R017B-YG18-DIA",
     "code": "R017B",
-    "name": "",
+    "name": "Dorje Bell Samaya Ring, male size 18K Yellow Gold, brushed finished surface, sanded insert, polished edges Central Diamond .025 CTS. 12.5 grams",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 2398,
     "productId": null,
     "productIds": []
   },
@@ -4452,19 +4464,19 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 143.84,
+    "retail": 144,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R019-YG18",
     "code": "R019",
-    "name": "Infinity Knot Eternal Band, 18k Gold 4.8g, female size (51-55)",
+    "name": "Infinity Knot Eternal Band, 18k Gold 4.8g, female size (51-55) (Male size 5.64g: 67,000)",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 917.81,
+    "retail": 918,
     "productId": null,
     "productIds": []
   },
@@ -4476,7 +4488,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1150.68,
+    "retail": 1151,
     "productId": null,
     "productIds": []
   },
@@ -4488,7 +4500,7 @@
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": 1150.68,
+    "retail": 1151,
     "productId": null,
     "productIds": []
   },
@@ -4519,7 +4531,7 @@
   {
     "sku": "R020-YG18",
     "code": "R020",
-    "name": "Infinity Knot Eternal Band, Thinner, With Background, 18k Yellow Gold 4.7g female size (51-55)",
+    "name": "Infinity Knot Eternal Band, Thinner, With Background, 18k Yellow Gold 4.7g female size (51-55) 4.1g (Size 59+ 6.25g: 87,000)",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
@@ -4531,12 +4543,12 @@
   {
     "sku": "R020B-YG18",
     "code": "R020B",
-    "name": "Large endless knot ring, THICKER, 18k yellow gold, Size 53 (female), 5.34g",
+    "name": "18K Infinity Knot Eternal Band, With Background, full diamonds .13 cts. 5.01g female size (51-55)",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1013.7,
+    "retail": 1343,
     "productId": null,
     "productIds": []
   },
@@ -4548,7 +4560,7 @@
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": 1643.84,
+    "retail": 1644,
     "productId": null,
     "productIds": []
   },
@@ -4560,7 +4572,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 931.51,
+    "retail": 932,
     "productId": null,
     "productIds": []
   },
@@ -4572,7 +4584,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 2150.68,
+    "retail": 2151,
     "productId": null,
     "productIds": []
   },
@@ -4584,7 +4596,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 2136.99,
+    "retail": 2137,
     "productId": null,
     "productIds": []
   },
@@ -4596,19 +4608,19 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 2041.1,
+    "retail": 2042,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R023-YG14-CIT-DIA",
     "code": "R023",
-    "name": "",
+    "name": "Citrine “Sunshine” Diamond 14K Vajra Ring Citrine - 3.34cts 0.598cts Diamonds 14k yellow gold 3.59g",
     "category": "Rings",
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 2042,
     "productId": null,
     "productIds": []
   },
@@ -4620,7 +4632,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 2041.1,
+    "retail": 2042,
     "productId": null,
     "productIds": []
   },
@@ -4639,24 +4651,24 @@
   {
     "sku": "R025A-YG18",
     "code": "R025A",
-    "name": "A pair of Dorje and Bell Wedding Bands, Sanded Finish, Simple Design 4 diamonds... 18k Yellow Gold: approx 17g",
+    "name": "A pair of Dorje and Bell Wedding Bands, Sanded Finish, Simple Design 4 diamonds, names engraved on the inside of the rings, comfort fit 18k Yellow Gold: approx 17g",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 3287.67,
+    "retail": 3288,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R025C-YG18",
     "code": "R025C",
-    "name": "A pair of Dorje and Bell Wedding Bands, Brushed Finish, Protruding Design, 14 diamonds... 18k Yellow Gold: approx 19g",
+    "name": "A pair of Dorje and Bell Wedding Bands, Brushed Finish, Protruding Design, 14 diamonds , names engraved on the inside of the rings, comfort fit 18k Yellow Gold: approx 19g",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 3356.16,
+    "retail": 3357,
     "productId": null,
     "productIds": []
   },
@@ -4668,19 +4680,19 @@
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": 2383.56,
+    "retail": 2384,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R026-WG14-AQ-DIA",
     "code": "R026",
-    "name": "",
+    "name": "Aquamarine Ring, .28cts White Diamonds, 14k White Gold 5.29g",
     "category": "Rings",
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 2384,
     "productId": null,
     "productIds": []
   },
@@ -4716,19 +4728,19 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1917.81,
+    "retail": 1918,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R029-YG18-DIA",
     "code": "R029",
-    "name": "",
+    "name": "Malaya Dream Ring, .255cts Diamonds 18k gold 9.77g",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 1918,
     "productId": null,
     "productIds": []
   },
@@ -4747,36 +4759,36 @@
   {
     "sku": "R030-YG18",
     "code": "R030",
-    "name": "",
+    "name": "Endless Knot Ring Thicker, Seamless 18K Yellow Gold 11.37 Male size (size 61\\)",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 2179,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R032-YG18",
     "code": "R032",
-    "name": "",
+    "name": "Large Coral Signet Ring 18k Gold 21.75g, Total 23.56g 0.58cts. Diamonds",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 5000,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R032-YG18-CO",
     "code": "R032",
-    "name": "Endless Knot Ring Thicker, Seamless 18K Yellow Gold 11.37 Male size (size 61)",
+    "name": "Large Coral Signet Ring 18k Gold 21.75g, Total 23.56g 0.58cts. Diamonds",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 2178.08,
+    "retail": 5000,
     "productId": "p096",
     "productIds": [
       "p096"
@@ -4790,19 +4802,19 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 246.58,
+    "retail": 247,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R034-YG18",
     "code": "R034",
-    "name": "Infinity Knot Eternal Band, Thinner, With Background, 18k Yellow Gold Size 59 and above (male) 6.25g",
+    "name": "Large endless knot ring, THICKER, 18k yellow gold, Size 53 (female), 5.34g (Size 59 5.72g: 80,000)",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1191.78,
+    "retail": 1014,
     "productId": null,
     "productIds": []
   },
@@ -4814,7 +4826,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 178.08,
+    "retail": 179,
     "productId": null,
     "productIds": []
   },
@@ -4826,7 +4838,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 3493.15,
+    "retail": 3494,
     "productId": null,
     "productIds": []
   },
@@ -4838,7 +4850,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1013.7,
+    "retail": 1014,
     "productId": "p003",
     "productIds": [
       "p003"
@@ -4852,7 +4864,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1013.7,
+    "retail": 1014,
     "productId": "p007",
     "productIds": [
       "p007",
@@ -4891,7 +4903,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1301.37,
+    "retail": 1302,
     "productId": null,
     "productIds": []
   },
@@ -4903,7 +4915,7 @@
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1027.4,
+    "retail": 1028,
     "productId": null,
     "productIds": []
   },
@@ -4915,7 +4927,7 @@
     "material": "Silver",
     "qty": 1,
     "cost": 64.5,
-    "retail": 438.36,
+    "retail": 439,
     "productId": "p009",
     "productIds": [
       "p009"
@@ -4929,31 +4941,31 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": 493.15,
+    "retail": 494,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R047-WG18",
     "code": "R047",
-    "name": "Gold bands sizes 50-54, bell engravings, white 18k gold Small sizes",
+    "name": "Gold bands sizes 50-54, bell engravings, white 18k gold (Small sizes: 25,000, Medium: 27,000, Large: 30,000)",
     "category": "Rings",
     "material": "White Gold",
     "qty": null,
     "cost": null,
-    "retail": 342.47,
+    "retail": 343,
     "productId": null,
     "productIds": []
   },
   {
     "sku": "R047-YG18",
     "code": "R047",
-    "name": "Gold bands sizes 50-61, vajra & bell engravings, yellow 18k gold Small sizes",
+    "name": "Gold bands sizes 50-61, vajra & bell engravings, yellow 18k gold (Small sizes: 24,000, Medium: 26,000, Large: 28,000)",
     "category": "Rings",
     "material": "18k Gold",
     "qty": null,
     "cost": null,
-    "retail": 328.77,
+    "retail": 329,
     "productId": null,
     "productIds": []
   },
@@ -4965,7 +4977,7 @@
     "material": "14k Gold",
     "qty": null,
     "cost": null,
-    "retail": 1424.66,
+    "retail": 1425,
     "productId": "p006",
     "productIds": [
       "p006"
