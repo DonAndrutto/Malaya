@@ -635,7 +635,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 245,
     "productId": null,
     "productIds": []
   },
@@ -1542,18 +1542,6 @@
     "category": "Earrings",
     "material": "14k Gold",
     "qty": null,
-    "cost": null,
-    "retail": 1137,
-    "productId": null,
-    "productIds": []
-  },
-  {
-    "sku": "E008-DIA-YG14",
-    "code": "E008",
-    "name": "Double Dorje Stud Earrings, 14k gold, 4.33g: 29 White Diamonds, .197cts",
-    "category": "Earrings",
-    "material": "14k Gold",
-    "qty": 1.5,
     "cost": null,
     "retail": 1137,
     "productId": null,
@@ -3481,7 +3469,7 @@
     "material": "Gold Plated",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 575,
     "productId": null,
     "productIds": []
   },
@@ -4176,7 +4164,7 @@
     "material": "Silver",
     "qty": null,
     "cost": null,
-    "retail": null,
+    "retail": 144,
     "productId": null,
     "productIds": []
   },
@@ -4694,5 +4682,17 @@
     "productIds": [
       "p006"
     ]
+  },
+  {
+    "sku": "E008-YG14-DIA",
+    "code": "E008",
+    "name": "Double Dorje Stud Earrings, 14k gold, 4.33g: 29 White Diamonds, .197cts",
+    "category": "Earrings",
+    "material": "14k Gold",
+    "qty": 1.5,
+    "cost": null,
+    "retail": 1137,
+    "productId": null,
+    "productIds": []
   }
 ]

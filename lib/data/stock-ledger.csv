@@ -51,7 +51,7 @@ BA005-YGP,BA005,"Vajra Bangle Gold Plated, CZ 19.14g (Size L, 23.69g: 33,000)",B
 BA005-YGP-CZ,BA005,"Vajra Bangle Gold Plated, CZ 19.14g (Size L, 23.69g: 33,000)",Bangles,Gold Plated,,,439,4,
 BA007-S,BA007,"Flexible Double skull bangle black diamonds, Sterling Silver",Bangles,Silver,,,261,,
 BA007-S-BD,BA007,"Flexible Double skull bangle black diamonds, Sterling Silver",Bangles,Silver,,,261,3,
-BR001-S,BR001,"Eight Auspicious Symbols Brooch, Round, Silver",Brooches,Silver,,,,2,
+BR001-S,BR001,"Eight Auspicious Symbols Brooch, Round, Silver",Brooches,Silver,,,245,2,
 BR001-TT,BR001,"Eight Auspicious Symbols Brooch, Round, Silver Half Gold Plated",Brooches,Gold Plated,,,274,5,
 BR001-YGP,BR001,"Eight Auspicious Symbols Brooch, Round, Silver Gold Plated 21.3g",Brooches,Gold Plated,,,274,7,
 BR002-YGP,BR002,"Eight Auspicious Symbols Brooch, Elongated, Silver Gold Plated 17.7g",Brooches,Gold Plated,,,302,5,
@@ -127,7 +127,7 @@ E006B-S,E006B,"Endless Knot Earrings Large, Silver 6.2g",Earrings,Silver,2,24.82
 E006B-YGP,E006B,"Endless Knot Earrings Large, YGP 6.23g",Earrings,Gold Plated,2,26.74,110,5,
 E007-YG14,E007,"Double Dorje Stud Earrings, Single Diamond, .01cts 14k Yellow Gold 2.36g",Earrings,14k Gold,,,411,5,
 E008-YG14-BS,E008,"Double Dorje Stud Earrings, 29 Blue Sapphires, .2cts 14k Yellow Gold 4.3g",Earrings,14k Gold,,,1137,1,
-E008-DIA-YG14,E008,"Double Dorje Stud Earrings, 14k gold, 4.33g: 29 White Diamonds, .197cts",Earrings,14k Gold,1.5,,1137,4,
+E008-YG14-DIA,E008,"Double Dorje Stud Earrings, 14k gold, 4.33g: 29 White Diamonds, .197cts",Earrings,14k Gold,1.5,,1137,4,
 E008-YG14-GE,E008,"Double Dorje Stud Earrings, 29 Green Emeralds, .2cts 14k Yellow Gold 4.33g",Earrings,14k Gold,,,1137,1,
 E008-YG14-RR,E008,"Double Dorje Stud Earrings, 14k Yellow Gold, 29 red rubies .2cts",Earrings,14k Gold,,,1137,1,
 E009-S,E009,AH Syllable Stud Earrings silver 1.16g,Earrings,Silver,,,35,,
@@ -276,7 +276,7 @@ P034-YG14-DIA,P034,Endless Knot Diamond Pendant 14k Yellow Gold 2.15.g .26cts Di
 P035-S,P035,Silver Tam Syllable Pendant With Chain TASHI MANNOX DESIGN,Pendants,Silver,,,83,4,p091
 P035-YG14,P035,"Solid 14K Gold Tam syllable pendant, Pendant only 4.32 grams",Pendants,14k Gold,,,740,4,
 P036-S,P036,"Silver Deity Gau Locket, sapphire scratch proof crystal, openable, replaceable image, with chain.",Pendants,Silver,,,580,5,
-P036-YGP,P036,"Gold Plated Deity Gau Locket, sapphire scratch proof crystal, openable, replaceable image, with chain.",Pendants,Gold Plated,,,,4,
+P036-YGP,P036,"Gold Plated Deity Gau Locket, sapphire scratch proof crystal, openable, replaceable image, with chain.",Pendants,Gold Plated,,,575,4,
 P037-S,P037,New Ah syllable Pendant Tashi Mannox Design Silver with chain,Pendants,Silver,4,20.5,69,5,p071
 P037-YG14,P037,New Ah syllable Pendant Tashi Mannox Design 3.40 grams Solid 14k Gold,Pendants,14k Gold,,,583,4,p069
 P038-S,P038,New Tashi Mannox OM AH HUNG/ Vajra Dogtag pendant,Pendants,Silver,,,192,5,p067
@@ -329,7 +329,7 @@ R014-YG14-BD,R014,"Laughing Skull Ring, Black Diamonds, .036 cts 14k Gold 7.50g"
 R017A-S,R017A,"Vajra and bell Ring, silver, black enamel, brushed finished surface, sanded insert, polished edges",Rings,Silver,1,43.8,151,6,
 R017A-S-T,R017A,"Vajra and bell Ring, silver, Tiffany blue enamel, brushed finished surface, sanded insert, polished edges",Rings,Silver,,,151,4,
 R017A-YG18,R017A,"Double Dorje Ring, brushed finished surface, sanded insert, polished edges, 18k, Diamond 0.04 CTS.",Rings,18k Gold,,,2200,4,
-R017B-S,R017B,"Samaya Ring, Vajra Bell, Silver, No enamel",Rings,Silver,,,,1,
+R017B-S,R017B,"Samaya Ring, Vajra Bell, Silver, No enamel",Rings,Silver,,,144,1,
 R017B-YG14,R017B,"Dorje Bell Samaya Ring, male size 14K Yellow Gold, brushed finished surface, sanded insert, polished edges Central Diamond .025 CTS. 10.49 grams",Rings,14k Gold,,,1781,,
 R017B-YG18,R017B,"Dorje Bell Samaya Ring, male size 18K Yellow Gold, brushed finished surface, sanded insert, polished edges Central Diamond .025 CTS. 12.5 grams",Rings,18k Gold,,,2398,,
 R017B-YG18-DIA,R017B,"Dorje Bell Samaya Ring, male size 18K Yellow Gold, brushed finished surface, sanded insert, polished edges Central Diamond .025 CTS. 12.5 grams",Rings,18k Gold,,,2398,6,
