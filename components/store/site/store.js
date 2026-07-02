@@ -46,7 +46,7 @@ export function addToCart(id, qty = 1) {
   const ex = items.find((i) => i.id === id);
   if (ex) ex.qty += qty; else items.push({ id, qty });
   writeCart(items);
-  showToast('Added to your order');
+  notifyAdded(id);
 }
 
 export function setCartQty(id, qty) {
@@ -93,6 +93,29 @@ export function showToast(msg) {
   el.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ── "Added to your order" notice ─────────────────────────────────────────────
+// A richer, actionable replacement for the plain toast on add-to-cart: callers
+// fire notifyAdded(id); a <CartNotice> mounted in the store layout subscribes
+// and resolves the product name (Close / Go to basket). The nonce (`n`) lets a
+// repeat add of the same item re-trigger the notice.
+let addNoticeListeners = [];
+let addNoticeSeq = 0;
+export function notifyAdded(id) {
+  addNoticeSeq += 1;
+  const notice = { id, n: addNoticeSeq };
+  addNoticeListeners.forEach((f) => f(notice));
+}
+
+export function useAddedNotice() {
+  const [notice, setNotice] = useState(null);
+  useEffect(() => {
+    const f = (v) => setNotice(v);
+    addNoticeListeners.push(f);
+    return () => { addNoticeListeners = addNoticeListeners.filter((x) => x !== f); };
+  }, []);
+  return [notice, () => setNotice(null)];
 }
 
 // ── Site data context ────────────────────────────────────────────────────────

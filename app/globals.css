@@ -37,6 +37,7 @@ button, input, select { font-family: inherit; }
 .malaya-site .hdr-bar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; grid-template-areas: "logo nav cart"; gap: 16px; padding-top: 12px; padding-bottom: 12px; }
 .malaya-site .hdr-logo { grid-area: logo; justify-self: start; }
 .malaya-site .hdr-logo img { height: 74px; display: block; }
+.malaya-site .hdr-logo-text { display: block; color: #fff; font-family: 'Raleway', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; }
 .malaya-site .hdr-icons { grid-area: cart; justify-self: end; display: flex; align-items: center; gap: 22px; }
 .malaya-site .hdr-icon-wrap { position: relative; }
 .malaya-site .hdr-icon-btn { background: none; border: none; cursor: pointer; padding: 6px; display: inline-flex; align-items: center; gap: 6px; position: relative; color: #f3ece0; }
@@ -93,7 +94,7 @@ button, input, select { font-family: inherit; }
 .malaya-site .home-banner-inner { background: rgba(20, 12, 8, .45); padding: 110px 24px; text-align: center; color: #fff; display: flex; flex-direction: column; align-items: center; gap: 26px; }
 .malaya-site .home-banner-inner h2 { font-size: 32px; font-weight: 300; letter-spacing: .14em; text-transform: uppercase; }
 /* ── Combined catalogue scroll (home) ──────────────────────────────────────── */
-.malaya-site .cat-bar { position: sticky; top: 0; z-index: 30; background: var(--brown); box-shadow: 0 2px 14px rgba(0,0,0,.18); }
+.malaya-site .cat-bar { position: sticky; top: 0; z-index: 30; background: rgba(59, 35, 26, .72); -webkit-backdrop-filter: blur(12px) saturate(140%); backdrop-filter: blur(12px) saturate(140%); }
 .malaya-site .cat-bar-inner { display: flex; align-items: center; gap: 16px; padding-top: 11px; padding-bottom: 11px; }
 .malaya-site .cat-current-wrap { position: relative; flex: none; }
 .malaya-site .cat-current { display: inline-flex; align-items: center; gap: 10px; background: transparent; border: 1px solid rgba(243,236,224,.34); color: #f3ece0; font-family: 'Raleway', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: .04em; padding: 9px 16px; cursor: pointer; transition: border-color .2s, background .2s; }
@@ -135,7 +136,7 @@ button, input, select { font-family: inherit; }
 .malaya-site .pcard:hover .pcard-thumb img:first-child { transform: scale(1.04); }
 .malaya-site .pcard-label { position: absolute; top: 12px; left: 12px; background: var(--brown); color: #fff; font-size: 9.5px; letter-spacing: .2em; padding: 4px 10px; }
 .malaya-site .pcard-label-sale { background: #a4502b; }
-.malaya-site .pcard-tashi { position: absolute; left: 12px; bottom: 12px; width: 52px; height: auto; border: 1px solid var(--line); }
+.malaya-site .pcard-tashi { position: absolute; right: 12px; bottom: 12px; width: 44px; height: auto; border: none; }
 .malaya-site .pcard-text { text-align: center; padding: 16px 6px 4px; display: flex; flex-direction: column; gap: 5px; font-weight: 400; }
 .malaya-site .pcard-name { font-size: 14px; color: #222; font-family: 'Poppins', sans-serif; }
 .malaya-site .pcard-name:hover { color: var(--gold); }
@@ -167,7 +168,7 @@ button, input, select { font-family: inherit; }
 .malaya-site .pd-photo img:first-child { width: 100%; display: block; }
 .malaya-site .pd-photo .pd-alt { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .4s; }
 .malaya-site .pd-photo:hover .pd-alt { opacity: 1; }
-.malaya-site .pd-tashi { position: absolute; left: 16px; bottom: 16px; width: 64px; border: 1px solid var(--line); }
+.malaya-site .pd-tashi { position: absolute; right: 16px; bottom: 16px; width: 54px; border: none; }
 .malaya-site .pd-noimg { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; background: #fff; color: var(--muted); }
 .malaya-site .pd-noimg span { font-size: 64px; font-family: "Cormorant Garamond", "Times New Roman", serif; letter-spacing: .12em; }
 .malaya-site .pd-thumbs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
@@ -197,6 +198,39 @@ button, input, select { font-family: inherit; }
 .malaya-site .pd-qty-sm button { min-height: 32px; width: 30px; }
 .malaya-site .pd-whatsapp { font-size: 13px; color: var(--gold); }
 .malaya-site .pd-related { padding-top: 34px; padding-bottom: 64px; }
+
+/* Product-page "Order Now" banner — a compact frosted-glass add-to-order panel
+   that lets the banner photo read through (no border, no shadow). */
+.malaya-site .pd-order-banner { position: relative; background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; padding: 40px 24px; }
+.malaya-site .pd-order-banner::before { content: ''; position: absolute; inset: 0; background: rgba(30, 18, 10, .22); }
+.malaya-site .pd-order-card { position: relative; width: 100%; max-width: 300px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; border-radius: 14px; background: rgba(255, 255, 255, .10); -webkit-backdrop-filter: blur(16px) saturate(150%); backdrop-filter: blur(16px) saturate(150%); animation: lux-fade-up .5s ease both; }
+.malaya-site .pd-order-head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+.malaya-site .pd-order-kicker { font-size: 10.5px; letter-spacing: .26em; text-transform: uppercase; color: rgba(255,255,255,.9); }
+.malaya-site .pd-order-price { display: inline-flex; align-items: baseline; gap: 8px; font-size: 19px; color: #fff; }
+.malaya-site .pd-order-price strong { font-weight: 500; color: #fff; }
+.malaya-site .pd-order-price s { color: rgba(255, 255, 255, .6); font-size: 13px; }
+.malaya-site .pd-order-buy { display: flex; gap: 10px; align-items: stretch; width: 100%; }
+.malaya-site .pd-order-buy .btn-malaya { flex: 1; padding-left: 18px; padding-right: 18px; }
+.malaya-site .pd-order-card .pd-qty { border-color: rgba(255, 255, 255, .45); }
+.malaya-site .pd-order-card .pd-qty button { color: #fff; }
+.malaya-site .pd-order-card .pd-qty button:hover { color: var(--gold); }
+.malaya-site .pd-order-card .pd-qty span { color: #fff; }
+
+/* "Explore <category>" tile linking back to the catalogue section. */
+.malaya-site .pd-explore { position: relative; display: block; background-size: cover; background-position: center; min-height: 220px; margin-top: 6px; overflow: hidden; }
+.malaya-site .pd-explore::before { content: ''; position: absolute; inset: 0; background: rgba(30, 18, 10, .4); transition: background .3s; }
+.malaya-site .pd-explore:hover::before { background: rgba(30, 18, 10, .52); }
+.malaya-site .pd-explore-inner { position: relative; z-index: 1; height: 100%; min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #fff; text-align: center; padding: 36px 24px; animation: lux-fade-up .6s ease both; }
+.malaya-site .pd-explore-kicker { font-style: normal; font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: rgba(255,255,255,.82); }
+.malaya-site .pd-explore-title { font-family: 'Raleway', sans-serif; font-size: 28px; font-weight: 600; letter-spacing: .14em; transition: letter-spacing .4s ease; }
+.malaya-site .pd-explore:hover .pd-explore-title { letter-spacing: .2em; }
+
+/* Subtle, luxurious entrance used across banners/cards — no shadows or borders. */
+@keyframes lux-fade-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 600px) {
+  .malaya-site .pd-order-banner { padding: 44px 18px; }
+  .malaya-site .pd-explore-title { font-size: 22px; }
+}
 .malaya-site .tashi-intro { display: grid; grid-template-columns: 1.1fr 1fr; gap: 54px; padding-top: 48px; padding-bottom: 26px; align-items: start; }
 .malaya-site .tashi-kicker { font-size: 26px; font-weight: 300; color: #777; }
 .malaya-site .tashi-name { font-size: 40px; font-weight: 700; color: var(--brown); margin: 4px 0 2px; }
@@ -263,6 +297,21 @@ button, input, select { font-family: inherit; }
 .malaya-site .ftr-bottom .site-container { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
 #site-toast { position: fixed; bottom: 28px; left: 50%; transform: translate(-50%, 16px); background: #1d1d1d; color: #fff; font-size: 13px; letter-spacing: .06em; padding: 13px 26px; opacity: 0; pointer-events: none; transition: all .25s; z-index: 200; }
 #site-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* "Added to your order" notice — frosted-glass card (Close / Go to basket). */
+.malaya-site .cart-notice { position: fixed; z-index: 210; right: 24px; bottom: 24px; width: 340px; max-width: calc(100vw - 32px); display: flex; align-items: center; gap: 14px; background: rgba(255, 255, 255, .78); -webkit-backdrop-filter: blur(18px) saturate(150%); backdrop-filter: blur(18px) saturate(150%); border-radius: 14px; padding: 14px 16px; animation: cart-notice-in .28s ease both; }
+@keyframes cart-notice-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+.malaya-site .cart-notice-img { width: 52px; height: 52px; object-fit: cover; flex-shrink: 0; border-radius: 8px; }
+.malaya-site .cart-notice-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.malaya-site .cart-notice-text { font-size: 13px; color: #444; line-height: 1.4; }
+.malaya-site .cart-notice-text strong { color: var(--brown); font-weight: 600; }
+.malaya-site .cart-notice-basket { align-self: flex-start; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
+.malaya-site .cart-notice-basket:hover { color: var(--brown); }
+.malaya-site .cart-notice-x { flex-shrink: 0; align-self: flex-start; background: none; border: none; font-size: 20px; line-height: 1; color: var(--muted); cursor: pointer; padding: 0 2px; }
+.malaya-site .cart-notice-x:hover { color: var(--brown); }
+@media (max-width: 600px) {
+  .malaya-site .cart-notice { right: 12px; left: 12px; bottom: 12px; width: auto; }
+}
 
 /* ── Blog (magazine grid + article) ────────────────────────────────────────── */
 .malaya-site .blog-wrap { padding-top: 48px; padding-bottom: 72px; }

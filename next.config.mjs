@@ -2,7 +2,6 @@
 const nextConfig = {
   images: {
     remotePatterns: [
-      { protocol: 'https', hostname: 'malayajewelrybhutan.com' },
       { protocol: 'https', hostname: 'firebasestorage.googleapis.com' },
     ],
   },
