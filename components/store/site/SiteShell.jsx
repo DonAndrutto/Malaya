@@ -6,10 +6,11 @@
 // Navigation uses the Next.js App Router (next/link + usePathname).
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { fmtPrice, siteImg, cdnFallback, posFor } from '@/lib/data/site-data';
-import { useCart, removeFromCart, cartTotal, useSiteData } from './store';
+import { fmtPrice, posFor, bgImage } from '@/lib/data/site-data';
+import { useCart, removeFromCart, cartTotal, useSiteData, useAddedNotice } from './store';
 
 // ── Inline icons (crisp at any size, no extra image assets) ──────────────────
 export function BasketIcon({ size = 21 }) {
@@ -69,10 +70,10 @@ export function SocialLinks() {
   const { content } = useSiteData();
   const ct = content.contact;
   const links = [
-    { name: 'facebook', url: ct.facebook, label: 'Malaya Jewelry on Facebook' },
-    { name: 'instagram', url: ct.instagram, label: 'Malaya Jewelry on Instagram' },
+    { name: 'facebook', url: ct.facebook, label: 'Malaya Jewellery on Facebook' },
+    { name: 'instagram', url: ct.instagram, label: 'Malaya Jewellery on Instagram' },
     { name: 'whatsapp', url: ct.whatsappUrl, label: 'Chat on WhatsApp' },
-    { name: 'pinterest', url: ct.pinterest, label: 'Malaya Jewelry on Pinterest' },
+    { name: 'pinterest', url: ct.pinterest, label: 'Malaya Jewellery on Pinterest' },
     { name: 'linktree', url: ct.linktree, label: 'All Links to Social Media', tip: true },
   ].filter((l) => l.url);
   return (
@@ -88,24 +89,15 @@ export function SocialLinks() {
   );
 }
 
-// ── Image with local→CDN→smaller-size fallback ───────────────────────────────
+// ── Image (Firebase-hosted) ──────────────────────────────────────────────────
+// Renders nothing when there's no src (so a missing photo never produces a
+// broken/stray request); hides itself if the image fails to load.
 export function SiteImg({ src, alt, style, className }) {
+  if (!src) return null;
   return (
     <img
       src={src} alt={alt || ''} loading="lazy" className={className} style={style}
-      onError={(e) => {
-        const el = e.target;
-        const tried = el.dataset.tried || '';
-        const cur = el.getAttribute('src') || '';
-        if (!tried.includes('cdn')) {
-          const cdn = cdnFallback(cur);
-          if (cdn) { el.dataset.tried = tried + 'cdn,'; el.src = cdn; return; }
-        }
-        if (!tried.includes('small') && cur.includes('M.')) {
-          el.dataset.tried = (el.dataset.tried || '') + 'small,';
-          el.src = cur.replace('M.', 'S.');
-        }
-      }}
+      onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }}
     />
   );
 }
@@ -131,9 +123,9 @@ export function SiteProductCard({ p }) {
         ) : isNew ? (
           <span className="pcard-label">NEW</span>
         ) : null}
-        {p.tashi && (
-          <img className="pcard-tashi" src={settings.tashiBadge || siteImg('tashi.jpg')} alt="Tashi Mannox"
-            title="Malaya Jewelry Collaboration with Tashi Mannox" />
+        {p.tashi && settings.tashiBadge && (
+          <img className="pcard-tashi" src={settings.tashiBadge} alt="Tashi Mannox"
+            title="Malaya Jewellery Collaboration with Tashi Mannox" />
         )}
       </Link>
       <h5 className="pcard-text">
@@ -150,13 +142,40 @@ export function SiteProductCard({ p }) {
 export function PageBanner({ title, subtitle, img, category }) {
   const { settings } = useSiteData();
   const catBanner = category && settings.categoryBanners ? settings.categoryBanners[category] : null;
-  const bg = catBanner || img || settings.pageBanner || siteImg('banner33.jpg');
+  const bg = catBanner || img || settings.pageBanner || null;
   return (
-    <div className="page-banner" style={{ backgroundImage: `url(${bg})`, backgroundPosition: posFor(settings, bg) }}>
+    <div className="page-banner" style={{ backgroundImage: bgImage(bg), backgroundPosition: posFor(settings, bg) }}>
       <div className="site-container">
         <strong className="page-banner-title">{title}</strong>
         {subtitle && <span className="page-banner-sub">{subtitle}</span>}
       </div>
+    </div>
+  );
+}
+
+// ── "Added to your order" notice ─────────────────────────────────────────────
+// Mounted once in the store layout. Shows an actionable card when something is
+// added to the cart: the item name, a Go-to-basket link, and a close button.
+// Auto-dismisses after a few seconds (timer resets on each new add).
+export function CartNotice() {
+  const [notice, clear] = useAddedNotice();
+  const { SITE_BY_ID } = useSiteData();
+  useEffect(() => {
+    if (!notice) return undefined;
+    const t = setTimeout(clear, 6000);
+    return () => clearTimeout(t);
+  }, [notice]); // eslint-disable-line react-hooks/exhaustive-deps
+  if (!notice) return null;
+  const p = SITE_BY_ID[notice.id];
+  const name = (p && p.name) || 'This item';
+  return (
+    <div className="cart-notice" role="status" aria-live="polite">
+      {p && p.img && <SiteImg className="cart-notice-img" src={p.img} alt={name} />}
+      <div className="cart-notice-body">
+        <span className="cart-notice-text">Added <strong>{name}</strong> to your order</span>
+        <Link href="/order" className="cart-notice-basket" onClick={clear}>Go to basket →</Link>
+      </div>
+      <button type="button" className="cart-notice-x" onClick={clear} aria-label="Dismiss">×</button>
     </div>
   );
 }
@@ -215,7 +234,9 @@ export function SiteHeader() {
     <header className={'site-header' + (overlay ? ' site-header--overlay' : '')}>
       <div className="site-container hdr-bar">
         <Link href="/" className="hdr-logo">
-          <img src={settings.logo || siteImg('logo.png')} alt="Malaya Jewelry" />
+          {settings.logo
+            ? <img src={settings.logo} alt="Malaya Jewellery" />
+            : <span className="hdr-logo-text">Malaya Jewellery</span>}
         </Link>
         <nav className="hdr-nav">
           {NAV.map((item) => {
@@ -246,6 +267,11 @@ export function SiteHeader() {
 export function SiteFooter() {
   const { content } = useSiteData();
   const ct = content.contact;
+  // The small "Studio admin" link is the only admin entry point. On a product
+  // page it deep-links straight to that item's editor in the admin.
+  const pathname = usePathname() || '/';
+  const productId = pathname.startsWith('/product/') ? pathname.slice('/product/'.length).split('/')[0] : '';
+  const adminHref = productId ? `/admin?edit=${encodeURIComponent(productId)}` : '/admin';
   return (
     <footer className="site-footer">
       <div className="ftr-contact-strip">
@@ -281,7 +307,7 @@ export function SiteFooter() {
       <div className="ftr-bottom">
         <div className="site-container">
           <span>{content.footer.copyright}</span>
-          <span>{content.footer.location} · <Link href="/admin" title="Studio administration" style={{ color: 'inherit' }}>Studio admin</Link></span>
+          <span>{content.footer.location} · <Link href={adminHref} title="Studio administration" style={{ color: 'inherit' }}>Studio admin</Link></span>
         </div>
       </div>
     </footer>

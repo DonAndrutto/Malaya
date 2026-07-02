@@ -77,10 +77,17 @@ function Console({ user, onLogout }) {
   const [overrides, setOverrides] = useState({});
 
   useEffect(() => {
-    const saved = localStorage.getItem('malaya:admin:tab');
-    // The old "ledger", "catalogue" and "mass edit" tabs are now one unified
-    // Inventory list.
-    if (saved) setTab(['ledger', 'catalogue', 'massedit'].includes(saved) ? 'inventory' : saved);
+    // A /admin?edit=<id> deep-link (e.g. "Edit in admin" from a product page)
+    // always lands on the Inventory list so the item's editor can open.
+    const editParam = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('edit');
+    if (editParam) {
+      setTab('inventory');
+    } else {
+      const saved = localStorage.getItem('malaya:admin:tab');
+      // The old "ledger", "catalogue" and "mass edit" tabs are now one unified
+      // Inventory list.
+      if (saved) setTab(['ledger', 'catalogue', 'massedit'].includes(saved) ? 'inventory' : saved);
+    }
     // Hydrate from Firestore (with the localStorage cache for an instant paint),
     // and stay in sync with edits made on other devices.
     return subscribeOverrides(setOverrides);
@@ -109,6 +116,7 @@ function Console({ user, onLogout }) {
           </nav>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <a href="https://malayajewellery.com" target="_blank" rel="noreferrer" style={{ ...ghostBtn(), textDecoration: 'none' }}>View site ↗</a>
           <span style={{ fontSize: 11, letterSpacing: '0.06em', color: T.muted }}>Signed in as <span style={{ color: T.ink }}>{user}</span></span>
           <button onClick={onLogout} style={ghostBtn()}>Log out</button>
         </div>

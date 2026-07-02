@@ -36,7 +36,7 @@ export function BlogIndex() {
   const posts = blogList(blogPosts || {}, { publishedOnly: true });
   return (
     <main className="malaya-page" data-screen-label="Blog">
-      <PageBanner title={content.nav.blog || 'Blog'} subtitle="Malaya Jewelry" />
+      <PageBanner title={content.nav.blog || 'Blog'} subtitle="Malaya Jewellery" />
       <div className="site-container blog-wrap">
         {posts.length === 0 ? (
           <div className="blog-empty">No posts yet — check back soon.</div>
@@ -59,7 +59,7 @@ export function BlogPost({ slug }) {
   if (!p || !p.title || !p.published) {
     return (
       <main className="malaya-page" data-screen-label="Post not found">
-        <PageBanner title="Not found" subtitle="Malaya Jewelry" />
+        <PageBanner title="Not found" subtitle="Malaya Jewellery" />
         <div className="site-container" style={{ padding: '60px 24px' }}>
           <p>This post could not be found. <Link href="/blog">Back to the blog.</Link></p>
         </div>

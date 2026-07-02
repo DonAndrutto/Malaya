@@ -134,6 +134,7 @@ export default function BlogAdmin() {
                   <span>/blog/{p.slug}</span>
                 </div>
               </div>
+              <a href={`/blog/${p.slug}`} target="_blank" rel="noreferrer" style={{ ...ghostBtn(), padding: '7px 14px', fontSize: 10, textDecoration: 'none' }}>View ↗</a>
               <button onClick={() => openPost(p.slug)} style={{ ...ghostBtn(), padding: '7px 14px', fontSize: 10 }}>Edit</button>
               <button onClick={() => removePost(p.slug)} title="Delete" style={{ background: 'transparent', border: `1px solid ${T.line2}`, color: T.danger, padding: '7px 9px', fontSize: 11, lineHeight: 1, cursor: 'pointer', fontFamily: T.sans }}>🗑</button>
             </div>

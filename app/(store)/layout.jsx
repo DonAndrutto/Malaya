@@ -12,7 +12,7 @@ import { subscribeSiteSettings } from '@/lib/site-settings';
 import { subscribeSiteContent } from '@/lib/site-content';
 import { subscribeBlog } from '@/lib/blog';
 import { SiteDataContext, migrateCartAliases } from '@/components/store/site/store';
-import { SiteHeader, SiteFooter } from '@/components/store/site/SiteShell';
+import { SiteHeader, SiteFooter, CartNotice } from '@/components/store/site/SiteShell';
 
 export default function StoreLayout({ children }) {
   const [overrides, setOverrides] = useState({});
@@ -38,6 +38,7 @@ export default function StoreLayout({ children }) {
         <SiteHeader />
         {children}
         <SiteFooter />
+        <CartNotice />
       </div>
     </SiteDataContext.Provider>
   );
