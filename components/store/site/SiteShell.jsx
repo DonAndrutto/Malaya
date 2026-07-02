@@ -8,6 +8,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { fmtPrice, posFor, bgImage } from '@/lib/data/site-data';
 import { useCart, removeFromCart, cartTotal, useSiteData, useAddedNotice } from './store';
@@ -92,12 +93,38 @@ export function SocialLinks() {
 // ── Image (Firebase-hosted) ──────────────────────────────────────────────────
 // Renders nothing when there's no src (so a missing photo never produces a
 // broken/stray request); hides itself if the image fails to load.
-export function SiteImg({ src, alt, style, className }) {
+//
+// Firebase Storage (and local /images) sources go through next/image, so the
+// high-resolution originals the studio uploads are resized per device and
+// served as AVIF/WebP from the CDN cache. Layout stays CSS-driven exactly as
+// before (the classes size the element); width/height only reserve space so
+// the page doesn't shift while photos load. Pass `sizes` matching the slot's
+// rendered width, and `priority` for above-the-fold imagery (LCP).
+// Anything from an unknown host (e.g. a hand-pasted external URL in an old
+// override) falls back to a plain lazy <img>, since the optimizer only
+// accepts the hosts allow-listed in next.config.mjs.
+const OPTIMIZED_SRC = /^(\/(?!\/)|https:\/\/firebasestorage\.googleapis\.com\/)/;
+
+export function SiteImg({
+  src, alt, style, className,
+  sizes = '(max-width: 700px) 50vw, (max-width: 1100px) 33vw, 400px',
+  width = 1200, height = 1200, priority = false, quality,
+}) {
   if (!src) return null;
+  const hide = (e) => { e.currentTarget.style.visibility = 'hidden'; };
+  if (!OPTIMIZED_SRC.test(src)) {
+    return (
+      <img
+        src={src} alt={alt || ''} loading="lazy" decoding="async"
+        className={className} style={style} onError={hide}
+      />
+    );
+  }
   return (
-    <img
-      src={src} alt={alt || ''} loading="lazy" className={className} style={style}
-      onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }}
+    <Image
+      src={src} alt={alt || ''} className={className} style={style}
+      width={width} height={height} sizes={sizes} quality={quality}
+      priority={priority} onError={hide}
     />
   );
 }
@@ -124,8 +151,8 @@ export function SiteProductCard({ p }) {
           <span className="pcard-label">NEW</span>
         ) : null}
         {p.tashi && settings.tashiBadge && (
-          <img className="pcard-tashi" src={settings.tashiBadge} alt="Tashi Mannox"
-            title="Malaya Jewellery Collaboration with Tashi Mannox" />
+          <SiteImg className="pcard-tashi" src={settings.tashiBadge} alt="Tashi Mannox"
+            width={88} height={88} sizes="44px" />
         )}
       </Link>
       <h5 className="pcard-text">
@@ -170,7 +197,7 @@ export function CartNotice() {
   const name = (p && p.name) || 'This item';
   return (
     <div className="cart-notice" role="status" aria-live="polite">
-      {p && p.img && <SiteImg className="cart-notice-img" src={p.img} alt={name} />}
+      {p && p.img && <SiteImg className="cart-notice-img" src={p.img} alt={name} width={104} height={104} sizes="52px" />}
       <div className="cart-notice-body">
         <span className="cart-notice-text">Added <strong>{name}</strong> to your order</span>
         <Link href="/order" className="cart-notice-basket" onClick={clear}>Go to basket →</Link>
@@ -196,7 +223,7 @@ function CartDropdown({ items }) {
             if (!p) return null;
             return (
               <div key={i.id} className="hdr-cart-row">
-                <SiteImg src={p.img} alt={p.name} />
+                <SiteImg src={p.img} alt={p.name} width={88} height={88} sizes="44px" />
                 <span className="hdr-cart-name">{p.name}<em>{i.qty} × {fmtPrice(p.price)}</em></span>
                 <button className="hdr-cart-x" onClick={() => removeFromCart(i.id)} title="Remove">×</button>
               </div>
@@ -235,7 +262,7 @@ export function SiteHeader() {
       <div className="site-container hdr-bar">
         <Link href="/" className="hdr-logo">
           {settings.logo
-            ? <img src={settings.logo} alt="Malaya Jewellery" />
+            ? <SiteImg src={settings.logo} alt="Malaya Jewellery" width={240} height={74} sizes="240px" priority />
             : <span className="hdr-logo-text">Malaya Jewellery</span>}
         </Link>
         <nav className="hdr-nav">

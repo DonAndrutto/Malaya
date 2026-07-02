@@ -47,23 +47,43 @@ firebase deploy --only firestore:rules,storage --project malaya-catalogue
 In the Firebase console, make sure **Cloud Firestore** and **Storage** are
 enabled for the project.
 
-### Write access — admin sign-in (Firebase Auth)
+### Write access — admin sign-in (Firebase Auth) + allowlist
 
-The admin console signs in with **Firebase Auth (Email/Password)** and the
-shipped rules require authentication (`request.auth != null`) for all writes;
-reads stay public. To go live:
+The admin console signs in with **Firebase Auth (Email/Password)**. The shipped
+rules require the signed-in user to actually be an **admin** — either the
+`admin: true` custom claim or an allowlist document at `admins/{uid}`. A bare
+`request.auth != null` check is *not* enough: with Email/Password enabled,
+anyone on the internet can self-register an account against the public web API
+key, so "any signed-in user" is effectively "anyone". To go live:
 
 1. In the Firebase console → **Authentication** → enable the **Email/Password**
    provider, then **Add user** with the studio's email + password.
-2. Deploy the rules (step 2 above).
-3. Sign in at `/admin` with that email + password.
+   *Recommended:* also disable public sign-up (Authentication → Settings →
+   User actions → un-tick "Enable create") so strangers can't register at all.
+2. Grant that account admin rights (uses the Admin SDK service account, see
+   §3 for credentials):
+
+   ```bash
+   node scripts/grant-admin.mjs studio@example.com
+   ```
+
+   This sets the custom claim **and** creates `admins/{uid}`, so it takes
+   effect immediately. `--revoke` undoes it; `--list` shows current admins.
+3. **Deploy the rules only after step 2** (step 2 above in this file),
+   otherwise the studio's own writes are rejected until the grant runs.
+4. Sign in at `/admin` with that email + password.
+
+If unit costs were previously saved by an older app version, migrate them out
+of the publicly-readable override docs once:
+
+```bash
+node scripts/grant-admin.mjs --scrub-costs
+```
 
 `lib/auth.js` wraps sign-in/out; `lib/firebase.js` exposes the auth instance.
 If Firebase isn't configured at all (a bare local checkout), the admin falls
-back to demo mode (any credentials) so you can't lock yourself out.
-
-> To temporarily re-open writes (no sign-in required) while testing, swap the
-> active rule lines back to the commented `if true` versions and redeploy.
+back to demo mode (any credentials) — **development builds only**; production
+builds never allow demo sign-in.
 
 ## 3. Seed the existing images into Firebase
 

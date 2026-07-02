@@ -128,7 +128,7 @@ button, input, select { font-family: inherit; }
 .malaya-site .pcard { min-width: 0; }
 .malaya-site .pgrid-3 { grid-template-columns: repeat(3, 1fr); }
 .malaya-site .pgrid-4 { grid-template-columns: repeat(4, 1fr); }
-.malaya-site .pcard-thumb { position: relative; display: block; background: #fff; overflow: hidden; }
+.malaya-site .pcard-thumb { position: relative; display: block; background: #f7f4ef; overflow: hidden; }
 .malaya-site .pcard-thumb img:first-child { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; transition: transform .5s; }
 .malaya-site .pcard-thumb .pcard-alt { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .4s; }
 .malaya-site .pcard:hover .pcard-thumb .pcard-alt { opacity: 1; }
@@ -164,7 +164,7 @@ button, input, select { font-family: inherit; }
 .malaya-site .shop-page.on, .malaya-site .shop-page:hover { border-color: var(--gold); color: var(--gold); }
 .malaya-site .pd-layout { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 56px; padding-top: 48px; padding-bottom: 30px; }
 .malaya-site .pd-media { align-self: start; }
-.malaya-site .pd-photo { position: relative; }
+.malaya-site .pd-photo { position: relative; background: #f7f4ef; }
 .malaya-site .pd-photo img:first-child { width: 100%; display: block; }
 .malaya-site .pd-photo .pd-alt { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .4s; }
 .malaya-site .pd-photo:hover .pd-alt { opacity: 1; }

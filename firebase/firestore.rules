@@ -4,31 +4,123 @@ rules_version = '2';
 //
 // Data model:
 //   catalogueOverrides/{productId}  — admin edits per product (name, price,
-//                                     stock, image URL, …). Merged with the
+//                                     stock, image URLs, …). Merged with the
 //                                     base catalogue on the storefront.
+//   inventoryPrivate/{productId}    — admin-only inventory fields (unit cost).
+//                                     Never readable by the public storefront.
 //   siteSettings/images             — site-element image URLs (hero, banners…).
+//   siteSettings/content            — editable site copy & links.
+//   blogPosts/{slug}                — admin-authored Markdown articles.
+//   admins/{uid}                    — allowlist of admin account UIDs.
 //
-// Reads are public (the storefront needs them). Writes come from the signed-in
-// admin (Firebase Auth email/password — see lib/auth.js).
+// Reads of storefront data are public (the storefront needs them). Writes are
+// restricted to the studio's admin account(s) — NOT merely "any signed-in
+// user": with Email/Password sign-in enabled anyone can self-register against
+// the public web API key, so `request.auth != null` alone is not a boundary.
 //
-// The active write rules require authentication. Create the studio user in the
-// Firebase console (Authentication → Email/Password) before deploying these. The
-// seed script (scripts/fetch-images.mjs) uses the Admin SDK and bypasses rules.
-// (To temporarily allow anonymous writes again, swap to the `if true` lines.)
+// An admin is a user with either the `admin: true` custom claim or an
+// allowlist document at admins/{uid}. Grant both with:
+//   node scripts/grant-admin.mjs studio@example.com
+// (see FIREBASE.md §2a). Seed scripts use the Admin SDK and bypass rules.
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.token.admin == true
+        || exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // Optional-field validators: a field is valid when absent, null (the admin
+    // stores cleared numeric fields as null) or of the expected type/size.
+    function optStr(d, f, max) {
+      return !(f in d) || d[f] == null || (d[f] is string && d[f].size() <= max);
+    }
+    function optNum(d, f) {
+      return !(f in d) || d[f] == null || d[f] is number;
+    }
+    function optBool(d, f) {
+      return !(f in d) || d[f] == null || d[f] is bool;
+    }
+    function optList(d, f, max) {
+      return !(f in d) || d[f] == null || (d[f] is list && d[f].size() <= max);
+    }
+
+    // Per-product override written by the admin Inventory desk (lib/overrides.js).
+    // `unitCost` is deliberately NOT accepted here — cost data lives in
+    // inventoryPrivate so it never appears in a publicly-readable document.
+    function validOverride(d) {
+      return d.keys().hasOnly([
+          'name', 'sub', 'category', 'collection', 'material', 'stock',
+          'listPrice', 'retail', 'salePrice', 'qty',
+          'salesCode', 'productionCode', 'story', 'images', 'img',
+          'specials', 'tag', 'published', 'deleted', 'mergedInto',
+          '_custom', '_updated',
+        ])
+        && optStr(d, 'name', 300) && optStr(d, 'sub', 300)
+        && optStr(d, 'category', 100) && optStr(d, 'collection', 100)
+        && optStr(d, 'material', 100) && optStr(d, 'stock', 50)
+        && optStr(d, 'salesCode', 100) && optStr(d, 'productionCode', 100)
+        && optStr(d, 'story', 20000) && optStr(d, 'img', 2048)
+        && optStr(d, 'tag', 50) && optStr(d, 'mergedInto', 200)
+        && optNum(d, 'listPrice') && optNum(d, 'retail') && optNum(d, 'salePrice')
+        && optNum(d, 'qty') && optNum(d, '_updated')
+        && optBool(d, 'published') && optBool(d, 'deleted') && optBool(d, '_custom')
+        && optList(d, 'images', 24) && optList(d, 'specials', 10);
+    }
+
+    function validBlogPost(d, slug) {
+      return d.keys().hasOnly([
+          'slug', 'title', 'date', 'excerpt', 'cover', 'coverPos',
+          'tags', 'body', 'published', '_updated',
+        ])
+        && d.slug == slug
+        && optStr(d, 'title', 300) && optStr(d, 'date', 50)
+        && optStr(d, 'excerpt', 1000) && optStr(d, 'cover', 2048)
+        && optStr(d, 'coverPos', 50) && optStr(d, 'body', 200000)
+        && optNum(d, '_updated')
+        && optBool(d, 'published')
+        && optList(d, 'tags', 20);
+    }
+
     match /catalogueOverrides/{productId} {
       allow read: if true;
-      allow write: if request.auth != null;  // AUTHENTICATED — signed-in admin only.
-      // allow write: if true;                // OPEN — anyone may edit.
+      allow write: if isAdmin()
+        && (request.method == 'delete' || validOverride(request.resource.data));
+    }
+
+    // Admin-only inventory data (unit costs → margins). Not public.
+    match /inventoryPrivate/{productId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin()
+        && (request.method == 'delete'
+            || (request.resource.data.keys().hasOnly(['unitCost', '_updated'])
+                && optNum(request.resource.data, 'unitCost')
+                && optNum(request.resource.data, '_updated')));
     }
 
     match /siteSettings/{docId} {
       allow read: if true;
-      allow write: if request.auth != null;  // AUTHENTICATED — signed-in admin only.
-      // allow write: if true;                // OPEN — anyone may edit.
+      allow write: if isAdmin() && (docId == 'images' || docId == 'content');
+    }
+
+    // Blog: published posts are public; drafts are visible to admins only.
+    // The storefront queries with where('published', '==', true) — see
+    // lib/blog.js — which is what makes the public list read provable.
+    match /blogPosts/{slug} {
+      allow read: if resource.data.published == true || isAdmin();
+      allow write: if isAdmin()
+        && (request.method == 'delete' || validBlogPost(request.resource.data, slug));
+    }
+
+    // Admin allowlist. A signed-in user may check their own entry; documents
+    // are created only from the Admin SDK (scripts/grant-admin.mjs) or the
+    // Firebase console — never from the client.
+    match /admins/{uid} {
+      allow get: if request.auth != null && request.auth.uid == uid;
+      allow list, write: if false;
     }
 
     // Everything else is denied.

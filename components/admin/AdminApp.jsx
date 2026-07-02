@@ -12,6 +12,10 @@ import BlogAdmin from './BlogAdmin';
 
 const SESSION_KEY = 'malaya:admin:session';
 
+// Demo mode (any credentials) only exists so a bare local checkout without
+// Firebase can't lock you out. It is never available in a production build.
+const DEMO_ALLOWED = !FIREBASE_ENABLED && process.env.NODE_ENV !== 'production';
+
 // ─────────────────────────────────────────────────── Login ────
 // Firebase Auth (email/password). When Firebase isn't configured we fall back to
 // the old demo behaviour (any credentials) so a bare checkout still opens.
@@ -24,6 +28,10 @@ function Login({ onDemoLogin }) {
     e.preventDefault();
     setErr('');
     if (!FIREBASE_ENABLED) {
+      if (!DEMO_ALLOWED) {
+        setErr('Firebase is not configured for this deployment — sign-in is unavailable.');
+        return;
+      }
       onDemoLogin(email.trim() || 'studio');
       return;
     }
@@ -64,7 +72,7 @@ function Login({ onDemoLogin }) {
           <button type="submit" disabled={busy} style={{ width: '100%', background: T.ink, color: T.panel, border: 'none', padding: '15px', fontSize: 11, letterSpacing: '0.28em', textTransform: 'uppercase', cursor: busy ? 'wait' : 'pointer', opacity: busy ? 0.6 : 1, fontFamily: T.sans }}>
             {busy ? 'Signing in…' : 'Enter'}
           </button>
-          {!FIREBASE_ENABLED && <div style={{ fontSize: 11, color: T.faint, textAlign: 'center', marginTop: 16, letterSpacing: '0.04em' }}>Firebase not configured — demo mode (any credentials).</div>}
+          {DEMO_ALLOWED && <div style={{ fontSize: 11, color: T.faint, textAlign: 'center', marginTop: 16, letterSpacing: '0.04em' }}>Firebase not configured — demo mode (any credentials).</div>}
         </form>
       </div>
     </div>
@@ -89,8 +97,9 @@ function Console({ user, onLogout }) {
       if (saved) setTab(['ledger', 'catalogue', 'massedit'].includes(saved) ? 'inventory' : saved);
     }
     // Hydrate from Firestore (with the localStorage cache for an instant paint),
-    // and stay in sync with edits made on other devices.
-    return subscribeOverrides(setOverrides);
+    // and stay in sync with edits made on other devices. includePrivate merges
+    // the admin-only inventoryPrivate fields (unit costs) back in.
+    return subscribeOverrides(setOverrides, { includePrivate: true });
   }, []);
 
   const update = (updater) => setOverrides((prev) => {
@@ -137,8 +146,8 @@ export default function AdminApp() {
 
   useEffect(() => {
     if (!FIREBASE_ENABLED) {
-      // Demo mode: restore the localStorage session.
-      const saved = localStorage.getItem(SESSION_KEY);
+      // Demo mode (dev only): restore the localStorage session.
+      const saved = DEMO_ALLOWED ? localStorage.getItem(SESSION_KEY) : null;
       setUser(saved ? { email: saved, demo: true } : null);
       return;
     }

@@ -1,45 +1,41 @@
-'use client';
+// Storefront layout (server half) — reads the admin's Firestore data on the
+// server (ISR-cached, lib/server/firestore.js) so the HTML ships with the
+// live catalogue, imagery and copy: crawlers see real content and the first
+// paint doesn't wait for the client-side Firestore round trip. The client
+// half (StoreLayoutClient) hydrates with the same data, then subscribes to
+// Firestore so admin edits still flow in live.
 
-// Storefront layout — wraps every store route with the Malaya chrome (header,
-// footer) and provides the resolved catalogue + site-image settings via context.
-// Subscribes to the admin override layer and site settings (Firestore-backed,
-// localStorage-cached) so edits in /admin flow into the catalogue live.
+import { getServerLayoutData } from '@/lib/server/site';
+import { resolveContent } from '@/lib/data/site-data';
+import { jsonLd, organizationJsonLd, websiteJsonLd } from '@/lib/seo';
+import StoreLayoutClient from '@/components/store/site/StoreLayoutClient';
 
-import { useEffect, useMemo, useState } from 'react';
-import { buildSiteData, resolveContent } from '@/lib/data/site-data';
-import { subscribeOverrides } from '@/lib/overrides';
-import { subscribeSiteSettings } from '@/lib/site-settings';
-import { subscribeSiteContent } from '@/lib/site-content';
-import { subscribeBlog } from '@/lib/blog';
-import { SiteDataContext, migrateCartAliases } from '@/components/store/site/store';
-import { SiteHeader, SiteFooter, CartNotice } from '@/components/store/site/SiteShell';
-
-export default function StoreLayout({ children }) {
-  const [overrides, setOverrides] = useState({});
-  const [settings, setSettings] = useState({});
-  const [savedContent, setSavedContent] = useState({});
-  const [blogPosts, setBlogPosts] = useState({});
-
-  useEffect(() => subscribeOverrides(setOverrides), []);
-  useEffect(() => subscribeSiteSettings(setSettings), []);
-  useEffect(() => subscribeSiteContent(setSavedContent), []);
-  useEffect(() => subscribeBlog(setBlogPosts), []);
-
-  const siteData = useMemo(() => buildSiteData(overrides), [overrides]);
-  const content = useMemo(() => resolveContent(savedContent), [savedContent]);
-  const ctx = useMemo(() => ({ ...siteData, settings, content, blogPosts }), [siteData, settings, content, blogPosts]);
-
-  // Keep existing carts working when an item has been merged into a master.
-  useEffect(() => migrateCartAliases(siteData.ALIASES), [siteData.ALIASES]);
+export default async function StoreLayout({ children }) {
+  const { overrides, settings, savedContent, blogPosts } = await getServerLayoutData();
+  const content = resolveContent(savedContent);
+  // The home hero is a CSS background image, which browsers only discover
+  // late; preloading the first slide pulls the LCP image forward.
+  const firstSlide = Array.isArray(settings.heroSlides) ? settings.heroSlides[0] : null;
 
   return (
-    <SiteDataContext.Provider value={ctx}>
-      <div className="malaya-site">
-        <SiteHeader />
+    <>
+      {firstSlide && <link rel="preload" as="image" href={firstSlide} fetchPriority="high" />}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(organizationJsonLd(content, settings)) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(websiteJsonLd()) }}
+      />
+      <StoreLayoutClient
+        initialOverrides={overrides}
+        initialSettings={settings}
+        initialContent={savedContent}
+        initialBlog={blogPosts}
+      >
         {children}
-        <SiteFooter />
-        <CartNotice />
-      </div>
-    </SiteDataContext.Provider>
+      </StoreLayoutClient>
+    </>
   );
 }
