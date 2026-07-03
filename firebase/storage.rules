@@ -5,32 +5,49 @@ rules_version = '2';
 // Uploaded images live under:
 //   products/{productId}/...   — product photos
 //   site/{slot}/...            — hero slides, banners, tiles, logo, portrait
+//   blog/{slug}/...            — blog cover images
 //
-// Reads are public (images are served on the storefront). Writes come from the
-// signed-in admin (Firebase Auth) and are limited to image files under 15 MB.
+// Reads are public (images are served on the storefront). Writes are limited
+// to the studio's admin account(s) — the `admin: true` custom claim or an
+// allowlist doc at admins/{uid} in Firestore (cross-service lookup). Grant
+// with `node scripts/grant-admin.mjs studio@example.com` (see FIREBASE.md).
+// `request.auth != null` alone is NOT used: with Email/Password sign-in
+// enabled, anyone can self-register an account against the public API key.
 //
-// The active rules require authentication. Create the studio user in the Firebase
-// console (Authentication → Email/Password) before deploying. The seed script
-// (scripts/fetch-images.mjs) uses the Admin SDK and bypasses these rules.
-// (To temporarily allow anonymous uploads, drop the `request.auth != null` line.)
+// Uploads must be image files under 15 MB. Admins may also delete objects
+// (e.g. replacing a photo). Seed scripts use the Admin SDK and bypass rules.
 
 service firebase.storage {
   match /b/{bucket}/o {
 
-    function isAdminImage() {
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.token.admin == true
+        || firestore.exists(/databases/(default)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isImageUpload() {
       return request.resource.size < 15 * 1024 * 1024
-        && request.resource.contentType.matches('image/.*')
-        && request.auth != null;   // AUTHENTICATED — signed-in admin only.
+        && request.resource.contentType.matches('image/.*');
     }
 
     match /products/{allPaths=**} {
       allow read: if true;
-      allow write: if isAdminImage();
+      allow create, update: if isAdmin() && isImageUpload();
+      allow delete: if isAdmin();
     }
 
     match /site/{allPaths=**} {
       allow read: if true;
-      allow write: if isAdminImage();
+      allow create, update: if isAdmin() && isImageUpload();
+      allow delete: if isAdmin();
+    }
+
+    match /blog/{allPaths=**} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isImageUpload();
+      allow delete: if isAdmin();
     }
 
     match /{allPaths=**} {

@@ -194,7 +194,7 @@ function CatalogueScroll() {
                     <div className="cat-search-empty">No matches</div>
                   ) : matches.map((p) => (
                     <button key={p.id} type="button" className="cat-search-row" onClick={() => goToProduct(p.id)}>
-                      {p.img ? <SiteImg src={p.img} alt="" /> : <span className="cat-search-noimg" />}
+                      {p.img ? <SiteImg src={p.img} alt="" width={88} height={88} sizes="44px" /> : <span className="cat-search-noimg" />}
                       <span className="cat-search-text">
                         <span className="cat-search-name">{p.name}</span>
                         <span className="cat-search-sub">{p.sub}{p.salesCode ? ' · ' + p.salesCode : ''}</span>
@@ -290,18 +290,20 @@ export function ProductPage({ id }) {
         <div className="pd-media">
           <div className="pd-photo">
             {hero
-              ? <SiteImg src={hero} alt={p.name} />
+              ? <SiteImg src={hero} alt={p.name} priority
+                  sizes="(max-width: 900px) 100vw, 620px" width={1240} height={1240} />
               : <div className="pd-noimg"><span>{monogram}</span></div>}
-            {heroAlt && <SiteImg className="pd-alt" src={heroAlt} alt={p.name} />}
-            {p.tashi && settings.tashiBadge && <img className="pd-tashi" src={settings.tashiBadge} alt="Tashi Mannox"
-              title="Malaya Jewellery Collaboration with Tashi Mannox" />}
+            {heroAlt && <SiteImg className="pd-alt" src={heroAlt} alt={p.name}
+              sizes="(max-width: 900px) 100vw, 620px" width={1240} height={1240} />}
+            {p.tashi && settings.tashiBadge && <SiteImg className="pd-tashi" src={settings.tashiBadge}
+              alt="Tashi Mannox" width={108} height={108} sizes="54px" />}
           </div>
           {images.length > 1 && (
             <div className="pd-thumbs">
               {images.map((src, i) => (
                 <button key={src + i} type="button" className={'pd-thumb' + (i === active ? ' on' : '')}
                   onClick={() => setActive(i)} aria-label={`View image ${i + 1}`}>
-                  <SiteImg src={src} alt={`${p.name} — view ${i + 1}`} />
+                  <SiteImg src={src} alt={`${p.name} — view ${i + 1}`} width={148} height={148} sizes="74px" />
                 </button>
               ))}
             </div>
@@ -394,7 +396,8 @@ export function TashiPage() {
           {content.tashi.intro.map((para, i) => <p key={i} className="tashi-para">{para}</p>)}
         </div>
         <div className="tashi-photo">
-          <SiteImg src={settings.tashiPhoto || null} alt={content.tashi.name} />
+          <SiteImg src={settings.tashiPhoto || null} alt={content.tashi.name}
+            sizes="(max-width: 900px) 100vw, 460px" width={920} height={1100} priority />
         </div>
       </div>
       <section className="site-container tashi-products">
@@ -496,7 +499,7 @@ export function OrderPage() {
                   return (
                     <tr key={i.id}>
                       <td className="order-thumb">
-                        <Link href={`/product/${p.id}`}><SiteImg src={p.img} alt={p.name} /></Link>
+                        <Link href={`/product/${p.id}`}><SiteImg src={p.img} alt={p.name} width={148} height={148} sizes="74px" /></Link>
                       </td>
                       <td>
                         <Link className="order-name" href={`/product/${p.id}`}>{p.name}</Link>

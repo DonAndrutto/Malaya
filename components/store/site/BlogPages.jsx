@@ -20,7 +20,9 @@ function BlogCard({ p }) {
   return (
     <article className="blog-card">
       <Link className="blog-card-thumb" href={`/blog/${p.slug}`}>
-        {p.cover ? <SiteImg src={p.cover} alt={p.title} /> : <span className="blog-card-noimg">{initialsOf(p.title)}</span>}
+        {p.cover
+          ? <SiteImg src={p.cover} alt={p.title} sizes="(max-width: 700px) 100vw, 400px" width={800} height={534} />
+          : <span className="blog-card-noimg">{initialsOf(p.title)}</span>}
       </Link>
       <div className="blog-card-body">
         {p.date && <span className="blog-card-date">{p.date}</span>}
@@ -69,7 +71,7 @@ export function BlogPost({ slug }) {
 
   return (
     <main className="malaya-page" data-screen-label={'Blog · ' + p.title}>
-      {p.cover && <img className="blog-hero" src={p.cover} alt={p.title} />}
+      {p.cover && <SiteImg className="blog-hero" src={p.cover} alt={p.title} priority sizes="100vw" width={1920} height={720} />}
       <article className="blog-article">
         {p.date && <div className="blog-meta">{p.date}</div>}
         <h1 className="blog-title">{p.title}</h1>

@@ -1,18 +1,57 @@
 import { ProductPage } from '@/components/store/site/SitePages';
-import { PRODUCTS } from '@/lib/data/products';
-import { STOCK_ROWS } from '@/lib/data/stock-data';
+import { getServerProduct, getServerContent } from '@/lib/server/site';
+import { jsonLd, productJsonLd, breadcrumbJsonLd } from '@/lib/seo';
 
-export function generateMetadata({ params }) {
-  const p = PRODUCTS.find((x) => x.id === params.id);
-  const row = p ? null : STOCK_ROWS.find((r) => r.sku === params.id);
-  const name = p ? p.name : (row ? row.name : null);
-  const sub = p ? p.sub : (row ? row.material : '');
+// Re-render (ISR) so admin edits reach metadata/JSON-LD within a few minutes.
+export const revalidate = 300;
+
+export async function generateMetadata({ params }) {
+  const p = await getServerProduct(params.id);
+  if (!p) {
+    return { title: 'Product · Malaya Jewellery', robots: { index: false, follow: false } };
+  }
+  const title = `${p.name} · Malaya Jewellery`;
+  const description = (p.story && p.story.trim().split(/\n\s*\n|\n/)[0])
+    || `${p.name}${p.sub ? ` — ${p.sub}` : ''}. Handcrafted by Malaya Jewellery in Bhutan.`;
   return {
-    title: (name || 'Product') + ' · Malaya Jewellery',
-    description: name ? `${name}${sub ? ' — ' + sub : ''}. Handcrafted by Malaya Jewellery in Bhutan.` : undefined,
+    title,
+    description,
+    // Merged duplicates and sales-code URLs resolve to the master listing;
+    // pointing the canonical at the master id keeps one indexed URL per piece.
+    alternates: { canonical: `/product/${p.id}` },
+    openGraph: {
+      title,
+      description,
+      url: `/product/${p.id}`,
+      ...(p.img ? { images: [{ url: p.img, alt: p.name }] } : {}),
+    },
+    twitter: { card: p.img ? 'summary_large_image' : 'summary', title, description },
   };
 }
 
-export default function Page({ params }) {
-  return <ProductPage id={params.id} />;
+export default async function Page({ params }) {
+  const [p, content] = await Promise.all([getServerProduct(params.id), getServerContent()]);
+  return (
+    <>
+      {p && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLd(productJsonLd(p, content)) }}
+        />
+      )}
+      {p && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: jsonLd(breadcrumbJsonLd([
+              { name: 'Home', path: '/' },
+              { name: p.category, path: `/#cat-${p.category}` },
+              { name: p.name, path: `/product/${p.id}` },
+            ])),
+          }}
+        />
+      )}
+      <ProductPage id={params.id} />
+    </>
+  );
 }

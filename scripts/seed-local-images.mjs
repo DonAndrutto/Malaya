@@ -97,7 +97,10 @@ async function uploadFile(bucket, dest, localPath) {
   await file.save(buffer, {
     resumable: false,
     contentType: contentTypeOf(dest),
-    metadata: { metadata: { firebaseStorageDownloadTokens: token } },
+    metadata: {
+      cacheControl: 'public, max-age=31536000, immutable',
+      metadata: { firebaseStorageDownloadTokens: token },
+    },
   });
   return { url: downloadUrl(bucket.name, dest, token), status: 'ok' };
 }
