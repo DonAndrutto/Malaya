@@ -9,6 +9,11 @@ yarn-error.log*
 # Vercel
 .vercel
 
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+
 # Local env
 .env
 .env.local

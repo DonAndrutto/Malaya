@@ -1,0 +1,75 @@
+# E2E suite against Vercel Preview Deployments.
+#
+# Vercel's GitHub integration reports each deployment through the Deployments
+# API; when a Preview deployment goes green this workflow points Playwright at
+# its URL (no build needed here — we test the real deployment). It can also be
+# run by hand against any URL via workflow_dispatch.
+#
+# Note: GitHub only triggers `deployment_status` workflows from the default
+# branch, so this file must be merged to main before it fires for previews.
+#
+# Secrets/vars (Settings → Secrets and variables → Actions):
+#   E2E_ADMIN_EMAIL / E2E_ADMIN_PASSWORD  (secrets, optional) — enables the
+#     signed-in admin dashboard tests.
+#   E2E_ALLOW_WRITES (variable, optional, "1") — additionally runs the
+#     admin↔storefront inventory-sync test, which edits and restores one
+#     product's sale price/status in the project's Firestore.
+
+name: E2E
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Deployment URL to test against'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.event.deployment_status.environment_url || inputs.base_url }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' &&
+       contains(github.event.deployment_status.environment, 'review'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout the deployed commit (matching tests)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment.sha || github.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright suite
+        run: npx playwright test
+        env:
+          BASE_URL: ${{ inputs.base_url || github.event.deployment_status.environment_url }}
+          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+          E2E_ALLOW_WRITES: ${{ vars.E2E_ALLOW_WRITES }}
+
+      - name: Upload report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
