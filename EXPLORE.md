@@ -2,7 +2,12 @@
 
 *A parallel editorial system for Bhutanese & Vajrayana symbolism — a digital catalogue raisonné where knowledge lives alongside commerce.*
 
-**Status: PROPOSAL — Phase 1. No code has been written. Implementation begins only after this document is approved.**
+**Status: APPROVED & IMPLEMENTED (Phase 2).** Approved with one amendment: the
+29 seed topics ship as **drafts** (`published: false`) so no thin placeholder
+pages get indexed — the studio publishes each topic from /admin → Explore once
+real content is ready (Part III's SEO note (c), resolved). Everything else
+landed as proposed. Seed with `npm run seed-explore`; deploy rules first
+(`firebase deploy --only firestore:rules`).
 
 ---
 
