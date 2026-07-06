@@ -110,6 +110,20 @@ function SearchPick({ label, items, onPick, renderLabel, width = 320 }) {
   );
 }
 
+// Asset reuse: accept an already-hosted image URL so a photograph used on one
+// topic can be reused elsewhere without re-uploading a duplicate Storage
+// object. Only URLs the storefront can actually render are accepted — the
+// Firebase Storage host (CSP img-src + next/image remotePatterns allowlist)
+// or a site-relative path.
+function promptExistingImageUrl() {
+  const raw = prompt('Paste the URL of an already-uploaded image (copy it from another topic or from the site — right-click → Copy image address):');
+  if (!raw || !raw.trim()) return null;
+  const url = raw.trim();
+  if (/^https:\/\/firebasestorage\.googleapis\.com\//.test(url) || url.startsWith('/')) return url;
+  alert('That URL cannot be shown on the site — paste a Firebase Storage image URL (https://firebasestorage.googleapis.com/…) or a site-relative path.');
+  return null;
+}
+
 function ImageUpload({ value, folder, onChange, busyKey, busy, setBusy, height = 90 }) {
   const ref = useRef(null);
   const upload = async (file) => {
@@ -128,6 +142,8 @@ function ImageUpload({ value, folder, onChange, busyKey, busy, setBusy, height =
         <button type="button" disabled={busy === busyKey} onClick={() => ref.current && ref.current.click()} style={ghostBtn(busy === busyKey)}>
           {busy === busyKey ? 'Uploading…' : (value ? 'Replace' : 'Upload')}
         </button>
+        <button type="button" title="Reuse an image that is already uploaded, without duplicating it"
+          onClick={() => { const u = promptExistingImageUrl(); if (u) onChange(u); }} style={ghostBtn()}>Use existing</button>
         {value && <button type="button" onClick={() => onChange('')} style={linkBtn}>Remove</button>}
         <input ref={ref} type="file" accept="image/*" style={{ display: 'none' }}
           onChange={(e) => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) upload(f); }} />
@@ -457,6 +473,13 @@ function GalleryUpload({ folder, onAdd }) {
       onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); addFiles(e.dataTransfer.files); }}
       style={{ border: `1px dashed ${T.line2}`, background: T.card, padding: '16px', textAlign: 'center', cursor: busy ? 'wait' : 'pointer', color: T.muted }}>
       <div style={{ fontSize: 12 }}>{busy ? 'Uploading…' : 'Click or drop photos here'}</div>
+      {!busy && (
+        <button type="button"
+          onClick={(e) => { e.stopPropagation(); const u = promptExistingImageUrl(); if (u) onAdd([u]); }}
+          style={{ background: 'none', border: 'none', color: T.accent, fontSize: 11, cursor: 'pointer', padding: '6px 0 0', fontFamily: T.sans, textDecoration: 'underline' }}>
+          …or paste the URL of an existing image
+        </button>
+      )}
       <input ref={ref} type="file" accept="image/*" multiple style={{ display: 'none' }}
         onChange={(e) => { const fs = e.target.files; e.target.value = ''; addFiles(fs); }} />
     </div>
