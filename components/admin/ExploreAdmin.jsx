@@ -565,11 +565,17 @@ export default function ExploreAdmin() {
 
   useEffect(() => subscribeExploreAdmin(setData), []);
   useEffect(() => subscribeOverrides(setOverrides), []);
-  useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), 1800); return () => clearTimeout(t); }, [toast]);
+  // Error toasts (⚠) carry a Firestore error code the studio may need to read
+  // out or screenshot — keep them up longer than the 1.8s "Saved" flash.
+  useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), toast.startsWith('⚠') ? 6000 : 1800); return () => clearTimeout(t); }, [toast]);
   // Failed Firestore writes (rules rejection) are broadcast by lib/explore.js —
   // without this the editor would see "Saved" while the cloud copy is stale.
+  // The full error is in the console; the toast names the code and the path.
   useEffect(() => {
-    const onErr = () => setToast('⚠ Cloud save failed — the change is only in this browser');
+    const onErr = (e) => {
+      const d = (e && e.detail) || {};
+      setToast(`⚠ Cloud save failed${d.code ? ` (${d.code})` : ''}${d.path ? ` at ${d.path}` : ''} — the change is only in this browser`);
+    };
     window.addEventListener(EXPLORE_SAVE_ERROR_EVENT, onErr);
     return () => window.removeEventListener(EXPLORE_SAVE_ERROR_EVENT, onErr);
   }, []);
