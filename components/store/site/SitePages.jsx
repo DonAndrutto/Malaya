@@ -14,6 +14,7 @@ import {
   CATEGORIES, fmtPrice, posFor, bgImage, HOME_HERO, HOME_TILES, relatedProducts, whatsappUrlFor,
 } from '@/lib/data/site-data';
 import { materialFamilyOf } from '@/lib/data/materials';
+import { searchExplore } from '@/lib/explore-shared';
 import {
   useCart, addToCart, setCartQty, removeFromCart, cartTotal, showToast, useSiteData,
 } from './store';
@@ -93,7 +94,7 @@ export function HomePage() {
 // bar announces the current category (updated by a scroll-spy) and can be tapped
 // to jump to any category; a typeahead search jumps straight to a product page.
 function CatalogueScroll() {
-  const { SITE_PRODUCTS } = useSiteData();
+  const { SITE_PRODUCTS, exploreTopics, exploreGroups } = useSiteData();
   const router = useRouter();
 
   const [active, setActive] = useState('');
@@ -101,12 +102,36 @@ function CatalogueScroll() {
   const [q, setQ] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [fam, setFam] = useState(''); // '' | 'gold' | 'silver' — metal filter
+  const [sym, setSym] = useState(''); // '' | topic slug — symbol filter
+  const [symOpen, setSymOpen] = useState(false);
+
+  // Symbol filter options — data-driven: published topics linked to ≥1 product
+  // visible under the current metal filter. Link a topic in the admin and the
+  // option appears; remove the last link and it disappears. With no published
+  // linked topic the control itself never renders, so today's bar is unchanged.
+  const symOptions = useMemo(() => {
+    const counts = {};
+    SITE_PRODUCTS.forEach((p) => {
+      if (fam && materialFamilyOf(p.material) !== fam) return;
+      (p.topics || []).forEach((s) => { counts[s] = (counts[s] || 0) + 1; });
+    });
+    return Object.keys(counts)
+      .map((slug) => ({ slug, t: (exploreTopics || {})[slug], count: counts[slug] }))
+      .filter((e) => e.t && e.t.title)
+      .sort((a, b) => String(a.t.title).localeCompare(String(b.t.title)));
+  }, [SITE_PRODUCTS, exploreTopics, fam]);
+  useEffect(() => { if (sym && !symOptions.some((o) => o.slug === sym)) setSym(''); }, [symOptions, sym]);
 
   const sections = useMemo(() => (
     CATALOGUE_SECTIONS
-      .map((s) => ({ ...s, items: SITE_PRODUCTS.filter((p) => s.cats.includes(p.category) && (!fam || materialFamilyOf(p.material) === fam)) }))
+      .map((s) => ({
+        ...s,
+        items: SITE_PRODUCTS.filter((p) => s.cats.includes(p.category)
+          && (!fam || materialFamilyOf(p.material) === fam)
+          && (!sym || (p.topics || []).includes(sym))),
+      }))
       .filter((s) => s.items.length > 0)
-  ), [SITE_PRODUCTS, fam]);
+  ), [SITE_PRODUCTS, fam, sym]);
 
   useEffect(() => { if (sections.length && !active) setActive(sections[0].key); }, [sections, active]);
 
@@ -149,7 +174,15 @@ function CatalogueScroll() {
   const matches = query
     ? SITE_PRODUCTS.filter((p) => `${p.name} ${p.sub || ''} ${p.salesCode || ''}`.toLowerCase().includes(query)).slice(0, 8)
     : [];
+  // Unified search: knowledge results (Topics / Shelves) surface above the
+  // product rows. With no published Explore content this stays empty and the
+  // typeahead behaves exactly as before.
+  const knowledge = useMemo(
+    () => (query ? searchExplore(query, { topics: exploreTopics, groups: exploreGroups, products: [] }, 4) : { topics: [], groups: [] }),
+    [query, exploreTopics, exploreGroups],
+  );
   const goToProduct = (id) => { setQ(''); setSearchOpen(false); router.push('/product/' + id); };
+  const goTo = (path) => { setQ(''); setSearchOpen(false); router.push(path); };
 
   if (!SITE_PRODUCTS.length) return null;
   const activeLabel = (sections.find((s) => s.key === active) || sections[0] || { label: '' }).label;
@@ -181,6 +214,33 @@ function CatalogueScroll() {
             <button type="button" className={'cat-fam' + (fam === 'silver' ? ' on' : '')}
               aria-pressed={fam === 'silver'} onClick={() => setFam(fam === 'silver' ? '' : 'silver')}>Silver</button>
           </div>
+          {symOptions.length > 0 && (
+            <div className="cat-sym-wrap">
+              <button type="button" className={'cat-fam cat-sym' + (sym ? ' on' : '')}
+                aria-pressed={!!sym} aria-expanded={symOpen} onClick={() => setSymOpen((o) => !o)}>
+                <span>{sym ? ((exploreTopics || {})[sym] || {}).title || 'Symbol' : 'Symbol'}</span>
+                <span className="cat-caret">▾</span>
+              </button>
+              {symOpen && (
+                <>
+                  <div className="cat-overlay" onClick={() => setSymOpen(false)} />
+                  <div className="cat-menu">
+                    {sym && (
+                      <button type="button" className="cat-menu-item" onClick={() => { setSym(''); setSymOpen(false); }}>
+                        <span>All symbols</span>
+                      </button>
+                    )}
+                    {symOptions.map((o) => (
+                      <button key={o.slug} type="button" className={'cat-menu-item' + (o.slug === sym ? ' on' : '')}
+                        onClick={() => { setSym(o.slug === sym ? '' : o.slug); setSymOpen(false); }}>
+                        <span>{o.t.title}</span><em>{o.count}</em>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
           <div className="cat-search-wrap">
             <input className="cat-search" type="search" placeholder="Search by name or code…" value={q}
               onChange={(e) => { setQ(e.target.value); setSearchOpen(true); }}
@@ -190,7 +250,25 @@ function CatalogueScroll() {
               <>
                 <div className="cat-overlay" onClick={() => setSearchOpen(false)} />
                 <div className="cat-search-results">
-                  {matches.length === 0 ? (
+                  {knowledge.topics.map((t) => (
+                    <button key={'t-' + t.slug} type="button" className="cat-search-row" onClick={() => goTo('/explore/topic/' + t.slug)}>
+                      <span className="cat-search-noimg cat-search-kind">✦</span>
+                      <span className="cat-search-text">
+                        <span className="cat-search-name">{t.title}</span>
+                        <span className="cat-search-sub">Symbol · Explore{t.subtitle ? ' · ' + t.subtitle : ''}</span>
+                      </span>
+                    </button>
+                  ))}
+                  {knowledge.groups.map((g) => (
+                    <button key={'g-' + g.slug} type="button" className="cat-search-row" onClick={() => goTo('/explore/' + g.slug)}>
+                      <span className="cat-search-noimg cat-search-kind">✦</span>
+                      <span className="cat-search-text">
+                        <span className="cat-search-name">{g.name}</span>
+                        <span className="cat-search-sub">Shelf · Explore</span>
+                      </span>
+                    </button>
+                  ))}
+                  {matches.length + knowledge.topics.length + knowledge.groups.length === 0 ? (
                     <div className="cat-search-empty">No matches</div>
                   ) : matches.map((p) => (
                     <button key={p.id} type="button" className="cat-search-row" onClick={() => goToProduct(p.id)}>
@@ -228,7 +306,7 @@ function CatalogueScroll() {
 
 // ── Product detail ───────────────────────────────────────────────────────────
 export function ProductPage({ id }) {
-  const { SITE_PRODUCTS, SITE_BY_ID, content, settings } = useSiteData();
+  const { SITE_PRODUCTS, SITE_BY_ID, content, settings, exploreTopics } = useSiteData();
   const router = useRouter();
   const p = SITE_BY_ID[id];
   const [qty, setQty] = useState(1);
@@ -252,6 +330,11 @@ export function ProductPage({ id }) {
   // same category then anything; always excludes the item being viewed.
   const related = relatedProducts(p, SITE_PRODUCTS, 4);
   const sold = p.stock === 'Sold out' || p.stock === 'Archived';
+
+  // Explore knowledge topics linked to this piece (published summaries only).
+  // Renders nothing until the studio links a topic, so every existing product
+  // page is pixel-identical until then.
+  const symbolism = (p.topics || []).map((s) => (exploreTopics || {})[s]).filter((t) => t && t.title);
 
   // "Order Now" banner background (shared with the home page banner) and the
   // "Explore <category>" tile image (admin Home category tiles → fallbacks).
@@ -369,6 +452,23 @@ export function ProductPage({ id }) {
         </span>
       </Link>
 
+      {symbolism.length > 0 && (
+        <section className="site-container pd-symbolism">
+          <h2 className="section-title">The Symbolism Behind This Design</h2>
+          <div className="rule-dot" />
+          <div className="pd-symbolism-grid">
+            {symbolism.map((t) => (
+              <Link key={t.slug} href={`/explore/topic/${t.slug}`} className="pd-symbolism-item">
+                <strong>{t.title}</strong>
+                {t.subtitle && <em>{t.subtitle}</em>}
+                {t.excerpt && <span>{t.excerpt}</span>}
+                <span className="pd-symbolism-more">Read the story →</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       {related.length > 0 && (
         <section className="site-container pd-related">
           <h2 className="section-title">You May Also Like</h2>
@@ -384,7 +484,22 @@ export function ProductPage({ id }) {
 
 // ── Tashi Mannox collaboration ───────────────────────────────────────────────
 export function TashiPage() {
-  const { TASHI_PRODUCTS, settings, content } = useSiteData();
+  const { TASHI_PRODUCTS, settings, content, exploreTopics } = useSiteData();
+  // "Sacred forms in his hand" — fully derived, zero new storage: the topics
+  // linked to pieces carrying the tashi special (EXPLORE.md §7). Renders null
+  // while no tashi-flagged piece has a published topic, so the page ships
+  // unchanged and lights up by itself as the studio links topics.
+  const tashiTopics = useMemo(() => {
+    const seen = new Set();
+    const out = [];
+    TASHI_PRODUCTS.forEach((p) => (p.topics || []).forEach((s) => {
+      if (seen.has(s)) return;
+      seen.add(s);
+      const t = (exploreTopics || {})[s];
+      if (t && t.title) out.push(t);
+    }));
+    return out.sort((a, b) => String(a.title).localeCompare(String(b.title)));
+  }, [TASHI_PRODUCTS, exploreTopics]);
   return (
     <main className="malaya-page" data-screen-label="Tashi Mannox">
       <PageBanner title={content.banners.tashi.title} subtitle={content.banners.tashi.subtitle} />
@@ -407,6 +522,20 @@ export function TashiPage() {
           {TASHI_PRODUCTS.map((p) => <SiteProductCard key={p.id} p={p} />)}
         </div>
       </section>
+      {tashiTopics.length > 0 && (
+        <section className="site-container tashi-explore">
+          <h3 className="tashi-explore-kicker">Sacred forms in his hand</h3>
+          <div className="rule-dot" />
+          <p className="tashi-explore-links">
+            {tashiTopics.map((t, i) => (
+              <span key={t.slug}>
+                {i > 0 && <span className="tashi-explore-sep"> · </span>}
+                <Link href={`/explore/topic/${t.slug}`}>{t.title}</Link>
+              </span>
+            ))}
+          </p>
+        </section>
+      )}
     </main>
   );
 }

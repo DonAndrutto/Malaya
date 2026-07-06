@@ -11,6 +11,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { T, ghostBtn } from './theme';
 import { subscribeBlog, saveBlogPost, deleteBlogPost, blogList, slugify } from '@/lib/blog';
+import { loadTopics } from '@/lib/explore';
 import { uploadImage } from '@/lib/upload';
 import { resizeImageFile } from '@/lib/image-resize';
 import { FIREBASE_ENABLED } from '@/lib/firebase';
@@ -43,8 +44,10 @@ export default function BlogAdmin() {
   useEffect(() => subscribeBlog(setPosts), []);
   useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), 1800); return () => clearTimeout(t); }, [toast]);
 
-  // Catalogue products + posts, for resolving cross-links in the live preview.
+  // Catalogue products + posts + Explore topics, for resolving cross-links in
+  // the live preview.
   const products = useMemo(() => { try { return buildSiteData(loadOverrides()).SITE_PRODUCTS; } catch { return []; } }, []);
+  const topics = useMemo(() => Object.values(loadTopics()), []);
   const postsArr = useMemo(() => Object.values(posts), [posts]);
   const list = blogList(posts);
 
@@ -220,7 +223,7 @@ export default function BlogAdmin() {
             style={{ ...fieldStyle, resize: 'vertical', minHeight: 360, lineHeight: 1.7, fontFamily: 'ui-monospace, Menlo, Consolas, monospace', fontSize: 13 }} />
           {showPreview && (
             <div className="malaya-site" style={{ background: '#fff', border: `1px solid ${T.line2}`, padding: '16px 20px', overflow: 'auto', maxHeight: 560 }}>
-              <Markdown source={d.body} posts={postsArr} products={products} />
+              <Markdown source={d.body} posts={postsArr} products={products} topics={topics} />
             </div>
           )}
         </div>

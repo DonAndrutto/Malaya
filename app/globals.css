@@ -110,6 +110,12 @@ button, input, select { font-family: inherit; }
 .malaya-site .cat-menu-item:hover { background: #f6f1e8; color: var(--brown); }
 .malaya-site .cat-menu-item.on { color: var(--gold); }
 .malaya-site .cat-menu-item em { font-style: normal; color: #bbb; font-size: 11.5px; }
+/* Symbol filter — third control in the bar; renders only once a published
+   Explore topic is linked to a visible piece. */
+.malaya-site .cat-sym-wrap { position: relative; flex: none; }
+.malaya-site .cat-sym { display: inline-flex; align-items: center; gap: 8px; max-width: 210px; }
+.malaya-site .cat-sym span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.malaya-site .cat-search-kind { display: inline-flex; align-items: center; justify-content: center; color: var(--gold); font-size: 16px; }
 .malaya-site .cat-search-wrap { position: relative; flex: 1; max-width: 360px; margin-left: auto; }
 .malaya-site .cat-search { width: 100%; background: rgba(255,255,255,.96); border: 1px solid transparent; padding: 10px 14px; font: inherit; font-size: 13px; outline: none; box-sizing: border-box; }
 .malaya-site .cat-search:focus { border-color: var(--gold); }
@@ -202,6 +208,18 @@ button, input, select { font-family: inherit; }
 .malaya-site .pd-whatsapp { font-size: 13px; color: var(--gold); }
 .malaya-site .pd-related { padding-top: 34px; padding-bottom: 64px; }
 
+/* "The symbolism behind this design" — Explore topics linked to this piece.
+   Absent entirely until the studio links a topic. */
+.malaya-site .pd-symbolism { padding-top: 34px; }
+.malaya-site .pd-symbolism-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 340px)); justify-content: center; gap: 18px; }
+.malaya-site .pd-symbolism-item { display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--line); background: #faf8f5; padding: 20px 22px; transition: box-shadow .25s ease, transform .25s ease; }
+.malaya-site .pd-symbolism-item:hover { box-shadow: 0 14px 30px rgba(59,35,26,.12); transform: translateY(-2px); }
+.malaya-site .pd-symbolism-item strong { font-family: 'Raleway', sans-serif; font-size: 18px; font-weight: 600; color: var(--brown); }
+.malaya-site .pd-symbolism-item:hover strong { color: var(--gold); }
+.malaya-site .pd-symbolism-item em { font-style: normal; font-size: 12.5px; color: var(--gold); letter-spacing: .04em; }
+.malaya-site .pd-symbolism-item > span { font-size: 13px; color: #666; line-height: 1.65; }
+.malaya-site .pd-symbolism-more { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin-top: 6px; }
+
 /* Product-page "Order Now" banner — a compact frosted-glass add-to-order panel
    that lets the banner photo read through (no border, no shadow). */
 .malaya-site .pd-order-banner { position: relative; background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; padding: 40px 24px; }
@@ -241,6 +259,14 @@ button, input, select { font-family: inherit; }
 .malaya-site .tashi-para { margin: 0 0 16px; color: #555; text-wrap: pretty; }
 .malaya-site .tashi-photo img { width: 100%; height: auto; display: block; }
 .malaya-site .tashi-products { padding-top: 34px; padding-bottom: 64px; }
+/* "Sacred forms in his hand" — quiet, derived strip of Explore topic links
+   appended below the product grid; nothing above it moves. */
+.malaya-site .tashi-explore { padding-bottom: 64px; text-align: center; margin-top: -20px; }
+.malaya-site .tashi-explore-kicker { font-size: 22px; font-weight: 300; color: #777; text-align: center; }
+.malaya-site .tashi-explore-links { font-size: 14.5px; color: #555; margin: 0; }
+.malaya-site .tashi-explore-links a { color: var(--gold); }
+.malaya-site .tashi-explore-links a:hover { color: var(--brown); }
+.malaya-site .tashi-explore-sep { color: #ccc; }
 .malaya-site .about-article { max-width: 920px; padding-top: 48px; padding-bottom: 70px; }
 .malaya-site .about-date { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
 .malaya-site .about-title { font-size: 38px; font-weight: 700; color: var(--brown); margin: 6px 0 16px; }
@@ -584,6 +610,8 @@ button, input, select { font-family: inherit; }
   .malaya-site .blog-grid { grid-template-columns: 1fr; }
   .malaya-site .cat-fam-group { width: 100%; }
   .malaya-site .cat-fam { flex: 1; text-align: center; }
+  .malaya-site .cat-sym-wrap { width: 100%; }
+  .malaya-site .cat-sym { width: 100%; max-width: none; justify-content: space-between; }
   /* The 6-column order table can exceed narrow screens (its min content
      width); scroll it inside its own box instead of widening the page. */
   .malaya-site .order-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
