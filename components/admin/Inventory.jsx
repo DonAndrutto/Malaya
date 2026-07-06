@@ -26,6 +26,7 @@ import {
   customEntities, customEntity, isCustomOverride, newCustomKey,
 } from '@/lib/data/inventory';
 import { saveOverrides } from '@/lib/overrides';
+import { subscribeExploreAdmin } from '@/lib/explore';
 import { uploadImage } from '@/lib/upload';
 import { resizeImageFile } from '@/lib/image-resize';
 import { FIREBASE_ENABLED } from '@/lib/firebase';
@@ -73,6 +74,11 @@ export default function Inventory({ overrides, setOverrides }) {
   const flash = (m) => setToast(m);
   useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), 2200); return () => clearTimeout(t); }, [toast]);
 
+  // Explore knowledge topics — the drawer's "Symbolism" checklist links items
+  // to topics (writes the `topics` field on this item's override).
+  const [exploreTopics, setExploreTopics] = useState({});
+  useEffect(() => subscribeExploreAdmin(({ topics }) => setExploreTopics(topics)), []);
+
   // Honour /admin?edit=<id> deep-links ("Edit in admin" from a product page):
   // open that item's editor once it resolves, then strip the param so a refresh
   // or closing the drawer doesn't reopen it.
@@ -110,14 +116,14 @@ export default function Inventory({ overrides, setOverrides }) {
       o = { ...own };
       ['images', 'img', 'story'].forEach((f) => { if (!(f in o) && f in lo) o[f] = lo[f]; });
     }
-    let name, sub, category, collection, material, salesCode, productionCode, stock, retail, salePrice, onSale, images, img, story, specials;
+    let name, sub, category, collection, material, salesCode, productionCode, stock, retail, salePrice, onSale, images, img, story, specials, topics;
 
     if (e.kind !== 'ledger') {
       const rp = resolveProduct({ ...b, id: e.key, listPrice: b.retail, salePrice: b.salePrice, tag: b.tag || null }, o);
       name = rp.name; sub = rp.sub; category = rp.category; collection = rp.collection; material = rp.material;
       salesCode = rp.salesCode; productionCode = rp.productionCode; stock = rp.stock;
       retail = rp.listPrice; salePrice = rp.salePrice; onSale = rp.onSale; images = rp.images; img = rp.img; story = rp.story;
-      specials = rp.specials;
+      specials = rp.specials; topics = rp.topics;
     } else {
       const val = (f) => (f in o ? o[f] : b[f]);
       name = val('name'); sub = val('sub'); category = val('category'); collection = b.collection; material = normalizeMaterial(val('material'));
@@ -129,6 +135,7 @@ export default function Inventory({ overrides, setOverrides }) {
       img = images[0] || b.img || null;
       story = 'story' in o && o.story != null ? o.story : '';
       specials = resolveSpecials(null, o);
+      topics = Array.isArray(o.topics) ? o.topics : [];
     }
 
     const qty = numOrNull('qty' in o ? o.qty : b.qty);
@@ -142,7 +149,7 @@ export default function Inventory({ overrides, setOverrides }) {
       mergedInto: own.mergedInto || null, deleted: !!own.deleted,
       name, sub, category, collection, material, salesCode, productionCode,
       qty, unitCost, retail, salePrice, onSale, sellRetail, stock, online,
-      specials, tashi: specials.includes('tashi'),
+      specials, tashi: specials.includes('tashi'), topics: topics || [],
       marginUnit: unitCost != null && sellRetail != null ? sellRetail - unitCost : null,
       marginPct, markupPct,
       costValue: unitCost != null && qty != null ? unitCost * qty : null,
@@ -189,6 +196,12 @@ export default function Inventory({ overrides, setOverrides }) {
         const baseArr = resolveSpecials(e.base.tag, null);
         if (sameArr(arr, baseArr)) delete o.specials; else o.specials = arr;
         delete p.specials;
+      }
+      // Explore knowledge-topic links (the "Symbolism" checklist).
+      if ('topics' in p) {
+        const arr = (Array.isArray(p.topics) ? p.topics : []).filter(Boolean).slice(0, 20);
+        if (arr.length) o.topics = arr; else delete o.topics;
+        delete p.topics;
       }
 
       Object.keys(p).forEach((g) => {
@@ -467,7 +480,7 @@ export default function Inventory({ overrides, setOverrides }) {
         </div>
       </div>
 
-      {editing && <ItemDrawer r={editing} base={entityFor(editKey).base} fieldEdited={fieldEdited} commit={commit} resetItem={resetItem} onDelete={() => deleteItem(editKey)} onToggleSpecial={(sk) => toggleSpecial(editKey, sk, editing.specials)} onClose={() => setEditKey(null)} />}
+      {editing && <ItemDrawer r={editing} base={entityFor(editKey).base} fieldEdited={fieldEdited} commit={commit} resetItem={resetItem} onDelete={() => deleteItem(editKey)} onToggleSpecial={(sk) => toggleSpecial(editKey, sk, editing.specials)} exploreTopics={exploreTopics} onClose={() => setEditKey(null)} />}
       {bulkOpen && <BulkModal rows={rows} onApply={applyBulk} onClose={() => setBulkOpen(false)} />}
       {mergeKey && <MergePicker row={resolve(mergeKey)} candidates={activeItems.filter((c) => c.key !== mergeKey)} onPick={(masterK) => mergeInto(mergeKey, masterK)} onClose={() => setMergeKey(null)} />}
       {suggestOpen && <SuggestModal groups={dupGroups} onMerge={mergeInto} onClose={() => setSuggestOpen(false)} />}
@@ -786,7 +799,12 @@ function SuggestModal({ groups, onMerge, onClose }) {
 }
 
 // ─────────────────────────────────────────────────── ItemDrawer ────
-function ItemDrawer({ r, base, fieldEdited, commit, resetItem, onDelete, onToggleSpecial, onClose }) {
+function ItemDrawer({ r, base, fieldEdited, commit, resetItem, onDelete, onToggleSpecial, exploreTopics, onClose }) {
+  const toggleTopic = (slug) => {
+    const set = new Set(r.topics || []);
+    if (set.has(slug)) set.delete(slug); else set.add(slug);
+    commit(r.key, { topics: [...set] });
+  };
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(20,16,10,0.32)' }}>
       <aside onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: 460, maxWidth: '94vw', background: T.panel, borderLeft: `1px solid ${T.line2}`, display: 'flex', flexDirection: 'column', boxShadow: '-20px 0 50px rgba(0,0,0,0.18)' }}>
@@ -846,6 +864,8 @@ function ItemDrawer({ r, base, fieldEdited, commit, resetItem, onDelete, onToggl
             <div style={{ fontSize: 11, color: T.faint, marginTop: 8, lineHeight: 1.6 }}>“Tashi Mannox” lists this piece on the Tashi Mannox page. An item can carry several.</div>
           </div>
 
+          <SymbolismChecklist topics={exploreTopics} selected={r.topics || []} onToggle={toggleTopic} />
+
           <div style={{ borderTop: `1px solid ${T.line}`, marginTop: 18, paddingTop: 18 }}>
             <div style={{ fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', color: T.accent, marginBottom: 14 }}>Inventory</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
@@ -889,6 +909,52 @@ function ItemDrawer({ r, base, fieldEdited, commit, resetItem, onDelete, onToggl
           <button onClick={onClose} style={{ background: T.ink, color: T.panel, border: 'none', padding: '13px 28px', fontSize: 11, letterSpacing: '0.24em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: T.sans }}>Done</button>
         </div>
       </aside>
+    </div>
+  );
+}
+
+// Drawer "Symbolism" checklist — links the item to Explore knowledge topics
+// (chips styled like the Specials toggles). One storage location, two editing
+// surfaces: the same field is editable from the topic editor's Linked pieces
+// panel in the Explore tab.
+function SymbolismChecklist({ topics, selected, onToggle }) {
+  const [q, setQ] = useState('');
+  const all = Object.values(topics || {})
+    .filter((t) => t && t.title)
+    .sort((a, b) => String(a.title).localeCompare(String(b.title)));
+  const query = q.trim().toLowerCase();
+  const shown = query
+    ? all.filter((t) => `${t.title} ${(t.aliases || []).join(' ')}`.toLowerCase().includes(query))
+    : all;
+  return (
+    <div style={{ borderTop: `1px solid ${T.line}`, marginTop: 18, paddingTop: 18 }}>
+      <div style={{ fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', color: T.accent, marginBottom: 12 }}>Symbolism</div>
+      {all.length === 0 ? (
+        <div style={{ fontSize: 11.5, color: T.faint, lineHeight: 1.6 }}>No Explore topics yet — create them in the Explore tab, then link pieces here.</div>
+      ) : (
+        <>
+          {all.length > 12 && (
+            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter topics…"
+              style={{ ...dFieldStyle(false), marginBottom: 10, padding: '8px 10px', fontSize: 12.5 }} />
+          )}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, maxHeight: 190, overflowY: 'auto' }}>
+            {shown.map((t) => {
+              const on = selected.includes(t.slug);
+              return (
+                <button key={t.slug} onClick={() => onToggle(t.slug)} title={t.excerpt || t.title}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '7px 12px', fontSize: 12, cursor: 'pointer', fontFamily: T.sans, border: `1px solid ${on ? T.accent : T.line2}`, background: on ? 'rgba(138,106,59,0.12)' : T.card, color: on ? T.accent : T.muted }}>
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: on ? T.accent : T.line2 }} />
+                  {t.title}{t.published === false ? ' (draft)' : ''}
+                </button>
+              );
+            })}
+            {shown.length === 0 && <div style={{ fontSize: 12, color: T.muted }}>No topics match.</div>}
+          </div>
+          <div style={{ fontSize: 11, color: T.faint, marginTop: 8, lineHeight: 1.6 }}>
+            Linked topics appear on this piece’s page (“The symbolism behind this design”), on the topic’s page and in the catalogue Symbol filter. Also editable from the topic’s “Linked pieces” panel in the Explore tab.
+          </div>
+        </>
+      )}
     </div>
   );
 }
