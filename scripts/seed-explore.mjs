@@ -345,12 +345,26 @@ function matchTopics(items) {
 }
 
 // ── Credentials / main ───────────────────────────────────────────────────────
+// Returns { credential, saProject }. A pointed-to key file that does NOT exist
+// is a hard error (silently falling back to application-default credentials is
+// how a seed ends up writing to whatever project the local gcloud/CLI has
+// active — the wrong-project foot-gun). saProject lets main() refuse a service
+// account that belongs to a different project than the target.
 async function loadCredential() {
   const inline = process.env.FIREBASE_SERVICE_ACCOUNT;
-  if (inline && inline.trim().startsWith('{')) return cert(JSON.parse(inline));
+  if (inline && inline.trim().startsWith('{')) {
+    const sa = JSON.parse(inline);
+    return { credential: cert(sa), saProject: sa.project_id || '' };
+  }
   const file = inline || process.env.GOOGLE_APPLICATION_CREDENTIALS;
-  if (file && existsSync(file)) return cert(JSON.parse(await readFile(file, 'utf8')));
-  return applicationDefault();
+  if (file) {
+    if (!existsSync(file)) {
+      throw new Error(`Service-account file not found: ${file} — fix FIREBASE_SERVICE_ACCOUNT / GOOGLE_APPLICATION_CREDENTIALS (refusing to fall back to application-default credentials).`);
+    }
+    const sa = JSON.parse(await readFile(file, 'utf8'));
+    return { credential: cert(sa), saProject: sa.project_id || '' };
+  }
+  return { credential: applicationDefault(), saProject: '' };
 }
 
 async function main() {
@@ -380,7 +394,12 @@ async function main() {
   }
 
   const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'malaya-catalogue';
-  initializeApp({ credential: await loadCredential(), projectId });
+  const { credential, saProject } = await loadCredential();
+  if (saProject && saProject !== projectId) {
+    throw new Error(`Service account belongs to project "${saProject}" but the seed targets "${projectId}" — nothing written. Use that project's key, or set NEXT_PUBLIC_FIREBASE_PROJECT_ID to seed "${saProject}" deliberately.`);
+  }
+  console.log(`Target Firebase project: ${projectId}`);
+  initializeApp({ credential, projectId });
   const db = getFirestore();
 
   let wrote = 0; let skipped = 0;

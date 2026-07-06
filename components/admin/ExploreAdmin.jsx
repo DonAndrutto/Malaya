@@ -565,11 +565,17 @@ export default function ExploreAdmin() {
 
   useEffect(() => subscribeExploreAdmin(setData), []);
   useEffect(() => subscribeOverrides(setOverrides), []);
-  useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), 1800); return () => clearTimeout(t); }, [toast]);
+  // Error toasts (⚠) carry a Firestore error code the studio may need to read
+  // out or screenshot — keep them up longer than the 1.8s "Saved" flash.
+  useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), toast.startsWith('⚠') ? 6000 : 1800); return () => clearTimeout(t); }, [toast]);
   // Failed Firestore writes (rules rejection) are broadcast by lib/explore.js —
   // without this the editor would see "Saved" while the cloud copy is stale.
+  // The full error is in the console; the toast names the code and the path.
   useEffect(() => {
-    const onErr = () => setToast('⚠ Cloud save failed — the change is only in this browser');
+    const onErr = (e) => {
+      const d = (e && e.detail) || {};
+      setToast(`⚠ Cloud save failed${d.code ? ` (${d.code})` : ''}${d.path ? ` at ${d.path}` : ''} — the change is only in this browser`);
+    };
     window.addEventListener(EXPLORE_SAVE_ERROR_EVENT, onErr);
     return () => window.removeEventListener(EXPLORE_SAVE_ERROR_EVENT, onErr);
   }, []);
@@ -589,8 +595,9 @@ export default function ExploreAdmin() {
   // Optimistic local writes: Firestore snapshots reconcile moments later, but
   // the console must not wait on the round trip (or on Firebase existing).
   const putTopic = (slug, topic) => {
-    saveTopic(slug, topic);
+    const ack = saveTopic(slug, topic); // promise<true|false> | null — see saveExploreDoc
     setData((d) => ({ ...d, topics: { ...d.topics, [slug]: { ...topic, slug } } }));
+    return ack;
   };
   const dropTopic = (slug) => {
     deleteTopic(slug);
@@ -665,25 +672,44 @@ export default function ExploreAdmin() {
     };
     if (renaming) {
       // Slug rename: move the doc and carry every reference with it so no
-      // group shelf or product link dangles.
-      dropTopic(editKey);
-      groupsArr.forEach((g) => {
-        if ((g.topicSlugs || []).includes(editKey)) {
-          putGroup(g.slug, { ...g, topicSlugs: g.topicSlugs.map((s) => (s === editKey ? slug : s)) });
-        }
-      });
-      const all = { ...loadOverrides() };
-      let changed = false;
-      Object.keys(all).forEach((id) => {
-        const t = all[id] && all[id].topics;
-        if (Array.isArray(t) && t.includes(editKey)) {
-          all[id] = { ...all[id], topics: t.map((x) => (x === editKey ? slug : x)) };
-          changed = true;
-        }
-      });
-      if (changed) { saveOverrides(all); setOverrides(all); }
+      // group shelf or product link dangles. Destructive legs (deleting the
+      // old doc, rewriting shelves and product links) run only after the
+      // server ACCEPTS the new document — a rejected create (stale rules, a
+      // future validation drift) must never delete the only copy. On
+      // rejection the save-error toast fires, the snapshot listener rolls the
+      // optimistic entry back, and the editor returns to the old slug so the
+      // next save simply retries the rename.
+      const oldKey = editKey;
+      const ack = putTopic(slug, topic);
+      const finishRename = () => {
+        dropTopic(oldKey);
+        groupsArr.forEach((g) => {
+          if ((g.topicSlugs || []).includes(oldKey)) {
+            putGroup(g.slug, { ...g, topicSlugs: g.topicSlugs.map((s) => (s === oldKey ? slug : s)) });
+          }
+        });
+        const all = { ...loadOverrides() };
+        let changed = false;
+        Object.keys(all).forEach((id) => {
+          const t = all[id] && all[id].topics;
+          if (Array.isArray(t) && t.includes(oldKey)) {
+            all[id] = { ...all[id], topics: t.map((x) => (x === oldKey ? slug : x)) };
+            changed = true;
+          }
+        });
+        if (changed) { saveOverrides(all); setOverrides(all); }
+      };
+      if (ack && typeof ack.then === 'function') {
+        ack.then((ok) => {
+          if (ok === false) { setEditKey((k) => (k === slug ? oldKey : k)); return; }
+          finishRename();
+        });
+      } else {
+        finishRename(); // localStorage-only mode: no server to wait for
+      }
+    } else {
+      putTopic(slug, topic);
     }
-    putTopic(slug, topic);
     setEditKey(slug);
     setDraft({ ...d, slug, previousSlugs });
     if (!silent) flash('Saved');
