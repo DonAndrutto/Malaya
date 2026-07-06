@@ -240,30 +240,46 @@ function HotspotEditor({ src, hotspots, onChange, products, byId }) {
   );
 }
 
+// Markdown editor with cursor-aware insert pickers (the BlogAdmin
+// insertAtCursor idiom): snippets land at the caret — replacing any
+// selection — instead of being appended to the end of the text.
+function RichTextForm({ block: b, set, products, topicsArr }) {
+  const mdRef = useRef(null);
+  const insertAtCursor = (snippet) => {
+    const el = mdRef.current;
+    const cur = b.md || '';
+    const start = el ? el.selectionStart : cur.length;
+    const end = el ? el.selectionEnd : cur.length;
+    set({ md: cur.slice(0, start) + snippet + cur.slice(end) });
+    requestAnimationFrame(() => { if (el) { const pos = start + snippet.length; el.focus(); el.setSelectionRange(pos, pos); } });
+  };
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
+        <SearchPick label="Insert product link" items={products}
+          renderLabel={(p) => `${p.name}${p.salesCode ? ' · ' + p.salesCode : ''}`}
+          onPick={(p) => insertAtCursor(`[[product: ${p.salesCode || p.id}]]`)} />
+        <SearchPick label="Insert floating product" items={products}
+          renderLabel={(p) => `${p.name}${p.salesCode ? ' · ' + p.salesCode : ''}`}
+          onPick={(p) => insertAtCursor(`\n\n![[float: ${p.salesCode || p.id} | right]]\n\n`)} />
+        <SearchPick label="Insert topic link" items={topicsArr}
+          renderLabel={(t) => t.title}
+          onPick={(t) => insertAtCursor(`[[topic: ${t.slug}]]`)} />
+      </div>
+      <textarea ref={mdRef} value={b.md || ''} rows={10} onChange={(e) => set({ md: e.target.value })}
+        placeholder={'Write in Markdown.\n\nCross-link with [[topic: endless-knot]], [[product: P045-YGP]].\nFloat a piece into the text with ![[float: P045-YGP | right]] or ![[float: p016 | left | caption]].'}
+        style={{ ...fieldStyle, resize: 'vertical', lineHeight: 1.7, fontFamily: 'ui-monospace, Menlo, Consolas, monospace', fontSize: 13 }} />
+    </div>
+  );
+}
+
 // ── Per-type block forms ─────────────────────────────────────────────────────
 function BlockForm({ block, setBlock, products, byId, topicsArr, uploadFolder, busy, setBusy }) {
   const set = (patch) => setBlock({ ...block, ...patch });
   const b = block;
   switch (b.type) {
     case 'richText':
-      return (
-        <div>
-          <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
-            <SearchPick label="Insert product link" items={products}
-              renderLabel={(p) => `${p.name}${p.salesCode ? ' · ' + p.salesCode : ''}`}
-              onPick={(p) => set({ md: (b.md || '') + `[[product: ${p.salesCode || p.id}]]` })} />
-            <SearchPick label="Insert floating product" items={products}
-              renderLabel={(p) => `${p.name}${p.salesCode ? ' · ' + p.salesCode : ''}`}
-              onPick={(p) => set({ md: (b.md || '') + `\n\n![[float: ${p.salesCode || p.id} | right]]\n\n` })} />
-            <SearchPick label="Insert topic link" items={topicsArr}
-              renderLabel={(t) => t.title}
-              onPick={(t) => set({ md: (b.md || '') + `[[topic: ${t.slug}]]` })} />
-          </div>
-          <textarea value={b.md || ''} rows={10} onChange={(e) => set({ md: e.target.value })}
-            placeholder={'Write in Markdown.\n\nCross-link with [[topic: endless-knot]], [[product: P045-YGP]].\nFloat a piece into the text with ![[float: P045-YGP | right]] or ![[float: p016 | left | caption]].'}
-            style={{ ...fieldStyle, resize: 'vertical', lineHeight: 1.7, fontFamily: 'ui-monospace, Menlo, Consolas, monospace', fontSize: 13 }} />
-        </div>
-      );
+      return <RichTextForm block={b} set={set} products={products} topicsArr={topicsArr} />;
     case 'floatProduct': {
       const p = b.productId ? byId[b.productId] : null;
       return (
