@@ -5,6 +5,8 @@ rules_version = '2';
 // Uploaded images live under:
 //   products/{productId}/...   — product photos
 //   site/{slot}/...            — hero slides, banners, tiles, logo, portrait
+//                                (site/explore/{slug}/... — Explore editorial
+//                                imagery: heroes, hotspot photos, galleries)
 //   blog/{slug}/...            — blog cover images
 //
 // Reads are public (images are served on the storefront). Writes are limited
