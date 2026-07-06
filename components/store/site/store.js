@@ -123,6 +123,7 @@ export function useAddedNotice() {
 export const SiteDataContext = createContext(null);
 export function useSiteData() {
   return useContext(SiteDataContext) || {
-    SITE_PRODUCTS: [], SITE_BY_ID: {}, TASHI_PRODUCTS: [], HOME_BEST: [], MEGA_FEATURED: [], ALIASES: {}, settings: {}, content: resolveContent({}),
+    SITE_PRODUCTS: [], SITE_BY_ID: {}, TASHI_PRODUCTS: [], HOME_BEST: [], MEGA_FEATURED: [], ALIASES: {},
+    settings: {}, content: resolveContent({}), blogPosts: {}, exploreGroups: {}, exploreTopics: {},
   };
 }

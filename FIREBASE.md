@@ -17,11 +17,21 @@ The `/admin` console writes to that layer, and **Firebase** persists it:
     - **`images`** (string[]) — gallery of uploaded photo URLs. `img` mirrors
       `images[0]` (the primary photo) for the many single-image surfaces
       (cards, cart, mega-menu).
+    - **`topics`** (string[]) — Explore knowledge-topic slugs this piece is
+      linked to (drives the topic page's product grid, the product page's
+      symbolism section and the catalogue Symbol filter).
   - `siteSettings/images` — site-element image URLs (logo, hero slideshow,
     category tiles, banners, Tashi portrait)
+  - `exploreTopics/{slug}` — Explore knowledge topics: block-based editorial
+    pages (`/explore/topic/<slug>`). Draft until `published: true`. Seed with
+    `npm run seed-explore` (topics seed as **drafts** so no placeholder pages
+    get indexed; publish each from /admin → Explore when content is ready).
+  - `exploreGroups/{slug}` — Explore navigation shelves; membership and
+    per-shelf order live in the ordered `topicSlugs` array.
 - **Storage** holds the uploaded image files
   - `products/{productId}/…` — product photos
   - `site/{slot}/…` — hero slides, banners, tiles, logo, portrait
+    (`site/explore/{slug}/…` — Explore heroes, hotspot photos, galleries)
 
 The public site subscribes to Firestore live, so an edit or upload in `/admin`
 appears on the catalogue immediately (and across devices). localStorage is kept

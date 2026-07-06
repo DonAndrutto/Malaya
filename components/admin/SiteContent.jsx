@@ -30,6 +30,7 @@ const SECTIONS = [
   ['Navigation labels', [
     ['Home', ['nav', 'home'], 'text'],
     ['Catalogue', ['nav', 'catalogue'], 'text'],
+    ['Explore', ['nav', 'explore'], 'text'],
     ['Tashi Mannox', ['nav', 'tashi'], 'text'],
     ['Blog', ['nav', 'blog'], 'text'],
     ['Contact', ['nav', 'contact'], 'text'],

@@ -11,6 +11,10 @@ rules_version = '2';
 //   siteSettings/images             — site-element image URLs (hero, banners…).
 //   siteSettings/content            — editable site copy & links.
 //   blogPosts/{slug}                — admin-authored Markdown articles.
+//   exploreTopics/{slug}            — Explore knowledge topics (block-based
+//                                     editorial pages, lib/explore.js).
+//   exploreGroups/{slug}            — Explore navigation shelves (ordered
+//                                     topicSlugs curation lists).
 //   admins/{uid}                    — allowlist of admin account UIDs.
 //
 // Reads of storefront data are public (the storefront needs them). Writes are
@@ -57,7 +61,7 @@ service cloud.firestore {
           'listPrice', 'retail', 'salePrice', 'qty',
           'salesCode', 'productionCode', 'story', 'images', 'img',
           'specials', 'tag', 'published', 'deleted', 'mergedInto',
-          '_custom', '_updated',
+          'topics', '_custom', '_updated',
         ])
         && optStr(d, 'name', 300) && optStr(d, 'sub', 300)
         && optStr(d, 'category', 100) && optStr(d, 'collection', 100)
@@ -68,7 +72,8 @@ service cloud.firestore {
         && optNum(d, 'listPrice') && optNum(d, 'retail') && optNum(d, 'salePrice')
         && optNum(d, 'qty') && optNum(d, '_updated')
         && optBool(d, 'published') && optBool(d, 'deleted') && optBool(d, '_custom')
-        && optList(d, 'images', 24) && optList(d, 'specials', 10);
+        && optList(d, 'images', 24) && optList(d, 'specials', 10)
+        && optList(d, 'topics', 20);
     }
 
     function validBlogPost(d, slug) {
@@ -83,6 +88,39 @@ service cloud.firestore {
         && optNum(d, '_updated')
         && optBool(d, 'published')
         && optList(d, 'tags', 20);
+    }
+
+    // Explore knowledge topic — one block-based editorial page per document.
+    // Block internals are not deep-validated (Firestore CEL cannot practically
+    // validate a list of heterogeneous maps); the write surface is admin-only
+    // and size-capped, and the renderer treats every block prop defensively.
+    function validTopic(d, slug) {
+      return d.keys().hasOnly([
+          'slug', 'title', 'subtitle', 'excerpt', 'aliases', 'previousSlugs',
+          'heroImage', 'heroPos', 'blocks', 'published', '_updated',
+        ])
+        && d.slug == slug
+        && optStr(d, 'title', 300) && optStr(d, 'subtitle', 300)
+        && optStr(d, 'excerpt', 1000)
+        && optStr(d, 'heroImage', 2048) && optStr(d, 'heroPos', 50)
+        && optList(d, 'aliases', 30) && optList(d, 'previousSlugs', 30)
+        && optList(d, 'blocks', 200)
+        && optBool(d, 'published') && optNum(d, '_updated');
+    }
+
+    // Explore navigation shelf — membership AND per-shelf order both live in
+    // the ordered topicSlugs array (groups are purely curation; deleting a
+    // group deletes no knowledge).
+    function validGroup(d, slug) {
+      return d.keys().hasOnly([
+          'slug', 'name', 'description', 'heroImage', 'heroPos',
+          'order', 'topicSlugs', 'published', '_updated',
+        ])
+        && d.slug == slug
+        && optStr(d, 'name', 300) && optStr(d, 'description', 2000)
+        && optStr(d, 'heroImage', 2048) && optStr(d, 'heroPos', 50)
+        && optNum(d, 'order') && optList(d, 'topicSlugs', 300)
+        && optBool(d, 'published') && optNum(d, '_updated');
     }
 
     match /catalogueOverrides/{productId} {
@@ -113,6 +151,30 @@ service cloud.firestore {
       allow read: if resource.data.published == true || isAdmin();
       allow write: if isAdmin()
         && (request.method == 'delete' || validBlogPost(request.resource.data, slug));
+    }
+
+    // Explore: published topics/groups are public; drafts are visible to
+    // admins only. The storefront queries with where('published', '==', true)
+    // — see lib/explore.js — the same provable public list read as blogPosts.
+    match /exploreTopics/{slug} {
+      allow read: if resource.data.published == true || isAdmin();
+      allow write: if isAdmin()
+        && (request.method == 'delete' || validTopic(request.resource.data, slug));
+
+      // Revision snapshots (content safety net, lib/explore.js): the admin
+      // client checkpoints the previous document before saves (throttled,
+      // pruned to the newest ~20) and before deletion. Shaped like a topic
+      // plus _savedAt; never public. The subcollection deliberately survives
+      // the parent document's deletion — the snapshots ARE the recovery copies.
+      match /revisions/{rev} {
+        allow read, write: if isAdmin();
+      }
+    }
+
+    match /exploreGroups/{slug} {
+      allow read: if resource.data.published == true || isAdmin();
+      allow write: if isAdmin()
+        && (request.method == 'delete' || validGroup(request.resource.data, slug));
     }
 
     // Admin allowlist. A signed-in user may check their own entry; documents

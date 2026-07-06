@@ -21,6 +21,8 @@ export default function StoreLayoutClient({
   initialSettings = {},
   initialContent = {},
   initialBlog = {},
+  initialExploreGroups = {},
+  initialExploreTopics = {},
 }) {
   const [overrides, setOverrides] = useState(initialOverrides);
   const [settings, setSettings] = useState(initialSettings);
@@ -38,7 +40,15 @@ export default function StoreLayoutClient({
 
   const siteData = useMemo(() => buildSiteData(overrides), [overrides]);
   const content = useMemo(() => resolveContent(savedContent), [savedContent]);
-  const ctx = useMemo(() => ({ ...siteData, settings, content, blogPosts }), [siteData, settings, content, blogPosts]);
+  // Explore summaries/groups are deliberately NOT live-subscribed: the client
+  // SDK can't project fields, and shipping whole articles to paint card grids
+  // is the one real scalability trap. They ride the ISR props (≤5-min
+  // propagation, same as generateMetadata); the topic page itself subscribes
+  // to its single document, so editing stays live where it matters.
+  const ctx = useMemo(
+    () => ({ ...siteData, settings, content, blogPosts, exploreGroups: initialExploreGroups, exploreTopics: initialExploreTopics }),
+    [siteData, settings, content, blogPosts, initialExploreGroups, initialExploreTopics],
+  );
 
   // Keep existing carts working when an item has been merged into a master.
   useEffect(() => migrateCartAliases(siteData.ALIASES), [siteData.ALIASES]);

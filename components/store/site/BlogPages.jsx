@@ -53,10 +53,11 @@ export function BlogIndex() {
 }
 
 export function BlogPost({ slug }) {
-  const { blogPosts, SITE_PRODUCTS } = useSiteData();
+  const { blogPosts, SITE_PRODUCTS, exploreTopics } = useSiteData();
   const map = blogPosts || {};
   const p = map[slug] || Object.values(map).find((x) => x && x.slug === slug);
   const posts = Object.values(map);
+  const topics = Object.values(exploreTopics || {});
 
   if (!p || !p.title || !p.published) {
     return (
@@ -78,7 +79,7 @@ export function BlogPost({ slug }) {
         {Array.isArray(p.tags) && p.tags.length > 0 && (
           <div className="blog-tags">{p.tags.map((t) => <span key={t}>{t}</span>)}</div>
         )}
-        <Markdown source={p.body} posts={posts} products={SITE_PRODUCTS || []} />
+        <Markdown source={p.body} posts={posts} products={SITE_PRODUCTS || []} topics={topics} />
         <Link className="blog-back" href="/blog">← All posts</Link>
       </article>
     </main>
