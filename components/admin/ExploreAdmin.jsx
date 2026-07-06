@@ -21,6 +21,7 @@ import { T, ghostBtn } from './theme';
 import {
   subscribeExploreAdmin, saveTopic, deleteTopic, saveGroup, deleteGroup,
   groupList, topicProducts, newBlockId, BLOCK_TYPES, RESERVED_GROUP_SLUGS, topicByteSize,
+  listTopicRevisions, checkpointTopic, REVISION_KEEP, EXPLORE_SAVE_ERROR_EVENT,
 } from '@/lib/explore';
 import { slugify, loadBlog } from '@/lib/blog';
 import { uploadImage } from '@/lib/upload';
@@ -462,6 +463,50 @@ function GalleryUpload({ folder, onAdd }) {
   );
 }
 
+// ── Revision history (content safety net) — load on demand, restore a copy ──
+function RevisionHistory({ slug, onRestore }) {
+  const [revs, setRevs] = useState(null); // null = not loaded yet
+  const [loading, setLoading] = useState(false);
+  useEffect(() => { setRevs(null); }, [slug]);
+  if (!FIREBASE_ENABLED) return null;
+  const load = async () => {
+    setLoading(true);
+    try { setRevs(await listTopicRevisions(slug)); } finally { setLoading(false); }
+  };
+  return (
+    <div style={card}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+        <h3 style={{ ...headStyle, margin: 0 }}>History</h3>
+        <button type="button" disabled={loading} onClick={load} style={ghostBtn(loading)}>
+          {loading ? 'Loading…' : (revs ? 'Refresh' : 'Show snapshots')}
+        </button>
+      </div>
+      {revs && (
+        <div style={{ marginTop: 12, display: 'grid', gap: 6 }}>
+          {revs.length === 0 && (
+            <div style={{ fontSize: 12.5, color: T.muted }}>No snapshots yet — they accrue automatically as you edit.</div>
+          )}
+          {revs.map((r) => (
+            <div key={r.id} style={{ display: 'flex', alignItems: 'center', gap: 12, border: `1px solid ${T.line}`, background: T.card, padding: '8px 12px' }}>
+              <span style={{ flex: 1, minWidth: 0, fontSize: 12.5, color: T.ink }}>
+                {new Date(r.savedAt).toLocaleString()}
+              </span>
+              <span style={{ fontSize: 11, color: T.faint, whiteSpace: 'nowrap' }}>
+                {(r.topic.blocks || []).length} block{(r.topic.blocks || []).length === 1 ? '' : 's'} · {(topicByteSize(r.topic) / 1024).toFixed(1)} KB
+              </span>
+              <button type="button" onClick={() => onRestore(r)} style={{ ...ghostBtn(), padding: '5px 12px', fontSize: 10 }}>Restore</button>
+            </div>
+          ))}
+        </div>
+      )}
+      <div style={{ fontSize: 11, color: T.faint, marginTop: 10, lineHeight: 1.6 }}>
+        A snapshot of the previous version is kept automatically while you edit (at most one every 5 minutes) and always before a
+        delete or rename; the newest {REVISION_KEEP} are retained. Restoring checkpoints the current version first.
+      </div>
+    </div>
+  );
+}
+
 function Toast({ text }) {
   return <div style={{ position: 'fixed', bottom: 26, left: '50%', transform: 'translateX(-50%)', zIndex: 60, background: T.ink, color: T.panel, padding: '12px 22px', fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{text}</div>;
 }
@@ -482,6 +527,13 @@ export default function ExploreAdmin() {
   useEffect(() => subscribeExploreAdmin(setData), []);
   useEffect(() => subscribeOverrides(setOverrides), []);
   useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), 1800); return () => clearTimeout(t); }, [toast]);
+  // Failed Firestore writes (rules rejection) are broadcast by lib/explore.js —
+  // without this the editor would see "Saved" while the cloud copy is stale.
+  useEffect(() => {
+    const onErr = () => setToast('⚠ Cloud save failed — the change is only in this browser');
+    window.addEventListener(EXPLORE_SAVE_ERROR_EVENT, onErr);
+    return () => window.removeEventListener(EXPLORE_SAVE_ERROR_EVENT, onErr);
+  }, []);
 
   const flash = (m) => setToast(m);
   const { SITE_PRODUCTS, SITE_BY_ID } = useMemo(() => {
@@ -627,6 +679,25 @@ export default function ExploreAdmin() {
     if (changed) { saveOverrides(all); setOverrides(all); }
     if (editKey === slug) closeEditor();
     flash('Deleted');
+  };
+
+  // Restore a History snapshot: content and metadata come back from the
+  // snapshot; the current slug, redirect history and visibility are kept so a
+  // restore can never rename, collide or unpublish.
+  const restoreRevision = (rev) => {
+    if (!confirm('Replace the current content with this snapshot? The current version is checkpointed to History first.')) return;
+    checkpointTopic(editKey);
+    const next = {
+      ...blankTopic(),
+      ...rev.topic,
+      slug: draft.slug,
+      previousSlugs: draft.previousSlugs || [],
+      published: !!draft.published,
+    };
+    setDraft(next);
+    persist(next, { silent: true });
+    setBlockOpen(null);
+    flash('Snapshot restored');
   };
 
   // ── Blocks ────────────────────────────────────────────────────────────────
@@ -810,6 +881,8 @@ export default function ExploreAdmin() {
                 </div>
               ))}
             </div>
+
+            {editKey !== '__new__' && <RevisionHistory slug={editKey} onRestore={restoreRevision} />}
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               {editKey !== '__new__'

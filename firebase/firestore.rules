@@ -160,6 +160,15 @@ service cloud.firestore {
       allow read: if resource.data.published == true || isAdmin();
       allow write: if isAdmin()
         && (request.method == 'delete' || validTopic(request.resource.data, slug));
+
+      // Revision snapshots (content safety net, lib/explore.js): the admin
+      // client checkpoints the previous document before saves (throttled,
+      // pruned to the newest ~20) and before deletion. Shaped like a topic
+      // plus _savedAt; never public. The subcollection deliberately survives
+      // the parent document's deletion — the snapshots ARE the recovery copies.
+      match /revisions/{rev} {
+        allow read, write: if isAdmin();
+      }
     }
 
     match /exploreGroups/{slug} {
