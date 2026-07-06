@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import { T, ghostBtn } from './theme';
 import { saveOverrides, subscribeOverrides } from '@/lib/overrides';
-import { FIREBASE_ENABLED } from '@/lib/firebase';
-import { signIn, signOutUser, subscribeAuth, friendlyAuthError } from '@/lib/auth';
+import { FIREBASE_ENABLED, FIREBASE_PROJECT_ID } from '@/lib/firebase';
+import { signIn, signOutUser, subscribeAuth, friendlyAuthError, checkAdminRights } from '@/lib/auth';
 import Inventory from './Inventory';
 import SiteContent from './SiteContent';
 import SiteImages from './SiteImages';
@@ -84,6 +84,29 @@ function Login({ onDemoLogin }) {
 function Console({ user, onLogout }) {
   const [tab, setTab] = useState('inventory');
   const [overrides, setOverrides] = useState({});
+  const [rights, setRights] = useState(null); // null = unchecked / not applicable
+
+  // Admin-rights preflight: signing in proves identity, not authority. If the
+  // account carries neither the admin custom claim nor an admins/{uid}
+  // allowlist doc, every save in this console is rejected by the rules with
+  // permission-denied — say so once, loudly, with the exact fix, instead of
+  // letting each tab fail quietly.
+  useEffect(() => {
+    if (!FIREBASE_ENABLED) return;
+    let on = true;
+    checkAdminRights().then((r) => {
+      if (!on || !r) return;
+      setRights(r);
+      if (!r.isAdmin) {
+        console.error(
+          `[malaya] Signed-in account has NO admin rights on project "${FIREBASE_PROJECT_ID}" — `
+          + `uid ${r.uid} (${r.email}): custom claim admin=${r.claim}, admins/{uid} allowlist doc=${r.allowlisted}. `
+          + `Every admin read/write will be permission-denied. Grant with: node scripts/grant-admin.mjs ${r.email || '<email>'}`,
+        );
+      }
+    }).catch(() => {});
+    return () => { on = false; };
+  }, []);
 
   useEffect(() => {
     // A /admin?edit=<id> deep-link (e.g. "Edit in admin" from a product page)
@@ -131,6 +154,14 @@ function Console({ user, onLogout }) {
           <button onClick={onLogout} style={ghostBtn()}>Log out</button>
         </div>
       </header>
+
+      {rights && !rights.isAdmin && (
+        <div style={{ background: '#7a1f1f', color: '#fff', padding: '12px 28px', fontSize: 13, lineHeight: 1.7, fontFamily: T.sans }}>
+          <strong>This account has no admin rights on “{FIREBASE_PROJECT_ID}” — every save will be rejected.</strong><br />
+          Signed in as {rights.email || '(no email)'} · uid <code style={{ userSelect: 'all' }}>{rights.uid}</code> · admin claim: {String(rights.claim)} · allowlist doc: {String(rights.allowlisted)}.
+          Grant access with <code style={{ userSelect: 'all' }}>node scripts/grant-admin.mjs {rights.email || '<email>'}</code> (see FIREBASE.md §2), then reload.
+        </div>
+      )}
 
       {tab === 'inventory' && <Inventory overrides={overrides} setOverrides={update} />}
       {tab === 'content' && <SiteContent />}

@@ -102,6 +102,14 @@ key, so "any signed-in user" is effectively "anyone". To go live:
    otherwise the studio's own writes are rejected until the grant runs.
 4. Sign in at `/admin` with that email + password.
 
+Signing in proves identity, not authority: if the account has neither the
+claim nor the allowlist doc **on this project**, the console shows a red
+banner naming the signed-in email/uid, which of the two credentials is
+missing, and the exact `grant-admin.mjs` command to run — and every save is
+rejected with `permission-denied` until the grant runs. (Re-creating the Auth
+user in the console changes its uid and orphans the old `admins/{uid}` doc —
+re-run the grant after doing that.)
+
 If unit costs were previously saved by an older app version, migrate them out
 of the publicly-readable override docs once:
 
