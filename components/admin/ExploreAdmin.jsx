@@ -40,7 +40,7 @@ const primaryBtn = { background: T.ink, color: T.panel, border: 'none', padding:
 const BLOCK_LABEL = Object.fromEntries(BLOCK_TYPES.map((b) => [b.type, b.label]));
 
 function blankTopic() {
-  return { slug: '', title: '', subtitle: '', excerpt: '', aliases: [], heroImage: '', heroPos: '', blocks: [], published: false };
+  return { slug: '', title: '', subtitle: '', excerpt: '', aliases: [], previousSlugs: [], heroImage: '', heroPos: '', blocks: [], published: false };
 }
 function blankGroup(order) {
   return { slug: '', name: '', description: '', heroImage: '', heroPos: '', order, topicSlugs: [], published: true };
@@ -547,18 +547,32 @@ export default function ExploreAdmin() {
     if (!d || !d.title.trim()) { setDraft(d); return null; }
     let slug = slugify(d.slug || d.title);
     if (editKey === '__new__') slug = uniqueTopicSlug(slug);
+    const renaming = editKey && editKey !== '__new__' && editKey !== slug;
+    if (renaming && data.topics[slug]) {
+      // Never let a rename land on a slug another topic already owns — that
+      // would silently overwrite the other topic's document.
+      alert(`Another topic already uses the slug “${slug}” — nothing was saved. Pick a different slug.`);
+      setDraft(d);
+      return null;
+    }
+    // A renamed topic keeps its old slugs so the topic route can issue
+    // permanent redirects from every URL it has ever lived at.
+    const previousSlugs = [
+      ...new Set([...(d.previousSlugs || []), ...(renaming ? [editKey] : [])]),
+    ].filter((s) => s && s !== slug).slice(-30);
     const topic = {
       slug,
       title: d.title.trim(),
       subtitle: d.subtitle || '',
       excerpt: d.excerpt || '',
       aliases: (d.aliases || []).filter(Boolean),
+      ...(previousSlugs.length ? { previousSlugs } : {}),
       heroImage: d.heroImage || '',
       heroPos: d.heroPos || '',
       blocks: d.blocks || [],
       published: !!d.published,
     };
-    if (editKey && editKey !== '__new__' && editKey !== slug) {
+    if (renaming) {
       // Slug rename: move the doc and carry every reference with it so no
       // group shelf or product link dangles.
       dropTopic(editKey);
@@ -580,7 +594,7 @@ export default function ExploreAdmin() {
     }
     putTopic(slug, topic);
     setEditKey(slug);
-    setDraft({ ...d, slug });
+    setDraft({ ...d, slug, previousSlugs });
     if (!silent) flash('Saved');
     return slug;
   };
