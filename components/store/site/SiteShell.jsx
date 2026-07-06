@@ -251,6 +251,7 @@ export function SiteHeader() {
   const overlay = pathname === '/';
   const NAV = [
     { label: content.nav.home, path: '/' },
+    { label: content.nav.explore, path: '/explore' },
     { label: content.nav.tashi, path: '/tashi' },
     { label: content.nav.blog, path: '/blog' },
     { label: content.nav.contact, path: '/contact' },
