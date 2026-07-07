@@ -120,7 +120,12 @@ async function seedImage(bucket, dest, srcUrl) {
   await file.save(buffer, {
     resumable: false,
     contentType: contentTypeOf(dest),
-    metadata: { metadata: { firebaseStorageDownloadTokens: token } },
+    metadata: {
+      // Same immutable policy as admin uploads (lib/upload.js): the object
+      // behind a URL never changes, and visitors download it directly.
+      cacheControl: 'public, max-age=31536000, immutable',
+      metadata: { firebaseStorageDownloadTokens: token },
+    },
   });
   return { url: downloadUrl(bucket.name, dest, token), status: 'ok' };
 }

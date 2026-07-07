@@ -94,16 +94,17 @@ export function SocialLinks() {
 // Renders nothing when there's no src (so a missing photo never produces a
 // broken/stray request); hides itself if the image fails to load.
 //
-// Firebase Storage (and local /images) sources go through next/image, so the
-// high-resolution originals the studio uploads are resized per device and
-// served as AVIF/WebP from the CDN cache. Layout stays CSS-driven exactly as
-// before (the classes size the element); width/height only reserve space so
-// the page doesn't shift while photos load. Pass `sizes` matching the slot's
-// rendered width, and `priority` for above-the-fold imagery (LCP).
+// Images are served directly from Firebase Storage — the image optimizer is
+// disabled (`images.unoptimized` in next.config.mjs; see IMAGES.md), so the
+// file the admin console uploads (already downscaled and byte-budgeted by
+// lib/image-resize.js) is exactly what visitors download. next/image is kept
+// for what still works without the optimizer: lazy loading by default,
+// width/height reserving space so the page doesn't shift while photos load,
+// and `priority` (preload + fetchpriority) for above-the-fold imagery (LCP).
+// Layout stays CSS-driven exactly as before (the classes size the element).
 // Anything from an unknown host (e.g. a hand-pasted external URL in an old
-// override) falls back to a plain lazy <img>, since the optimizer only
-// accepts the hosts allow-listed in next.config.mjs.
-const OPTIMIZED_SRC = /^(\/(?!\/)|https:\/\/firebasestorage\.googleapis\.com\/)/;
+// override) still falls back to a plain lazy <img>.
+const NEXT_IMAGE_SRC = /^(\/(?!\/)|https:\/\/firebasestorage\.googleapis\.com\/)/;
 
 export function SiteImg({
   src, alt, style, className,
@@ -112,7 +113,7 @@ export function SiteImg({
 }) {
   if (!src) return null;
   const hide = (e) => { e.currentTarget.style.visibility = 'hidden'; };
-  if (!OPTIMIZED_SRC.test(src)) {
+  if (!NEXT_IMAGE_SRC.test(src)) {
     return (
       <img
         src={src} alt={alt || ''} loading="lazy" decoding="async"
