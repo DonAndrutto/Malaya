@@ -57,7 +57,6 @@ const SECTIONS = [
     ['Heading', ['about', 'title'], 'text'],
     ['Lead paragraph', ['about', 'lead'], 'area'],
     ['Attribution', ['about', 'from'], 'text'],
-    ['Figure caption', ['about', 'caption'], 'text'],
     ['Body — blank line between paragraphs', ['about', 'body'], 'paras'],
   ]],
   ['Tashi Mannox page', [

@@ -7,7 +7,7 @@
 // `settings` on the context.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, Fragment } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -546,7 +546,8 @@ export function TashiPage() {
   }, [TASHI_PRODUCTS, exploreTopics]);
   return (
     <main className="malaya-page" data-screen-label="Tashi Mannox">
-      <PageBanner variant="chapter" title={content.banners.tashi.title} subtitle={content.banners.tashi.subtitle} />
+      <PageBanner variant="chapter" title={content.banners.tashi.title} subtitle={content.banners.tashi.subtitle}
+        img={settings.tashiBanner || null} />
       <div className="site-container tashi-intro">
         <div className="tashi-text">
           <h3 className="tashi-kicker">{content.tashi.kicker}</h3>
@@ -554,11 +555,17 @@ export function TashiPage() {
           <h4 className="tashi-role">{content.tashi.role}</h4>
           {content.tashi.intro.map((para, i) => <p key={i} className="tashi-para">{para}</p>)}
         </div>
-        <div className="tashi-photo">
+        <Reveal as="figure" className="tashi-photo">
           <SiteImg src={settings.tashiPhoto || null} alt={content.tashi.name}
             sizes="(max-width: 900px) 100vw, 460px" width={920} height={1100} priority />
-        </div>
+          <figcaption className="tashi-photo-caption">{content.tashi.name} · {content.tashi.role}</figcaption>
+        </Reveal>
       </div>
+      {settings.tashiCalligraphy && (
+        <Reveal className="tashi-interlude">
+          <BannerImg src={settings.tashiCalligraphy} settings={settings} />
+        </Reveal>
+      )}
       <section className="site-container tashi-products">
         <Reveal>
           <h2 className="section-title">{content.tashi.productsTitle}</h2>
@@ -588,10 +595,34 @@ export function TashiPage() {
   );
 }
 
+// Full-width editorial figure dropped into the About article body — the
+// `.about-figure` CSS has existed since PR A but had no JSX consumer until
+// this one (VISUAL-AUDIT §1.7 / PR F).
+function AboutFigure({ src, caption }) {
+  if (!src) return null;
+  return (
+    <Reveal as="figure" className="about-figure">
+      <SiteImg src={src} alt={caption || ''} width={1600} height={1000} sizes="(max-width: 900px) 100vw, 920px" />
+      {caption && <figcaption>{caption}</figcaption>}
+    </Reveal>
+  );
+}
+
 // ── About ────────────────────────────────────────────────────────────────────
 export function AboutPage() {
   const { settings, content } = useSiteData();
   const about = content.about;
+  // Up to two admin-uploaded figures, spread evenly through the body
+  // paragraphs (e.g. 2 figures across 5 paragraphs land after the 1st and
+  // the 3rd) so the article alternates text and photography.
+  const figures = (Array.isArray(settings.aboutFigures) ? settings.aboutFigures : [])
+    .filter((f) => f && f.src).slice(0, 2);
+  const figureAfter = new Map();
+  figures.forEach((fig, k) => {
+    const pos = Math.min(about.body.length - 1,
+      Math.max(0, Math.floor(((k + 1) * about.body.length) / (figures.length + 1)) - 1));
+    figureAfter.set(pos, fig);
+  });
   return (
     <main className="malaya-page" data-screen-label="About">
       <PageBanner variant="chapter" title={content.banners.about.title} subtitle={content.banners.about.subtitle} img={settings.aboutBanner || null} />
@@ -603,7 +634,12 @@ export function AboutPage() {
           {CATEGORIES.map((c) => <Link key={c} href={sectionAnchor(c)}>{c}</Link>)}
         </div>
         <p className="about-from">{about.from}</p>
-        {about.body.map((para, i) => <p key={i} className="about-para">{para}</p>)}
+        {about.body.map((para, i) => (
+          <Fragment key={i}>
+            <p className="about-para">{para}</p>
+            {figureAfter.has(i) && <AboutFigure {...figureAfter.get(i)} />}
+          </Fragment>
+        ))}
       </article>
     </main>
   );

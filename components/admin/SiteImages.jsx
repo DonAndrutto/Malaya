@@ -146,9 +146,17 @@ const BANNER_SLOTS = [
     hint: 'Breadcrumb banner on Contact, Order and Tashi Mannox, and the fallback for any page/category without its own banner.' },
   { k: 'aboutBanner', label: 'About page banner', folder: 'site/banners', w: 1920, h: 480, fit: 'cover', focal: true, pw: 620,
     hint: 'Breadcrumb banner at the top of the About page.' },
+  { k: 'tashiBanner', label: 'Tashi Mannox banner', folder: 'site/tashi', w: 1920, h: 900, fit: 'cover', focal: true, pw: 620,
+    hint: 'Chapter header at the top of the Tashi Mannox page — ideally a wide crop of his brushwork or calligraphy. Falls back to the default page banner until set.' },
   { k: 'tashiPhoto', label: 'Tashi Mannox portrait', folder: 'site/tashi', w: 1000, h: 1200, fit: 'contain', tone: 'light', pw: 300,
     hint: 'Portrait on the Tashi Mannox collaboration page. Shown uncropped at its own proportions.' },
+  { k: 'tashiCalligraphy', label: 'Tashi Mannox calligraphy interlude', folder: 'site/tashi', w: 1920, h: 800, fit: 'cover', focal: true, pw: 620,
+    hint: 'Optional full-bleed band of his calligraphy between the collaboration intro and the product grid. Leave unset to hide the band entirely.' },
 ];
+
+// Editorial figures dropped into the About page body, between paragraphs.
+const ABOUT_FIGURE_SPEC = { w: 1600, h: 1000 };
+const MAX_ABOUT_FIGURES = 2;
 
 // Home hero slide — full-width home slideshow.
 const HERO_SPEC = { w: 2400, h: 1350 };
@@ -215,6 +223,11 @@ export default function SiteImages() {
   const setCatBanner = (cat, url) => apply({ categoryBanners: { ...(settings.categoryBanners || {}), [cat]: url } });
   const resetCatBanner = (cat) => { const t = { ...(settings.categoryBanners || {}) }; delete t[cat]; apply({ categoryBanners: t }); };
   const defaultBanner = settings.pageBanner || null;
+
+  // About page editorial figures — up to two {src, caption} pairs shown
+  // between paragraphs in the article body (VISUAL-AUDIT PR F).
+  const aboutFigures = Array.isArray(settings.aboutFigures) ? settings.aboutFigures : [];
+  const setAboutFigures = (arr) => apply({ aboutFigures: arr });
 
   return (
     <div style={{ maxWidth: 880, margin: '0 auto', padding: '30px 28px 80px' }}>
@@ -288,6 +301,37 @@ export default function SiteImages() {
           );
         })}
       </div>
+
+      <h3 style={{ ...headStyle, marginTop: 24, color: T.muted }}>About page figures</h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12, flexWrap: 'wrap', margin: '0 0 12px' }}>
+        <p style={{ fontSize: 12, color: T.muted, margin: 0, maxWidth: 560 }}>
+          Up to two full-width editorial photographs (atelier, workshop, place) shown between paragraphs on the About page, each with an optional caption. Leave empty to keep the page text-only.
+        </p>
+        <Spec w={ABOUT_FIGURE_SPEC.w} h={ABOUT_FIGURE_SPEC.h} />
+      </div>
+      <div style={{ display: 'grid', gap: 14, marginBottom: 16 }}>
+        {aboutFigures.map((fig, i) => (
+          <div key={i} style={card}>
+            <div style={{ maxWidth: 420 }}>
+              <SlotPreview url={fig.src || null} w={ABOUT_FIGURE_SPEC.w} h={ABOUT_FIGURE_SPEC.h} fit="contain" tone="light" />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginTop: 12 }}>
+              <PickButton label={fig.src ? 'Replace' : 'Upload'} busy={busy === `aboutfig-${i}`}
+                onFile={(f) => upload(`aboutfig-${i}`, 'site/about', f, (url) => {
+                  const next = aboutFigures.slice(); next[i] = { ...next[i], src: url }; setAboutFigures(next);
+                })} />
+              <button onClick={() => setAboutFigures(aboutFigures.filter((_, j) => j !== i))} style={linkBtn}>Remove</button>
+            </div>
+            <input type="text" value={fig.caption || ''} placeholder="Caption (optional)"
+              onChange={(e) => { const next = aboutFigures.slice(); next[i] = { ...next[i], caption: e.target.value }; setAboutFigures(next); }}
+              style={{ width: '100%', marginTop: 10, padding: '9px 11px', fontSize: 12.5, background: T.card, border: `1px solid ${T.line2}`, color: T.ink, boxSizing: 'border-box' }} />
+          </div>
+        ))}
+      </div>
+      {aboutFigures.length < MAX_ABOUT_FIGURES && (
+        <PickButton label="Add figure" busy={busy === 'aboutfig-add'}
+          onFile={(f) => upload('aboutfig-add', 'site/about', f, (url) => setAboutFigures([...aboutFigures, { src: url, caption: '' }]))} />
+      )}
     </div>
   );
 }
