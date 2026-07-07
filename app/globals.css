@@ -118,17 +118,16 @@ button, input, select { font-family: inherit; }
 .malaya-site .hero-dot { position: relative; width: 26px; height: 14px; border: none; background: transparent; cursor: pointer; padding: 0; }
 .malaya-site .hero-dot::after { content: ''; position: absolute; left: 0; right: 0; top: 6px; height: 2px; background: rgba(255,255,255,.45); transition: background .3s ease; }
 .malaya-site .hero-dot.on::after { background: #fff; }
-.malaya-site .home-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding-top: 56px; padding-bottom: 26px; }
-.malaya-site .home-tile { position: relative; display: block; overflow: hidden; }
-.malaya-site .home-tile img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block; transition: transform .5s; }
-.malaya-site .home-tile:hover img { transform: scale(1.045); }
-.malaya-site .home-tile-body { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px; background: linear-gradient(transparent, rgba(0,0,0,.55)); color: #fff; display: flex; flex-direction: column; gap: 2px; }
-.malaya-site .home-tile-title { font-family: 'Raleway', sans-serif; font-size: 21px; font-weight: 600; }
-.malaya-site .home-tile-cta { font-size: 10.5px; letter-spacing: .25em; text-transform: uppercase; opacity: .85; }
 .malaya-site .home-best { padding-top: 50px; padding-bottom: 30px; }
 .malaya-site .home-best-cta { text-align: center; padding: 16px 0 30px; }
-.malaya-site .home-banner { background-size: cover; background-position: center; margin-top: 26px; }
-.malaya-site .home-banner-inner { background: var(--scrim-center); padding: 110px 24px; text-align: center; color: #fff; display: flex; flex-direction: column; align-items: center; gap: 26px; }
+/* Layered banner image (VISUAL-AUDIT PR D) — replaces eager CSS backgrounds
+   on the closing banners: lazy by default (next/image) and transformable.
+   Frames are position:relative + overflow:hidden; scrims (::before) and
+   content stack above via z-index. */
+.malaya-site .banner-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* Home "Order Now" — a cinematic closing band rather than a promo strip. */
+.malaya-site .home-banner { position: relative; overflow: hidden; margin-top: 26px; background: var(--brown); }
+.malaya-site .home-banner-inner { position: relative; z-index: 1; background: var(--scrim-center); min-height: clamp(340px, 56vh, 560px); padding: 60px 24px; text-align: center; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; }
 .malaya-site .home-banner-inner h2 { font-size: 32px; font-weight: 300; letter-spacing: .14em; text-transform: uppercase; }
 /* ── Combined catalogue scroll (home) ──────────────────────────────────────── */
 .malaya-site .cat-bar { position: sticky; top: 0; z-index: 30; background: rgba(59, 35, 26, .72); -webkit-backdrop-filter: blur(12px) saturate(140%); backdrop-filter: blur(12px) saturate(140%); }
@@ -273,9 +272,12 @@ button, input, select { font-family: inherit; }
 .malaya-site .pd-symbolism-more { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin-top: 6px; }
 
 /* Product-page "Order Now" banner — a compact frosted-glass add-to-order panel
-   that lets the banner photo read through (no border, no shadow). */
-.malaya-site .pd-order-banner { position: relative; background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; padding: 40px 24px; }
-.malaya-site .pd-order-banner::before { content: ''; position: absolute; inset: 0; background: var(--scrim-center); }
+   that lets the banner photo read through (no border, no shadow). Grown to a
+   real photographic band with the card offset right (editorial asymmetry) and
+   a bottom-weighted scrim, so the photography carries the frame (PR D). */
+.malaya-site .pd-order-banner { position: relative; overflow: hidden; display: flex; align-items: center; padding: 40px 0; min-height: clamp(300px, 36vh, 340px); background: var(--brown); }
+.malaya-site .pd-order-banner::before { content: ''; position: absolute; inset: 0; z-index: 1; background: var(--scrim-bottom); }
+.malaya-site .pd-order-layout { position: relative; z-index: 2; width: 100%; display: flex; justify-content: flex-end; }
 .malaya-site .pd-order-card { position: relative; width: 100%; max-width: 300px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; border-radius: 14px; background: rgba(255, 255, 255, .10); -webkit-backdrop-filter: blur(16px) saturate(150%); backdrop-filter: blur(16px) saturate(150%); }
 .malaya-site .pd-order-head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
 .malaya-site .pd-order-kicker { font-size: 10.5px; letter-spacing: .26em; text-transform: uppercase; color: rgba(255,255,255,.9); }
@@ -290,11 +292,14 @@ button, input, select { font-family: inherit; }
 .malaya-site .pd-order-card .pd-qty span { color: #fff; }
 
 /* "Explore <category>" tile linking back to the catalogue section. */
-.malaya-site .pd-explore { position: relative; display: block; background-size: cover; background-position: center; min-height: 220px; margin-top: 6px; overflow: hidden; }
-/* Hover deepens the scrim via opacity (gradients can't crossfade). */
-.malaya-site .pd-explore::before { content: ''; position: absolute; inset: 0; background: var(--scrim-center); opacity: .78; transition: opacity .3s ease; }
+.malaya-site .pd-explore { position: relative; display: block; min-height: 280px; margin-top: 6px; overflow: hidden; background: var(--brown); }
+/* Hover deepens the scrim via opacity (gradients can't crossfade) while the
+   image layer eases up a touch — the catalogue-card hover language. */
+.malaya-site .pd-explore::before { content: ''; position: absolute; inset: 0; z-index: 1; background: var(--scrim-center); opacity: .78; transition: opacity .3s ease; }
 .malaya-site .pd-explore:hover::before { opacity: 1; }
-.malaya-site .pd-explore-inner { position: relative; z-index: 1; height: 100%; min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #fff; text-align: center; padding: 36px 24px; }
+.malaya-site .pd-explore .banner-img { transition: transform .6s ease; }
+.malaya-site .pd-explore:hover .banner-img { transform: scale(1.04); }
+.malaya-site .pd-explore-inner { position: relative; z-index: 2; height: 100%; min-height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #fff; text-align: center; padding: 36px 24px; }
 .malaya-site .pd-explore-kicker { font-style: normal; font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: rgba(255,255,255,.82); }
 .malaya-site .pd-explore-title { font-family: 'Raleway', sans-serif; font-size: 28px; font-weight: 600; letter-spacing: .14em; transition: letter-spacing .4s ease; }
 .malaya-site .pd-explore:hover .pd-explore-title { letter-spacing: .2em; }
@@ -310,7 +315,8 @@ button, input, select { font-family: inherit; }
 .malaya-site .reveal { opacity: 0; }
 .malaya-site .reveal-in { animation: lux-fade-up .6s ease both; }
 @media (max-width: 600px) {
-  .malaya-site .pd-order-banner { padding: 44px 18px; }
+  .malaya-site .pd-order-banner { padding: 44px 0; }
+  .malaya-site .pd-order-layout { justify-content: center; }
   .malaya-site .pd-explore-title { font-size: 22px; }
 }
 .malaya-site .tashi-intro { display: grid; grid-template-columns: 1.1fr 1fr; gap: 54px; padding-top: 48px; padding-bottom: 26px; align-items: start; }
@@ -652,7 +658,6 @@ button, input, select { font-family: inherit; }
   .malaya-site .order-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 880px) {
-  .malaya-site .home-tiles { grid-template-columns: repeat(2, 1fr); }
   .malaya-site .pgrid-3, .malaya-site .pgrid-4 { grid-template-columns: repeat(2, 1fr); }
   .malaya-site .blog-grid { grid-template-columns: repeat(2, 1fr); }
   .malaya-site .shop-layout, .malaya-site .pd-layout, .malaya-site .tashi-intro, .malaya-site .contact-layout { grid-template-columns: 1fr; }

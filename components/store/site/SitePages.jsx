@@ -11,7 +11,7 @@ import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  CATEGORIES, fmtPrice, posFor, bgImage, HOME_HERO, HOME_TILES, relatedProducts, whatsappUrlFor,
+  CATEGORIES, fmtPrice, posFor, bgImage, HOME_HERO, relatedProducts, whatsappUrlFor,
 } from '@/lib/data/site-data';
 import { materialFamilyOf } from '@/lib/data/materials';
 import { searchExplore } from '@/lib/explore-shared';
@@ -37,8 +37,20 @@ const CATALOGUE_SECTIONS = [
 const CATEGORY_TO_SECTION = {};
 CATALOGUE_SECTIONS.forEach((s) => s.cats.forEach((c) => { CATEGORY_TO_SECTION[c] = s.key; }));
 const sectionAnchor = (cat) => `/#cat-${CATEGORY_TO_SECTION[cat] || cat}`;
-// Built-in fallback tile image per category (admin can override via settings.homeTiles).
-const HOME_TILE_IMG = Object.fromEntries(HOME_TILES.map((t) => [t.cat, t.img]));
+
+// Layered banner image (VISUAL-AUDIT PR D). A CSS-background banner downloads
+// eagerly (~400 KB master on every first view, seen or not) and its crop can't
+// be transformed; an absolutely-positioned SiteImg layer is lazy by default
+// and gives hover/drift motion a compositor-friendly element. Frames must be
+// position:relative + overflow:hidden with the scrim (::before) and content
+// z-indexed above the layer.
+function BannerImg({ src, settings, alt = '' }) {
+  if (!src) return null;
+  return (
+    <SiteImg className="banner-img" src={src} alt={alt} width={1920} height={720}
+      sizes="100vw" style={{ objectPosition: posFor(settings, src) }} />
+  );
+}
 
 // ── Home ─────────────────────────────────────────────────────────────────────
 // Hero slideshow (VISUAL-AUDIT PR C). Each slide layers its image in an inner
@@ -95,7 +107,10 @@ export function HomePage() {
 
       <CatalogueScroll />
 
-      <section className="home-banner" style={{ backgroundImage: bgImage(homeBannerSrc), backgroundPosition: posFor(settings, homeBannerSrc) }}>
+      {/* Cinematic closing band (PR D): a lazy layered image — the ~400 KB
+          master no longer downloads for visitors who never scroll here. */}
+      <section className="home-banner">
+        <BannerImg src={homeBannerSrc} settings={settings} />
         <div className="home-banner-inner">
           <Reveal as="h2">{content.home.bannerTitle}</Reveal>
           <Reveal as="a" className="btn-malaya btn-malaya-light" href="#catalogue">{content.home.bannerCta}</Reveal>
@@ -354,13 +369,13 @@ export function ProductPage({ id }) {
   // page is pixel-identical until then.
   const symbolism = (p.topics || []).map((s) => (exploreTopics || {})[s]).filter((t) => t && t.title);
 
-  // "Order Now" banner background (shared with the home page banner) and the
-  // "Explore <category>" tile image (admin Home category tiles → fallbacks).
-  // All Firebase-hosted via settings; null when unset (no external CDN).
-  const orderBannerSrc = settings.homeBanner || null;
-  const exploreImg = (settings.homeTiles && settings.homeTiles[p.category])
-    || HOME_TILE_IMG[p.category]
-    || (settings.categoryBanners && settings.categoryBanners[p.category])
+  // "Order Now" banner background — its own admin slot since PR D, falling
+  // back to the home banner so existing sites keep their image until the
+  // studio uploads a distinct one. The "Explore <category>" tile reads the
+  // category banner then the default page banner (the legacy homeTiles slot
+  // was removed from the admin — see SITE-IMAGES-AUDIT.md).
+  const orderBannerSrc = settings.orderBanner || settings.homeBanner || null;
+  const exploreImg = (settings.categoryBanners && settings.categoryBanners[p.category])
     || settings.pageBanner || null;
 
   // WhatsApp enquiry pre-filled with this item (name, sales code and its URL).
@@ -442,30 +457,35 @@ export function ProductPage({ id }) {
       </div>
 
       {/* Both banner entrances are scroll-triggered: they sit below the fold,
-          so a load-time animation would finish before anyone saw it. */}
-      <section className="pd-order-banner" style={{ backgroundImage: bgImage(orderBannerSrc), backgroundPosition: posFor(settings, orderBannerSrc) }}>
-        <Reveal className="pd-order-card">
-          <div className="pd-order-head">
-            <span className="pd-order-kicker">Order Now</span>
-            <span className="pd-order-price">
-              {p.onSale && <s>{fmtPrice(p.listPrice)}</s>}
-              <strong>{fmtPrice(p.price)}</strong>
-            </span>
-          </div>
-          <div className="pd-order-buy">
-            <div className="pd-qty">
-              <button type="button" aria-label="Decrease quantity" onClick={() => setQty(Math.max(1, qty - 1))}>−</button>
-              <span>{qty}</span>
-              <button type="button" aria-label="Increase quantity" onClick={() => setQty(qty + 1)}>+</button>
+          so a load-time animation would finish before anyone saw it. Their
+          images are lazy layers (PR D) — two ~400 KB eager backgrounds no
+          longer load on every product view. */}
+      <section className="pd-order-banner">
+        <BannerImg src={orderBannerSrc} settings={settings} />
+        <div className="site-container pd-order-layout">
+          <Reveal className="pd-order-card">
+            <div className="pd-order-head">
+              <span className="pd-order-kicker">Order Now</span>
+              <span className="pd-order-price">
+                {p.onSale && <s>{fmtPrice(p.listPrice)}</s>}
+                <strong>{fmtPrice(p.price)}</strong>
+              </span>
             </div>
-            <button className="btn-malaya" disabled={sold}
-              onClick={() => addToCart(p.id, qty)}>{sold ? 'Sold Out' : 'Add to Order'}</button>
-          </div>
-        </Reveal>
+            <div className="pd-order-buy">
+              <div className="pd-qty">
+                <button type="button" aria-label="Decrease quantity" onClick={() => setQty(Math.max(1, qty - 1))}>−</button>
+                <span>{qty}</span>
+                <button type="button" aria-label="Increase quantity" onClick={() => setQty(qty + 1)}>+</button>
+              </div>
+              <button className="btn-malaya" disabled={sold}
+                onClick={() => addToCart(p.id, qty)}>{sold ? 'Sold Out' : 'Add to Order'}</button>
+            </div>
+          </Reveal>
+        </div>
       </section>
 
-      <Link className="pd-explore" href={sectionAnchor(p.category)}
-        style={{ backgroundImage: bgImage(exploreImg), backgroundPosition: posFor(settings, exploreImg) }}>
+      <Link className="pd-explore" href={sectionAnchor(p.category)}>
+        <BannerImg src={exploreImg} settings={settings} />
         <Reveal as="span" className="pd-explore-inner">
           <em className="pd-explore-kicker">Discover more</em>
           <strong className="pd-explore-title">Explore {p.category}</strong>

@@ -37,11 +37,7 @@ const SECTIONS = [
     ['About', ['nav', 'about'], 'text'],
     ['Instagram (nav label)', ['nav', 'instagram'], 'text'],
   ]],
-  ['Home tiles & banner', [
-    ['Rings tile', ['home', 'tiles', 'Rings'], 'text'],
-    ['Bracelets tile', ['home', 'tiles', 'Bracelets'], 'text'],
-    ['Earrings tile', ['home', 'tiles', 'Earrings'], 'text'],
-    ['Pendants tile', ['home', 'tiles', 'Pendants'], 'text'],
+  ['Home banner', [
     ['Order-now banner title', ['home', 'bannerTitle'], 'text'],
     ['Order-now banner button', ['home', 'bannerCta'], 'text'],
   ]],
