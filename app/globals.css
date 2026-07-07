@@ -324,7 +324,15 @@ button, input, select { font-family: inherit; }
 .malaya-site .tashi-name { font-size: 40px; font-weight: 700; color: var(--brown); margin: 4px 0 2px; }
 .malaya-site .tashi-role { font-size: 19px; font-weight: 600; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-bottom: 18px; }
 .malaya-site .tashi-para { margin: 0 0 16px; color: #555; text-wrap: pretty; }
+.malaya-site .tashi-photo { margin: 0; }
 .malaya-site .tashi-photo img { width: 100%; height: auto; display: block; }
+.malaya-site .tashi-photo-caption { font-size: 12.5px; color: var(--muted); padding-top: 10px; text-align: center; }
+/* Optional full-bleed calligraphy band between the intro and the product
+   grid (VISUAL-AUDIT PR F) — same layered-image componentry as the other
+   closing banners, no title, a faint vignette rather than a text-legibility
+   scrim since nothing sits on top of it. */
+.malaya-site .tashi-interlude { position: relative; overflow: hidden; margin-top: 8px; min-height: clamp(240px, 34vh, 420px); background: var(--brown); }
+.malaya-site .tashi-interlude::before { content: ''; position: absolute; inset: 0; z-index: 1; background: var(--scrim-center); opacity: .28; }
 .malaya-site .tashi-products { padding-top: 34px; padding-bottom: 64px; }
 /* "Sacred forms in his hand" — quiet, derived strip of Explore topic links
    appended below the product grid; nothing above it moves. */
@@ -338,6 +346,7 @@ button, input, select { font-family: inherit; }
 .malaya-site .about-date { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
 .malaya-site .about-title { font-size: 38px; font-weight: 700; color: var(--brown); margin: 6px 0 16px; }
 .malaya-site .about-lead { font-size: 18px; color: #555; line-height: 1.75; text-wrap: pretty; }
+.malaya-site .about-lead::first-letter { font-family: "Cormorant Garamond", "Times New Roman", serif; font-size: 52px; font-weight: 600; color: var(--brown); float: left; line-height: .78; padding: 4px 8px 0 0; }
 .malaya-site .about-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0; }
 .malaya-site .about-tags a { font-size: 11.5px; letter-spacing: .1em; border: 1px solid var(--line); padding: 5px 13px; color: #777; }
 .malaya-site .about-tags a:hover { border-color: var(--gold); color: var(--gold); }
