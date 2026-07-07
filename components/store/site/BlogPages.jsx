@@ -16,6 +16,27 @@ function initialsOf(s) {
   return (String(s || 'M').replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase()) || 'M';
 }
 
+// Featured post — the newest story opens the index full-width, magazine
+// front-page style (VISUAL-AUDIT PR E): a wide 21:9 crop with the title,
+// date and excerpt beneath it; the rest of the archive keeps the card grid.
+function BlogFeature({ p }) {
+  return (
+    <article className="blog-feature">
+      <Link className="blog-feature-thumb" href={`/blog/${p.slug}`}>
+        {p.cover
+          ? <SiteImg src={p.cover} alt={p.title} sizes="(max-width: 900px) 100vw, 1440px" width={1920} height={823} />
+          : <span className="blog-card-noimg">{initialsOf(p.title)}</span>}
+      </Link>
+      <div className="blog-feature-body">
+        {p.date && <span className="blog-card-date">{p.date}</span>}
+        <Link href={`/blog/${p.slug}`} className="blog-feature-title">{p.title}</Link>
+        {p.excerpt && <p className="blog-feature-excerpt">{p.excerpt}</p>}
+        <Link href={`/blog/${p.slug}`} className="blog-feature-more">Read the story →</Link>
+      </div>
+    </article>
+  );
+}
+
 function BlogCard({ p }) {
   return (
     <article className="blog-card">
@@ -36,6 +57,7 @@ function BlogCard({ p }) {
 export function BlogIndex() {
   const { blogPosts, content } = useSiteData();
   const posts = blogList(blogPosts || {}, { publishedOnly: true });
+  const [featured, ...rest] = posts;
   return (
     <main className="malaya-page" data-screen-label="Blog">
       <PageBanner variant="chapter" title={content.nav.blog || 'Blog'} subtitle="Malaya Jewellery" />
@@ -43,9 +65,14 @@ export function BlogIndex() {
         {posts.length === 0 ? (
           <div className="blog-empty">No posts yet — check back soon.</div>
         ) : (
-          <div className="blog-grid">
-            {posts.map((p) => <BlogCard key={p.slug} p={p} />)}
-          </div>
+          <>
+            <BlogFeature p={featured} />
+            {rest.length > 0 && (
+              <div className="blog-grid">
+                {rest.map((p) => <BlogCard key={p.slug} p={p} />)}
+              </div>
+            )}
+          </>
         )}
       </div>
     </main>

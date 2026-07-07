@@ -411,6 +411,16 @@ button, input, select { font-family: inherit; }
 
 /* ── Blog (magazine grid + article) ────────────────────────────────────────── */
 .malaya-site .blog-wrap { padding-top: 48px; padding-bottom: 72px; }
+/* Featured (newest) post — full-width 21:9 opener above the archive grid. */
+.malaya-site .blog-feature { margin-bottom: 54px; }
+.malaya-site .blog-feature-thumb { display: block; aspect-ratio: 21 / 9; overflow: hidden; background: #faf8f5; }
+.malaya-site .blog-feature-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s ease; }
+.malaya-site .blog-feature:hover .blog-feature-thumb img { transform: scale(1.03); }
+.malaya-site .blog-feature-body { max-width: 860px; padding-top: 22px; display: flex; flex-direction: column; gap: 10px; }
+.malaya-site .blog-feature-title { font-family: 'Raleway', sans-serif; font-size: clamp(26px, 3vw, 36px); font-weight: 600; color: var(--brown); line-height: 1.25; text-wrap: pretty; }
+.malaya-site .blog-feature-title:hover { color: var(--gold); }
+.malaya-site .blog-feature-excerpt { font-size: 15px; color: #666; line-height: 1.75; margin: 0; max-width: 68ch; }
+.malaya-site .blog-feature-more { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
 .malaya-site .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 34px 26px; }
 .malaya-site .blog-card { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); transition: box-shadow .25s ease, transform .25s ease; }
 .malaya-site .blog-card:hover { box-shadow: 0 14px 30px rgba(59,35,26,.12); transform: translateY(-2px); }
@@ -424,11 +434,14 @@ button, input, select { font-family: inherit; }
 .malaya-site .blog-card:hover .blog-card-title { color: var(--gold); }
 .malaya-site .blog-card-excerpt { font-size: 13.5px; color: #666; line-height: 1.7; }
 .malaya-site .blog-empty { text-align: center; color: var(--muted); padding: 64px 0; }
-.malaya-site .blog-hero { width: 100%; height: auto; aspect-ratio: 16 / 6; object-fit: cover; display: block; }
-.malaya-site .blog-article { max-width: 760px; margin: 0 auto; padding: 40px 24px 72px; }
-.malaya-site .blog-meta { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-.malaya-site .blog-title { font-size: 38px; font-weight: 700; color: var(--brown); line-height: 1.2; margin-bottom: 8px; text-wrap: pretty; }
-.malaya-site .blog-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 26px; }
+/* The post hero settles rather than appearing: a slow load-time fade with a
+   1.02→1 scale (PR E). Collapsed by the global reduced-motion block. */
+.malaya-site .blog-hero { width: 100%; height: auto; aspect-ratio: 16 / 6; object-fit: cover; display: block; animation: blog-hero-settle .9s ease both; }
+@keyframes blog-hero-settle { from { opacity: 0; transform: scale(1.02); } to { opacity: 1; transform: scale(1); } }
+.malaya-site .blog-article { max-width: 760px; margin: 0 auto; padding: 52px 24px 72px; }
+.malaya-site .blog-meta { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.malaya-site .blog-title { font-size: 38px; font-weight: 700; color: var(--brown); line-height: 1.2; margin-bottom: 14px; text-wrap: pretty; }
+.malaya-site .blog-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 36px; }
 .malaya-site .blog-tags span { font-size: 11px; letter-spacing: .08em; border: 1px solid var(--line); padding: 4px 11px; color: #777; border-radius: 999px; }
 .malaya-site .blog-back { display: inline-block; margin-top: 30px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
 
@@ -447,6 +460,11 @@ button, input, select { font-family: inherit; }
 .malaya-site .md-content li { margin: .35em 0; }
 .malaya-site .md-content blockquote { margin: 1.4em 0; padding: 4px 20px; border-left: 3px solid var(--gold); color: #666; font-style: italic; }
 .malaya-site .md-content img { display: block; max-width: 100%; height: auto; margin: 1.6em auto; }
+/* Markdown editorial figures — ![alt](url "caption") renders the caption in
+   the Explore figure register (span-based: the image lives inside a <p>). */
+.malaya-site .md-content .md-figure { display: block; margin: 2.2em 0; }
+.malaya-site .md-content .md-figure img { margin: 0 auto; }
+.malaya-site .md-content .md-figcaption { display: block; font-size: 12.5px; color: var(--muted); padding-top: 10px; text-align: center; }
 .malaya-site .md-content hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 .malaya-site .md-content code { background: #f4eee3; padding: 2px 6px; border-radius: 3px; font-size: .9em; font-family: ui-monospace, Menlo, Consolas, monospace; }
 .malaya-site .md-content pre { background: #2a2520; color: #f3ece0; padding: 16px 18px; overflow: auto; border-radius: 6px; margin: 1.4em 0; }
@@ -481,6 +499,18 @@ button, input, select { font-family: inherit; }
 .malaya-site .explore-shelf-all { font-size: 11.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); white-space: nowrap; }
 .malaya-site .explore-shelf-desc { max-width: 68ch; color: #666; margin: 8px 0 0; text-wrap: pretty; }
 .malaya-site .explore-shelf .rule-dot { margin-left: 0; }
+
+/* Featured topic — each shelf's first topic opens wide (PR E): a two-column
+   card with a 16:9 crop and the excerpt, ahead of the standard grid. */
+.malaya-site .explore-feature { display: grid; grid-template-columns: 1.6fr 1fr; background: #fff; border: 1px solid var(--line); margin-bottom: 26px; transition: box-shadow .25s ease, transform .25s ease; }
+.malaya-site .explore-feature:hover { box-shadow: 0 14px 30px rgba(59,35,26,.12); transform: translateY(-2px); }
+.malaya-site .explore-feature-thumb { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: #faf8f5; }
+.malaya-site .explore-feature-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s ease; }
+.malaya-site .explore-feature:hover .explore-feature-thumb img { transform: scale(1.04); }
+.malaya-site .explore-feature-body { padding: 28px 32px; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
+.malaya-site .explore-feature-title { font-family: 'Raleway', sans-serif; font-size: 24px; font-weight: 600; color: var(--brown); line-height: 1.25; text-wrap: pretty; }
+.malaya-site .explore-feature:hover .explore-feature-title { color: var(--gold); }
+.malaya-site .explore-feature-more { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin-top: 8px; }
 
 /* Topic cards */
 .malaya-site .explore-tgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 22px; }
@@ -567,6 +597,8 @@ button, input, select { font-family: inherit; }
 }
 @media (max-width: 880px) {
   .malaya-site .explore-tgrid, .malaya-site .explore-tgrid-tight { grid-template-columns: repeat(2, 1fr); }
+  .malaya-site .explore-feature { grid-template-columns: 1fr; }
+  .malaya-site .explore-feature-body { padding: 20px 22px 24px; }
 }
 @media (max-width: 600px) {
   .malaya-site .explore-tgrid, .malaya-site .explore-tgrid-tight { grid-template-columns: 1fr; }
@@ -680,6 +712,8 @@ button, input, select { font-family: inherit; }
   .malaya-site .section-title { font-size: 24px; }
   .malaya-site .page-banner-chapter, .malaya-site .explore-hero-img { min-height: clamp(220px, 32vh, 340px); }
   .malaya-site .blog-grid { grid-template-columns: 1fr; }
+  /* 21:9 letterboxes into a sliver on phones — open the crop up. */
+  .malaya-site .blog-feature-thumb { aspect-ratio: 16 / 9; }
   .malaya-site .cat-fam-group { width: 100%; }
   .malaya-site .cat-fam { flex: 1; text-align: center; }
   .malaya-site .cat-sym-wrap { width: 100%; }

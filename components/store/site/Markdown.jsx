@@ -30,15 +30,25 @@ export default function Markdown({ source, posts = [], products = [], topics = [
   }, [products]);
 
   // Float embeds arrive as images with a #float= fragment src (survives the
-  // URL sanitiser); everything else stays a plain markdown image.
-  const MdImg = ({ src = '', alt = '', node, ...props }) => {
+  // URL sanitiser); everything else stays a plain markdown image. A quoted
+  // title — ![alt](url "caption") — becomes a visible caption in the Explore
+  // figure register. Span-based markup because the image arrives inside the
+  // paragraph react-markdown emits, where <figure> would be invalid HTML.
+  const MdImg = ({ src = '', alt = '', title, node, ...props }) => {
     const float = parseFloatSrc(src);
     if (float) {
       return <FloatingProduct p={float.id ? byId[float.id] : null} side={float.side}
         caption={float.caption || undefined} src={float.src || undefined} />;
     }
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt={alt} loading="lazy" decoding="async" {...props} />;
+    const img = <img src={src} alt={alt} loading="lazy" decoding="async" {...props} />;
+    if (!title) return img;
+    return (
+      <span className="md-figure">
+        {img}
+        <span className="md-figcaption">{title}</span>
+      </span>
+    );
   };
 
   return (
