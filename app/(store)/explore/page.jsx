@@ -42,7 +42,7 @@ export default async function Page() {
         }}
       />
       <main className="malaya-page explore-page" data-screen-label="Explore">
-        <PageBanner title="Explore" subtitle="The symbolism behind the collection" />
+        <PageBanner variant="chapter" title="Explore" subtitle="The symbolism behind the collection" />
         <div className="site-container explore-wrap">
           <p className="explore-lead">
             Every Malaya piece carries a story older than jewellery itself. Explore the sacred

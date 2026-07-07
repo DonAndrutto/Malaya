@@ -139,7 +139,9 @@ const BRAND_SLOTS = [
 
 const BANNER_SLOTS = [
   { k: 'homeBanner', label: 'Home “Order Now” banner', folder: 'site/banners', w: 1920, h: 720, fit: 'cover', focal: true, pw: 620,
-    hint: 'Full-width band near the foot of the home page, reused as the “Order Now” banner on every product page.' },
+    hint: 'Cinematic full-width closing band near the foot of the home page. Also the fallback for the product “Order Now” banner below until that slot gets its own image.' },
+  { k: 'orderBanner', label: 'Product “Order Now” banner', folder: 'site/banners', w: 1920, h: 720, fit: 'cover', focal: true, pw: 620,
+    hint: 'Behind the frosted-glass order card on every product page. Leave unset to reuse the home banner; upload here to give product pages their own closing image.' },
   { k: 'pageBanner', label: 'Default page banner', folder: 'site/banners', w: 1920, h: 480, fit: 'cover', focal: true, pw: 620,
     hint: 'Breadcrumb banner on Contact, Order and Tashi Mannox, and the fallback for any page/category without its own banner.' },
   { k: 'aboutBanner', label: 'About page banner', folder: 'site/banners', w: 1920, h: 480, fit: 'cover', focal: true, pw: 620,

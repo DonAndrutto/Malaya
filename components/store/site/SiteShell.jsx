@@ -168,15 +168,24 @@ export function SiteProductCard({ p }) {
 // ── Page banner (admin-overridable default image via settings.pageBanner) ────
 // `category` opts a page into a per-category banner (settings.categoryBanners),
 // falling back to the explicit `img`, then the default page banner.
-export function PageBanner({ title, subtitle, img, category }) {
+// Two tiers (VISUAL-AUDIT PR B): the default utility band stays slim so
+// checkout-register pages keep quiet, while `variant="chapter"` opens the
+// editorial routes (About, Tashi, Explore landing, Journal index) with a tall
+// header — the subtitle becomes a kicker line above a display-size title, and
+// the bottom-weighted scrim protects the text zone only. Same master image at
+// a taller crop, so the upgrade costs zero extra bytes (IMAGES.md).
+export function PageBanner({ title, subtitle, img, category, variant }) {
   const { settings } = useSiteData();
   const catBanner = category && settings.categoryBanners ? settings.categoryBanners[category] : null;
   const bg = catBanner || img || settings.pageBanner || null;
+  const chapter = variant === 'chapter';
   return (
-    <div className="page-banner" style={{ backgroundImage: bgImage(bg), backgroundPosition: posFor(settings, bg) }}>
+    <div className={'page-banner' + (chapter ? ' page-banner-chapter' : '')}
+      style={{ backgroundImage: bgImage(bg), backgroundPosition: posFor(settings, bg) }}>
       <Reveal className="site-container">
+        {chapter && subtitle && <span className="page-banner-kicker">{subtitle}</span>}
         <strong className="page-banner-title">{title}</strong>
-        {subtitle && <span className="page-banner-sub">{subtitle}</span>}
+        {!chapter && subtitle && <span className="page-banner-sub">{subtitle}</span>}
       </Reveal>
     </div>
   );

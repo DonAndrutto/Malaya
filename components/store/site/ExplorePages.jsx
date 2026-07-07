@@ -47,6 +47,30 @@ export function TopicCard({ t }) {
   );
 }
 
+// Featured topic — the shelf's first topic opens as a wide two-column card
+// (16:9 crop + excerpt) so every shelf leads with a moment of rhythm instead
+// of an undifferentiated grid (VISUAL-AUDIT PR E).
+function TopicFeature({ t }) {
+  if (!t || !t.title) return null;
+  return (
+    <Link href={`/explore/topic/${t.slug}`} className="explore-feature">
+      <span className="explore-feature-thumb">
+        {t.heroImage
+          ? <SiteImg src={t.heroImage} alt={t.title} width={1280} height={720}
+              sizes="(max-width: 880px) 100vw, 800px"
+              style={t.heroPos ? { objectPosition: t.heroPos } : undefined} />
+          : <span className="explore-card-noimg">{initialsOf(t.title)}</span>}
+      </span>
+      <span className="explore-feature-body">
+        <strong className="explore-feature-title">{t.title}</strong>
+        {t.subtitle && <em className="explore-card-sub">{t.subtitle}</em>}
+        {t.excerpt && <span className="explore-card-excerpt">{t.excerpt}</span>}
+        <span className="explore-feature-more">Read the story →</span>
+      </span>
+    </Link>
+  );
+}
+
 // ── Shelf (one group + its topics, in the shelf's own order) ─────────────────
 export function ExploreShelf({ group, topics }) {
   return (
@@ -61,9 +85,14 @@ export function ExploreShelf({ group, topics }) {
       </div>
       {group.description && <p className="explore-shelf-desc">{group.description}</p>}
       <div className="rule-dot" style={{ margin: '14px 0 26px' }} />
-      {topics.length
-        ? <div className="explore-tgrid">{topics.map((t) => <TopicCard key={t.slug} t={t} />)}</div>
-        : <p className="explore-empty">The studio is preparing this shelf — check back soon.</p>}
+      {topics.length ? (
+        <>
+          <TopicFeature t={topics[0]} />
+          {topics.length > 1 && (
+            <div className="explore-tgrid">{topics.slice(1).map((t) => <TopicCard key={t.slug} t={t} />)}</div>
+          )}
+        </>
+      ) : <p className="explore-empty">The studio is preparing this shelf — check back soon.</p>}
     </section>
   );
 }

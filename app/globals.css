@@ -21,6 +21,7 @@ button, input, select { font-family: inherit; }
 .malaya-site {
   --scrim-center: radial-gradient(ellipse 120% 80% at 50% 55%, rgba(20,12,8,.38) 0%, rgba(20,12,8,.18) 52%, rgba(20,12,8,.03) 100%);
   --scrim-left: linear-gradient(to right, rgba(20,12,8,.50) 0%, rgba(20,12,8,.32) 40%, rgba(20,12,8,.06) 100%);
+  --scrim-bottom: linear-gradient(to top, rgba(20,12,8,.58) 0%, rgba(20,12,8,.30) 36%, rgba(20,12,8,.06) 68%, rgba(20,12,8,0) 100%);
 }
 .malaya-site img { max-width: 100%; }
 .malaya-site a { color: inherit; text-decoration: none; transition: color .18s; }
@@ -79,32 +80,54 @@ button, input, select { font-family: inherit; }
 .malaya-site .hdr-nav-link:hover, .malaya-site .hdr-nav-link.active { color: #fff; }
 .malaya-site .hdr-nav-link:hover::after, .malaya-site .hdr-nav-link.active::after { left: 16px; right: 16px; }
 .malaya-site .hero { position: relative; height: 76vh; min-height: 420px; max-height: 820px; overflow: hidden; background: #111; }
-.malaya-site .hero-slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.1s ease; }
+/* Tall monitors: let the hero fill more of the first view instead of leaving
+   dead space under the 820px cap. */
+@media (min-height: 1001px) { .malaya-site .hero { max-height: 92vh; } }
+.malaya-site .hero-slide { position: absolute; inset: 0; overflow: hidden; opacity: 0; transition: opacity 1.1s ease; }
 .malaya-site .hero-slide.on { opacity: 1; }
+/* Gentle drift (Ken Burns, restrained): the image layer breathes between
+   scale 1 and 1.05 over 14s — ~2% travel per slide view, ambient rather than
+   animated. Alternating keyframes and origins per slide so consecutive slides
+   never repeat the same move. Paused while hidden (no snap under the
+   crossfade); transform lives on this inner layer so it never fights the
+   admin focal point (background-position). */
+.malaya-site .hero-slide-img { position: absolute; inset: 0; background-size: cover; background-position: center; transform-origin: 32% 40%; animation: hero-drift-a 14s ease-in-out infinite alternate; animation-play-state: paused; will-change: transform; }
+.malaya-site .hero-slide:nth-child(even) .hero-slide-img { transform-origin: 68% 60%; animation-name: hero-drift-b; }
+.malaya-site .hero-slide.on .hero-slide-img { animation-play-state: running; }
+@keyframes hero-drift-a { from { transform: scale(1); } to { transform: scale(1.05); } }
+@keyframes hero-drift-b { from { transform: scale(1.05); } to { transform: scale(1); } }
 /* Bottom-and-centre weighted scrim: the title zone and the dots/CTA strip
    stay protected while the top corners — where the header gradient already
    melts into the image — keep their highlights. */
-.malaya-site .hero-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; color: #fff; background: linear-gradient(to top, rgba(20,12,8,.34) 0%, rgba(20,12,8,.08) 30%, rgba(20,12,8,0) 55%), var(--scrim-center); padding: 0 20px; }
+.malaya-site .hero-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: #fff; background: linear-gradient(to top, rgba(20,12,8,.34) 0%, rgba(20,12,8,.08) 30%, rgba(20,12,8,0) 55%), var(--scrim-center); padding: 0 20px; }
+/* Per-slide text entrance — remounted on each slide change (keyed by index),
+   it fades and rises 10px slightly behind the image crossfade. */
+.malaya-site .hero-text { display: flex; flex-direction: column; align-items: center; gap: 10px; animation: hero-text-in .8s ease .3s both; }
+@keyframes hero-text-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .malaya-site .hero-title { font-size: clamp(30px, 4.6vw, 64px); font-weight: 300; letter-spacing: .55em; text-transform: uppercase; text-indent: .55em; text-shadow: 0 2px 22px rgba(0,0,0,.45); }
 .malaya-site .hero-sub { font-size: 15px; letter-spacing: .8em; text-indent: .8em; text-transform: uppercase; margin-bottom: 22px; }
-.malaya-site .hero-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,.14); color: #fff; border: none; font-size: 30px; width: 48px; height: 48px; cursor: pointer; border-radius: 50%; transition: background .2s; line-height: 1; }
-.malaya-site .hero-arrow:hover { background: rgba(255,255,255,.34); }
+/* Quieter chrome: hairline chevrons that surface when the pointer enters the
+   hero (always faintly present where hover doesn't exist), dashes for dots. */
+.malaya-site .hero-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255,255,255,.85); font-size: 46px; font-weight: 100; width: 56px; height: 72px; padding: 0; cursor: pointer; line-height: 1; opacity: 0; transition: opacity .35s ease, color .2s ease; }
+.malaya-site .hero:hover .hero-arrow, .malaya-site .hero-arrow:focus-visible { opacity: 1; }
+.malaya-site .hero-arrow:hover { color: #fff; }
+@media (hover: none) { .malaya-site .hero-arrow { opacity: .7; } }
 .malaya-site .hero-arrow-l { left: 22px; }
 .malaya-site .hero-arrow-r { right: 22px; }
-.malaya-site .hero-dots { position: absolute; bottom: 22px; left: 0; right: 0; display: flex; justify-content: center; gap: 9px; }
-.malaya-site .hero-dot { width: 9px; height: 9px; border-radius: 50%; border: 1px solid #fff; background: transparent; cursor: pointer; padding: 0; }
-.malaya-site .hero-dot.on { background: #fff; }
-.malaya-site .home-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding-top: 56px; padding-bottom: 26px; }
-.malaya-site .home-tile { position: relative; display: block; overflow: hidden; }
-.malaya-site .home-tile img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block; transition: transform .5s; }
-.malaya-site .home-tile:hover img { transform: scale(1.045); }
-.malaya-site .home-tile-body { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px; background: linear-gradient(transparent, rgba(0,0,0,.55)); color: #fff; display: flex; flex-direction: column; gap: 2px; }
-.malaya-site .home-tile-title { font-family: 'Raleway', sans-serif; font-size: 21px; font-weight: 600; }
-.malaya-site .home-tile-cta { font-size: 10.5px; letter-spacing: .25em; text-transform: uppercase; opacity: .85; }
+.malaya-site .hero-dots { position: absolute; bottom: 22px; left: 0; right: 0; display: flex; justify-content: center; gap: 10px; }
+.malaya-site .hero-dot { position: relative; width: 26px; height: 14px; border: none; background: transparent; cursor: pointer; padding: 0; }
+.malaya-site .hero-dot::after { content: ''; position: absolute; left: 0; right: 0; top: 6px; height: 2px; background: rgba(255,255,255,.45); transition: background .3s ease; }
+.malaya-site .hero-dot.on::after { background: #fff; }
 .malaya-site .home-best { padding-top: 50px; padding-bottom: 30px; }
 .malaya-site .home-best-cta { text-align: center; padding: 16px 0 30px; }
-.malaya-site .home-banner { background-size: cover; background-position: center; margin-top: 26px; }
-.malaya-site .home-banner-inner { background: var(--scrim-center); padding: 110px 24px; text-align: center; color: #fff; display: flex; flex-direction: column; align-items: center; gap: 26px; }
+/* Layered banner image (VISUAL-AUDIT PR D) — replaces eager CSS backgrounds
+   on the closing banners: lazy by default (next/image) and transformable.
+   Frames are position:relative + overflow:hidden; scrims (::before) and
+   content stack above via z-index. */
+.malaya-site .banner-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* Home "Order Now" — a cinematic closing band rather than a promo strip. */
+.malaya-site .home-banner { position: relative; overflow: hidden; margin-top: 26px; background: var(--brown); }
+.malaya-site .home-banner-inner { position: relative; z-index: 1; background: var(--scrim-center); min-height: clamp(340px, 56vh, 560px); padding: 60px 24px; text-align: center; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; }
 .malaya-site .home-banner-inner h2 { font-size: 32px; font-weight: 300; letter-spacing: .14em; text-transform: uppercase; }
 /* ── Combined catalogue scroll (home) ──────────────────────────────────────── */
 .malaya-site .cat-bar { position: sticky; top: 0; z-index: 30; background: rgba(59, 35, 26, .72); -webkit-backdrop-filter: blur(12px) saturate(140%); backdrop-filter: blur(12px) saturate(140%); }
@@ -140,7 +163,10 @@ button, input, select { font-family: inherit; }
 .malaya-site .cat-search-name { font-size: 13px; color: #222; line-height: 1.35; }
 .malaya-site .cat-search-sub { font-size: 11.5px; color: var(--muted); line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .malaya-site .cat-search-empty { padding: 16px; font-size: 13px; color: var(--muted); text-align: center; }
-.malaya-site .cat-section { padding-top: 40px; padding-bottom: 14px; scroll-margin-top: 70px; }
+/* Generous inter-section air so each category reads as a chapter of the
+   catalogue rather than one endless grid (VISUAL-AUDIT PR B whitespace pass). */
+.malaya-site .cat-section { padding-top: 72px; padding-bottom: 14px; scroll-margin-top: 70px; }
+.malaya-site .cat-section .rule-dot { margin-bottom: 40px; }
 /* Category names (Pendants, Rings, …) centred on the home catalogue scroll. */
 .malaya-site .cat-section-title { text-align: center; }
 .malaya-site .pgrid { display: grid; gap: 30px 24px; }
@@ -164,11 +190,23 @@ button, input, select { font-family: inherit; }
 .malaya-site .pcard-name:hover { color: var(--gold); }
 .malaya-site .pcard-sub { font-size: 12.5px; color: var(--muted); font-family: 'Poppins', sans-serif; }
 .malaya-site .pcard-price { font-size: 13px; color: var(--brown); font-weight: 500; }
-.malaya-site .page-banner { background-size: cover; background-position: center; min-height: 120px; display: flex; align-items: center; position: relative; }
+/* Two-tier banner system (VISUAL-AUDIT PR B). Utility tier: a slim band for
+   checkout-register pages (Contact, Order, Policy, product pages, not-found),
+   nudged from 120px to 160px so the photograph reads as a photograph rather
+   than a smear. */
+.malaya-site .page-banner { background-size: cover; background-position: center; min-height: 160px; display: flex; align-items: center; position: relative; }
 .malaya-site .page-banner::before { content: ''; position: absolute; inset: 0; background: var(--scrim-left); }
 .malaya-site .page-banner .site-container { position: relative; width: 100%; padding-top: 24px; padding-bottom: 24px; }
 .malaya-site .page-banner-title { display: block; color: #fff; font-family: 'Raleway', sans-serif; font-size: 24px; font-weight: 600; letter-spacing: .03em; }
 .malaya-site .page-banner-sub { display: block; color: rgba(255,255,255,.85); font-family: 'Raleway', sans-serif; font-size: 14px; padding-left: 1.5em; }
+/* Chapter tier: editorial routes open with real photography — kicker /
+   display-title hierarchy borrowed from the Explore topic hero, text anchored
+   to the bottom edge under a bottom-weighted scrim. */
+.malaya-site .page-banner-chapter { min-height: clamp(280px, 38vh, 460px); align-items: flex-end; }
+.malaya-site .page-banner-chapter::before { background: var(--scrim-bottom); }
+.malaya-site .page-banner-chapter .site-container { display: flex; flex-direction: column; gap: 10px; padding-top: 56px; padding-bottom: 46px; }
+.malaya-site .page-banner-kicker { font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); }
+.malaya-site .page-banner-chapter .page-banner-title { font-size: clamp(32px, 4.4vw, 54px); font-weight: 300; letter-spacing: .06em; line-height: 1.15; text-wrap: pretty; }
 .malaya-site .shop-layout { display: grid; grid-template-columns: 250px 1fr; gap: 44px; padding-top: 44px; padding-bottom: 60px; }
 .malaya-site .shop-search { width: 100%; padding: 10px 12px; border: 1px solid var(--line); font: inherit; font-size: 13px; margin-bottom: 22px; outline: none; }
 .malaya-site .shop-search:focus { border-color: var(--gold); }
@@ -234,9 +272,12 @@ button, input, select { font-family: inherit; }
 .malaya-site .pd-symbolism-more { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin-top: 6px; }
 
 /* Product-page "Order Now" banner — a compact frosted-glass add-to-order panel
-   that lets the banner photo read through (no border, no shadow). */
-.malaya-site .pd-order-banner { position: relative; background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; padding: 40px 24px; }
-.malaya-site .pd-order-banner::before { content: ''; position: absolute; inset: 0; background: var(--scrim-center); }
+   that lets the banner photo read through (no border, no shadow). Grown to a
+   real photographic band with the card offset right (editorial asymmetry) and
+   a bottom-weighted scrim, so the photography carries the frame (PR D). */
+.malaya-site .pd-order-banner { position: relative; overflow: hidden; display: flex; align-items: center; padding: 40px 0; min-height: clamp(300px, 36vh, 340px); background: var(--brown); }
+.malaya-site .pd-order-banner::before { content: ''; position: absolute; inset: 0; z-index: 1; background: var(--scrim-bottom); }
+.malaya-site .pd-order-layout { position: relative; z-index: 2; width: 100%; display: flex; justify-content: flex-end; }
 .malaya-site .pd-order-card { position: relative; width: 100%; max-width: 300px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; border-radius: 14px; background: rgba(255, 255, 255, .10); -webkit-backdrop-filter: blur(16px) saturate(150%); backdrop-filter: blur(16px) saturate(150%); }
 .malaya-site .pd-order-head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
 .malaya-site .pd-order-kicker { font-size: 10.5px; letter-spacing: .26em; text-transform: uppercase; color: rgba(255,255,255,.9); }
@@ -251,11 +292,14 @@ button, input, select { font-family: inherit; }
 .malaya-site .pd-order-card .pd-qty span { color: #fff; }
 
 /* "Explore <category>" tile linking back to the catalogue section. */
-.malaya-site .pd-explore { position: relative; display: block; background-size: cover; background-position: center; min-height: 220px; margin-top: 6px; overflow: hidden; }
-/* Hover deepens the scrim via opacity (gradients can't crossfade). */
-.malaya-site .pd-explore::before { content: ''; position: absolute; inset: 0; background: var(--scrim-center); opacity: .78; transition: opacity .3s ease; }
+.malaya-site .pd-explore { position: relative; display: block; min-height: 280px; margin-top: 6px; overflow: hidden; background: var(--brown); }
+/* Hover deepens the scrim via opacity (gradients can't crossfade) while the
+   image layer eases up a touch — the catalogue-card hover language. */
+.malaya-site .pd-explore::before { content: ''; position: absolute; inset: 0; z-index: 1; background: var(--scrim-center); opacity: .78; transition: opacity .3s ease; }
 .malaya-site .pd-explore:hover::before { opacity: 1; }
-.malaya-site .pd-explore-inner { position: relative; z-index: 1; height: 100%; min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #fff; text-align: center; padding: 36px 24px; }
+.malaya-site .pd-explore .banner-img { transition: transform .6s ease; }
+.malaya-site .pd-explore:hover .banner-img { transform: scale(1.04); }
+.malaya-site .pd-explore-inner { position: relative; z-index: 2; height: 100%; min-height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #fff; text-align: center; padding: 36px 24px; }
 .malaya-site .pd-explore-kicker { font-style: normal; font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: rgba(255,255,255,.82); }
 .malaya-site .pd-explore-title { font-family: 'Raleway', sans-serif; font-size: 28px; font-weight: 600; letter-spacing: .14em; transition: letter-spacing .4s ease; }
 .malaya-site .pd-explore:hover .pd-explore-title { letter-spacing: .2em; }
@@ -271,7 +315,8 @@ button, input, select { font-family: inherit; }
 .malaya-site .reveal { opacity: 0; }
 .malaya-site .reveal-in { animation: lux-fade-up .6s ease both; }
 @media (max-width: 600px) {
-  .malaya-site .pd-order-banner { padding: 44px 18px; }
+  .malaya-site .pd-order-banner { padding: 44px 0; }
+  .malaya-site .pd-order-layout { justify-content: center; }
   .malaya-site .pd-explore-title { font-size: 22px; }
 }
 .malaya-site .tashi-intro { display: grid; grid-template-columns: 1.1fr 1fr; gap: 54px; padding-top: 48px; padding-bottom: 26px; align-items: start; }
@@ -323,11 +368,11 @@ button, input, select { font-family: inherit; }
 .malaya-site .order-summary { border: 1px solid var(--line); padding: 24px; display: flex; flex-direction: column; gap: 14px; }
 .malaya-site .order-total { display: flex; justify-content: space-between; font-size: 16px; border-bottom: 1px solid var(--line); padding-bottom: 14px; }
 .malaya-site .order-note { font-size: 12px; color: var(--muted); margin: 0; }
-.malaya-site .site-footer { margin-top: 50px; background: #faf8f5; border-top: 1px solid var(--line); }
+.malaya-site .site-footer { margin-top: 72px; background: #faf8f5; border-top: 1px solid var(--line); }
 .malaya-site .ftr-contact-strip { background: var(--brown); color: #fff; padding: 26px 0; }
 .malaya-site .ftr-contact-strip h3 { font-size: 21px; font-weight: 300; text-align: center; letter-spacing: .03em; }
 .malaya-site .ftr-contact-strip a { color: var(--gold); border-bottom: 1px solid currentColor; }
-.malaya-site .ftr-cols { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 50px; padding-top: 48px; padding-bottom: 44px; }
+.malaya-site .ftr-cols { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 50px; padding-top: 64px; padding-bottom: 56px; }
 .malaya-site .ftr-head { font-size: 12px; letter-spacing: .24em; text-transform: uppercase; color: var(--brown); margin-bottom: 16px; }
 .malaya-site .ftr-line { margin: 0 0 4px; font-size: 13.5px; color: #666; }
 .malaya-site .ftr-line a { color: var(--gold); }
@@ -366,6 +411,16 @@ button, input, select { font-family: inherit; }
 
 /* ── Blog (magazine grid + article) ────────────────────────────────────────── */
 .malaya-site .blog-wrap { padding-top: 48px; padding-bottom: 72px; }
+/* Featured (newest) post — full-width 21:9 opener above the archive grid. */
+.malaya-site .blog-feature { margin-bottom: 54px; }
+.malaya-site .blog-feature-thumb { display: block; aspect-ratio: 21 / 9; overflow: hidden; background: #faf8f5; }
+.malaya-site .blog-feature-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s ease; }
+.malaya-site .blog-feature:hover .blog-feature-thumb img { transform: scale(1.03); }
+.malaya-site .blog-feature-body { max-width: 860px; padding-top: 22px; display: flex; flex-direction: column; gap: 10px; }
+.malaya-site .blog-feature-title { font-family: 'Raleway', sans-serif; font-size: clamp(26px, 3vw, 36px); font-weight: 600; color: var(--brown); line-height: 1.25; text-wrap: pretty; }
+.malaya-site .blog-feature-title:hover { color: var(--gold); }
+.malaya-site .blog-feature-excerpt { font-size: 15px; color: #666; line-height: 1.75; margin: 0; max-width: 68ch; }
+.malaya-site .blog-feature-more { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
 .malaya-site .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 34px 26px; }
 .malaya-site .blog-card { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); transition: box-shadow .25s ease, transform .25s ease; }
 .malaya-site .blog-card:hover { box-shadow: 0 14px 30px rgba(59,35,26,.12); transform: translateY(-2px); }
@@ -379,11 +434,14 @@ button, input, select { font-family: inherit; }
 .malaya-site .blog-card:hover .blog-card-title { color: var(--gold); }
 .malaya-site .blog-card-excerpt { font-size: 13.5px; color: #666; line-height: 1.7; }
 .malaya-site .blog-empty { text-align: center; color: var(--muted); padding: 64px 0; }
-.malaya-site .blog-hero { width: 100%; height: auto; aspect-ratio: 16 / 6; object-fit: cover; display: block; }
-.malaya-site .blog-article { max-width: 760px; margin: 0 auto; padding: 40px 24px 72px; }
-.malaya-site .blog-meta { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-.malaya-site .blog-title { font-size: 38px; font-weight: 700; color: var(--brown); line-height: 1.2; margin-bottom: 8px; text-wrap: pretty; }
-.malaya-site .blog-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 26px; }
+/* The post hero settles rather than appearing: a slow load-time fade with a
+   1.02→1 scale (PR E). Collapsed by the global reduced-motion block. */
+.malaya-site .blog-hero { width: 100%; height: auto; aspect-ratio: 16 / 6; object-fit: cover; display: block; animation: blog-hero-settle .9s ease both; }
+@keyframes blog-hero-settle { from { opacity: 0; transform: scale(1.02); } to { opacity: 1; transform: scale(1); } }
+.malaya-site .blog-article { max-width: 760px; margin: 0 auto; padding: 52px 24px 72px; }
+.malaya-site .blog-meta { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.malaya-site .blog-title { font-size: 38px; font-weight: 700; color: var(--brown); line-height: 1.2; margin-bottom: 14px; text-wrap: pretty; }
+.malaya-site .blog-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 36px; }
 .malaya-site .blog-tags span { font-size: 11px; letter-spacing: .08em; border: 1px solid var(--line); padding: 4px 11px; color: #777; border-radius: 999px; }
 .malaya-site .blog-back { display: inline-block; margin-top: 30px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
 
@@ -402,6 +460,11 @@ button, input, select { font-family: inherit; }
 .malaya-site .md-content li { margin: .35em 0; }
 .malaya-site .md-content blockquote { margin: 1.4em 0; padding: 4px 20px; border-left: 3px solid var(--gold); color: #666; font-style: italic; }
 .malaya-site .md-content img { display: block; max-width: 100%; height: auto; margin: 1.6em auto; }
+/* Markdown editorial figures — ![alt](url "caption") renders the caption in
+   the Explore figure register (span-based: the image lives inside a <p>). */
+.malaya-site .md-content .md-figure { display: block; margin: 2.2em 0; }
+.malaya-site .md-content .md-figure img { margin: 0 auto; }
+.malaya-site .md-content .md-figcaption { display: block; font-size: 12.5px; color: var(--muted); padding-top: 10px; text-align: center; }
 .malaya-site .md-content hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 .malaya-site .md-content code { background: #f4eee3; padding: 2px 6px; border-radius: 3px; font-size: .9em; font-family: ui-monospace, Menlo, Consolas, monospace; }
 .malaya-site .md-content pre { background: #2a2520; color: #f3ece0; padding: 16px 18px; overflow: auto; border-radius: 6px; margin: 1.4em 0; }
@@ -437,6 +500,18 @@ button, input, select { font-family: inherit; }
 .malaya-site .explore-shelf-desc { max-width: 68ch; color: #666; margin: 8px 0 0; text-wrap: pretty; }
 .malaya-site .explore-shelf .rule-dot { margin-left: 0; }
 
+/* Featured topic — each shelf's first topic opens wide (PR E): a two-column
+   card with a 16:9 crop and the excerpt, ahead of the standard grid. */
+.malaya-site .explore-feature { display: grid; grid-template-columns: 1.6fr 1fr; background: #fff; border: 1px solid var(--line); margin-bottom: 26px; transition: box-shadow .25s ease, transform .25s ease; }
+.malaya-site .explore-feature:hover { box-shadow: 0 14px 30px rgba(59,35,26,.12); transform: translateY(-2px); }
+.malaya-site .explore-feature-thumb { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: #faf8f5; }
+.malaya-site .explore-feature-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s ease; }
+.malaya-site .explore-feature:hover .explore-feature-thumb img { transform: scale(1.04); }
+.malaya-site .explore-feature-body { padding: 28px 32px; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
+.malaya-site .explore-feature-title { font-family: 'Raleway', sans-serif; font-size: 24px; font-weight: 600; color: var(--brown); line-height: 1.25; text-wrap: pretty; }
+.malaya-site .explore-feature:hover .explore-feature-title { color: var(--gold); }
+.malaya-site .explore-feature-more { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin-top: 8px; }
+
 /* Topic cards */
 .malaya-site .explore-tgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 22px; }
 .malaya-site .explore-tgrid-tight { grid-template-columns: repeat(3, 1fr); }
@@ -452,10 +527,15 @@ button, input, select { font-family: inherit; }
 .malaya-site .explore-card-sub { font-style: normal; font-size: 12.5px; color: var(--gold); letter-spacing: .04em; }
 .malaya-site .explore-card-excerpt { font-size: 13px; color: #666; line-height: 1.65; }
 
-/* Topic page hero */
+/* Topic/shelf page hero. With a curated image (`-img`) it grows to chapter
+   height — text anchored to the bottom under a bottom-weighted scrim, so the
+   photography finally displays at a legible size (VISUAL-AUDIT PR B). The
+   imageless brown-gradient fallback keeps its compact proportions. */
 .malaya-site .explore-hero { background: linear-gradient(to bottom, var(--brown), #57392c); background-size: cover; background-position: center; position: relative; }
-.malaya-site .explore-hero-img::before { content: ''; position: absolute; inset: 0; background: var(--scrim-left); }
-.malaya-site .explore-hero .site-container { position: relative; padding-top: 64px; padding-bottom: 58px; display: flex; flex-direction: column; gap: 10px; }
+.malaya-site .explore-hero-img { min-height: clamp(280px, 38vh, 460px); display: flex; align-items: flex-end; }
+.malaya-site .explore-hero-img::before { content: ''; position: absolute; inset: 0; background: var(--scrim-bottom); }
+.malaya-site .explore-hero .site-container { position: relative; width: 100%; padding-top: 64px; padding-bottom: 58px; display: flex; flex-direction: column; gap: 10px; }
+.malaya-site .explore-hero-img .site-container { padding-bottom: 46px; }
 .malaya-site .explore-hero-kicker { font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); }
 .malaya-site .explore-hero-title { font-family: 'Raleway', sans-serif; font-size: clamp(32px, 4.4vw, 54px); font-weight: 300; letter-spacing: .06em; color: #fff; line-height: 1.15; text-wrap: pretty; }
 .malaya-site .explore-hero-sub { font-size: 16px; color: rgba(255,255,255,.85); letter-spacing: .06em; }
@@ -517,6 +597,8 @@ button, input, select { font-family: inherit; }
 }
 @media (max-width: 880px) {
   .malaya-site .explore-tgrid, .malaya-site .explore-tgrid-tight { grid-template-columns: repeat(2, 1fr); }
+  .malaya-site .explore-feature { grid-template-columns: 1fr; }
+  .malaya-site .explore-feature-body { padding: 20px 22px 24px; }
 }
 @media (max-width: 600px) {
   .malaya-site .explore-tgrid, .malaya-site .explore-tgrid-tight { grid-template-columns: 1fr; }
@@ -608,7 +690,6 @@ button, input, select { font-family: inherit; }
   .malaya-site .order-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 880px) {
-  .malaya-site .home-tiles { grid-template-columns: repeat(2, 1fr); }
   .malaya-site .pgrid-3, .malaya-site .pgrid-4 { grid-template-columns: repeat(2, 1fr); }
   .malaya-site .blog-grid { grid-template-columns: repeat(2, 1fr); }
   .malaya-site .shop-layout, .malaya-site .pd-layout, .malaya-site .tashi-intro, .malaya-site .contact-layout { grid-template-columns: 1fr; }
@@ -627,9 +708,12 @@ button, input, select { font-family: inherit; }
   .malaya-site .cat-current-wrap { width: 100%; }
   .malaya-site .cat-current { width: 100%; justify-content: space-between; }
   .malaya-site .cat-search-wrap { max-width: none; width: 100%; margin-left: 0; }
-  .malaya-site .cat-section { padding-top: 30px; scroll-margin-top: 170px; }
+  .malaya-site .cat-section { padding-top: 48px; scroll-margin-top: 170px; }
   .malaya-site .section-title { font-size: 24px; }
+  .malaya-site .page-banner-chapter, .malaya-site .explore-hero-img { min-height: clamp(220px, 32vh, 340px); }
   .malaya-site .blog-grid { grid-template-columns: 1fr; }
+  /* 21:9 letterboxes into a sliver on phones — open the crop up. */
+  .malaya-site .blog-feature-thumb { aspect-ratio: 16 / 9; }
   .malaya-site .cat-fam-group { width: 100%; }
   .malaya-site .cat-fam { flex: 1; text-align: center; }
   .malaya-site .cat-sym-wrap { width: 100%; }
@@ -661,4 +745,7 @@ button, input, select { font-family: inherit; }
     transition-delay: 0ms !important;
   }
   .malaya-site .reveal { opacity: 1; }
+  /* The hero drift is ambient (infinite alternate, no fill) — switch it off
+     entirely so the slide holds its natural static frame. */
+  .malaya-site .hero-slide-img { animation: none; }
 }
