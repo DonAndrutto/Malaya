@@ -6,9 +6,11 @@
 import Link from 'next/link';
 import { fetchPublishedGroups, fetchPublishedTopicSummaries } from '@/lib/server/explore';
 import { topicsOfGroup } from '@/lib/explore-shared';
+import { bgImage } from '@/lib/data/site-data';
 import { jsonLd, breadcrumbJsonLd, exploreGroupJsonLd } from '@/lib/seo';
 import { TopicCard } from '@/components/store/site/ExplorePages';
 import { PageBanner } from '@/components/store/site/SiteShell';
+import { Reveal } from '@/components/store/site/reveal';
 
 export const revalidate = 300;
 
@@ -73,7 +75,15 @@ export default async function Page({ params }) {
         }}
       />
       <main className="malaya-page explore-page" data-screen-label={'Explore · ' + group.name}>
-        <PageBanner title={group.name} subtitle="Explore" img={group.heroImage || null} />
+        {/* The shelf's curated hero finally displays at chapter height via the
+            topic-hero treatment instead of the 120px utility strip (PR B). */}
+        <div className={'explore-hero' + (group.heroImage ? ' explore-hero-img' : '')}
+          style={group.heroImage ? { backgroundImage: bgImage(group.heroImage), backgroundPosition: group.heroPos || 'center' } : undefined}>
+          <Reveal className="site-container">
+            <span className="explore-hero-kicker">Explore</span>
+            <h1 className="explore-hero-title">{group.name}</h1>
+          </Reveal>
+        </div>
         <div className="site-container explore-wrap">
           <nav className="explore-crumbs">
             <Link href="/">Home</Link><span>/</span>

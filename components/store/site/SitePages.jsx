@@ -511,7 +511,7 @@ export function TashiPage() {
   }, [TASHI_PRODUCTS, exploreTopics]);
   return (
     <main className="malaya-page" data-screen-label="Tashi Mannox">
-      <PageBanner title={content.banners.tashi.title} subtitle={content.banners.tashi.subtitle} />
+      <PageBanner variant="chapter" title={content.banners.tashi.title} subtitle={content.banners.tashi.subtitle} />
       <div className="site-container tashi-intro">
         <div className="tashi-text">
           <h3 className="tashi-kicker">{content.tashi.kicker}</h3>
@@ -559,7 +559,7 @@ export function AboutPage() {
   const about = content.about;
   return (
     <main className="malaya-page" data-screen-label="About">
-      <PageBanner title={content.banners.about.title} subtitle={content.banners.about.subtitle} img={settings.aboutBanner || null} />
+      <PageBanner variant="chapter" title={content.banners.about.title} subtitle={content.banners.about.subtitle} img={settings.aboutBanner || null} />
       <article className="site-container about-article">
         <p className="about-date">{about.date}</p>
         <h1 className="about-title">{about.title}</h1>

@@ -48,6 +48,22 @@ test.describe('Home & catalogue', () => {
     await expect.poll(async () => page.locator('.pcard').count()).toBe(total);
   });
 
+  test('catalogue card presentation is untouched by the banner redesign', async ({ page }) => {
+    // VISUAL-AUDIT ground rule: the white-card ground and the hover-to-reveal
+    // second photo are intentional and must survive every presentation PR.
+    await gotoHome(page);
+    await expect(page.locator('.pcard-thumb').first()).toHaveCSS('background-color', 'rgb(247, 244, 239)');
+    const withAlt = page.locator('.pcard', { has: page.locator('.pcard-alt') });
+    if (await withAlt.count()) {
+      const card = withAlt.first();
+      await card.scrollIntoViewIfNeeded();
+      const alt = card.locator('.pcard-alt');
+      await expect(alt).toHaveCSS('opacity', '0');
+      await card.hover();
+      await expect(alt).toHaveCSS('opacity', '1');
+    }
+  });
+
   test('search typeahead finds a product and navigates to it', async ({ page }) => {
     await gotoHome(page);
     // Search for a word from a real product so the test tracks live data.

@@ -21,6 +21,7 @@ button, input, select { font-family: inherit; }
 .malaya-site {
   --scrim-center: radial-gradient(ellipse 120% 80% at 50% 55%, rgba(20,12,8,.38) 0%, rgba(20,12,8,.18) 52%, rgba(20,12,8,.03) 100%);
   --scrim-left: linear-gradient(to right, rgba(20,12,8,.50) 0%, rgba(20,12,8,.32) 40%, rgba(20,12,8,.06) 100%);
+  --scrim-bottom: linear-gradient(to top, rgba(20,12,8,.58) 0%, rgba(20,12,8,.30) 36%, rgba(20,12,8,.06) 68%, rgba(20,12,8,0) 100%);
 }
 .malaya-site img { max-width: 100%; }
 .malaya-site a { color: inherit; text-decoration: none; transition: color .18s; }
@@ -140,7 +141,10 @@ button, input, select { font-family: inherit; }
 .malaya-site .cat-search-name { font-size: 13px; color: #222; line-height: 1.35; }
 .malaya-site .cat-search-sub { font-size: 11.5px; color: var(--muted); line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .malaya-site .cat-search-empty { padding: 16px; font-size: 13px; color: var(--muted); text-align: center; }
-.malaya-site .cat-section { padding-top: 40px; padding-bottom: 14px; scroll-margin-top: 70px; }
+/* Generous inter-section air so each category reads as a chapter of the
+   catalogue rather than one endless grid (VISUAL-AUDIT PR B whitespace pass). */
+.malaya-site .cat-section { padding-top: 72px; padding-bottom: 14px; scroll-margin-top: 70px; }
+.malaya-site .cat-section .rule-dot { margin-bottom: 40px; }
 /* Category names (Pendants, Rings, …) centred on the home catalogue scroll. */
 .malaya-site .cat-section-title { text-align: center; }
 .malaya-site .pgrid { display: grid; gap: 30px 24px; }
@@ -164,11 +168,23 @@ button, input, select { font-family: inherit; }
 .malaya-site .pcard-name:hover { color: var(--gold); }
 .malaya-site .pcard-sub { font-size: 12.5px; color: var(--muted); font-family: 'Poppins', sans-serif; }
 .malaya-site .pcard-price { font-size: 13px; color: var(--brown); font-weight: 500; }
-.malaya-site .page-banner { background-size: cover; background-position: center; min-height: 120px; display: flex; align-items: center; position: relative; }
+/* Two-tier banner system (VISUAL-AUDIT PR B). Utility tier: a slim band for
+   checkout-register pages (Contact, Order, Policy, product pages, not-found),
+   nudged from 120px to 160px so the photograph reads as a photograph rather
+   than a smear. */
+.malaya-site .page-banner { background-size: cover; background-position: center; min-height: 160px; display: flex; align-items: center; position: relative; }
 .malaya-site .page-banner::before { content: ''; position: absolute; inset: 0; background: var(--scrim-left); }
 .malaya-site .page-banner .site-container { position: relative; width: 100%; padding-top: 24px; padding-bottom: 24px; }
 .malaya-site .page-banner-title { display: block; color: #fff; font-family: 'Raleway', sans-serif; font-size: 24px; font-weight: 600; letter-spacing: .03em; }
 .malaya-site .page-banner-sub { display: block; color: rgba(255,255,255,.85); font-family: 'Raleway', sans-serif; font-size: 14px; padding-left: 1.5em; }
+/* Chapter tier: editorial routes open with real photography — kicker /
+   display-title hierarchy borrowed from the Explore topic hero, text anchored
+   to the bottom edge under a bottom-weighted scrim. */
+.malaya-site .page-banner-chapter { min-height: clamp(280px, 38vh, 460px); align-items: flex-end; }
+.malaya-site .page-banner-chapter::before { background: var(--scrim-bottom); }
+.malaya-site .page-banner-chapter .site-container { display: flex; flex-direction: column; gap: 10px; padding-top: 56px; padding-bottom: 46px; }
+.malaya-site .page-banner-kicker { font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); }
+.malaya-site .page-banner-chapter .page-banner-title { font-size: clamp(32px, 4.4vw, 54px); font-weight: 300; letter-spacing: .06em; line-height: 1.15; text-wrap: pretty; }
 .malaya-site .shop-layout { display: grid; grid-template-columns: 250px 1fr; gap: 44px; padding-top: 44px; padding-bottom: 60px; }
 .malaya-site .shop-search { width: 100%; padding: 10px 12px; border: 1px solid var(--line); font: inherit; font-size: 13px; margin-bottom: 22px; outline: none; }
 .malaya-site .shop-search:focus { border-color: var(--gold); }
@@ -323,11 +339,11 @@ button, input, select { font-family: inherit; }
 .malaya-site .order-summary { border: 1px solid var(--line); padding: 24px; display: flex; flex-direction: column; gap: 14px; }
 .malaya-site .order-total { display: flex; justify-content: space-between; font-size: 16px; border-bottom: 1px solid var(--line); padding-bottom: 14px; }
 .malaya-site .order-note { font-size: 12px; color: var(--muted); margin: 0; }
-.malaya-site .site-footer { margin-top: 50px; background: #faf8f5; border-top: 1px solid var(--line); }
+.malaya-site .site-footer { margin-top: 72px; background: #faf8f5; border-top: 1px solid var(--line); }
 .malaya-site .ftr-contact-strip { background: var(--brown); color: #fff; padding: 26px 0; }
 .malaya-site .ftr-contact-strip h3 { font-size: 21px; font-weight: 300; text-align: center; letter-spacing: .03em; }
 .malaya-site .ftr-contact-strip a { color: var(--gold); border-bottom: 1px solid currentColor; }
-.malaya-site .ftr-cols { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 50px; padding-top: 48px; padding-bottom: 44px; }
+.malaya-site .ftr-cols { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 50px; padding-top: 64px; padding-bottom: 56px; }
 .malaya-site .ftr-head { font-size: 12px; letter-spacing: .24em; text-transform: uppercase; color: var(--brown); margin-bottom: 16px; }
 .malaya-site .ftr-line { margin: 0 0 4px; font-size: 13.5px; color: #666; }
 .malaya-site .ftr-line a { color: var(--gold); }
@@ -452,10 +468,15 @@ button, input, select { font-family: inherit; }
 .malaya-site .explore-card-sub { font-style: normal; font-size: 12.5px; color: var(--gold); letter-spacing: .04em; }
 .malaya-site .explore-card-excerpt { font-size: 13px; color: #666; line-height: 1.65; }
 
-/* Topic page hero */
+/* Topic/shelf page hero. With a curated image (`-img`) it grows to chapter
+   height — text anchored to the bottom under a bottom-weighted scrim, so the
+   photography finally displays at a legible size (VISUAL-AUDIT PR B). The
+   imageless brown-gradient fallback keeps its compact proportions. */
 .malaya-site .explore-hero { background: linear-gradient(to bottom, var(--brown), #57392c); background-size: cover; background-position: center; position: relative; }
-.malaya-site .explore-hero-img::before { content: ''; position: absolute; inset: 0; background: var(--scrim-left); }
-.malaya-site .explore-hero .site-container { position: relative; padding-top: 64px; padding-bottom: 58px; display: flex; flex-direction: column; gap: 10px; }
+.malaya-site .explore-hero-img { min-height: clamp(280px, 38vh, 460px); display: flex; align-items: flex-end; }
+.malaya-site .explore-hero-img::before { content: ''; position: absolute; inset: 0; background: var(--scrim-bottom); }
+.malaya-site .explore-hero .site-container { position: relative; width: 100%; padding-top: 64px; padding-bottom: 58px; display: flex; flex-direction: column; gap: 10px; }
+.malaya-site .explore-hero-img .site-container { padding-bottom: 46px; }
 .malaya-site .explore-hero-kicker { font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); }
 .malaya-site .explore-hero-title { font-family: 'Raleway', sans-serif; font-size: clamp(32px, 4.4vw, 54px); font-weight: 300; letter-spacing: .06em; color: #fff; line-height: 1.15; text-wrap: pretty; }
 .malaya-site .explore-hero-sub { font-size: 16px; color: rgba(255,255,255,.85); letter-spacing: .06em; }
@@ -627,8 +648,9 @@ button, input, select { font-family: inherit; }
   .malaya-site .cat-current-wrap { width: 100%; }
   .malaya-site .cat-current { width: 100%; justify-content: space-between; }
   .malaya-site .cat-search-wrap { max-width: none; width: 100%; margin-left: 0; }
-  .malaya-site .cat-section { padding-top: 30px; scroll-margin-top: 170px; }
+  .malaya-site .cat-section { padding-top: 48px; scroll-margin-top: 170px; }
   .malaya-site .section-title { font-size: 24px; }
+  .malaya-site .page-banner-chapter, .malaya-site .explore-hero-img { min-height: clamp(220px, 32vh, 340px); }
   .malaya-site .blog-grid { grid-template-columns: 1fr; }
   .malaya-site .cat-fam-group { width: 100%; }
   .malaya-site .cat-fam { flex: 1; text-align: center; }

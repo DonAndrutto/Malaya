@@ -38,7 +38,7 @@ export function BlogIndex() {
   const posts = blogList(blogPosts || {}, { publishedOnly: true });
   return (
     <main className="malaya-page" data-screen-label="Blog">
-      <PageBanner title={content.nav.blog || 'Blog'} subtitle="Malaya Jewellery" />
+      <PageBanner variant="chapter" title={content.nav.blog || 'Blog'} subtitle="Malaya Jewellery" />
       <div className="site-container blog-wrap">
         {posts.length === 0 ? (
           <div className="blog-empty">No posts yet — check back soon.</div>
