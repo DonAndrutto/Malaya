@@ -16,6 +16,7 @@ import { subscribeTopic, topicProducts, relatedTopics, groupsOfTopic, primaryGro
 import { bgImage } from '@/lib/data/site-data';
 import { useSiteData } from './store';
 import { SiteImg, SiteProductCard } from './SiteShell';
+import { Reveal } from './reveal';
 import FloatingProduct from './FloatingProduct';
 import Markdown from './Markdown';
 
@@ -138,7 +139,7 @@ function FloatProductBlock({ productId, side, caption, src, ctx }) {
 function HotspotImageBlock({ src, alt, caption, pos, hotspots, ctx }) {
   if (!src) return null;
   return (
-    <figure className="explore-figure">
+    <Reveal as="figure" className="explore-figure">
       <span className="explore-hotspot-wrap">
         <SiteImg src={src} alt={alt || caption || ''} width={1600} height={1000} sizes="(max-width: 900px) 100vw, 820px"
           style={pos ? { objectPosition: pos } : undefined} />
@@ -156,17 +157,17 @@ function HotspotImageBlock({ src, alt, caption, pos, hotspots, ctx }) {
         })}
       </span>
       {caption && <figcaption>{caption}</figcaption>}
-    </figure>
+    </Reveal>
   );
 }
 
 function QuoteBlock({ text, attribution }) {
   if (!text) return null;
   return (
-    <blockquote className="explore-quote">
+    <Reveal as="blockquote" className="explore-quote">
       <p>{text}</p>
       {attribution && <cite>{attribution}</cite>}
-    </blockquote>
+    </Reveal>
   );
 }
 
@@ -186,7 +187,7 @@ function ProductGridBlock({ mode, ids, title, limit, ctx }) {
   if (!items.length) return null;
   return (
     <section className="explore-block-products">
-      {title && <><h2 className="section-title">{title}</h2><div className="rule-dot" /></>}
+      {title && <Reveal><h2 className="section-title">{title}</h2><div className="rule-dot" /></Reveal>}
       <div className="pgrid pgrid-3">{items.map((p) => <SiteProductCard key={p.id} p={p} />)}</div>
     </section>
   );
@@ -221,12 +222,12 @@ function GalleryBlock({ items }) {
   return (
     <div className="explore-gallery">
       {list.map((it, i) => (
-        <figure key={i} className="explore-gallery-item">
+        <Reveal as="figure" key={i} className="explore-gallery-item">
           <SiteImg src={it.src} alt={it.caption || ''} width={900} height={1200} sizes="(max-width: 700px) 100vw, 400px" />
           {(it.caption || it.location) && (
             <figcaption>{it.caption}{it.caption && it.location ? ' — ' : ''}{it.location && <em>{it.location}</em>}</figcaption>
           )}
-        </figure>
+        </Reveal>
       ))}
     </div>
   );
@@ -310,11 +311,11 @@ export function TopicPage({ slug, initialTopic = null }) {
     <main className="malaya-page explore-page" data-screen-label={'Explore · ' + topic.title}>
       <div className={'explore-hero' + (topic.heroImage ? ' explore-hero-img' : '')}
         style={topic.heroImage ? { backgroundImage: bgImage(topic.heroImage), backgroundPosition: topic.heroPos || 'center' } : undefined}>
-        <div className="site-container">
+        <Reveal className="site-container">
           <span className="explore-hero-kicker">{primary ? primary.name : 'Explore'}</span>
           <h1 className="explore-hero-title">{topic.title}</h1>
           {topic.subtitle && <span className="explore-hero-sub">{topic.subtitle}</span>}
-        </div>
+        </Reveal>
       </div>
 
       <article className="site-container explore-article">
@@ -331,8 +332,10 @@ export function TopicPage({ slug, initialTopic = null }) {
 
       {!hasOwnGrid && pieces.length > 0 && (
         <section className="site-container explore-pieces">
-          <h2 className="section-title">Pieces bearing this symbol</h2>
-          <div className="rule-dot" />
+          <Reveal>
+            <h2 className="section-title">Pieces bearing this symbol</h2>
+            <div className="rule-dot" />
+          </Reveal>
           <div className="pgrid pgrid-3">{pieces.map((p) => <SiteProductCard key={p.id} p={p} />)}</div>
         </section>
       )}

@@ -12,6 +12,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { fmtPrice, posFor, bgImage } from '@/lib/data/site-data';
 import { useCart, removeFromCart, cartTotal, useSiteData, useAddedNotice } from './store';
+import { Reveal } from './reveal';
 
 // ── Inline icons (crisp at any size, no extra image assets) ──────────────────
 export function BasketIcon({ size = 21 }) {
@@ -173,10 +174,10 @@ export function PageBanner({ title, subtitle, img, category }) {
   const bg = catBanner || img || settings.pageBanner || null;
   return (
     <div className="page-banner" style={{ backgroundImage: bgImage(bg), backgroundPosition: posFor(settings, bg) }}>
-      <div className="site-container">
+      <Reveal className="site-container">
         <strong className="page-banner-title">{title}</strong>
         {subtitle && <span className="page-banner-sub">{subtitle}</span>}
-      </div>
+      </Reveal>
     </div>
   );
 }

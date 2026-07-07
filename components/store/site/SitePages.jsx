@@ -19,6 +19,7 @@ import {
   useCart, addToCart, setCartQty, removeFromCart, cartTotal, showToast, useSiteData,
 } from './store';
 import { SiteImg, SiteProductCard, PageBanner, SocialLinks } from './SiteShell';
+import { Reveal, prefersReducedMotion } from './reveal';
 
 // The combined catalogue is shown as one long scroll, grouped by category in
 // this fixed order. Some categories are merged into a single section.
@@ -81,8 +82,8 @@ export function HomePage() {
 
       <section className="home-banner" style={{ backgroundImage: bgImage(homeBannerSrc), backgroundPosition: posFor(settings, homeBannerSrc) }}>
         <div className="home-banner-inner">
-          <h2>{content.home.bannerTitle}</h2>
-          <a className="btn-malaya btn-malaya-light" href="#catalogue">{content.home.bannerCta}</a>
+          <Reveal as="h2">{content.home.bannerTitle}</Reveal>
+          <Reveal as="a" className="btn-malaya btn-malaya-light" href="#catalogue">{content.home.bannerCta}</Reveal>
         </div>
       </section>
     </main>
@@ -167,7 +168,7 @@ function CatalogueScroll() {
   const jumpTo = (key) => {
     setMenuOpen(false);
     const el = document.getElementById('cat-' + key);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (el) el.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
   };
 
   const query = q.trim().toLowerCase();
@@ -293,8 +294,10 @@ function CatalogueScroll() {
       )}
       {sections.map((s) => (
         <section key={s.key} id={'cat-' + s.key} className="cat-section site-container">
-          <h2 className="section-title cat-section-title">{s.label}</h2>
-          <div className="rule-dot" />
+          <Reveal>
+            <h2 className="section-title cat-section-title">{s.label}</h2>
+            <div className="rule-dot" />
+          </Reveal>
           <div className="pgrid pgrid-3">
             {s.items.map((p) => <SiteProductCard key={p.id} p={p} />)}
           </div>
@@ -423,8 +426,10 @@ export function ProductPage({ id }) {
         </div>
       </div>
 
+      {/* Both banner entrances are scroll-triggered: they sit below the fold,
+          so a load-time animation would finish before anyone saw it. */}
       <section className="pd-order-banner" style={{ backgroundImage: bgImage(orderBannerSrc), backgroundPosition: posFor(settings, orderBannerSrc) }}>
-        <div className="pd-order-card">
+        <Reveal className="pd-order-card">
           <div className="pd-order-head">
             <span className="pd-order-kicker">Order Now</span>
             <span className="pd-order-price">
@@ -441,21 +446,23 @@ export function ProductPage({ id }) {
             <button className="btn-malaya" disabled={sold}
               onClick={() => addToCart(p.id, qty)}>{sold ? 'Sold Out' : 'Add to Order'}</button>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       <Link className="pd-explore" href={sectionAnchor(p.category)}
         style={{ backgroundImage: bgImage(exploreImg), backgroundPosition: posFor(settings, exploreImg) }}>
-        <span className="pd-explore-inner">
+        <Reveal as="span" className="pd-explore-inner">
           <em className="pd-explore-kicker">Discover more</em>
           <strong className="pd-explore-title">Explore {p.category}</strong>
-        </span>
+        </Reveal>
       </Link>
 
       {symbolism.length > 0 && (
         <section className="site-container pd-symbolism">
-          <h2 className="section-title">The Symbolism Behind This Design</h2>
-          <div className="rule-dot" />
+          <Reveal>
+            <h2 className="section-title">The Symbolism Behind This Design</h2>
+            <div className="rule-dot" />
+          </Reveal>
           <div className="pd-symbolism-grid">
             {symbolism.map((t) => (
               <Link key={t.slug} href={`/explore/topic/${t.slug}`} className="pd-symbolism-item">
@@ -471,8 +478,10 @@ export function ProductPage({ id }) {
 
       {related.length > 0 && (
         <section className="site-container pd-related">
-          <h2 className="section-title">You May Also Like</h2>
-          <div className="rule-dot" />
+          <Reveal>
+            <h2 className="section-title">You May Also Like</h2>
+            <div className="rule-dot" />
+          </Reveal>
           <div className="pgrid pgrid-4">
             {related.map((r) => <SiteProductCard key={r.id} p={r} />)}
           </div>
@@ -516,16 +525,20 @@ export function TashiPage() {
         </div>
       </div>
       <section className="site-container tashi-products">
-        <h2 className="section-title">{content.tashi.productsTitle}</h2>
-        <div className="rule-dot" />
+        <Reveal>
+          <h2 className="section-title">{content.tashi.productsTitle}</h2>
+          <div className="rule-dot" />
+        </Reveal>
         <div className="pgrid pgrid-3">
           {TASHI_PRODUCTS.map((p) => <SiteProductCard key={p.id} p={p} />)}
         </div>
       </section>
       {tashiTopics.length > 0 && (
         <section className="site-container tashi-explore">
-          <h3 className="tashi-explore-kicker">Sacred forms in his hand</h3>
-          <div className="rule-dot" />
+          <Reveal>
+            <h3 className="tashi-explore-kicker">Sacred forms in his hand</h3>
+            <div className="rule-dot" />
+          </Reveal>
           <p className="tashi-explore-links">
             {tashiTopics.map((t, i) => (
               <span key={t.slug}>

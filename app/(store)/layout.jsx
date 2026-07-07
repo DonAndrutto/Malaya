@@ -20,6 +20,8 @@ export default async function StoreLayout({ children }) {
   return (
     <>
       {firstSlide && <link rel="preload" as="image" href={firstSlide} fetchPriority="high" />}
+      {/* Reveal-on-scroll needs JS (reveal.js); without it, show everything. */}
+      <noscript><style>{'.malaya-site .reveal{opacity:1}'}</style></noscript>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd(organizationJsonLd(content, settings)) }}
