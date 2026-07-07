@@ -39,12 +39,25 @@ const LIST = ARGS.includes('--list');
 const SCRUB = ARGS.includes('--scrub-costs');
 const EMAIL = ARGS.find((a) => !a.startsWith('--'));
 
+// Returns { credential, saProject }. A pointed-to key file that does NOT
+// exist is a hard error, and main() refuses a service account belonging to a
+// different project than the target — an admin grant that lands on the wrong
+// project leaves the real deployment rejecting every studio write.
 async function loadCredential() {
   const inline = process.env.FIREBASE_SERVICE_ACCOUNT;
-  if (inline && inline.trim().startsWith('{')) return cert(JSON.parse(inline));
+  if (inline && inline.trim().startsWith('{')) {
+    const sa = JSON.parse(inline);
+    return { credential: cert(sa), saProject: sa.project_id || '' };
+  }
   const file = inline || process.env.GOOGLE_APPLICATION_CREDENTIALS;
-  if (file && existsSync(file)) return cert(JSON.parse(await readFile(file, 'utf8')));
-  return applicationDefault();
+  if (file) {
+    if (!existsSync(file)) {
+      throw new Error(`Service-account file not found: ${file} — fix FIREBASE_SERVICE_ACCOUNT / GOOGLE_APPLICATION_CREDENTIALS (refusing to fall back to application-default credentials).`);
+    }
+    const sa = JSON.parse(await readFile(file, 'utf8'));
+    return { credential: cert(sa), saProject: sa.project_id || '' };
+  }
+  return { credential: applicationDefault(), saProject: '' };
 }
 
 async function main() {
@@ -54,7 +67,12 @@ async function main() {
   }
 
   const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'malaya-catalogue';
-  initializeApp({ credential: await loadCredential(), projectId });
+  const { credential, saProject } = await loadCredential();
+  if (saProject && saProject !== projectId) {
+    throw new Error(`Service account belongs to project "${saProject}" but the target is "${projectId}" — nothing changed. Use that project's key, or set NEXT_PUBLIC_FIREBASE_PROJECT_ID deliberately.`);
+  }
+  console.log(`Target Firebase project: ${projectId}`);
+  initializeApp({ credential, projectId });
   const db = getFirestore();
 
   if (LIST) {

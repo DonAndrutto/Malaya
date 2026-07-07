@@ -96,14 +96,14 @@ service cloud.firestore {
     // and size-capped, and the renderer treats every block prop defensively.
     function validTopic(d, slug) {
       return d.keys().hasOnly([
-          'slug', 'title', 'subtitle', 'excerpt', 'aliases',
+          'slug', 'title', 'subtitle', 'excerpt', 'aliases', 'previousSlugs',
           'heroImage', 'heroPos', 'blocks', 'published', '_updated',
         ])
         && d.slug == slug
         && optStr(d, 'title', 300) && optStr(d, 'subtitle', 300)
         && optStr(d, 'excerpt', 1000)
         && optStr(d, 'heroImage', 2048) && optStr(d, 'heroPos', 50)
-        && optList(d, 'aliases', 30)
+        && optList(d, 'aliases', 30) && optList(d, 'previousSlugs', 30)
         && optList(d, 'blocks', 200)
         && optBool(d, 'published') && optNum(d, '_updated');
     }
@@ -160,6 +160,15 @@ service cloud.firestore {
       allow read: if resource.data.published == true || isAdmin();
       allow write: if isAdmin()
         && (request.method == 'delete' || validTopic(request.resource.data, slug));
+
+      // Revision snapshots (content safety net, lib/explore.js): the admin
+      // client checkpoints the previous document before saves (throttled,
+      // pruned to the newest ~20) and before deletion. Shaped like a topic
+      // plus _savedAt; never public. The subcollection deliberately survives
+      // the parent document's deletion — the snapshots ARE the recovery copies.
+      match /revisions/{rev} {
+        allow read, write: if isAdmin();
+      }
     }
 
     match /exploreGroups/{slug} {

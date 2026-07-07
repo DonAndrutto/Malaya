@@ -4,7 +4,8 @@
 // JSON-LD — the /product/[id] recipe — then the client component subscribes
 // to the single Firestore document for live admin edits.
 
-import { fetchTopic, fetchPublishedGroups } from '@/lib/server/explore';
+import { permanentRedirect } from 'next/navigation';
+import { fetchTopic, fetchPublishedGroups, fetchPublishedTopicSummaries } from '@/lib/server/explore';
 import { primaryGroupOf } from '@/lib/explore-shared';
 import { jsonLd, breadcrumbJsonLd, exploreTopicJsonLd } from '@/lib/seo';
 import { TopicPage } from '@/components/store/site/ExplorePages';
@@ -41,6 +42,16 @@ export default async function Page({ params }) {
     fetchTopic(params.slug),
     fetchPublishedGroups(),
   ]);
+  if (!topic) {
+    // A renamed topic records every slug it has lived at in `previousSlugs`
+    // (see the admin's persist()); old URLs redirect permanently to the
+    // canonical page, so inbound links and SEO equity survive renames.
+    const summaries = await fetchPublishedTopicSummaries();
+    const renamed = Object.values(summaries).find(
+      (t) => Array.isArray(t.previousSlugs) && t.previousSlugs.includes(params.slug),
+    );
+    if (renamed) permanentRedirect(`/explore/topic/${renamed.slug}`);
+  }
   const primary = topic ? primaryGroupOf(topic.slug, groups) : null;
 
   return (

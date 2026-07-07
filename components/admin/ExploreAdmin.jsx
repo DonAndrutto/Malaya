@@ -21,6 +21,7 @@ import { T, ghostBtn } from './theme';
 import {
   subscribeExploreAdmin, saveTopic, deleteTopic, saveGroup, deleteGroup,
   groupList, topicProducts, newBlockId, BLOCK_TYPES, RESERVED_GROUP_SLUGS, topicByteSize,
+  listTopicRevisions, checkpointTopic, REVISION_KEEP, EXPLORE_SAVE_ERROR_EVENT,
 } from '@/lib/explore';
 import { slugify, loadBlog } from '@/lib/blog';
 import { uploadImage } from '@/lib/upload';
@@ -40,7 +41,7 @@ const primaryBtn = { background: T.ink, color: T.panel, border: 'none', padding:
 const BLOCK_LABEL = Object.fromEntries(BLOCK_TYPES.map((b) => [b.type, b.label]));
 
 function blankTopic() {
-  return { slug: '', title: '', subtitle: '', excerpt: '', aliases: [], heroImage: '', heroPos: '', blocks: [], published: false };
+  return { slug: '', title: '', subtitle: '', excerpt: '', aliases: [], previousSlugs: [], heroImage: '', heroPos: '', blocks: [], published: false };
 }
 function blankGroup(order) {
   return { slug: '', name: '', description: '', heroImage: '', heroPos: '', order, topicSlugs: [], published: true };
@@ -109,6 +110,20 @@ function SearchPick({ label, items, onPick, renderLabel, width = 320 }) {
   );
 }
 
+// Asset reuse: accept an already-hosted image URL so a photograph used on one
+// topic can be reused elsewhere without re-uploading a duplicate Storage
+// object. Only URLs the storefront can actually render are accepted — the
+// Firebase Storage host (CSP img-src + next/image remotePatterns allowlist)
+// or a site-relative path.
+function promptExistingImageUrl() {
+  const raw = prompt('Paste the URL of an already-uploaded image (copy it from another topic or from the site — right-click → Copy image address):');
+  if (!raw || !raw.trim()) return null;
+  const url = raw.trim();
+  if (/^https:\/\/firebasestorage\.googleapis\.com\//.test(url) || url.startsWith('/')) return url;
+  alert('That URL cannot be shown on the site — paste a Firebase Storage image URL (https://firebasestorage.googleapis.com/…) or a site-relative path.');
+  return null;
+}
+
 function ImageUpload({ value, folder, onChange, busyKey, busy, setBusy, height = 90 }) {
   const ref = useRef(null);
   const upload = async (file) => {
@@ -127,6 +142,8 @@ function ImageUpload({ value, folder, onChange, busyKey, busy, setBusy, height =
         <button type="button" disabled={busy === busyKey} onClick={() => ref.current && ref.current.click()} style={ghostBtn(busy === busyKey)}>
           {busy === busyKey ? 'Uploading…' : (value ? 'Replace' : 'Upload')}
         </button>
+        <button type="button" title="Reuse an image that is already uploaded, without duplicating it"
+          onClick={() => { const u = promptExistingImageUrl(); if (u) onChange(u); }} style={ghostBtn()}>Use existing</button>
         {value && <button type="button" onClick={() => onChange('')} style={linkBtn}>Remove</button>}
         <input ref={ref} type="file" accept="image/*" style={{ display: 'none' }}
           onChange={(e) => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) upload(f); }} />
@@ -223,30 +240,46 @@ function HotspotEditor({ src, hotspots, onChange, products, byId }) {
   );
 }
 
+// Markdown editor with cursor-aware insert pickers (the BlogAdmin
+// insertAtCursor idiom): snippets land at the caret — replacing any
+// selection — instead of being appended to the end of the text.
+function RichTextForm({ block: b, set, products, topicsArr }) {
+  const mdRef = useRef(null);
+  const insertAtCursor = (snippet) => {
+    const el = mdRef.current;
+    const cur = b.md || '';
+    const start = el ? el.selectionStart : cur.length;
+    const end = el ? el.selectionEnd : cur.length;
+    set({ md: cur.slice(0, start) + snippet + cur.slice(end) });
+    requestAnimationFrame(() => { if (el) { const pos = start + snippet.length; el.focus(); el.setSelectionRange(pos, pos); } });
+  };
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
+        <SearchPick label="Insert product link" items={products}
+          renderLabel={(p) => `${p.name}${p.salesCode ? ' · ' + p.salesCode : ''}`}
+          onPick={(p) => insertAtCursor(`[[product: ${p.salesCode || p.id}]]`)} />
+        <SearchPick label="Insert floating product" items={products}
+          renderLabel={(p) => `${p.name}${p.salesCode ? ' · ' + p.salesCode : ''}`}
+          onPick={(p) => insertAtCursor(`\n\n![[float: ${p.salesCode || p.id} | right]]\n\n`)} />
+        <SearchPick label="Insert topic link" items={topicsArr}
+          renderLabel={(t) => t.title}
+          onPick={(t) => insertAtCursor(`[[topic: ${t.slug}]]`)} />
+      </div>
+      <textarea ref={mdRef} value={b.md || ''} rows={10} onChange={(e) => set({ md: e.target.value })}
+        placeholder={'Write in Markdown.\n\nCross-link with [[topic: endless-knot]], [[product: P045-YGP]].\nFloat a piece into the text with ![[float: P045-YGP | right]] or ![[float: p016 | left | caption]].'}
+        style={{ ...fieldStyle, resize: 'vertical', lineHeight: 1.7, fontFamily: 'ui-monospace, Menlo, Consolas, monospace', fontSize: 13 }} />
+    </div>
+  );
+}
+
 // ── Per-type block forms ─────────────────────────────────────────────────────
 function BlockForm({ block, setBlock, products, byId, topicsArr, uploadFolder, busy, setBusy }) {
   const set = (patch) => setBlock({ ...block, ...patch });
   const b = block;
   switch (b.type) {
     case 'richText':
-      return (
-        <div>
-          <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
-            <SearchPick label="Insert product link" items={products}
-              renderLabel={(p) => `${p.name}${p.salesCode ? ' · ' + p.salesCode : ''}`}
-              onPick={(p) => set({ md: (b.md || '') + `[[product: ${p.salesCode || p.id}]]` })} />
-            <SearchPick label="Insert floating product" items={products}
-              renderLabel={(p) => `${p.name}${p.salesCode ? ' · ' + p.salesCode : ''}`}
-              onPick={(p) => set({ md: (b.md || '') + `\n\n![[float: ${p.salesCode || p.id} | right]]\n\n` })} />
-            <SearchPick label="Insert topic link" items={topicsArr}
-              renderLabel={(t) => t.title}
-              onPick={(t) => set({ md: (b.md || '') + `[[topic: ${t.slug}]]` })} />
-          </div>
-          <textarea value={b.md || ''} rows={10} onChange={(e) => set({ md: e.target.value })}
-            placeholder={'Write in Markdown.\n\nCross-link with [[topic: endless-knot]], [[product: P045-YGP]].\nFloat a piece into the text with ![[float: P045-YGP | right]] or ![[float: p016 | left | caption]].'}
-            style={{ ...fieldStyle, resize: 'vertical', lineHeight: 1.7, fontFamily: 'ui-monospace, Menlo, Consolas, monospace', fontSize: 13 }} />
-        </div>
-      );
+      return <RichTextForm block={b} set={set} products={products} topicsArr={topicsArr} />;
     case 'floatProduct': {
       const p = b.productId ? byId[b.productId] : null;
       return (
@@ -456,8 +489,59 @@ function GalleryUpload({ folder, onAdd }) {
       onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); addFiles(e.dataTransfer.files); }}
       style={{ border: `1px dashed ${T.line2}`, background: T.card, padding: '16px', textAlign: 'center', cursor: busy ? 'wait' : 'pointer', color: T.muted }}>
       <div style={{ fontSize: 12 }}>{busy ? 'Uploading…' : 'Click or drop photos here'}</div>
+      {!busy && (
+        <button type="button"
+          onClick={(e) => { e.stopPropagation(); const u = promptExistingImageUrl(); if (u) onAdd([u]); }}
+          style={{ background: 'none', border: 'none', color: T.accent, fontSize: 11, cursor: 'pointer', padding: '6px 0 0', fontFamily: T.sans, textDecoration: 'underline' }}>
+          …or paste the URL of an existing image
+        </button>
+      )}
       <input ref={ref} type="file" accept="image/*" multiple style={{ display: 'none' }}
         onChange={(e) => { const fs = e.target.files; e.target.value = ''; addFiles(fs); }} />
+    </div>
+  );
+}
+
+// ── Revision history (content safety net) — load on demand, restore a copy ──
+function RevisionHistory({ slug, onRestore }) {
+  const [revs, setRevs] = useState(null); // null = not loaded yet
+  const [loading, setLoading] = useState(false);
+  useEffect(() => { setRevs(null); }, [slug]);
+  if (!FIREBASE_ENABLED) return null;
+  const load = async () => {
+    setLoading(true);
+    try { setRevs(await listTopicRevisions(slug)); } finally { setLoading(false); }
+  };
+  return (
+    <div style={card}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+        <h3 style={{ ...headStyle, margin: 0 }}>History</h3>
+        <button type="button" disabled={loading} onClick={load} style={ghostBtn(loading)}>
+          {loading ? 'Loading…' : (revs ? 'Refresh' : 'Show snapshots')}
+        </button>
+      </div>
+      {revs && (
+        <div style={{ marginTop: 12, display: 'grid', gap: 6 }}>
+          {revs.length === 0 && (
+            <div style={{ fontSize: 12.5, color: T.muted }}>No snapshots yet — they accrue automatically as you edit.</div>
+          )}
+          {revs.map((r) => (
+            <div key={r.id} style={{ display: 'flex', alignItems: 'center', gap: 12, border: `1px solid ${T.line}`, background: T.card, padding: '8px 12px' }}>
+              <span style={{ flex: 1, minWidth: 0, fontSize: 12.5, color: T.ink }}>
+                {new Date(r.savedAt).toLocaleString()}
+              </span>
+              <span style={{ fontSize: 11, color: T.faint, whiteSpace: 'nowrap' }}>
+                {(r.topic.blocks || []).length} block{(r.topic.blocks || []).length === 1 ? '' : 's'} · {(topicByteSize(r.topic) / 1024).toFixed(1)} KB
+              </span>
+              <button type="button" onClick={() => onRestore(r)} style={{ ...ghostBtn(), padding: '5px 12px', fontSize: 10 }}>Restore</button>
+            </div>
+          ))}
+        </div>
+      )}
+      <div style={{ fontSize: 11, color: T.faint, marginTop: 10, lineHeight: 1.6 }}>
+        A snapshot of the previous version is kept automatically while you edit (at most one every 5 minutes) and always before a
+        delete or rename; the newest {REVISION_KEEP} are retained. Restoring checkpoints the current version first.
+      </div>
     </div>
   );
 }
@@ -481,7 +565,20 @@ export default function ExploreAdmin() {
 
   useEffect(() => subscribeExploreAdmin(setData), []);
   useEffect(() => subscribeOverrides(setOverrides), []);
-  useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), 1800); return () => clearTimeout(t); }, [toast]);
+  // Error toasts (⚠) carry a Firestore error code the studio may need to read
+  // out or screenshot — keep them up longer than the 1.8s "Saved" flash.
+  useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), toast.startsWith('⚠') ? 6000 : 1800); return () => clearTimeout(t); }, [toast]);
+  // Failed Firestore writes (rules rejection) are broadcast by lib/explore.js —
+  // without this the editor would see "Saved" while the cloud copy is stale.
+  // The full error is in the console; the toast names the code and the path.
+  useEffect(() => {
+    const onErr = (e) => {
+      const d = (e && e.detail) || {};
+      setToast(`⚠ Cloud save failed${d.code ? ` (${d.code})` : ''}${d.path ? ` at ${d.path}` : ''} — the change is only in this browser`);
+    };
+    window.addEventListener(EXPLORE_SAVE_ERROR_EVENT, onErr);
+    return () => window.removeEventListener(EXPLORE_SAVE_ERROR_EVENT, onErr);
+  }, []);
 
   const flash = (m) => setToast(m);
   const { SITE_PRODUCTS, SITE_BY_ID } = useMemo(() => {
@@ -498,8 +595,9 @@ export default function ExploreAdmin() {
   // Optimistic local writes: Firestore snapshots reconcile moments later, but
   // the console must not wait on the round trip (or on Firebase existing).
   const putTopic = (slug, topic) => {
-    saveTopic(slug, topic);
+    const ack = saveTopic(slug, topic); // promise<true|false> | null — see saveExploreDoc
     setData((d) => ({ ...d, topics: { ...d.topics, [slug]: { ...topic, slug } } }));
+    return ack;
   };
   const dropTopic = (slug) => {
     deleteTopic(slug);
@@ -547,40 +645,73 @@ export default function ExploreAdmin() {
     if (!d || !d.title.trim()) { setDraft(d); return null; }
     let slug = slugify(d.slug || d.title);
     if (editKey === '__new__') slug = uniqueTopicSlug(slug);
+    const renaming = editKey && editKey !== '__new__' && editKey !== slug;
+    if (renaming && data.topics[slug]) {
+      // Never let a rename land on a slug another topic already owns — that
+      // would silently overwrite the other topic's document.
+      alert(`Another topic already uses the slug “${slug}” — nothing was saved. Pick a different slug.`);
+      setDraft(d);
+      return null;
+    }
+    // A renamed topic keeps its old slugs so the topic route can issue
+    // permanent redirects from every URL it has ever lived at.
+    const previousSlugs = [
+      ...new Set([...(d.previousSlugs || []), ...(renaming ? [editKey] : [])]),
+    ].filter((s) => s && s !== slug).slice(-30);
     const topic = {
       slug,
       title: d.title.trim(),
       subtitle: d.subtitle || '',
       excerpt: d.excerpt || '',
       aliases: (d.aliases || []).filter(Boolean),
+      ...(previousSlugs.length ? { previousSlugs } : {}),
       heroImage: d.heroImage || '',
       heroPos: d.heroPos || '',
       blocks: d.blocks || [],
       published: !!d.published,
     };
-    if (editKey && editKey !== '__new__' && editKey !== slug) {
+    if (renaming) {
       // Slug rename: move the doc and carry every reference with it so no
-      // group shelf or product link dangles.
-      dropTopic(editKey);
-      groupsArr.forEach((g) => {
-        if ((g.topicSlugs || []).includes(editKey)) {
-          putGroup(g.slug, { ...g, topicSlugs: g.topicSlugs.map((s) => (s === editKey ? slug : s)) });
-        }
-      });
-      const all = { ...loadOverrides() };
-      let changed = false;
-      Object.keys(all).forEach((id) => {
-        const t = all[id] && all[id].topics;
-        if (Array.isArray(t) && t.includes(editKey)) {
-          all[id] = { ...all[id], topics: t.map((x) => (x === editKey ? slug : x)) };
-          changed = true;
-        }
-      });
-      if (changed) { saveOverrides(all); setOverrides(all); }
+      // group shelf or product link dangles. Destructive legs (deleting the
+      // old doc, rewriting shelves and product links) run only after the
+      // server ACCEPTS the new document — a rejected create (stale rules, a
+      // future validation drift) must never delete the only copy. On
+      // rejection the save-error toast fires, the snapshot listener rolls the
+      // optimistic entry back, and the editor returns to the old slug so the
+      // next save simply retries the rename.
+      const oldKey = editKey;
+      const ack = putTopic(slug, topic);
+      const finishRename = () => {
+        dropTopic(oldKey);
+        groupsArr.forEach((g) => {
+          if ((g.topicSlugs || []).includes(oldKey)) {
+            putGroup(g.slug, { ...g, topicSlugs: g.topicSlugs.map((s) => (s === oldKey ? slug : s)) });
+          }
+        });
+        const all = { ...loadOverrides() };
+        let changed = false;
+        Object.keys(all).forEach((id) => {
+          const t = all[id] && all[id].topics;
+          if (Array.isArray(t) && t.includes(oldKey)) {
+            all[id] = { ...all[id], topics: t.map((x) => (x === oldKey ? slug : x)) };
+            changed = true;
+          }
+        });
+        if (changed) { saveOverrides(all); setOverrides(all); }
+      };
+      if (ack && typeof ack.then === 'function') {
+        ack.then((ok) => {
+          if (ok === false) { setEditKey((k) => (k === slug ? oldKey : k)); return; }
+          finishRename();
+        });
+      } else {
+        finishRename(); // localStorage-only mode: no server to wait for
+      }
+    } else {
+      putTopic(slug, topic);
     }
-    putTopic(slug, topic);
     setEditKey(slug);
-    setDraft({ ...d, slug });
+    setDraft({ ...d, slug, previousSlugs });
     if (!silent) flash('Saved');
     return slug;
   };
@@ -613,6 +744,25 @@ export default function ExploreAdmin() {
     if (changed) { saveOverrides(all); setOverrides(all); }
     if (editKey === slug) closeEditor();
     flash('Deleted');
+  };
+
+  // Restore a History snapshot: content and metadata come back from the
+  // snapshot; the current slug, redirect history and visibility are kept so a
+  // restore can never rename, collide or unpublish.
+  const restoreRevision = (rev) => {
+    if (!confirm('Replace the current content with this snapshot? The current version is checkpointed to History first.')) return;
+    checkpointTopic(editKey);
+    const next = {
+      ...blankTopic(),
+      ...rev.topic,
+      slug: draft.slug,
+      previousSlugs: draft.previousSlugs || [],
+      published: !!draft.published,
+    };
+    setDraft(next);
+    persist(next, { silent: true });
+    setBlockOpen(null);
+    flash('Snapshot restored');
   };
 
   // ── Blocks ────────────────────────────────────────────────────────────────
@@ -796,6 +946,8 @@ export default function ExploreAdmin() {
                 </div>
               ))}
             </div>
+
+            {editKey !== '__new__' && <RevisionHistory slug={editKey} onRestore={restoreRevision} />}
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               {editKey !== '__new__'

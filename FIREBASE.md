@@ -54,8 +54,27 @@ firebase login
 firebase deploy --only firestore:rules,storage --project malaya-catalogue
 ```
 
+The repo pins the CLI's default project in `.firebaserc`, so a bare
+`firebase deploy` from this directory always targets **malaya-catalogue** —
+without the pin the CLI silently uses whatever project `firebase use` last
+selected, and a deploy can "succeed" against the wrong project while the real
+site keeps enforcing stale rules. The tell for stale rules is the admin's
+`⚠ Cloud save failed (permission-denied)` toast on writes that the current
+rules in `firebase/` clearly allow; the deployed rules are shown in the
+Firebase console → Firestore → Rules.
+
 In the Firebase console, make sure **Cloud Firestore** and **Storage** are
 enabled for the project.
+
+To verify Explore seed data landed on the project the site actually reads
+(no credentials needed — this is the same public query the storefront runs):
+
+```bash
+curl -sS -X POST 'https://firestore.googleapis.com/v1/projects/malaya-catalogue/databases/(default)/documents:runQuery' \
+  -H 'Content-Type: application/json' \
+  -d '{"structuredQuery":{"from":[{"collectionId":"exploreGroups"}],"where":{"fieldFilter":{"field":{"fieldPath":"published"},"op":"EQUAL","value":{"booleanValue":true}}}}}'
+# expect the 4 seeded shelves; a bare [{"readTime":…}] means the collection is empty
+```
 
 ### Write access — admin sign-in (Firebase Auth) + allowlist
 
