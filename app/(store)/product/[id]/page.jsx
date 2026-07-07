@@ -12,7 +12,7 @@ export async function generateMetadata({ params }) {
   }
   const title = `${p.name} · Malaya Jewellery`;
   const description = (p.story && p.story.trim().split(/\n\s*\n|\n/)[0])
-    || `${p.name}${p.sub ? ` — ${p.sub}` : ''}. Handcrafted by Malaya Jewellery in Bhutan.`;
+    || `${p.name}${p.sub ? ` — ${p.sub}` : ''}. Created by Malaya Jewellery.`;
   return {
     title,
     description,
