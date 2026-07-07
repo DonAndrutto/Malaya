@@ -41,25 +41,40 @@ const sectionAnchor = (cat) => `/#cat-${CATEGORY_TO_SECTION[cat] || cat}`;
 const HOME_TILE_IMG = Object.fromEntries(HOME_TILES.map((t) => [t.cat, t.img]));
 
 // ── Home ─────────────────────────────────────────────────────────────────────
+// Hero slideshow (VISUAL-AUDIT PR C). Each slide layers its image in an inner
+// div so the slow Ken Burns drift (CSS transform on the layer) never fights
+// the admin focal point (background-position on the same layer). The drift
+// pauses while a slide is hidden and resumes on return, so the outgoing frame
+// never snaps mid-crossfade. The text group is keyed by the slide index: each
+// change remounts it, replaying its entrance slightly behind the image fade —
+// text and image stop living and dying together. The first slide's image URL
+// is unchanged, so the layout's LCP preload keeps matching it.
 function HeroSlider({ slides, settings, content }) {
   const [idx, setIdx] = useState(0);
   useEffect(() => {
+    if (slides.length < 2) return undefined;
     const t = setInterval(() => setIdx((i) => (i + 1) % slides.length), 5200);
     return () => clearInterval(t);
   }, [slides.length]);
   return (
     <div className="hero">
       {slides.map((src, i) => (
-        <div key={src + i} className={'hero-slide' + (i === idx ? ' on' : '')}
-          style={{ backgroundImage: bgImage(src), backgroundPosition: posFor(settings, src) }} />
+        <div key={src + i} className={'hero-slide' + (i === idx ? ' on' : '')}>
+          <div className="hero-slide-img"
+            style={{ backgroundImage: bgImage(src), backgroundPosition: posFor(settings, src) }} />
+        </div>
       ))}
       <div className="hero-overlay">
-        <h2 className="hero-title">{content.hero.title}</h2>
-        <span className="hero-sub">{content.hero.subtitle}</span>
-        <a className="btn-malaya" href="#catalogue">{content.hero.cta}</a>
+        <div key={idx} className="hero-text">
+          <h2 className="hero-title">{content.hero.title}</h2>
+          <span className="hero-sub">{content.hero.subtitle}</span>
+          <a className="btn-malaya" href="#catalogue">{content.hero.cta}</a>
+        </div>
       </div>
-      <button className="hero-arrow hero-arrow-l" onClick={() => setIdx((idx + slides.length - 1) % slides.length)}>‹</button>
-      <button className="hero-arrow hero-arrow-r" onClick={() => setIdx((idx + 1) % slides.length)}>›</button>
+      <button className="hero-arrow hero-arrow-l" aria-label="Previous slide"
+        onClick={() => setIdx((idx + slides.length - 1) % slides.length)}>‹</button>
+      <button className="hero-arrow hero-arrow-r" aria-label="Next slide"
+        onClick={() => setIdx((idx + 1) % slides.length)}>›</button>
       <div className="hero-dots">
         {slides.map((_, i) => (
           <button key={i} className={'hero-dot' + (i === idx ? ' on' : '')} onClick={() => setIdx(i)}

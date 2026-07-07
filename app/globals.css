@@ -80,21 +80,44 @@ button, input, select { font-family: inherit; }
 .malaya-site .hdr-nav-link:hover, .malaya-site .hdr-nav-link.active { color: #fff; }
 .malaya-site .hdr-nav-link:hover::after, .malaya-site .hdr-nav-link.active::after { left: 16px; right: 16px; }
 .malaya-site .hero { position: relative; height: 76vh; min-height: 420px; max-height: 820px; overflow: hidden; background: #111; }
-.malaya-site .hero-slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.1s ease; }
+/* Tall monitors: let the hero fill more of the first view instead of leaving
+   dead space under the 820px cap. */
+@media (min-height: 1001px) { .malaya-site .hero { max-height: 92vh; } }
+.malaya-site .hero-slide { position: absolute; inset: 0; overflow: hidden; opacity: 0; transition: opacity 1.1s ease; }
 .malaya-site .hero-slide.on { opacity: 1; }
+/* Gentle drift (Ken Burns, restrained): the image layer breathes between
+   scale 1 and 1.05 over 14s — ~2% travel per slide view, ambient rather than
+   animated. Alternating keyframes and origins per slide so consecutive slides
+   never repeat the same move. Paused while hidden (no snap under the
+   crossfade); transform lives on this inner layer so it never fights the
+   admin focal point (background-position). */
+.malaya-site .hero-slide-img { position: absolute; inset: 0; background-size: cover; background-position: center; transform-origin: 32% 40%; animation: hero-drift-a 14s ease-in-out infinite alternate; animation-play-state: paused; will-change: transform; }
+.malaya-site .hero-slide:nth-child(even) .hero-slide-img { transform-origin: 68% 60%; animation-name: hero-drift-b; }
+.malaya-site .hero-slide.on .hero-slide-img { animation-play-state: running; }
+@keyframes hero-drift-a { from { transform: scale(1); } to { transform: scale(1.05); } }
+@keyframes hero-drift-b { from { transform: scale(1.05); } to { transform: scale(1); } }
 /* Bottom-and-centre weighted scrim: the title zone and the dots/CTA strip
    stay protected while the top corners — where the header gradient already
    melts into the image — keep their highlights. */
-.malaya-site .hero-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; color: #fff; background: linear-gradient(to top, rgba(20,12,8,.34) 0%, rgba(20,12,8,.08) 30%, rgba(20,12,8,0) 55%), var(--scrim-center); padding: 0 20px; }
+.malaya-site .hero-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: #fff; background: linear-gradient(to top, rgba(20,12,8,.34) 0%, rgba(20,12,8,.08) 30%, rgba(20,12,8,0) 55%), var(--scrim-center); padding: 0 20px; }
+/* Per-slide text entrance — remounted on each slide change (keyed by index),
+   it fades and rises 10px slightly behind the image crossfade. */
+.malaya-site .hero-text { display: flex; flex-direction: column; align-items: center; gap: 10px; animation: hero-text-in .8s ease .3s both; }
+@keyframes hero-text-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .malaya-site .hero-title { font-size: clamp(30px, 4.6vw, 64px); font-weight: 300; letter-spacing: .55em; text-transform: uppercase; text-indent: .55em; text-shadow: 0 2px 22px rgba(0,0,0,.45); }
 .malaya-site .hero-sub { font-size: 15px; letter-spacing: .8em; text-indent: .8em; text-transform: uppercase; margin-bottom: 22px; }
-.malaya-site .hero-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,.14); color: #fff; border: none; font-size: 30px; width: 48px; height: 48px; cursor: pointer; border-radius: 50%; transition: background .2s; line-height: 1; }
-.malaya-site .hero-arrow:hover { background: rgba(255,255,255,.34); }
+/* Quieter chrome: hairline chevrons that surface when the pointer enters the
+   hero (always faintly present where hover doesn't exist), dashes for dots. */
+.malaya-site .hero-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255,255,255,.85); font-size: 46px; font-weight: 100; width: 56px; height: 72px; padding: 0; cursor: pointer; line-height: 1; opacity: 0; transition: opacity .35s ease, color .2s ease; }
+.malaya-site .hero:hover .hero-arrow, .malaya-site .hero-arrow:focus-visible { opacity: 1; }
+.malaya-site .hero-arrow:hover { color: #fff; }
+@media (hover: none) { .malaya-site .hero-arrow { opacity: .7; } }
 .malaya-site .hero-arrow-l { left: 22px; }
 .malaya-site .hero-arrow-r { right: 22px; }
-.malaya-site .hero-dots { position: absolute; bottom: 22px; left: 0; right: 0; display: flex; justify-content: center; gap: 9px; }
-.malaya-site .hero-dot { width: 9px; height: 9px; border-radius: 50%; border: 1px solid #fff; background: transparent; cursor: pointer; padding: 0; }
-.malaya-site .hero-dot.on { background: #fff; }
+.malaya-site .hero-dots { position: absolute; bottom: 22px; left: 0; right: 0; display: flex; justify-content: center; gap: 10px; }
+.malaya-site .hero-dot { position: relative; width: 26px; height: 14px; border: none; background: transparent; cursor: pointer; padding: 0; }
+.malaya-site .hero-dot::after { content: ''; position: absolute; left: 0; right: 0; top: 6px; height: 2px; background: rgba(255,255,255,.45); transition: background .3s ease; }
+.malaya-site .hero-dot.on::after { background: #fff; }
 .malaya-site .home-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding-top: 56px; padding-bottom: 26px; }
 .malaya-site .home-tile { position: relative; display: block; overflow: hidden; }
 .malaya-site .home-tile img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block; transition: transform .5s; }
@@ -683,4 +706,7 @@ button, input, select { font-family: inherit; }
     transition-delay: 0ms !important;
   }
   .malaya-site .reveal { opacity: 1; }
+  /* The hero drift is ambient (infinite alternate, no fill) — switch it off
+     entirely so the slide holds its natural static frame. */
+  .malaya-site .hero-slide-img { animation: none; }
 }
