@@ -15,7 +15,7 @@ export function goto(page, path) {
 }
 
 // Skip photo delivery for tests that assert on text/behaviour only. The
-// catalogue pages request hundreds of optimized images; dropping them keeps
+// catalogue pages request hundreds of images; dropping them keeps
 // navigation-heavy tests fast and deterministic on cold deployments (image
 // rendering itself is covered by the storefront/SEO suites).
 export async function blockImages(page) {

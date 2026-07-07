@@ -1,24 +1,25 @@
-// Image delivery pipeline: responsive optimized formats, lazy loading and
-// LCP prioritization. Kept separate (and desktop-only) because these tests
-// intentionally exercise the image optimizer, which is the most expensive
-// surface of the deployment.
+// Image delivery pipeline: direct Firebase Storage serving, lazy loading and
+// LCP prioritization. Photos deliberately bypass the Vercel image optimizer
+// (whose Hobby transformation quota runs out — see IMAGES.md), so these tests
+// pin the direct-URL contract: pre-optimised masters, immutable caching.
 
 import { test, expect } from '@playwright/test';
 import { gotoHome } from './helpers';
 test.describe('Image delivery', () => {
-  test('catalogue photos are lazy, responsive and served as modern formats', async ({ page }) => {
+  test('catalogue photos are lazy and served directly from Storage', async ({ page }) => {
     await gotoHome(page);
     const img = page.locator('.pcard-thumb img').first();
-    // next/image: responsive srcset through the optimizer, lazy by default.
-    await expect(img).toHaveAttribute('srcset', /_next\/image/);
+    // Direct Firebase Storage URL — never the optimizer (/_next/image).
+    await expect(img).toHaveAttribute('src', /firebasestorage\.googleapis\.com/);
     await expect(img).toHaveAttribute('loading', 'lazy');
-    await expect(img).toHaveAttribute('sizes', /vw/);
 
-    // The optimizer actually answers with a modern format and long-lived cache.
+    // Storage answers with an image and the year-long immutable cache the
+    // uploader sets (lib/upload.js) — direct serving relies on both.
     const src = await img.getAttribute('src');
-    const res = await page.request.get(src, { headers: { Accept: 'image/avif,image/webp,image/*,*/*' } });
+    const res = await page.request.get(src);
     expect(res.ok()).toBeTruthy();
-    expect(res.headers()['content-type']).toMatch(/image\/(avif|webp)/);
+    expect(res.headers()['content-type']).toMatch(/^image\//);
+    expect(res.headers()['cache-control']).toMatch(/immutable/);
   });
 
   test('the product hero is prioritized, not lazy (LCP)', async ({ page }) => {

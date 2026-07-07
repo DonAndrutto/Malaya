@@ -11,6 +11,7 @@
     "test:e2e:ui": "playwright test --ui",
     "grant-admin": "node scripts/grant-admin.mjs",
     "fetch-images": "node scripts/fetch-images.mjs",
+    "backfill-image-cache": "node scripts/backfill-image-cache.mjs",
     "build-inventory": "node scripts/build-inventory.mjs",
     "seed-local-images": "node scripts/seed-local-images.mjs",
     "seed-explore": "node scripts/seed-explore.mjs",

@@ -36,17 +36,14 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   images: {
-    // Product photography and 3D renders come from the studio's own Firebase
-    // Storage bucket; the Vercel image optimizer resizes them per device and
-    // serves AVIF/WebP. Upload filenames are unique (timestamped), so
-    // optimized variants can be cached for a full year.
-    remotePatterns: [
-      { protocol: 'https', hostname: 'firebasestorage.googleapis.com', pathname: '/v0/b/**' },
-    ],
-    formats: ['image/avif', 'image/webp'],
-    deviceSizes: [360, 480, 640, 750, 828, 1080, 1200, 1600, 1920, 2560],
-    imageSizes: [44, 64, 96, 128, 256, 384, 512],
-    minimumCacheTTL: 31536000,
+    // Images are served straight from Firebase Storage, NOT through the
+    // Vercel image optimizer: the Hobby plan's transformation quota runs out,
+    // after which uncached variants 402 and photos vanish. The uploads are
+    // already delivery-ready — the admin console downscales every image to
+    // ≤2048px within a byte budget (lib/image-resize.js) and stores it under
+    // a unique name with a one-year immutable Cache-Control (lib/upload.js).
+    // Full background and the revert path (Vercel Pro): IMAGES.md.
+    unoptimized: true,
   },
   async headers() {
     return [
