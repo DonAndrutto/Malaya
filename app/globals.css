@@ -22,10 +22,14 @@ button, input, select { font-family: inherit; }
   --scrim-center: radial-gradient(ellipse 120% 80% at 50% 55%, rgba(20,12,8,.38) 0%, rgba(20,12,8,.18) 52%, rgba(20,12,8,.03) 100%);
   --scrim-left: linear-gradient(to right, rgba(20,12,8,.50) 0%, rgba(20,12,8,.32) 40%, rgba(20,12,8,.06) 100%);
   --scrim-bottom: linear-gradient(to top, rgba(20,12,8,.58) 0%, rgba(20,12,8,.30) 36%, rgba(20,12,8,.06) 68%, rgba(20,12,8,0) 100%);
-  /* Brown→transparent header wash — the same gradient the home header lays over
-     the hero. Reused as the seam between the header and the banner on every
-     page, and as the whole banner on product pages (no photo). */
+  /* Brown→transparent header wash — the gradient the header lays over the
+     imagery beneath it. The header floats over the banner/hero on every page
+     (no solid bar), so this same wash is the seam between the header and the
+     banner everywhere, and the whole banner on product pages (no photo). */
   --header-fade: linear-gradient(to bottom, rgba(59,35,26,.96) 0%, rgba(59,35,26,.72) 48%, rgba(59,35,26,0) 100%);
+  /* Approximate rendered height of the floating header — banners whose text
+     sits near the top pad by this much so it clears the nav. */
+  --header-h: 98px;
 }
 .malaya-site img { max-width: 100%; }
 .malaya-site a { color: inherit; text-decoration: none; transition: color .18s; }
@@ -49,6 +53,9 @@ button, input, select { font-family: inherit; }
    page it is superimposed over the hero slideshow with a brown→transparent
    gradient so the imagery shows through below the navigation. */
 .malaya-site .site-header--overlay { position: absolute; top: 0; left: 0; right: 0; z-index: 45; background: var(--header-fade); }
+/* Pages that don't open with a full-bleed banner reserve the floating header's
+   height so their first content clears the nav (e.g. a cover-less blog post). */
+.malaya-site .malaya-page-header-pad { padding-top: var(--header-h); }
 .malaya-site .hdr-bar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; grid-template-areas: "logo nav cart"; gap: 16px; padding-top: 12px; padding-bottom: 12px; }
 .malaya-site .hdr-logo { grid-area: logo; justify-self: start; }
 .malaya-site .hdr-logo img { height: 74px; width: auto; display: block; }
@@ -198,21 +205,22 @@ button, input, select { font-family: inherit; }
    checkout-register pages (Contact, Order, Policy, product pages, not-found),
    nudged from 120px to 160px so the photograph reads as a photograph rather
    than a smear. */
-.malaya-site .page-banner { background-size: cover; background-position: center; min-height: 160px; display: flex; align-items: center; position: relative; }
-.malaya-site .page-banner::before { content: ''; position: absolute; inset: 0; z-index: 0; background: var(--scrim-left); }
-/* Header→banner seam: the same brown wash the home header lays over the hero,
-   fading out over the header's own height so the brown bar melts into the
-   photograph on every page instead of meeting it at a hard line. */
-.malaya-site .page-banner::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 120px; z-index: 1; background: var(--header-fade); pointer-events: none; }
-.malaya-site .page-banner .site-container { position: relative; z-index: 2; width: 100%; padding-top: 24px; padding-bottom: 24px; }
+/* The banner bleeds up under the floating header (top-padded by the header's
+   height so the centred text clears the nav). The brown header wash above IS
+   the seam between header and banner — exactly the home hero treatment. */
+.malaya-site .page-banner { background-size: cover; background-position: center; min-height: calc(var(--header-h) + 120px); padding-top: var(--header-h); display: flex; align-items: center; position: relative; }
+.malaya-site .page-banner::before { content: ''; position: absolute; inset: 0; background: var(--scrim-left); }
+.malaya-site .page-banner .site-container { position: relative; width: 100%; padding-top: 20px; padding-bottom: 24px; }
 .malaya-site .page-banner-title { display: block; color: #fff; font-family: 'Raleway', sans-serif; font-size: 24px; font-weight: 600; letter-spacing: .03em; }
 .malaya-site .page-banner-sub { display: block; color: rgba(255,255,255,.85); font-family: 'Raleway', sans-serif; font-size: 14px; padding-left: 1.5em; }
 /* Plain product-page banner: no photo — just the brown header wash carrying the
-   piece's name in the top-left corner, so the product page is no longer stacked
-   with banners (the seam gradient below already bridges header and content). */
-.malaya-site .page-banner-plain { min-height: 130px; align-items: flex-start; background: var(--header-fade); }
-.malaya-site .page-banner-plain::before, .malaya-site .page-banner-plain::after { content: none; }
-.malaya-site .page-banner-plain .site-container { padding-top: 20px; padding-bottom: 20px; }
+   piece's name in the top-left corner, pushed just below the floating nav so it
+   sits in the dark of the wash. Deepened a touch vs. the image pages' seam
+   because there's no photograph beneath it to carry the white title. */
+.malaya-site .page-banner-plain { min-height: calc(var(--header-h) + 120px); padding-top: var(--header-h); align-items: flex-start;
+  background-color: transparent; background-image: linear-gradient(to top, rgba(59,35,26,0) 0, var(--brown) 44px); }
+.malaya-site .page-banner-plain::before { content: none; }
+.malaya-site .page-banner-plain .site-container { padding-top: 8px; padding-bottom: 44px; }
 /* Chapter tier: editorial routes open with real photography — kicker /
    display-title hierarchy borrowed from the Explore topic hero, text anchored
    to the bottom edge under a bottom-weighted scrim. */
@@ -366,7 +374,9 @@ button, input, select { font-family: inherit; }
 .malaya-site .about-from { font-size: 13px; font-style: italic; color: var(--muted); }
 .malaya-site .about-para { color: #555; margin: 0 0 16px; text-wrap: pretty; }
 .malaya-site .about-figure { margin: 28px 0; }
-.malaya-site .about-figure img { width: 100%; display: block; aspect-ratio: 1600 / 1000; object-fit: cover; }
+/* height:auto lets the 1600×1000 aspect-ratio drive the box; without it the
+   next/image height attribute (1000) wins and the figure renders portrait. */
+.malaya-site .about-figure img { width: 100%; height: auto; display: block; aspect-ratio: 1600 / 1000; object-fit: cover; }
 .malaya-site .about-figure figcaption { font-size: 12.5px; color: var(--muted); padding-top: 10px; text-align: center; }
 .malaya-site .contact-layout { display: grid; grid-template-columns: 1fr 1.3fr; gap: 60px; padding-top: 48px; padding-bottom: 70px; }
 .malaya-site .contact-link { color: var(--gold); font-size: 15px; }
@@ -554,11 +564,9 @@ button, input, select { font-family: inherit; }
    photography finally displays at a legible size (VISUAL-AUDIT PR B). The
    imageless brown-gradient fallback keeps its compact proportions. */
 .malaya-site .explore-hero { background: linear-gradient(to bottom, var(--brown), #57392c); background-size: cover; background-position: center; position: relative; }
-/* Same header→banner seam as .page-banner, for the Explore hero. */
-.malaya-site .explore-hero::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 120px; z-index: 1; background: var(--header-fade); pointer-events: none; }
 .malaya-site .explore-hero-img { min-height: clamp(280px, 38vh, 460px); display: flex; align-items: flex-end; }
-.malaya-site .explore-hero-img::before { content: ''; position: absolute; inset: 0; z-index: 0; background: var(--scrim-bottom); }
-.malaya-site .explore-hero .site-container { position: relative; z-index: 2; width: 100%; padding-top: 64px; padding-bottom: 58px; display: flex; flex-direction: column; gap: 10px; }
+.malaya-site .explore-hero-img::before { content: ''; position: absolute; inset: 0; background: var(--scrim-bottom); }
+.malaya-site .explore-hero .site-container { position: relative; width: 100%; padding-top: 64px; padding-bottom: 58px; display: flex; flex-direction: column; gap: 10px; }
 .malaya-site .explore-hero-img .site-container { padding-bottom: 46px; }
 .malaya-site .explore-hero-kicker { font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); }
 .malaya-site .explore-hero-title { font-family: 'Raleway', sans-serif; font-size: clamp(32px, 4.4vw, 54px); font-weight: 300; letter-spacing: .06em; color: #fff; line-height: 1.15; text-wrap: pretty; }
@@ -718,6 +726,9 @@ button, input, select { font-family: inherit; }
   .malaya-site .blog-grid { grid-template-columns: repeat(2, 1fr); }
   .malaya-site .shop-layout, .malaya-site .pd-layout, .malaya-site .tashi-intro, .malaya-site .contact-layout { grid-template-columns: 1fr; }
   .malaya-site .ftr-cols { grid-template-columns: 1fr; gap: 30px; }
+  /* The two-row header (logo/cart, then wrapped nav) is taller, so banners need
+     more clearance below the floating nav. */
+  .malaya-site { --header-h: 152px; }
   /* Header collapses to two rows: logo + cart, then the nav centred below. */
   .malaya-site .hdr-bar { grid-template-columns: 1fr auto; grid-template-areas: "logo cart" "nav nav"; row-gap: 4px; }
   .malaya-site .hdr-logo img { height: 58px; }

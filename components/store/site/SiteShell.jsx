@@ -262,10 +262,10 @@ export function SiteHeader() {
   const { settings, content } = useSiteData();
   const items = useCart();
   const count = items.reduce((s, i) => s + i.qty, 0);
-  // The header is brown brand-wide. On the home page it is superimposed over the
-  // hero slideshow with a brown→transparent gradient; every other page shows it
-  // as a solid brown bar above the content.
-  const overlay = pathname === '/';
+  // The header floats over the page's banner/hero on every route as a
+  // brown→transparent gradient (no solid bar). The banner beneath bleeds all the
+  // way to the top of the viewport, exactly as the imagery does on the home hero.
+  const overlay = true;
   // Contact was merged into About: its details already live in the footer and
   // on other pages, so the primary nav carries a single About entry.
   const NAV = [
