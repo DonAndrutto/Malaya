@@ -213,14 +213,6 @@ button, input, select { font-family: inherit; }
 .malaya-site .page-banner .site-container { position: relative; width: 100%; padding-top: 20px; padding-bottom: 24px; }
 .malaya-site .page-banner-title { display: block; color: #fff; font-family: 'Raleway', sans-serif; font-size: 24px; font-weight: 600; letter-spacing: .03em; }
 .malaya-site .page-banner-sub { display: block; color: rgba(255,255,255,.85); font-family: 'Raleway', sans-serif; font-size: 14px; padding-left: 1.5em; }
-/* Plain product-page banner: no photo — just the brown header wash carrying the
-   piece's name in the top-left corner, pushed just below the floating nav so it
-   sits in the dark of the wash. Deepened a touch vs. the image pages' seam
-   because there's no photograph beneath it to carry the white title. */
-.malaya-site .page-banner-plain { min-height: calc(var(--header-h) + 120px); padding-top: var(--header-h); align-items: flex-start;
-  background-color: transparent; background-image: linear-gradient(to top, rgba(59,35,26,0) 0, var(--brown) 44px); }
-.malaya-site .page-banner-plain::before { content: none; }
-.malaya-site .page-banner-plain .site-container { padding-top: 8px; padding-bottom: 44px; }
 /* Chapter tier: editorial routes open with real photography — kicker /
    display-title hierarchy borrowed from the Explore topic hero, text anchored
    to the bottom edge under a bottom-weighted scrim. */

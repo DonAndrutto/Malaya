@@ -174,24 +174,21 @@ export function SiteProductCard({ p }) {
 // header — the subtitle becomes a kicker line above a display-size title, and
 // the bottom-weighted scrim protects the text zone only. Same master image at
 // a taller crop, so the upgrade costs zero extra bytes (IMAGES.md).
-// `plain` drops the photographic banner entirely and shows only the brown
-// header gradient (used on product pages, which were over-cluttered with
-// banners) with the title tucked into the top-left corner and no subtitle.
 // `bannerKey` names a settings slot (e.g. 'exploreBanner') so admin-uploaded
 // banners reach pages whose PageBanner is rendered from a server component.
-export function PageBanner({ title, subtitle, img, category, variant, bannerKey, plain }) {
+export function PageBanner({ title, subtitle, img, category, variant, bannerKey }) {
   const { settings } = useSiteData();
   const catBanner = category && settings.categoryBanners ? settings.categoryBanners[category] : null;
   const keyed = bannerKey ? settings[bannerKey] : null;
-  const bg = plain ? null : (catBanner || img || keyed || settings.pageBanner || null);
+  const bg = catBanner || img || keyed || settings.pageBanner || null;
   const chapter = variant === 'chapter';
   return (
-    <div className={'page-banner' + (chapter ? ' page-banner-chapter' : '') + (plain ? ' page-banner-plain' : '')}
-      style={plain ? undefined : { backgroundImage: bgImage(bg), backgroundPosition: posFor(settings, bg) }}>
+    <div className={'page-banner' + (chapter ? ' page-banner-chapter' : '')}
+      style={{ backgroundImage: bgImage(bg), backgroundPosition: posFor(settings, bg) }}>
       <Reveal className="site-container">
         {chapter && subtitle && <span className="page-banner-kicker">{subtitle}</span>}
         <strong className="page-banner-title">{title}</strong>
-        {!chapter && !plain && subtitle && <span className="page-banner-sub">{subtitle}</span>}
+        {!chapter && subtitle && <span className="page-banner-sub">{subtitle}</span>}
       </Reveal>
     </div>
   );

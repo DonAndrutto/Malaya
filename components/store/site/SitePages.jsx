@@ -401,7 +401,7 @@ export function ProductPage({ id }) {
 
   return (
     <main className="malaya-page" data-screen-label={'Product · ' + p.name}>
-      <PageBanner plain title={p.name} />
+      <PageBanner title={p.name} category={p.category} />
       <div className="site-container pd-layout">
         <div className="pd-media">
           <div className="pd-photo">
