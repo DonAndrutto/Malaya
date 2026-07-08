@@ -146,6 +146,10 @@ const BANNER_SLOTS = [
     hint: 'Breadcrumb banner on Contact, Order and Tashi Mannox, and the fallback for any page/category without its own banner.' },
   { k: 'aboutBanner', label: 'About page banner', folder: 'site/banners', w: 1920, h: 480, fit: 'cover', focal: true, pw: 620,
     hint: 'Breadcrumb banner at the top of the About page.' },
+  { k: 'exploreBanner', label: 'Explore page banner', folder: 'site/banners', w: 1920, h: 900, fit: 'cover', focal: true, pw: 620,
+    hint: 'Chapter header at the top of the Explore landing page. Falls back to the default page banner until set.' },
+  { k: 'blogBanner', label: 'Blog page banner', folder: 'site/banners', w: 1920, h: 900, fit: 'cover', focal: true, pw: 620,
+    hint: 'Chapter header at the top of the Blog index. Falls back to the default page banner until set.' },
   { k: 'tashiBanner', label: 'Tashi Mannox banner', folder: 'site/tashi', w: 1920, h: 900, fit: 'cover', focal: true, pw: 620,
     hint: 'Chapter header at the top of the Tashi Mannox page — ideally a wide crop of his brushwork or calligraphy. Falls back to the default page banner until set.' },
   { k: 'tashiPhoto', label: 'Tashi Mannox portrait', folder: 'site/tashi', w: 1000, h: 1200, fit: 'contain', tone: 'light', pw: 300,
@@ -313,7 +317,8 @@ export default function SiteImages() {
         {aboutFigures.map((fig, i) => (
           <div key={i} style={card}>
             <div style={{ maxWidth: 420 }}>
-              <SlotPreview url={fig.src || null} w={ABOUT_FIGURE_SPEC.w} h={ABOUT_FIGURE_SPEC.h} fit="contain" tone="light" />
+              <SlotPreview url={fig.src || null} w={ABOUT_FIGURE_SPEC.w} h={ABOUT_FIGURE_SPEC.h} fit="cover"
+                pos={posOf(fig.src)} onPos={(v) => setPos(fig.src, v)} />
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginTop: 12 }}>
               <PickButton label={fig.src ? 'Replace' : 'Upload'} busy={busy === `aboutfig-${i}`}

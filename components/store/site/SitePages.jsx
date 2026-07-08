@@ -401,7 +401,7 @@ export function ProductPage({ id }) {
 
   return (
     <main className="malaya-page" data-screen-label={'Product · ' + p.name}>
-      <PageBanner title={p.name} subtitle={p.sub} category={p.category} />
+      <PageBanner plain title={p.name} />
       <div className="site-container pd-layout">
         <div className="pd-media">
           <div className="pd-photo">
@@ -598,11 +598,12 @@ export function TashiPage() {
 // Full-width editorial figure dropped into the About article body — the
 // `.about-figure` CSS has existed since PR A but had no JSX consumer until
 // this one (VISUAL-AUDIT §1.7 / PR F).
-function AboutFigure({ src, caption }) {
+function AboutFigure({ src, caption, pos }) {
   if (!src) return null;
   return (
     <Reveal as="figure" className="about-figure">
-      <SiteImg src={src} alt={caption || ''} width={1600} height={1000} sizes="(max-width: 900px) 100vw, 920px" />
+      <SiteImg src={src} alt={caption || ''} width={1600} height={1000} sizes="(max-width: 900px) 100vw, 920px"
+        style={{ objectPosition: pos || 'center' }} />
       {caption && <figcaption>{caption}</figcaption>}
     </Reveal>
   );
@@ -637,7 +638,7 @@ export function AboutPage() {
         {about.body.map((para, i) => (
           <Fragment key={i}>
             <p className="about-para">{para}</p>
-            {figureAfter.has(i) && <AboutFigure {...figureAfter.get(i)} />}
+            {figureAfter.has(i) && <AboutFigure {...figureAfter.get(i)} pos={posFor(settings, figureAfter.get(i).src)} />}
           </Fragment>
         ))}
       </article>

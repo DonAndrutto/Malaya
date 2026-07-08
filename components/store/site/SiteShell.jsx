@@ -174,18 +174,24 @@ export function SiteProductCard({ p }) {
 // header — the subtitle becomes a kicker line above a display-size title, and
 // the bottom-weighted scrim protects the text zone only. Same master image at
 // a taller crop, so the upgrade costs zero extra bytes (IMAGES.md).
-export function PageBanner({ title, subtitle, img, category, variant }) {
+// `plain` drops the photographic banner entirely and shows only the brown
+// header gradient (used on product pages, which were over-cluttered with
+// banners) with the title tucked into the top-left corner and no subtitle.
+// `bannerKey` names a settings slot (e.g. 'exploreBanner') so admin-uploaded
+// banners reach pages whose PageBanner is rendered from a server component.
+export function PageBanner({ title, subtitle, img, category, variant, bannerKey, plain }) {
   const { settings } = useSiteData();
   const catBanner = category && settings.categoryBanners ? settings.categoryBanners[category] : null;
-  const bg = catBanner || img || settings.pageBanner || null;
+  const keyed = bannerKey ? settings[bannerKey] : null;
+  const bg = plain ? null : (catBanner || img || keyed || settings.pageBanner || null);
   const chapter = variant === 'chapter';
   return (
-    <div className={'page-banner' + (chapter ? ' page-banner-chapter' : '')}
-      style={{ backgroundImage: bgImage(bg), backgroundPosition: posFor(settings, bg) }}>
+    <div className={'page-banner' + (chapter ? ' page-banner-chapter' : '') + (plain ? ' page-banner-plain' : '')}
+      style={plain ? undefined : { backgroundImage: bgImage(bg), backgroundPosition: posFor(settings, bg) }}>
       <Reveal className="site-container">
         {chapter && subtitle && <span className="page-banner-kicker">{subtitle}</span>}
         <strong className="page-banner-title">{title}</strong>
-        {!chapter && subtitle && <span className="page-banner-sub">{subtitle}</span>}
+        {!chapter && !plain && subtitle && <span className="page-banner-sub">{subtitle}</span>}
       </Reveal>
     </div>
   );
@@ -256,16 +262,17 @@ export function SiteHeader() {
   const { settings, content } = useSiteData();
   const items = useCart();
   const count = items.reduce((s, i) => s + i.qty, 0);
-  // The header is brown brand-wide. On the home page it is superimposed over the
-  // hero slideshow with a brown→transparent gradient; every other page shows it
-  // as a solid brown bar above the content.
-  const overlay = pathname === '/';
+  // The header floats over the page's banner/hero on every route as a
+  // brown→transparent gradient (no solid bar). The banner beneath bleeds all the
+  // way to the top of the viewport, exactly as the imagery does on the home hero.
+  const overlay = true;
+  // Contact was merged into About: its details already live in the footer and
+  // on other pages, so the primary nav carries a single About entry.
   const NAV = [
     { label: content.nav.home, path: '/' },
     { label: content.nav.explore, path: '/explore' },
     { label: content.nav.tashi, path: '/tashi' },
     { label: content.nav.blog, path: '/blog' },
-    { label: content.nav.contact, path: '/contact' },
     { label: content.nav.about, path: '/about' },
     { label: content.nav.instagram, href: content.contact.instagram },
   ];
