@@ -6,7 +6,7 @@
 // Firestore so admin edits still flow in live.
 
 import { getServerLayoutData } from '@/lib/server/site';
-import { resolveContent } from '@/lib/data/site-data';
+import { resolveContent, resolveHeroSlides } from '@/lib/data/site-data';
 import { jsonLd, organizationJsonLd, websiteJsonLd } from '@/lib/seo';
 import StoreLayoutClient from '@/components/store/site/StoreLayoutClient';
 
@@ -14,8 +14,11 @@ export default async function StoreLayout({ children }) {
   const { overrides, settings, savedContent, blogPosts, exploreGroups, exploreTopics } = await getServerLayoutData();
   const content = resolveContent(savedContent);
   // The home hero is a CSS background image, which browsers only discover
-  // late; preloading the first slide pulls the LCP image forward.
-  const firstSlide = Array.isArray(settings.heroSlides) ? settings.heroSlides[0] : null;
+  // late; preloading the first slide pulls the LCP image forward. The slide
+  // list is resolved exactly as HomePage resolves it (collection slides first,
+  // legacy slideshow as fallback) so the preload always matches what renders.
+  const heroSlides = resolveHeroSlides(settings);
+  const firstSlide = heroSlides.length ? heroSlides[0].src : null;
 
   return (
     <>

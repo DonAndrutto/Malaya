@@ -267,14 +267,14 @@ export function SiteHeader() {
   // way to the top of the viewport, exactly as the imagery does on the home hero.
   const overlay = true;
   // Contact was merged into About: its details already live in the footer and
-  // on other pages, so the primary nav carries a single About entry.
+  // on other pages, so the primary nav carries a single About entry. Instagram
+  // left the nav too — the footer's social row is its home.
   const NAV = [
     { label: content.nav.home, path: '/' },
     { label: content.nav.explore, path: '/explore' },
     { label: content.nav.tashi, path: '/tashi' },
     { label: content.nav.blog, path: '/blog' },
     { label: content.nav.about, path: '/about' },
-    { label: content.nav.instagram, href: content.contact.instagram },
   ];
   return (
     <header className={'site-header' + (overlay ? ' site-header--overlay' : '')}>
@@ -286,9 +286,6 @@ export function SiteHeader() {
         </Link>
         <nav className="hdr-nav">
           {NAV.map((item) => {
-            if (item.href) {
-              return <a key={item.label} className="hdr-nav-link" href={item.href} target="_blank" rel="noreferrer">{item.label}</a>;
-            }
             const active = item.path === '/' ? pathname === '/' : pathname.startsWith(item.path);
             return (
               <Link key={item.label} className={'hdr-nav-link' + (active ? ' active' : '')} href={item.path}>{item.label}</Link>
