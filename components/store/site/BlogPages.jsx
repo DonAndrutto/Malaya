@@ -98,7 +98,7 @@ export function BlogPost({ slug }) {
   }
 
   return (
-    <main className={'malaya-page' + (p.cover ? '' : ' malaya-page-header-pad')} data-screen-label={'Blog · ' + p.title}>
+    <main className={'malaya-page' + (p.cover ? ' malaya-page-blog-cover' : ' malaya-page-header-pad')} data-screen-label={'Blog · ' + p.title}>
       {p.cover && <SiteImg className="blog-hero" src={p.cover} alt={p.title} priority sizes="100vw" width={1920} height={720} />}
       <article className="blog-article">
         {p.date && <div className="blog-meta">{p.date}</div>}

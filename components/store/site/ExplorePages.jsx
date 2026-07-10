@@ -14,7 +14,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { subscribeTopic, topicProducts, relatedTopics, groupsOfTopic, primaryGroupOf, searchExplore } from '@/lib/explore';
 import { bgImage } from '@/lib/data/site-data';
-import { useSiteData } from './store';
+import { useSiteData, blurActiveElement } from './store';
 import { SiteImg, SiteProductCard } from './SiteShell';
 import { Reveal } from './reveal';
 import FloatingProduct from './FloatingProduct';
@@ -112,7 +112,10 @@ export function ExploreSearch() {
         placeholder="Search symbols, shelves and pieces — try “Palbeu” or “Endless Knot”…"
         onChange={(e) => setQ(e.target.value)} />
       {q.trim() && (
-        <div className="explore-search-results">
+        // Release the search field when a result is tapped: a focused input
+        // keeps the mobile keyboard (and iOS's focus zoom) alive across the
+        // client-side route change, so the product page could open zoomed in.
+        <div className="explore-search-results" onClick={blurActiveElement}>
           {!any && <p className="explore-empty">Nothing matches yet.</p>}
           {results.topics.length > 0 && (
             <div className="explore-search-group">

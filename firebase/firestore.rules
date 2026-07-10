@@ -51,6 +51,9 @@ service cloud.firestore {
     function optList(d, f, max) {
       return !(f in d) || d[f] == null || (d[f] is list && d[f].size() <= max);
     }
+    function optMap(d, f, max) {
+      return !(f in d) || d[f] == null || (d[f] is map && d[f].size() <= max);
+    }
 
     // Per-product override written by the admin Inventory desk (lib/overrides.js).
     // `unitCost` is deliberately NOT accepted here — cost data lives in
@@ -58,7 +61,7 @@ service cloud.firestore {
     function validOverride(d) {
       return d.keys().hasOnly([
           'name', 'sub', 'category', 'collection', 'material', 'stock',
-          'listPrice', 'retail', 'salePrice', 'qty',
+          'listPrice', 'retail', 'salePrice', 'qty', 'sizes',
           'salesCode', 'productionCode', 'story', 'images', 'img',
           'specials', 'tag', 'published', 'deleted', 'mergedInto',
           'topics', '_custom', '_updated',
@@ -73,7 +76,9 @@ service cloud.firestore {
         && optNum(d, 'qty') && optNum(d, '_updated')
         && optBool(d, 'published') && optBool(d, 'deleted') && optBool(d, '_custom')
         && optList(d, 'images', 24) && optList(d, 'specials', 10)
-        && optList(d, 'topics', 20);
+        && optList(d, 'topics', 20)
+        // Ring-size inventory: { "50": 1, "52": 2 } — EU size → units on hand.
+        && optMap(d, 'sizes', 40);
     }
 
     function validBlogPost(d, slug) {
