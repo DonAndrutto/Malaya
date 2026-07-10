@@ -259,7 +259,7 @@ function CartDropdown({ items }) {
 
 export function SiteHeader() {
   const pathname = usePathname() || '/';
-  const { settings, content } = useSiteData();
+  const { content } = useSiteData();
   const items = useCart();
   const count = items.reduce((s, i) => s + i.qty, 0);
   // The header floats over the page's banner/hero on every route as a
@@ -269,6 +269,10 @@ export function SiteHeader() {
   // Contact was merged into About: its details already live in the footer and
   // on other pages, so the primary nav carries a single About entry. Instagram
   // left the nav too — the footer's social row is its home.
+  //
+  // The brand logo no longer sits in the header corner — it lives centred in
+  // the home hero above the wordmark (HeroSlider). The header is one centred
+  // row: the five nav links and the cart icon, all on the same baseline.
   const NAV = [
     { label: content.nav.home, path: '/' },
     { label: content.nav.explore, path: '/explore' },
@@ -279,11 +283,6 @@ export function SiteHeader() {
   return (
     <header className={'site-header' + (overlay ? ' site-header--overlay' : '')}>
       <div className="site-container hdr-bar">
-        <Link href="/" className="hdr-logo">
-          {settings.logo
-            ? <SiteImg src={settings.logo} alt="Malaya Jewellery" width={240} height={74} sizes="240px" priority />
-            : <span className="hdr-logo-text">Malaya Jewellery</span>}
-        </Link>
         <nav className="hdr-nav">
           {NAV.map((item) => {
             const active = item.path === '/' ? pathname === '/' : pathname.startsWith(item.path);
@@ -291,16 +290,14 @@ export function SiteHeader() {
               <Link key={item.label} className={'hdr-nav-link' + (active ? ' active' : '')} href={item.path}>{item.label}</Link>
             );
           })}
-        </nav>
-        <div className="hdr-icons">
           <div className="hdr-icon-wrap">
-            <Link className="hdr-icon-btn" href="/order" title="My order">
+            <Link className="hdr-icon-btn" href="/order" title="My order" aria-label="My order">
               <BasketIcon />
               <span className="hdr-cart-count">{count}</span>
             </Link>
             <CartDropdown items={items} />
           </div>
-        </div>
+        </nav>
       </div>
     </header>
   );

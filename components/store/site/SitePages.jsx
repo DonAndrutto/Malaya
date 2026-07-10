@@ -11,7 +11,8 @@ import { useState, useEffect, useMemo, Fragment } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  CATEGORIES, fmtPrice, posFor, bgImage, resolveHeroSlides, isInStock, relatedProducts, whatsappUrlFor,
+  CATEGORIES, CATALOGUE_SECTIONS, CATEGORY_TO_SECTION,
+  fmtPrice, posFor, bgImage, resolveHeroSlides, isInStock, relatedProducts, whatsappUrlFor,
 } from '@/lib/data/site-data';
 import { materialFamilyOf } from '@/lib/data/materials';
 import { searchExplore } from '@/lib/explore-shared';
@@ -22,20 +23,8 @@ import { SiteImg, SiteProductCard, PageBanner, SocialLinks } from './SiteShell';
 import { Reveal, prefersReducedMotion } from './reveal';
 
 // The combined catalogue is shown as one long scroll, grouped by category in
-// this fixed order. Some categories are merged into a single section.
-const CATALOGUE_SECTIONS = [
-  { key: 'Pendants',    label: 'Pendants',            cats: ['Pendants'] },
-  { key: 'Rings',       label: 'Rings',               cats: ['Rings'] },
-  { key: 'Earrings',    label: 'Earrings',            cats: ['Earrings'] },
-  { key: 'Necklaces',   label: 'Necklaces',           cats: ['Necklaces', 'Chains'] },
-  { key: 'Bracelets',   label: 'Bracelets & Bangles', cats: ['Bracelets', 'Bangles'] },
-  { key: 'Brooches',    label: 'Brooches',            cats: ['Brooches'] },
-  { key: 'Accessories', label: 'Accessories',         cats: ['Accessories'] },
-  { key: 'Cufflinks',   label: 'Cufflinks',           cats: ['Cufflinks'] },
-];
-// Map any category → the section that hosts it, for /#cat-<key> deep links.
-const CATEGORY_TO_SECTION = {};
-CATALOGUE_SECTIONS.forEach((s) => s.cats.forEach((c) => { CATEGORY_TO_SECTION[c] = s.key; }));
+// the fixed CATALOGUE_SECTIONS order (lib/data/site-data.js — shared with the
+// hero slides and the admin's per-category hero config).
 const sectionAnchor = (cat) => `/#cat-${CATEGORY_TO_SECTION[cat] || cat}`;
 
 // Layered banner image (VISUAL-AUDIT PR D). A CSS-background banner downloads
@@ -57,15 +46,19 @@ function BannerImg({ src, settings, alt = '' }) {
 // div so the slow Ken Burns drift (CSS transform on the layer) never fights
 // the admin focal point (background-position on the same layer). The drift
 // pauses while a slide is hidden and resumes on return, so the outgoing frame
-// never snaps mid-crossfade. The text group is keyed by the slide index: each
-// change remounts it, replaying its entrance slightly behind the image fade —
-// text and image stop living and dying together. The first slide's image URL
-// is unchanged, so the layout's LCP preload keeps matching it.
+// never snaps mid-crossfade. The first slide's image URL is unchanged, so the
+// layout's LCP preload keeps matching it.
 //
-// Slides are collection-based (resolveHeroSlides): each one carries a
-// collection's hero image and its own CTA ("View <Collection>") deep-linking
-// to the catalogue filtered to that collection. Legacy plain slides (no
-// collection binding) fall back to the admin-editable content.hero.cta.
+// The overlay splits in two: the brand group (logo above the wordmark) mounts
+// once and fades in once — the maison signature holds still while the imagery
+// moves beneath it. Only the CTA is keyed by the slide index, remounting on
+// each change so its entrance plays slightly behind the image fade.
+//
+// Slides are category-based (resolveHeroSlides): each one carries a product
+// category's hero image and its own CTA ("View All Rings", "View All
+// Pendants"…) anchored to that category's section of the catalogue scroll.
+// Legacy plain slides (no category binding) fall back to the admin-editable
+// content.hero.cta.
 function HeroSlider({ slides, settings, content }) {
   const [idx, setIdx] = useState(0);
   const count = slides.length;
@@ -86,10 +79,18 @@ function HeroSlider({ slides, settings, content }) {
         </div>
       ))}
       <div className="hero-overlay">
-        <div key={active} className="hero-text">
-          <h2 className="hero-title">{content.hero.title}</h2>
-          <span className="hero-sub">{content.hero.subtitle}</span>
-          <a className="btn-malaya" href={current.href || '#catalogue'}>{current.cta || content.hero.cta}</a>
+        <div className="hero-text">
+          <div className="hero-brand">
+            {settings.logo && (
+              <SiteImg className="hero-logo" src={settings.logo} alt="" width={480} height={160}
+                sizes="240px" priority />
+            )}
+            <h2 className="hero-title">{content.hero.title}</h2>
+            {content.hero.subtitle && <span className="hero-sub">{content.hero.subtitle}</span>}
+          </div>
+          <div key={active} className="hero-cta-row">
+            <a className="hero-cta" href={current.href || '#catalogue'}>{current.cta || content.hero.cta}</a>
+          </div>
         </div>
       </div>
       {count > 1 && (
@@ -151,12 +152,12 @@ function CatalogueScroll() {
   const [sym, setSym] = useState(''); // '' | topic slug — symbol filter
   const [symOpen, setSymOpen] = useState(false);
 
-  // Collection deep links (/#coll-<name>) — how the hero's "View <Collection>"
-  // CTAs land here: apply the collection filter and bring the catalogue into
-  // view. Listens for hash changes so CTA clicks on the home page itself work.
-  // A fresh page load jumps instantly (the same treatment as the /#cat- deep
-  // links — smooth scrolling races hydration there); an in-page CTA click
-  // scrolls smoothly.
+  // Collection deep links (/#coll-<name>): apply the collection filter and
+  // bring the catalogue into view. The hero no longer emits these (its slides
+  // promote categories via /#cat-<key> anchors), but the handler stays so
+  // existing bookmarks and shared links keep working. Listens for hash
+  // changes so in-page clicks work too; a fresh page load jumps instantly
+  // (smooth scrolling races hydration), an in-page click scrolls smoothly.
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
     const applyHash = (smooth) => {

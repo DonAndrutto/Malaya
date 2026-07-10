@@ -19,7 +19,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { T, ghostBtn } from './theme';
-import { CATEGORIES, COLLECTIONS } from '@/lib/data/site-data';
+import { CATEGORIES, CATALOGUE_SECTIONS } from '@/lib/data/site-data';
 import { subscribeSiteSettings, saveSiteSettings } from '@/lib/site-settings';
 import { uploadImage } from '@/lib/upload';
 import { resizeImageFile } from '@/lib/image-resize';
@@ -131,8 +131,8 @@ function SlotPreview({ url, w, h, fit = 'cover', tone, pos, onPos }) {
 // ── Slot definitions ──────────────────────────────────────────────────────────
 // Each single-image slot, sized to its real on-site render (see the audit).
 const BRAND_SLOTS = [
-  { k: 'logo', label: 'Header logo', folder: 'site/logo', w: 480, h: 160, fit: 'contain', tone: 'brand', pw: 380,
-    hint: 'Shown in the site header on every page, sitting on the brown bar. A transparent PNG keeps its background clear; width can vary — height is scaled to fit.' },
+  { k: 'logo', label: 'Brand logo (home hero)', folder: 'site/logo', w: 480, h: 160, fit: 'contain', tone: 'brand', pw: 380,
+    hint: 'Shown centred in the homepage hero, above the brand wordmark. A transparent PNG keeps its background clear over the photography; width can vary — height is scaled to fit.' },
   { k: 'tashiBadge', label: 'Tashi Mannox badge', folder: 'site/tashi', w: 240, h: 240, fit: 'contain', tone: 'light', pw: 200,
     hint: 'Corner badge on collaboration pieces (catalogue cards & product pages). Transparent PNG recommended.' },
 ];
@@ -216,18 +216,19 @@ export default function SiteImages() {
     );
   };
 
-  // Collection-based homepage hero (settings.heroCollections): one optional
-  // slide per collection — { img, order, cta, enabled } — rendered by
-  // resolveHeroSlides(). While no collection is enabled with an image, the
-  // storefront falls back to the plain slideshow below.
-  const heroCollections = settings.heroCollections || {};
-  const heroCfgOf = (name) => heroCollections[name] || {};
-  const setHeroCfg = (name, patch) => apply({
-    heroCollections: { ...heroCollections, [name]: { ...heroCfgOf(name), ...patch } },
+  // Category-based homepage hero (settings.heroCategories): one optional
+  // slide per catalogue section — { img, order, cta, enabled } — rendered by
+  // resolveHeroSlides(). Each live slide promotes a product category ("View
+  // All Rings", "View All Pendants"…). While no category is enabled with an
+  // image, the storefront falls back to the plain slideshow below.
+  const heroCategories = settings.heroCategories || {};
+  const heroCfgOf = (key) => heroCategories[key] || {};
+  const setHeroCfg = (key, patch) => apply({
+    heroCategories: { ...heroCategories, [key]: { ...heroCfgOf(key), ...patch } },
   });
-  const liveHeroCount = COLLECTIONS.filter((c) => { const g = heroCfgOf(c); return g.enabled && g.img; }).length;
+  const liveHeroCount = CATALOGUE_SECTIONS.filter((s) => { const g = heroCfgOf(s.key); return g.enabled && g.img; }).length;
 
-  // Legacy hero slideshow (ordered list) — the fallback while no collection
+  // Legacy hero slideshow (ordered list) — the fallback while no category
   // slide is enabled above.
   const heroList = Array.isArray(settings.heroSlides) ? settings.heroSlides : [];
   const usingCustomHero = heroList.length > 0;
@@ -260,30 +261,31 @@ export default function SiteImages() {
       <h3 style={{ ...headStyle, marginTop: 24, color: T.muted }}>Brand</h3>
       {BRAND_SLOTS.map(single)}
 
-      <h3 style={{ ...headStyle, marginTop: 24, color: T.muted }}>Homepage hero — collection slides</h3>
+      <h3 style={{ ...headStyle, marginTop: 24, color: T.muted }}>Homepage hero — category slides</h3>
       <div style={card}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12, flexWrap: 'wrap', marginBottom: 4 }}>
           <p style={{ fontSize: 12, color: T.muted, margin: 0, maxWidth: 560 }}>
-            Each enabled collection becomes one slide of the homepage hero: its own image, running in the order set here, with a button that opens the catalogue filtered to that collection. The button text defaults to “View [collection name]” — override it per slide if needed.
+            Each enabled product category becomes one slide of the homepage hero: its own image, running in the order set here, with a link that jumps to that category&rsquo;s section of the catalogue. The link text defaults to “View All [category]” — override it per slide if needed.
           </p>
           <Spec w={HERO_SPEC.w} h={HERO_SPEC.h} />
         </div>
         <div style={{ fontSize: 11, color: liveHeroCount ? T.good : T.faint, margin: '6px 0 14px' }}>
           {liveHeroCount
-            ? `${liveHeroCount} collection slide${liveHeroCount === 1 ? '' : 's'} live on the homepage`
-            : 'No collection slide enabled yet — the plain slideshow below is shown instead.'}
+            ? `${liveHeroCount} category slide${liveHeroCount === 1 ? '' : 's'} live on the homepage`
+            : 'No category slide enabled yet — the plain slideshow below is shown instead.'}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 14 }}>
-          {COLLECTIONS.map((name, i) => {
-            const cfg = heroCfgOf(name);
+          {CATALOGUE_SECTIONS.map((section, i) => {
+            const { key, label } = section;
+            const cfg = heroCfgOf(key);
             const live = !!(cfg.enabled && cfg.img);
             return (
-              <div key={name} style={{ border: `1px solid ${live ? T.accent : T.line}`, padding: 12, background: T.card }}>
+              <div key={key} style={{ border: `1px solid ${live ? T.accent : T.line}`, padding: 12, background: T.card }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: T.ink }}>{name}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: T.ink }}>{label}</div>
                   <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11, color: T.ink, cursor: 'pointer', whiteSpace: 'nowrap' }}>
                     <input type="checkbox" checked={!!cfg.enabled}
-                      onChange={(e) => setHeroCfg(name, { enabled: e.target.checked })}
+                      onChange={(e) => setHeroCfg(key, { enabled: e.target.checked })}
                       style={{ accentColor: T.accent }} />
                     In hero
                   </label>
@@ -296,20 +298,20 @@ export default function SiteImages() {
                   </div>
                 )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginTop: 8 }}>
-                  <PickButton label={cfg.img ? 'Replace' : 'Upload'} busy={busy === `herocoll-${name}`}
-                    onFile={(f) => upload(`herocoll-${name}`, 'site/hero', f, (url) => setHeroCfg(name, { img: url }))} />
-                  {cfg.img && <button onClick={() => setHeroCfg(name, { img: null })} style={linkBtn}>Remove image</button>}
+                  <PickButton label={cfg.img ? 'Replace' : 'Upload'} busy={busy === `herocat-${key}`}
+                    onFile={(f) => upload(`herocat-${key}`, 'site/hero', f, (url) => setHeroCfg(key, { img: url }))} />
+                  {cfg.img && <button onClick={() => setHeroCfg(key, { img: null })} style={linkBtn}>Remove image</button>}
                 </div>
                 <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginTop: 10 }}>
                   <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11, color: T.muted, whiteSpace: 'nowrap' }}>
                     Order
                     <input type="number" min="1" value={cfg.order ?? ''} placeholder={String(i + 1)}
-                      onChange={(e) => setHeroCfg(name, { order: e.target.value === '' ? null : Number(e.target.value) })}
+                      onChange={(e) => setHeroCfg(key, { order: e.target.value === '' ? null : Number(e.target.value) })}
                       style={{ width: 58, padding: '7px 8px', fontSize: 12, background: T.card, border: `1px solid ${T.line2}`, color: T.ink }} />
                   </label>
-                  <input type="text" value={cfg.cta || ''} placeholder={`View ${name}`}
-                    onChange={(e) => setHeroCfg(name, { cta: e.target.value })}
-                    title="Hero button text (leave empty for the default)"
+                  <input type="text" value={cfg.cta || ''} placeholder={`View All ${label}`}
+                    onChange={(e) => setHeroCfg(key, { cta: e.target.value })}
+                    title="Hero link text (leave empty for the default)"
                     style={{ flex: 1, minWidth: 0, padding: '7px 9px', fontSize: 12, background: T.card, border: `1px solid ${T.line2}`, color: T.ink, boxSizing: 'border-box' }} />
                 </div>
               </div>
@@ -322,7 +324,7 @@ export default function SiteImages() {
       <div style={card}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 4 }}>
           <div style={{ fontSize: 12, color: T.muted }}>
-            Plain full-width slides, shown only while no collection slide is enabled above.
+            Plain full-width slides, shown only while no category slide is enabled above.
           </div>
           <Spec w={HERO_SPEC.w} h={HERO_SPEC.h} />
         </div>
