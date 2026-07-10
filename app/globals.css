@@ -29,7 +29,7 @@ button, input, select { font-family: inherit; }
   --header-fade: linear-gradient(to bottom, rgba(59,35,26,.96) 0%, rgba(59,35,26,.72) 48%, rgba(59,35,26,0) 100%);
   /* Approximate rendered height of the floating header — banners whose text
      sits near the top pad by this much so it clears the nav. */
-  --header-h: 98px;
+  --header-h: 82px;
 }
 .malaya-site img { max-width: 100%; }
 .malaya-site a { color: inherit; text-decoration: none; transition: color .18s; }
@@ -49,24 +49,23 @@ button, input, select { font-family: inherit; }
    dotted line). Centred by default; width follows its container otherwise. */
 .malaya-site .rule-dot { width: 64px; height: 0; border: 0; border-top: 2px solid var(--gold); margin: 14px auto 34px; }
 .malaya-site .site-header { background: var(--brown); position: relative; z-index: 40; }
-/* Single brand-brown bar: logo (left) · centred nav · cart (right). On the home
-   page it is superimposed over the hero slideshow with a brown→transparent
-   gradient so the imagery shows through below the navigation. */
+/* One centred row — the five nav links and the cart icon, all sharing a single
+   baseline (the brand logo lives in the home hero now, not the header corner).
+   The header is superimposed over the hero/banner on every page with a
+   brown→transparent gradient so the imagery shows through below the nav. */
 .malaya-site .site-header--overlay { position: absolute; top: 0; left: 0; right: 0; z-index: 45; background: var(--header-fade); }
 /* Pages that don't open with a full-bleed banner reserve the floating header's
    height so their first content clears the nav (e.g. a cover-less blog post). */
 .malaya-site .malaya-page-header-pad { padding-top: var(--header-h); }
-.malaya-site .hdr-bar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; grid-template-areas: "logo nav cart"; gap: 16px; padding-top: 12px; padding-bottom: 12px; }
-.malaya-site .hdr-logo { grid-area: logo; justify-self: start; }
-.malaya-site .hdr-logo img { height: 74px; width: auto; display: block; }
-.malaya-site .hdr-logo-text { display: block; color: #fff; font-family: 'Raleway', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; }
-.malaya-site .hdr-icons { grid-area: cart; justify-self: end; display: flex; align-items: center; gap: 22px; }
-.malaya-site .hdr-icon-wrap { position: relative; }
-.malaya-site .hdr-icon-btn { background: none; border: none; cursor: pointer; padding: 6px; display: inline-flex; align-items: center; gap: 6px; position: relative; color: #f3ece0; }
+.malaya-site .hdr-bar { display: flex; justify-content: center; align-items: center; padding-top: 14px; padding-bottom: 10px; }
+.malaya-site .hdr-icon-wrap { position: relative; display: inline-flex; }
+/* The cart button mirrors a nav link's box (same vertical padding, centred
+   content) so the icon sits optically level with the link text — never lower. */
+.malaya-site .hdr-icon-btn { background: none; border: none; cursor: pointer; padding: 9px 14px; margin-left: 6px; display: inline-flex; align-items: center; position: relative; color: #f3ece0; line-height: 1; }
 .malaya-site .hdr-icon-btn:hover { color: #fff; }
 .malaya-site .hdr-icon-btn img { height: 20px; width: auto; }
 .malaya-site .hdr-icon-svg { display: block; }
-.malaya-site .hdr-cart-count { position: absolute; top: -4px; right: -8px; background: var(--gold); color: #fff; font-size: 10px; min-width: 17px; height: 17px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; padding: 0 4px; }
+.malaya-site .hdr-cart-count { position: absolute; top: 1px; right: 3px; background: var(--gold); color: #fff; font-size: 10px; min-width: 17px; height: 17px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; padding: 0 4px; }
 .malaya-site .hdr-drop { position: absolute; right: 0; top: calc(100% + 8px); width: 260px; background: #fff; border: 1px solid var(--line); box-shadow: 0 14px 34px rgba(0,0,0,.12); padding: 18px; opacity: 0; visibility: hidden; transform: translateY(6px); transition: all .18s; z-index: 60; }
 .malaya-site .hdr-icon-wrap:hover .hdr-drop { opacity: 1; visibility: visible; transform: translateY(0); }
 .malaya-site .hdr-drop-head { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--brown); margin-bottom: 8px; }
@@ -84,7 +83,7 @@ button, input, select { font-family: inherit; }
 .malaya-site .hdr-cart-total { display: flex; justify-content: space-between; padding: 12px 0; font-size: 13px; }
 .malaya-site .hdr-cart-btns { display: flex; gap: 8px; }
 .malaya-site .hdr-cart-btns .btn-malaya { flex: 1; text-align: center; }
-.malaya-site .hdr-nav { grid-area: nav; display: flex; justify-content: center; flex-wrap: wrap; gap: 4px; }
+.malaya-site .hdr-nav { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px; }
 .malaya-site .hdr-nav-link { position: relative; display: inline-block; padding: 10px 16px; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: #f3ece0; font-weight: 600; }
 /* Discrete centre-out underline that grows on hover / for the active page. */
 .malaya-site .hdr-nav-link::after { content: ''; position: absolute; left: 50%; right: 50%; bottom: 4px; height: 1px; background: currentColor; transition: left .28s ease, right .28s ease; }
@@ -111,12 +110,33 @@ button, input, select { font-family: inherit; }
    stay protected while the top corners — where the header gradient already
    melts into the image — keep their highlights. */
 .malaya-site .hero-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: #fff; background: linear-gradient(to top, rgba(20,12,8,.34) 0%, rgba(20,12,8,.08) 30%, rgba(20,12,8,0) 55%), var(--scrim-center); padding: 0 20px; }
-/* Per-slide text entrance — remounted on each slide change (keyed by index),
-   it fades and rises 10px slightly behind the image crossfade. */
-.malaya-site .hero-text { display: flex; flex-direction: column; align-items: center; gap: 10px; animation: hero-text-in .8s ease .3s both; }
+/* The maison signature: logo above the wordmark, mounted once — it holds
+   still while the slides move beneath. One long, quiet fade-in on load; the
+   slight rise keeps it from feeling like a hard cut without reading as
+   "animated". The CTA row beneath is the only per-slide element (keyed by
+   index), replaying its entrance slightly behind each image crossfade. */
+.malaya-site .hero-text { display: flex; flex-direction: column; align-items: center; }
+.malaya-site .hero-brand { display: flex; flex-direction: column; align-items: center; gap: 10px; animation: hero-brand-in 1.9s cubic-bezier(.23, .6, .32, 1) .35s both; }
+@keyframes hero-brand-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+/* Proportional to the wordmark (clamped alongside .hero-title): tall enough
+   to lead the composition, never so large it competes with the photography.
+   Transparent PNG; the soft drop shadow lifts it off busy imagery the same
+   way the title's text-shadow does. */
+.malaya-site .hero-logo { height: clamp(58px, 8.5vw, 110px); width: auto; margin-bottom: clamp(6px, 1.4vw, 16px); filter: drop-shadow(0 2px 16px rgba(0, 0, 0, .35)); }
 @keyframes hero-text-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .malaya-site .hero-title { font-size: clamp(30px, 4.6vw, 64px); font-weight: 300; letter-spacing: .55em; text-transform: uppercase; text-indent: .55em; text-shadow: 0 2px 22px rgba(0,0,0,.45); }
-.malaya-site .hero-sub { font-size: 15px; letter-spacing: .8em; text-indent: .8em; text-transform: uppercase; margin-bottom: 22px; }
+.malaya-site .hero-sub { font-size: 15px; letter-spacing: .8em; text-indent: .8em; text-transform: uppercase; }
+/* Hero CTA — an editorial underlined line, not a commerce button. Hairline
+   rule at rest for quiet affordance; on hover/focus the full-width line draws
+   outward from the centre while the text brightens. Generous letter-spacing
+   and a soft text-shadow keep it legible over photography without a panel
+   blocking the image. */
+.malaya-site .hero-cta-row { margin-top: clamp(22px, 4.5vh, 44px); animation: hero-text-in .8s ease .45s both; }
+.malaya-site .hero-cta { display: inline-block; position: relative; font-family: 'Raleway', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: .32em; text-indent: .32em; text-transform: uppercase; color: rgba(255,255,255,.92); padding: 11px 12px 9px; border-bottom: 1px solid rgba(255,255,255,.45); text-shadow: 0 1px 12px rgba(0,0,0,.4); transition: color .3s ease, border-color .3s ease; }
+.malaya-site .hero-cta::after { content: ''; position: absolute; left: 50%; right: 50%; bottom: -1px; height: 1px; background: #fff; transition: left .4s ease, right .4s ease; }
+.malaya-site .hero-cta:hover { color: #fff; }
+.malaya-site .hero-cta:hover::after, .malaya-site .hero-cta:focus-visible::after { left: 0; right: 0; }
+.malaya-site .hero-cta:focus-visible { outline: 1px solid rgba(255,255,255,.75); outline-offset: 8px; }
 /* Quieter chrome: hairline chevrons that surface when the pointer enters the
    hero (always faintly present where hover doesn't exist), dashes for dots. */
 .malaya-site .hero-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255,255,255,.85); font-size: 46px; font-weight: 100; width: 56px; height: 72px; padding: 0; cursor: pointer; line-height: 1; opacity: 0; transition: opacity .35s ease, color .2s ease; }
@@ -731,16 +751,13 @@ button, input, select { font-family: inherit; }
   .malaya-site .blog-grid { grid-template-columns: repeat(2, 1fr); }
   .malaya-site .shop-layout, .malaya-site .pd-layout, .malaya-site .tashi-intro, .malaya-site .contact-layout { grid-template-columns: 1fr; }
   .malaya-site .ftr-cols { grid-template-columns: 1fr; gap: 30px; }
-  /* The two-row header (nav, then logo/cart) is taller, so banners need
-     more clearance below the floating nav. */
-  .malaya-site { --header-h: 152px; }
-  /* Header collapses to two rows with the nav row FIRST: the menu stays
-     pinned to the very top of the viewport exactly as on desktop (it must
-     never be displaced downward), with the logo + cart beneath it. */
-  .malaya-site .hdr-bar { grid-template-columns: 1fr auto; grid-template-areas: "nav nav" "logo cart"; row-gap: 4px; }
-  .malaya-site .hdr-logo img { height: 58px; }
+  /* The header stays one centred row on mobile (nav + cart, no corner logo);
+     tighter link padding keeps all six items on a single line. */
+  .malaya-site { --header-h: 72px; }
+  .malaya-site .hdr-bar { padding-top: 10px; padding-bottom: 8px; }
   .malaya-site .hdr-nav { gap: 0; }
   .malaya-site .hdr-nav-link { padding: 8px 11px; }
+  .malaya-site .hdr-icon-btn { padding: 8px 10px; margin-left: 2px; }
   /* Mobile hero owns the whole first viewport: only the floating nav, the
      imagery and the CTA are visible on load — the category bar and search
      wait below the fold. 100svh is the visible viewport with the mobile
@@ -751,6 +768,9 @@ button, input, select { font-family: inherit; }
 /* Phones: two aligned cards per row with no horizontal overflow. */
 @media (max-width: 600px) {
   .malaya-site .site-container { padding: 0 14px; }
+  /* Progressively tighter tracking keeps all five links + the cart on one
+     line down to small phones (the cart must never drop below the nav). */
+  .malaya-site .hdr-nav-link { padding: 8px 8px; letter-spacing: .12em; }
   .malaya-site .pgrid { gap: 20px 12px; }
   .malaya-site .cat-bar-inner { flex-wrap: wrap; gap: 10px; }
   .malaya-site .cat-current-wrap { width: 100%; }
@@ -771,9 +791,14 @@ button, input, select { font-family: inherit; }
      width); scroll it inside its own box instead of widening the page. */
   .malaya-site .order-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 }
+@media (max-width: 460px) {
+  .malaya-site .hdr-nav-link { padding: 7px 5px; letter-spacing: .06em; font-size: 11px; }
+  .malaya-site .hdr-icon-btn { padding: 7px 6px; margin-left: 0; }
+  .malaya-site .hdr-icon-svg { width: 18px; height: 18px; }
+  .malaya-site { --header-h: 68px; }
+}
 @media (max-width: 380px) {
   .malaya-site .site-container { padding: 0 10px; }
-  .malaya-site .hdr-nav-link { padding: 7px 8px; letter-spacing: .12em; }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
