@@ -162,6 +162,11 @@ button, input, select { font-family: inherit; }
 .malaya-site .cat-sym-wrap { position: relative; flex: none; }
 .malaya-site .cat-sym { display: inline-flex; align-items: center; gap: 8px; max-width: 210px; }
 .malaya-site .cat-sym span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Active-collection chip — appears only after a hero "View <Collection>" CTA
+   deep-links into the catalogue; tapping it clears the filter. */
+.malaya-site .cat-coll { display: inline-flex; align-items: center; gap: 10px; max-width: 230px; flex: none; }
+.malaya-site .cat-coll span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.malaya-site .cat-coll-x { font-size: 15px; line-height: 1; opacity: .85; }
 .malaya-site .cat-search-kind { display: inline-flex; align-items: center; justify-content: center; color: var(--gold); font-size: 16px; }
 .malaya-site .cat-search-wrap { position: relative; flex: 1; max-width: 360px; margin-left: auto; }
 .malaya-site .cat-search { width: 100%; background: rgba(255,255,255,.96); border: 1px solid transparent; padding: 10px 14px; font: inherit; font-size: 13px; outline: none; box-sizing: border-box; }
@@ -726,14 +731,22 @@ button, input, select { font-family: inherit; }
   .malaya-site .blog-grid { grid-template-columns: repeat(2, 1fr); }
   .malaya-site .shop-layout, .malaya-site .pd-layout, .malaya-site .tashi-intro, .malaya-site .contact-layout { grid-template-columns: 1fr; }
   .malaya-site .ftr-cols { grid-template-columns: 1fr; gap: 30px; }
-  /* The two-row header (logo/cart, then wrapped nav) is taller, so banners need
+  /* The two-row header (nav, then logo/cart) is taller, so banners need
      more clearance below the floating nav. */
   .malaya-site { --header-h: 152px; }
-  /* Header collapses to two rows: logo + cart, then the nav centred below. */
-  .malaya-site .hdr-bar { grid-template-columns: 1fr auto; grid-template-areas: "logo cart" "nav nav"; row-gap: 4px; }
+  /* Header collapses to two rows with the nav row FIRST: the menu stays
+     pinned to the very top of the viewport exactly as on desktop (it must
+     never be displaced downward), with the logo + cart beneath it. */
+  .malaya-site .hdr-bar { grid-template-columns: 1fr auto; grid-template-areas: "nav nav" "logo cart"; row-gap: 4px; }
   .malaya-site .hdr-logo img { height: 58px; }
   .malaya-site .hdr-nav { gap: 0; }
   .malaya-site .hdr-nav-link { padding: 8px 11px; }
+  /* Mobile hero owns the whole first viewport: only the floating nav, the
+     imagery and the CTA are visible on load — the category bar and search
+     wait below the fold. 100svh is the visible viewport with the mobile
+     browser UI shown (100vh fallback for older engines); the desktop
+     76vh/820px treatment above is untouched. */
+  .malaya-site .hero { height: 100vh; height: 100svh; min-height: 480px; max-height: none; }
 }
 /* Phones: two aligned cards per row with no horizontal overflow. */
 @media (max-width: 600px) {
@@ -753,6 +766,7 @@ button, input, select { font-family: inherit; }
   .malaya-site .cat-fam { flex: 1; text-align: center; }
   .malaya-site .cat-sym-wrap { width: 100%; }
   .malaya-site .cat-sym { width: 100%; max-width: none; justify-content: space-between; }
+  .malaya-site .cat-coll { width: 100%; max-width: none; justify-content: space-between; }
   /* The 6-column order table can exceed narrow screens (its min content
      width); scroll it inside its own box instead of widening the page. */
   .malaya-site .order-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }

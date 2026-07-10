@@ -35,7 +35,6 @@ const SECTIONS = [
     ['Blog', ['nav', 'blog'], 'text'],
     ['Contact', ['nav', 'contact'], 'text'],
     ['About', ['nav', 'about'], 'text'],
-    ['Instagram (nav label)', ['nav', 'instagram'], 'text'],
   ]],
   ['Home banner', [
     ['Order-now banner title', ['home', 'bannerTitle'], 'text'],

@@ -11,7 +11,7 @@ import { useState, useEffect, useMemo, Fragment } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  CATEGORIES, fmtPrice, posFor, bgImage, HOME_HERO, relatedProducts, whatsappUrlFor,
+  CATEGORIES, fmtPrice, posFor, bgImage, resolveHeroSlides, isInStock, relatedProducts, whatsappUrlFor,
 } from '@/lib/data/site-data';
 import { materialFamilyOf } from '@/lib/data/materials';
 import { searchExplore } from '@/lib/explore-shared';
@@ -61,45 +61,58 @@ function BannerImg({ src, settings, alt = '' }) {
 // change remounts it, replaying its entrance slightly behind the image fade —
 // text and image stop living and dying together. The first slide's image URL
 // is unchanged, so the layout's LCP preload keeps matching it.
+//
+// Slides are collection-based (resolveHeroSlides): each one carries a
+// collection's hero image and its own CTA ("View <Collection>") deep-linking
+// to the catalogue filtered to that collection. Legacy plain slides (no
+// collection binding) fall back to the admin-editable content.hero.cta.
 function HeroSlider({ slides, settings, content }) {
   const [idx, setIdx] = useState(0);
+  const count = slides.length;
   useEffect(() => {
-    if (slides.length < 2) return undefined;
-    const t = setInterval(() => setIdx((i) => (i + 1) % slides.length), 5200);
+    if (count < 2) return undefined;
+    const t = setInterval(() => setIdx((i) => (i + 1) % count), 6200);
     return () => clearInterval(t);
-  }, [slides.length]);
+  }, [count]);
+  // Guard against the slide list shrinking under a live settings update.
+  const active = count ? Math.min(idx, count - 1) : 0;
+  const current = slides[active] || {};
   return (
     <div className="hero">
-      {slides.map((src, i) => (
-        <div key={src + i} className={'hero-slide' + (i === idx ? ' on' : '')}>
+      {slides.map((s, i) => (
+        <div key={s.src + i} className={'hero-slide' + (i === active ? ' on' : '')}>
           <div className="hero-slide-img"
-            style={{ backgroundImage: bgImage(src), backgroundPosition: posFor(settings, src) }} />
+            style={{ backgroundImage: bgImage(s.src), backgroundPosition: posFor(settings, s.src) }} />
         </div>
       ))}
       <div className="hero-overlay">
-        <div key={idx} className="hero-text">
+        <div key={active} className="hero-text">
           <h2 className="hero-title">{content.hero.title}</h2>
           <span className="hero-sub">{content.hero.subtitle}</span>
-          <a className="btn-malaya" href="#catalogue">{content.hero.cta}</a>
+          <a className="btn-malaya" href={current.href || '#catalogue'}>{current.cta || content.hero.cta}</a>
         </div>
       </div>
-      <button className="hero-arrow hero-arrow-l" aria-label="Previous slide"
-        onClick={() => setIdx((idx + slides.length - 1) % slides.length)}>‹</button>
-      <button className="hero-arrow hero-arrow-r" aria-label="Next slide"
-        onClick={() => setIdx((idx + 1) % slides.length)}>›</button>
-      <div className="hero-dots">
-        {slides.map((_, i) => (
-          <button key={i} className={'hero-dot' + (i === idx ? ' on' : '')} onClick={() => setIdx(i)}
-            aria-label={'Slide ' + (i + 1)} />
-        ))}
-      </div>
+      {count > 1 && (
+        <>
+          <button className="hero-arrow hero-arrow-l" aria-label="Previous slide"
+            onClick={() => setIdx((active + count - 1) % count)}>‹</button>
+          <button className="hero-arrow hero-arrow-r" aria-label="Next slide"
+            onClick={() => setIdx((active + 1) % count)}>›</button>
+          <div className="hero-dots">
+            {slides.map((_, i) => (
+              <button key={i} className={'hero-dot' + (i === active ? ' on' : '')} onClick={() => setIdx(i)}
+                aria-label={'Slide ' + (i + 1)} />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
 
 export function HomePage() {
   const { settings, content } = useSiteData();
-  const slides = settings.heroSlides && settings.heroSlides.length ? settings.heroSlides : HOME_HERO;
+  const slides = resolveHeroSlides(settings);
   const homeBannerSrc = settings.homeBanner || null;
   return (
     <main className="malaya-page" data-screen-label="Home">
@@ -133,24 +146,66 @@ function CatalogueScroll() {
   const [q, setQ] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [fam, setFam] = useState(''); // '' | 'gold' | 'silver' — metal filter
+  const [inStock, setInStock] = useState(false); // availability filter (on-hand pieces only)
+  const [coll, setColl] = useState(''); // '' | collection name — set by hero CTA deep links
   const [sym, setSym] = useState(''); // '' | topic slug — symbol filter
   const [symOpen, setSymOpen] = useState(false);
 
+  // Collection deep links (/#coll-<name>) — how the hero's "View <Collection>"
+  // CTAs land here: apply the collection filter and bring the catalogue into
+  // view. Listens for hash changes so CTA clicks on the home page itself work.
+  // A fresh page load jumps instantly (the same treatment as the /#cat- deep
+  // links — smooth scrolling races hydration there); an in-page CTA click
+  // scrolls smoothly.
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    const applyHash = (smooth) => {
+      const h = window.location.hash || '';
+      if (!h.startsWith('#coll-')) return;
+      let name = '';
+      try { name = decodeURIComponent(h.slice('#coll-'.length)); } catch {}
+      if (!name) return;
+      setColl(name);
+      requestAnimationFrame(() => {
+        const el = document.getElementById('catalogue');
+        if (el) el.scrollIntoView({ behavior: smooth && !prefersReducedMotion() ? 'smooth' : 'auto', block: 'start' });
+      });
+    };
+    applyHash(false);
+    const onHashChange = () => applyHash(true);
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+  const clearColl = () => {
+    setColl('');
+    // Drop the hash so a refresh doesn't resurrect the cleared filter.
+    if (window.location.hash.startsWith('#coll-')) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  };
+
+  // Everything except the category grouping and the symbol filter — shared by
+  // the section builder and the symbol-option counter below.
+  const baseMatch = (p) => (!fam || materialFamilyOf(p.material) === fam)
+    && (!inStock || isInStock(p))
+    && (!coll || p.collection === coll);
+
   // Symbol filter options — data-driven: published topics linked to ≥1 product
-  // visible under the current metal filter. Link a topic in the admin and the
-  // option appears; remove the last link and it disappears. With no published
-  // linked topic the control itself never renders, so today's bar is unchanged.
+  // visible under the current metal/availability/collection filters. Link a
+  // topic in the admin and the option appears; remove the last link and it
+  // disappears. With no published linked topic the control itself never
+  // renders, so today's bar is unchanged.
   const symOptions = useMemo(() => {
     const counts = {};
     SITE_PRODUCTS.forEach((p) => {
-      if (fam && materialFamilyOf(p.material) !== fam) return;
+      if (!baseMatch(p)) return;
       (p.topics || []).forEach((s) => { counts[s] = (counts[s] || 0) + 1; });
     });
     return Object.keys(counts)
       .map((slug) => ({ slug, t: (exploreTopics || {})[slug], count: counts[slug] }))
       .filter((e) => e.t && e.t.title)
       .sort((a, b) => String(a.t.title).localeCompare(String(b.t.title)));
-  }, [SITE_PRODUCTS, exploreTopics, fam]);
+  }, [SITE_PRODUCTS, exploreTopics, fam, inStock, coll]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { if (sym && !symOptions.some((o) => o.slug === sym)) setSym(''); }, [symOptions, sym]);
 
   const sections = useMemo(() => (
@@ -158,11 +213,11 @@ function CatalogueScroll() {
       .map((s) => ({
         ...s,
         items: SITE_PRODUCTS.filter((p) => s.cats.includes(p.category)
-          && (!fam || materialFamilyOf(p.material) === fam)
+          && baseMatch(p)
           && (!sym || (p.topics || []).includes(sym))),
       }))
       .filter((s) => s.items.length > 0)
-  ), [SITE_PRODUCTS, fam, sym]);
+  ), [SITE_PRODUCTS, fam, inStock, coll, sym]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => { if (sections.length && !active) setActive(sections[0].key); }, [sections, active]);
 
@@ -239,12 +294,20 @@ function CatalogueScroll() {
               </>
             )}
           </div>
-          <div className="cat-fam-group" role="group" aria-label="Filter by metal">
+          <div className="cat-fam-group" role="group" aria-label="Filter by metal and availability">
             <button type="button" className={'cat-fam' + (fam === 'gold' ? ' on' : '')}
               aria-pressed={fam === 'gold'} onClick={() => setFam(fam === 'gold' ? '' : 'gold')}>Gold</button>
             <button type="button" className={'cat-fam' + (fam === 'silver' ? ' on' : '')}
               aria-pressed={fam === 'silver'} onClick={() => setFam(fam === 'silver' ? '' : 'silver')}>Silver</button>
+            <button type="button" className={'cat-fam' + (inStock ? ' on' : '')}
+              aria-pressed={inStock} onClick={() => setInStock(!inStock)}>In Stock</button>
           </div>
+          {coll && (
+            <button type="button" className="cat-fam cat-coll on" onClick={clearColl}
+              title="Clear collection filter" aria-label={'Clear collection filter: ' + coll}>
+              <span>{coll}</span><span className="cat-coll-x" aria-hidden="true">×</span>
+            </button>
+          )}
           {symOptions.length > 0 && (
             <div className="cat-sym-wrap">
               <button type="button" className={'cat-fam cat-sym' + (sym ? ' on' : '')}
@@ -319,7 +382,7 @@ function CatalogueScroll() {
 
       {sections.length === 0 && (
         <div className="site-container" style={{ padding: '64px 24px', textAlign: 'center', color: 'var(--muted)' }}>
-          No pieces in this metal yet.
+          No pieces match this selection yet.
         </div>
       )}
       {sections.map((s) => (

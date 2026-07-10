@@ -1,7 +1,8 @@
 // Explore landing — every published Group as a curated shelf of Topic cards.
 // Server-rendered from the topic-summary projection with ISR (never article
-// bodies — lib/server/explore.js); deliberately not live-subscribed, the same
-// ≤5-minute propagation generateMetadata already accepts on product pages.
+// bodies — lib/server/explore.js); deliberately not live-subscribed. Admin
+// publishes purge the tagged caches on demand (app/api/revalidate), so a
+// published topic appears here immediately; the TTL below is the safety net.
 
 import { fetchPublishedGroups, fetchPublishedTopicSummaries } from '@/lib/server/explore';
 import { groupList, topicsOfGroup } from '@/lib/explore-shared';
