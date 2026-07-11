@@ -1,5 +1,6 @@
 import { ProductPage } from '@/components/store/site/SitePages';
 import { getServerProduct, getServerContent } from '@/lib/server/site';
+import { CATEGORY_TO_SECTION } from '@/lib/data/site-data';
 import { jsonLd, productJsonLd, breadcrumbJsonLd } from '@/lib/seo';
 
 // Re-render (ISR) so admin edits reach metadata/JSON-LD within a few minutes.
@@ -45,7 +46,9 @@ export default async function Page({ params }) {
           dangerouslySetInnerHTML={{
             __html: jsonLd(breadcrumbJsonLd([
               { name: 'Home', path: '/' },
-              { name: p.category, path: `/#cat-${p.category}` },
+              // The on-page anchors are per *section* (Chains → Necklaces,
+              // Bangles → Bracelets) — same mapping as the visible breadcrumb.
+              { name: p.category, path: `/#cat-${CATEGORY_TO_SECTION[p.category] || p.category}` },
               { name: p.name, path: `/product/${p.id}` },
             ])),
           }}

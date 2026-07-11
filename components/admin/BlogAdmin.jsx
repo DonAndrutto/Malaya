@@ -40,6 +40,11 @@ export default function BlogAdmin() {
   const bodyRef = useRef(null);
   const coverInput = useRef(null);
   const imgInput = useRef(null);
+  // Latest draft for async callbacks: an image upload resolves seconds after
+  // the render that started it, and persisting the render-time draft would
+  // silently revert everything typed while the upload was in flight.
+  const draftRef = useRef(null);
+  draftRef.current = draft;
 
   useEffect(() => subscribeBlog(setPosts), []);
   useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), 1800); return () => clearTimeout(t); }, [toast]);
@@ -98,7 +103,7 @@ export default function BlogAdmin() {
 
   const insertAtCursor = (snippet) => {
     const el = bodyRef.current;
-    const cur = draft.body || '';
+    const cur = (draftRef.current || draft).body || '';
     const start = el ? el.selectionStart : cur.length;
     const end = el ? el.selectionEnd : cur.length;
     const nextBody = cur.slice(0, start) + snippet + cur.slice(end);
@@ -201,7 +206,7 @@ export default function BlogAdmin() {
               {d.cover && <button onClick={() => persist({ ...d, cover: '' })} style={linkBtn}>Remove</button>}
             </div>
             <input ref={coverInput} type="file" accept="image/*" style={{ display: 'none' }}
-              onChange={(e) => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) uploadTo('cover', f, (url) => persist({ ...d, cover: url })); }} />
+              onChange={(e) => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) uploadTo('cover', f, (url) => persist({ ...(draftRef.current || d), cover: url })); }} />
           </div>
         </div>
       </div>

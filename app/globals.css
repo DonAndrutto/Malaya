@@ -400,6 +400,11 @@ button, input, select { font-family: inherit; }
    visitors are covered by the <noscript> guard in the store layout. */
 .malaya-site .reveal { opacity: 0; }
 .malaya-site .reveal-in { animation: lux-fade-up .6s ease both; }
+/* Above-the-fold banner text plays the same entrance on load, without JS:
+   unlike `.reveal` it is never held at opacity 0 waiting for hydration, so
+   the page's H1 shows even before the bundle runs (reduced-motion collapses
+   it to its final frame like every other animation). */
+.malaya-site .banner-reveal { animation: lux-fade-up .6s ease both; }
 @media (max-width: 600px) {
   .malaya-site .pd-order-banner { padding: 44px 0; }
   .malaya-site .pd-explore-title { font-size: 22px; }

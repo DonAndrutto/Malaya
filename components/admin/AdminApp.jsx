@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { T, ghostBtn } from './theme';
 import { saveOverrides, subscribeOverrides } from '@/lib/overrides';
 import { FIREBASE_ENABLED } from '@/lib/firebase';
-import { signIn, signOutUser, subscribeAuth, friendlyAuthError } from '@/lib/auth';
+import { signIn, signOutUser, subscribeAuth, checkIsAdmin, friendlyAuthError } from '@/lib/auth';
 import Inventory from './Inventory';
 import Sales from './Sales';
 import SiteContent from './SiteContent';
@@ -85,6 +85,10 @@ function Login({ onDemoLogin }) {
 function Console({ user, onLogout }) {
   const [tab, setTab] = useState('inventory');
   const [overrides, setOverrides] = useState({});
+  // Latest override map outside React state, so update() can compute the next
+  // map synchronously (several updates in one tick compound correctly) and
+  // return the save promise to callers that need to sequence on it.
+  const overridesRef = useRef({});
 
   useEffect(() => {
     // A /admin?edit=<id> deep-link (e.g. "Edit in admin" from a product page)
@@ -101,14 +105,18 @@ function Console({ user, onLogout }) {
     // Hydrate from Firestore (with the localStorage cache for an instant paint),
     // and stay in sync with edits made on other devices. includePrivate merges
     // the admin-only inventoryPrivate fields (unit costs) back in.
-    return subscribeOverrides(setOverrides, { includePrivate: true });
+    return subscribeOverrides((m) => { overridesRef.current = m; setOverrides(m); }, { includePrivate: true });
   }, []);
 
-  const update = (updater) => setOverrides((prev) => {
-    const next = typeof updater === 'function' ? updater(prev) : updater;
-    saveOverrides(next);
-    return next;
-  });
+  // Returns saveOverrides' promise (true once the cloud mirror confirmed,
+  // false if a write was rejected) so the Sales desk can sequence its order
+  // write on the inventory write. Every other caller ignores the result.
+  const update = (updater) => {
+    const next = typeof updater === 'function' ? updater(overridesRef.current) : updater;
+    overridesRef.current = next;
+    setOverrides(next);
+    return saveOverrides(next);
+  };
 
   useEffect(() => {
     try { localStorage.setItem('malaya:admin:tab', tab); } catch {}
@@ -147,6 +155,11 @@ function Console({ user, onLogout }) {
 export default function AdminApp() {
   // undefined = still resolving auth state, null = signed out, object = signed in.
   const [user, setUser] = useState(undefined);
+  // undefined = still checking, true/false = verified. The security rules are
+  // the real boundary — this gate exists so a merely *signed-in* account (with
+  // Email/Password sign-up enabled anyone can self-register against the public
+  // web key) sees "no admin access" instead of a console of denied reads.
+  const [isAdmin, setIsAdmin] = useState(undefined);
 
   useEffect(() => {
     if (!FIREBASE_ENABLED) {
@@ -159,8 +172,17 @@ export default function AdminApp() {
     return subscribeAuth(setUser);
   }, []);
 
+  useEffect(() => {
+    if (!user || user.demo) { setIsAdmin(undefined); return undefined; }
+    let alive = true;
+    setIsAdmin(undefined);
+    checkIsAdmin(user).then((ok) => { if (alive) setIsAdmin(ok); });
+    return () => { alive = false; };
+  }, [user]);
+
+  const centered = { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: T.bg, color: T.muted, fontFamily: T.sans, fontSize: 12, letterSpacing: '0.18em', textTransform: 'uppercase' };
   if (user === undefined) {
-    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: T.bg, color: T.muted, fontFamily: T.sans, fontSize: 12, letterSpacing: '0.18em', textTransform: 'uppercase' }}>Loading…</div>;
+    return <div style={centered}>Loading…</div>;
   }
   if (!user) {
     return <Login onDemoLogin={(u) => { localStorage.setItem(SESSION_KEY, u); setUser({ email: u, demo: true }); }} />;
@@ -169,5 +191,21 @@ export default function AdminApp() {
     if (FIREBASE_ENABLED) { await signOutUser(); }
     else { localStorage.removeItem(SESSION_KEY); setUser(null); }
   };
+  if (!user.demo && isAdmin === undefined) {
+    return <div style={centered}>Checking access…</div>;
+  }
+  if (!user.demo && !isAdmin) {
+    return (
+      <div style={{ ...centered, flexDirection: 'column', gap: 18, textTransform: 'none', letterSpacing: 0 }}>
+        <div style={{ fontFamily: T.serif, fontSize: 22, color: T.ink }}>No admin access</div>
+        <div style={{ fontSize: 13, maxWidth: 420, textAlign: 'center', lineHeight: 1.6 }}>
+          <strong>{user.email}</strong> is signed in but has not been granted studio-admin
+          rights, so the console (and all of its data) is unavailable. An administrator can
+          grant access with <code>node scripts/grant-admin.mjs {user.email}</code>.
+        </div>
+        <button onClick={onLogout} style={ghostBtn()}>Sign out</button>
+      </div>
+    );
+  }
   return <Console user={user.email || 'studio'} onLogout={onLogout} />;
 }
