@@ -19,7 +19,7 @@
 // including per-size ring stock.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { T, ghostBtn } from './theme';
 import { MATERIALS } from '@/lib/data/products';
 import { buildSiteData, SITE_INFO } from '@/lib/data/site-data';
@@ -29,7 +29,7 @@ import {
   PAYMENT_METHODS, PAYMENT_STATUSES, isPurchaseStatus,
   blankOrder, blankOrderItem, blankClient, duplicateOrder,
   lineTotal, orderTotals, fmtMoney, fmtLifetime, filterOrders, ORDER_SORTS,
-  clientStats, shouldDeductInventory, inventoryDeductionPatches,
+  clientStats, shouldDeductInventory, planInventoryDeduction, inventoryRestockPatches,
   ordersCsv, invoiceHtml, isoDate,
 } from '@/lib/data/sales';
 import {
@@ -94,10 +94,33 @@ export default function Sales({ overrides, setOverrides }) {
     } finally { setCreating(false); }
   };
 
+  // Apply inventory patches to the override layer and wait for the cloud
+  // mirror before the caller writes the order doc, so order state and stock
+  // can't silently diverge: an explicit rejection (e.g. security rules) rolls
+  // the local copy back and aborts, while a slow / offline mirror proceeds
+  // optimistically after a short grace — Firestore queues the write, matching
+  // the desk's latency-compensated behaviour everywhere else.
+  const applyInventoryPatches = async (patches) => {
+    let before;
+    const saved = setOverrides((prev) => {
+      before = prev;
+      const n = { ...prev };
+      patches.forEach(({ id: pid, patch: pp }) => { n[pid] = { ...(n[pid] || {}), ...pp }; });
+      return n;
+    });
+    const ok = await Promise.race([
+      Promise.resolve(saved).then((r) => r !== false),
+      new Promise((res) => { setTimeout(() => res(true), 4000); }),
+    ]);
+    if (!ok && before) setOverrides(() => before);
+    return ok;
+  };
+
   // Central order patch: status changes append to the timeline, sync the
-  // obvious payment/shipping fields, and fire the (configurable) one-shot
-  // inventory deduction.
-  const commitOrder = (id, patch) => {
+  // obvious payment/shipping fields, fire the (configurable) one-shot
+  // inventory deduction, and restock when a deducted order leaves the
+  // pipeline (cancelled / refunded).
+  const commitOrder = async (id, patch) => {
     const cur = data.orders[id];
     if (!cur) return;
     const now = Date.now();
@@ -112,17 +135,39 @@ export default function Sales({ overrides, setOverrides }) {
         next.shipping = { ...next.shipping, date: today() };
       }
       if (shouldDeductInventory(cur, patch.status, settings.deductOn)) {
-        const patches = inventoryDeductionPatches(next, SITE.SITE_BY_ID);
+        const { patches, movements } = planInventoryDeduction(next, SITE.SITE_BY_ID);
         if (patches.length) {
-          setOverrides((prev) => {
-            const n = { ...prev };
-            patches.forEach(({ id: pid, patch: pp }) => { n[pid] = { ...(n[pid] || {}), ...pp }; });
-            return n;
-          });
+          if (!(await applyInventoryPatches(patches))) {
+            flash('⚠ Inventory update was rejected — status not changed');
+            return;
+          }
+          // Only a real deduction consumes the one-shot flag: an order whose
+          // lines are still free-text / untracked keeps it unset, so items
+          // added later still deduct on a future status change. The recorded
+          // movements are what a cancellation restores (exactly what was
+          // taken, after the floor at 0 — not what was ordered).
+          next.inventoryDeducted = true;
+          next.inventoryDeductions = movements;
           next.timeline = [...next.timeline, { at: now, type: 'inventory', note: patches.map((p) => p.label).join(' · ') }];
           flash(`Inventory deducted — ${patches.map((p) => p.label).join(', ')}`);
         }
-        next.inventoryDeducted = true;
+      }
+      if ((patch.status === 'cancelled' || patch.status === 'refunded') && cur.inventoryDeducted) {
+        const patches = inventoryRestockPatches(cur, SITE.SITE_BY_ID);
+        if (patches.length) {
+          if (!(await applyInventoryPatches(patches))) {
+            flash('⚠ Inventory restock was rejected — status not changed');
+            return;
+          }
+          next.inventoryDeducted = false;
+          next.inventoryDeductions = [];
+          next.timeline = [...next.timeline, { at: now, type: 'inventory', note: `Restocked — ${patches.map((p) => p.label).join(' · ')}` }];
+          flash(`Inventory restocked — ${patches.map((p) => p.label).join(', ')}`);
+        }
+        // No recorded movements (order deducted before they existed, or its
+        // products no longer resolve): nothing can be restored automatically —
+        // the flag stays set so re-activating can't deduct a second time, and
+        // the drawer keeps its manual-adjustment note.
       }
     }
     saveOrder(next);
@@ -136,11 +181,25 @@ export default function Sales({ overrides, setOverrides }) {
     flash(`Duplicated as ${number}`);
   };
 
-  const removeOrder = (o) => {
+  const removeOrder = async (o) => {
     if (!confirm(`Delete order ${o.number || o.id}? This cannot be undone.`)) return;
+    let note = '';
+    if (o.inventoryDeducted) {
+      // Put the deducted units back before the record (and with it the only
+      // trace of the deduction) disappears. Without recorded movements there
+      // is nothing to restore — same manual-adjustment case as the drawer note.
+      const patches = inventoryRestockPatches(o, SITE.SITE_BY_ID);
+      if (patches.length) {
+        if (!(await applyInventoryPatches(patches))) {
+          flash('⚠ Inventory restock was rejected — order not deleted');
+          return;
+        }
+        note = ` — restocked ${patches.map((p) => p.label).join(', ')}`;
+      }
+    }
     deleteOrder(o.id);
     if (editId === o.id) setEditId(null);
-    flash('Order deleted');
+    flash(`Order deleted${note}`);
   };
 
   const printInvoice = (o) => {
@@ -212,14 +271,16 @@ export default function Sales({ overrides, setOverrides }) {
   };
 
   // Filter-by-customer options: every client, plus distinct unlinked customer
-  // names typed straight into orders.
+  // names typed straight into orders. Values are namespaced (client:<id> /
+  // name:<name>) so a saved client and an unlinked customer who happen to
+  // share a name stay two separate, correctly-filtering entries.
   const customerOptions = useMemo(() => {
     const opts = new Map();
-    clients.forEach((c) => opts.set(c.id, c.name || c.email || c.id));
+    clients.forEach((c) => opts.set(`client:${c.id}`, c.name || c.email || c.id));
     orders.forEach((o) => {
       const c = o.customer || {};
       const name = (c.name || '').trim();
-      if (!c.clientId && name && !opts.has(name)) opts.set(name, name);
+      if (!c.clientId && name && !opts.has(`name:${name}`)) opts.set(`name:${name}`, name);
     });
     return [...opts.entries()];
   }, [clients, orders]);
@@ -570,7 +631,7 @@ function OrderDrawer({ o, clients, data, products, commit, onSaveClient, onDelet
           </div>
           {o.inventoryDeducted && (rank === -1) && (
             <div style={{ fontSize: 11.5, color: T.danger, background: 'rgba(164,80,43,0.07)', border: `1px solid ${T.line}`, padding: '9px 12px', marginBottom: 14, lineHeight: 1.5 }}>
-              Inventory was already deducted for this order — if the pieces come back into stock, adjust their units in the Inventory desk.
+              Inventory was deducted for this order and could not be restocked automatically (no recorded movements) — if the pieces come back into stock, adjust their units in the Inventory desk.
             </div>
           )}
 
@@ -698,13 +759,24 @@ function Section({ title, aside, hint, children }) {
 // ─────────────────────────────────────────────────── Items editor ────
 function ItemsEditor({ items, currency, products, onCommit }) {
   const list = items || [];
+  // Stable per-row React keys, parallel to the list and editor-local (nothing
+  // extra is written to the order): keying by array index would re-attach a
+  // row's in-progress typeahead state to the wrong line when a middle row is
+  // removed.
+  const rowKeys = useRef([]);
+  const nextKey = useRef(0);
+  while (rowKeys.current.length < list.length) rowKeys.current.push(`row${nextKey.current++}`);
+  if (rowKeys.current.length > list.length) rowKeys.current.length = list.length;
   const setItem = (i, patch) => onCommit(list.map((it, j) => (j === i ? { ...it, ...patch } : it)));
-  const removeItem = (i) => onCommit(list.filter((_, j) => j !== i));
+  const removeItem = (i) => {
+    rowKeys.current.splice(i, 1);
+    onCommit(list.filter((_, j) => j !== i));
+  };
   const addItem = () => onCommit([...list, blankOrderItem()]);
   return (
     <div>
       {list.map((it, i) => (
-        <ItemLine key={i} it={it} currency={currency} products={products}
+        <ItemLine key={rowKeys.current[i]} it={it} currency={currency} products={products}
           onChange={(patch) => setItem(i, patch)} onRemove={() => removeItem(i)} />
       ))}
       {list.length === 0 && <div style={{ fontSize: 12.5, color: T.faint, padding: '4px 0 10px' }}>No items yet — add a product below.</div>}

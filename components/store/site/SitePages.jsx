@@ -19,7 +19,7 @@ import { dupKey } from '@/lib/data/inventory';
 import { RING_SIZES, isRingCategory, ringSizeQty } from '@/lib/data/ring-sizes';
 import { searchExplore } from '@/lib/explore-shared';
 import {
-  useCart, addToCart, setCartQty, removeFromCart, cartTotal, showToast, useSiteData, blurActiveElement,
+  useCart, addToCart, setCartQty, removeFromCart, cartTotal, cartLineKey, showToast, useSiteData, blurActiveElement,
 } from './store';
 import { SiteImg, SiteProductCard, PageBanner, SocialLinks } from './SiteShell';
 import { Reveal, prefersReducedMotion } from './reveal';
@@ -430,10 +430,15 @@ export function ProductPage({ id }) {
   const p = SITE_BY_ID[id];
   const [qty, setQty] = useState(1);
   const [active, setActive] = useState(0);
-  const [size, setSize] = useState(null); // selected EU ring size — availability display only
+  const [size, setSize] = useState(null); // selected EU ring size — shown for availability and carried into the cart
+  // Page URL for the WhatsApp enquiry, set after hydration: reading
+  // window.location during render would make the server- and client-rendered
+  // href differ (a React hydration mismatch), since the server has no window.
+  const [pageUrl, setPageUrl] = useState(null);
   const galleryRef = useRef(null);
   useEffect(() => {
     setQty(1); setActive(0); setSize(null);
+    setPageUrl(window.location.href);
     if (galleryRef.current) galleryRef.current.scrollTo({ left: 0 });
   }, [id]);
   // If this id was merged into a master, canonicalise the URL to the master.
@@ -504,7 +509,7 @@ export function ProductPage({ id }) {
     p.salesCode ? `SKU: ${p.salesCode}` : null,
     p.material ? `Metal: ${WA_METAL_LABELS[p.material] || p.material}` : null,
     isRing && size != null ? `Size: ${size}` : null,
-    typeof window !== 'undefined' ? window.location.href : null,
+    pageUrl,
   ].filter(Boolean).join('\n');
   const waUrl = whatsappUrlFor(content.contact.whatsapp, waText);
 
@@ -622,7 +627,7 @@ export function ProductPage({ id }) {
               )}
               <p className="pd-size-note">
                 Standard women&rsquo;s sizes: 50–57 · Standard men&rsquo;s sizes: 57–68 ·{' '}
-                <a href="https://www.malayajewellery.com/blog/ring-sizing" target="_blank" rel="noreferrer">Ring Size Guide</a>
+                <Link href="/blog/ring-sizing">Ring Size Guide</Link>
               </p>
             </div>
           )}
@@ -667,7 +672,7 @@ export function ProductPage({ id }) {
                 <button type="button" aria-label="Increase quantity" onClick={() => setQty(qty + 1)}>+</button>
               </div>
               <button className="btn-malaya" disabled={sold}
-                onClick={() => addToCart(p.id, qty)}>{sold ? 'Sold Out' : 'Add to Order'}</button>
+                onClick={() => addToCart(p.id, qty, isRing ? size : null)}>{sold ? 'Sold Out' : 'Add to Order'}</button>
             </div>
           </Reveal>
         </div>
@@ -880,6 +885,19 @@ export function OrderPage() {
   const { SITE_BY_ID, content } = useSiteData();
   const items = useCart();
   const total = cartTotal(items, SITE_BY_ID);
+  // The checkout hand-off IS the WhatsApp message: it must carry the actual
+  // order — every line with its reference and chosen ring size, plus the
+  // total — so the studio can confirm without asking everything again.
+  const waText = [
+    "Hello! I'd like to place this order:",
+    ...items.map((i) => {
+      const p = SITE_BY_ID[i.id];
+      if (!p) return null;
+      return `• ${p.name}${p.salesCode ? ` (${p.salesCode})` : ''}${i.size != null ? ` — size ${i.size} EU` : ''} × ${i.qty}`;
+    }).filter(Boolean),
+    `Total: ${fmtPrice(total)}`,
+  ].join('\n');
+  const waHref = whatsappUrlFor(content.contact.whatsapp, waText);
   return (
     <main className="malaya-page" data-screen-label="My Order">
       <PageBanner title={content.banners.order.title} subtitle={content.banners.order.subtitle} />
@@ -898,26 +916,42 @@ export function OrderPage() {
               <tbody>
                 {items.map((i) => {
                   const p = SITE_BY_ID[i.id];
-                  if (!p) return null;
+                  if (!p) {
+                    // The piece was removed from the catalogue after it was
+                    // added: keep the line visible with a working remove
+                    // button, or the header count never matches the table.
+                    return (
+                      <tr key={cartLineKey(i)}>
+                        <td className="order-thumb" />
+                        <td colSpan={3}>
+                          <span className="order-name">Item no longer available</span>
+                          <span className="order-sub">This piece has left the catalogue — please remove it.</span>
+                        </td>
+                        <td />
+                        <td><button className="hdr-cart-x" onClick={() => removeFromCart(i.id, i.size)} title="Remove">×</button></td>
+                      </tr>
+                    );
+                  }
                   return (
-                    <tr key={i.id}>
+                    <tr key={cartLineKey(i)}>
                       <td className="order-thumb">
                         <Link href={`/product/${p.id}`}><SiteImg src={p.img} alt={p.name} width={148} height={148} sizes="74px" /></Link>
                       </td>
                       <td>
                         <Link className="order-name" href={`/product/${p.id}`}>{p.name}</Link>
                         <span className="order-sub">{p.sub}</span>
+                        {i.size != null && <span className="order-sub">Ring size {i.size} · EU</span>}
                       </td>
                       <td>{fmtPrice(p.price)}</td>
                       <td>
                         <div className="pd-qty pd-qty-sm">
-                          <button onClick={() => setCartQty(i.id, i.qty - 1)}>−</button>
+                          <button onClick={() => setCartQty(i.id, i.qty - 1, i.size)}>−</button>
                           <span>{i.qty}</span>
-                          <button onClick={() => setCartQty(i.id, i.qty + 1)}>+</button>
+                          <button onClick={() => setCartQty(i.id, i.qty + 1, i.size)}>+</button>
                         </div>
                       </td>
                       <td><strong>{fmtPrice(p.price * i.qty)}</strong></td>
-                      <td><button className="hdr-cart-x" onClick={() => removeFromCart(i.id)} title="Remove">×</button></td>
+                      <td><button className="hdr-cart-x" onClick={() => removeFromCart(i.id, i.size)} title="Remove">×</button></td>
                     </tr>
                   );
                 })}
@@ -925,9 +959,9 @@ export function OrderPage() {
             </table>
             <aside className="order-summary">
               <h4 className="shop-filter-head">Order Summary</h4>
-              <div className="order-total"><span>TOTAL</span><strong>{total.toLocaleString('en-US')} USD</strong></div>
+              <div className="order-total"><span>TOTAL</span><strong>{fmtPrice(total)}</strong></div>
               <a className="btn-malaya btn-malaya-gold" style={{ display: 'block', textAlign: 'center' }}
-                href={content.contact.whatsappUrl} target="_blank" rel="noreferrer">Checkout via WhatsApp</a>
+                href={waHref} target="_blank" rel="noreferrer">Checkout via WhatsApp</a>
               <p className="order-note">We confirm availability, shipping and payment over WhatsApp or email.</p>
             </aside>
           </div>

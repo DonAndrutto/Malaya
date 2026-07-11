@@ -11,7 +11,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { fmtPrice, posFor, bgImage } from '@/lib/data/site-data';
-import { useCart, removeFromCart, cartTotal, useSiteData, useAddedNotice } from './store';
+import { useCart, removeFromCart, cartTotal, cartLineKey, useSiteData, useAddedNotice } from './store';
 import { Reveal } from './reveal';
 
 // ── Inline icons (crisp at any size, no extra image assets) ──────────────────
@@ -188,11 +188,15 @@ export function PageBanner({ title, subtitle, img, category, variant, bannerKey,
   return (
     <div className={'page-banner' + (chapter ? ' page-banner-chapter' : '') + (plain ? ' page-banner-plain' : '')}
       style={plain ? undefined : { backgroundImage: bgImage(bg), backgroundPosition: posFor(settings, bg) }}>
-      <Reveal className="site-container">
+      {/* The banner sits above the fold on every page, so its entrance is a
+          plain CSS load animation (banner-reveal) rather than the JS reveal-
+          on-scroll: the page's primary heading must never wait, invisible,
+          for hydration and an IntersectionObserver callback. */}
+      <div className="site-container banner-reveal">
         {chapter && subtitle && <span className="page-banner-kicker">{subtitle}</span>}
         <strong className="page-banner-title">{title}</strong>
         {!chapter && !plain && subtitle && <span className="page-banner-sub">{subtitle}</span>}
-      </Reveal>
+      </div>
     </div>
   );
 }
@@ -237,18 +241,30 @@ function CartDropdown({ items }) {
         <div className="hdr-cart-list">
           {items.map((i) => {
             const p = SITE_BY_ID[i.id];
-            if (!p) return null;
+            if (!p) {
+              // Removed from the catalogue since it was added: keep the line
+              // removable, or the basket count never matches the list.
+              return (
+                <div key={cartLineKey(i)} className="hdr-cart-row">
+                  <span className="hdr-cart-name">Item no longer available<em>please remove</em></span>
+                  <button className="hdr-cart-x" onClick={() => removeFromCart(i.id, i.size)} title="Remove">×</button>
+                </div>
+              );
+            }
             return (
-              <div key={i.id} className="hdr-cart-row">
+              <div key={cartLineKey(i)} className="hdr-cart-row">
                 <SiteImg src={p.img} alt={p.name} width={88} height={88} sizes="44px" />
-                <span className="hdr-cart-name">{p.name}<em>{i.qty} × {fmtPrice(p.price)}</em></span>
-                <button className="hdr-cart-x" onClick={() => removeFromCart(i.id)} title="Remove">×</button>
+                <span className="hdr-cart-name">
+                  {p.name}{i.size != null ? ` · size ${i.size}` : ''}
+                  <em>{i.qty} × {fmtPrice(p.price)}</em>
+                </span>
+                <button className="hdr-cart-x" onClick={() => removeFromCart(i.id, i.size)} title="Remove">×</button>
               </div>
             );
           })}
         </div>
       )}
-      <div className="hdr-cart-total"><strong>TOTAL</strong><span>{total.toLocaleString('en-US')} USD</span></div>
+      <div className="hdr-cart-total"><strong>TOTAL</strong><span>{fmtPrice(total)}</span></div>
       <div className="hdr-cart-btns">
         <Link href="/order" className="btn-malaya btn-malaya-sm">View Order</Link>
         <Link href="/order" className="btn-malaya btn-malaya-sm btn-malaya-gold">Checkout</Link>

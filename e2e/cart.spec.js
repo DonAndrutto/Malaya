@@ -56,13 +56,42 @@ test.describe('Cart', () => {
     await expect(page.locator('.hdr-cart-count').first()).toHaveText('0');
   });
 
-  test('checkout hands off to WhatsApp', async ({ page }) => {
-    await openBuyableProduct(page);
+  test('checkout hands off to WhatsApp with the actual order in the message', async ({ page }) => {
+    const name = await openBuyableProduct(page);
     await page.locator('.pd-order-buy button.btn-malaya').click();
     await goto(page, '/order');
     const checkout = page.getByRole('link', { name: /checkout via whatsapp/i });
     await expect(checkout).toHaveAttribute('href', /api\.whatsapp\.com/);
     await expect(checkout).toHaveAttribute('target', '_blank');
+    // The prefilled text must carry the order itself — item, quantity and
+    // total — not just a greeting (the studio confirms from this message).
+    const href = await checkout.getAttribute('href');
+    const text = decodeURIComponent(new URL(href).searchParams.get('text') || '');
+    expect(text).toContain(name);
+    expect(text).toMatch(/× 1/);
+    expect(text).toMatch(/Total:/);
+  });
+
+  test('a chosen ring size travels into the cart line and checkout message', async ({ page }) => {
+    // p009 is a ring (see .claude/skills/verify/SKILL.md): the size dropdown
+    // must put the size on the cart line, keep a second size as its own line,
+    // and carry both into the WhatsApp text.
+    await goto(page, '/product/p009');
+    const select = page.locator('.pd-size-select');
+    await expect(select).toBeVisible();
+    await select.selectOption('54');
+    await page.locator('.pd-order-buy button.btn-malaya').click();
+    await select.selectOption('56');
+    await page.locator('.pd-order-buy button.btn-malaya').click();
+
+    await goto(page, '/order');
+    await expect(page.locator('.order-table tbody tr')).toHaveCount(2);
+    await expect(page.locator('.order-table')).toContainText('Ring size 54');
+    await expect(page.locator('.order-table')).toContainText('Ring size 56');
+    const href = await page.getByRole('link', { name: /checkout via whatsapp/i }).getAttribute('href');
+    const text = decodeURIComponent(new URL(href).searchParams.get('text') || '');
+    expect(text).toContain('size 54 EU');
+    expect(text).toContain('size 56 EU');
   });
 
   // The sold-out regression (ordering disabled for "Sold out" stock) is

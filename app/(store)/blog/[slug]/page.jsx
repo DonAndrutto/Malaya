@@ -1,5 +1,5 @@
 import { BlogPost } from '@/components/store/site/BlogPages';
-import { fetchDoc } from '@/lib/server/firestore';
+import { fetchDoc, REVALIDATE_SECONDS, BLOG_CACHE_TAG } from '@/lib/server/firestore';
 import { jsonLd, blogPostingJsonLd, breadcrumbJsonLd } from '@/lib/seo';
 
 export const revalidate = 300;
@@ -7,7 +7,7 @@ export const revalidate = 300;
 // Unpublished posts are denied by the security rules, so a draft (or unknown
 // slug) simply resolves to null here and the page is kept out of the index.
 async function getPost(slug) {
-  const post = await fetchDoc(`blogPosts/${encodeURIComponent(slug)}`);
+  const post = await fetchDoc(`blogPosts/${encodeURIComponent(slug)}`, REVALIDATE_SECONDS, [BLOG_CACHE_TAG]);
   return post && post.published && post.title ? { ...post, slug } : null;
 }
 

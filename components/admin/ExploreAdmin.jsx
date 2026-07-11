@@ -562,6 +562,11 @@ export default function ExploreAdmin() {
   const [showPreview, setShowPreview] = useState(true);
   const [topicSearch, setTopicSearch] = useState('');
   const [blockOpen, setBlockOpen] = useState(null); // block id expanded in the editor
+  // Latest draft for async callbacks (image uploads resolve seconds after the
+  // render that started them): persisting the render-time draft would revert
+  // everything edited while the upload was in flight.
+  const draftRef = useRef(null);
+  draftRef.current = draft;
 
   useEffect(() => subscribeExploreAdmin(setData), []);
   useEffect(() => subscribeOverrides(setOverrides), []);
@@ -766,21 +771,25 @@ export default function ExploreAdmin() {
   };
 
   // ── Blocks ────────────────────────────────────────────────────────────────
-  const setBlocks = (blocks) => { const next = { ...draft, blocks }; setDraft(next); persist(next, { silent: true }); };
+  // All block mutators read through draftRef: a block image upload calls
+  // setBlock long after its render, and the render-time draft would clobber
+  // any field edited meanwhile.
+  const setBlocks = (blocks) => { const next = { ...(draftRef.current || draft), blocks }; setDraft(next); persist(next, { silent: true }); };
+  const curBlocks = () => ((draftRef.current || draft).blocks) || [];
   const addBlock = (type) => {
     const b = blankBlock(type);
-    setBlocks([...(draft.blocks || []), b]);
+    setBlocks([...curBlocks(), b]);
     setBlockOpen(b.id);
   };
-  const setBlock = (nb) => setBlocks((draft.blocks || []).map((x) => (x.id === nb.id ? nb : x)));
+  const setBlock = (nb) => setBlocks(curBlocks().map((x) => (x.id === nb.id ? nb : x)));
   const moveBlock = (i, dir) => {
-    const arr = (draft.blocks || []).slice();
+    const arr = curBlocks().slice();
     const j = i + dir;
     if (j < 0 || j >= arr.length) return;
     [arr[i], arr[j]] = [arr[j], arr[i]];
     setBlocks(arr);
   };
-  const removeBlock = (id) => setBlocks((draft.blocks || []).filter((x) => x.id !== id));
+  const removeBlock = (id) => setBlocks(curBlocks().filter((x) => x.id !== id));
 
   // ── Views ─────────────────────────────────────────────────────────────────
   if (editKey !== null) {
@@ -852,7 +861,7 @@ export default function ExploreAdmin() {
                 <div>
                   <label style={labelStyle}>Hero image</label>
                   <ImageUpload value={d.heroImage} folder={uploadFolder} busyKey="hero" busy={busy} setBusy={setBusy}
-                    onChange={(url) => persist({ ...d, heroImage: url }, { silent: true })} />
+                    onChange={(url) => persist({ ...(draftRef.current || d), heroImage: url }, { silent: true })} />
                 </div>
                 {d.heroImage && (
                   <div style={{ width: 170 }}>

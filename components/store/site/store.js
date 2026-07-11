@@ -41,38 +41,54 @@ export function useCart() {
   return items;
 }
 
-export function addToCart(id, qty = 1) {
+// One cart line per product *and* ring size — the same ring in two sizes is
+// two lines, and the chosen size travels with the order all the way to the
+// WhatsApp checkout. `size` is an EU ring size (number) or null for unsized
+// items; carts saved before sizes existed have no `size` field, which reads
+// as null, so they keep working unchanged.
+const sameLine = (i, id, size) => i.id === id && (i.size ?? null) === (size ?? null);
+export const cartLineKey = (i) => (i.size != null ? `${i.id}::${i.size}` : i.id);
+
+export function addToCart(id, qty = 1, size = null) {
   const items = readCart();
-  const ex = items.find((i) => i.id === id);
-  if (ex) ex.qty += qty; else items.push({ id, qty });
+  const ex = items.find((i) => sameLine(i, id, size));
+  if (ex) ex.qty += qty;
+  else items.push(size != null ? { id, qty, size } : { id, qty });
   writeCart(items);
   notifyAdded(id);
 }
 
-export function setCartQty(id, qty) {
+export function setCartQty(id, qty, size = null) {
   let items = readCart();
-  items = qty <= 0 ? items.filter((i) => i.id !== id) : items.map((i) => (i.id === id ? { ...i, qty } : i));
+  items = qty <= 0
+    ? items.filter((i) => !sameLine(i, id, size))
+    : items.map((i) => (sameLine(i, id, size) ? { ...i, qty } : i));
   writeCart(items);
 }
 
-export function removeFromCart(id) {
-  writeCart(readCart().filter((i) => i.id !== id));
+export function removeFromCart(id, size = null) {
+  writeCart(readCart().filter((i) => !sameLine(i, id, size)));
 }
 
 // Rewrite cart entries whose item was merged into a master (ALIASES from
 // buildSiteData), so existing carts survive an admin merge. Merges quantities of
-// any duplicate that now points at the same master. No-op when nothing changed.
+// any duplicate that now points at the same master (per size — a merge must not
+// collapse two sizes of one ring). No-op when nothing changed.
 export function migrateCartAliases(aliases) {
   if (!aliases || !Object.keys(aliases).length) return;
   const items = readCart();
   let changed = false;
-  const merged = {};
+  const merged = new Map();
   items.forEach((i) => {
     const id = aliases[i.id] || i.id;
     if (id !== i.id) changed = true;
-    merged[id] = (merged[id] || 0) + i.qty;
+    const line = { ...i, id };
+    const key = cartLineKey(line);
+    const prev = merged.get(key);
+    if (prev) prev.qty += line.qty;
+    else merged.set(key, line);
   });
-  if (changed) writeCart(Object.keys(merged).map((id) => ({ id, qty: merged[id] })));
+  if (changed) writeCart([...merged.values()]);
 }
 
 export function cartTotal(items, byId) {
@@ -129,11 +145,11 @@ export function useAddedNotice() {
 }
 
 // ── Site data context ────────────────────────────────────────────────────────
-// { SITE_PRODUCTS, SITE_BY_ID, TASHI_PRODUCTS, HOME_BEST, MEGA_FEATURED, settings }
+// { SITE_PRODUCTS, SITE_BY_ID, TASHI_PRODUCTS, ALIASES, settings, content, … }
 export const SiteDataContext = createContext(null);
 export function useSiteData() {
   return useContext(SiteDataContext) || {
-    SITE_PRODUCTS: [], SITE_BY_ID: {}, TASHI_PRODUCTS: [], HOME_BEST: [], MEGA_FEATURED: [], ALIASES: {},
+    SITE_PRODUCTS: [], SITE_BY_ID: {}, TASHI_PRODUCTS: [], ALIASES: {},
     settings: {}, content: resolveContent({}), blogPosts: {}, exploreGroups: {}, exploreTopics: {},
   };
 }
