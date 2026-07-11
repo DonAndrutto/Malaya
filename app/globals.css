@@ -25,11 +25,14 @@ button, input, select { font-family: inherit; }
   /* Brown→transparent header wash — the gradient the header lays over the
      imagery beneath it. The header floats over the banner/hero on every page
      (no solid bar), so this same wash is the seam between the header and the
-     banner everywhere, and the whole banner on product pages (no photo). */
-  --header-fade: linear-gradient(to bottom, rgba(59,35,26,.96) 0%, rgba(59,35,26,.72) 48%, rgba(59,35,26,0) 100%);
+     banner everywhere, and the whole banner on product pages (no photo). The
+     nav row now sits a little lower in the band (see .hdr-bar), so the wash
+     holds its depth further down before melting into the imagery — the links
+     and the basket keep their contrast at the new position. */
+  --header-fade: linear-gradient(to bottom, rgba(59,35,26,.96) 0%, rgba(59,35,26,.86) 58%, rgba(59,35,26,0) 100%);
   /* Approximate rendered height of the floating header — banners whose text
      sits near the top pad by this much so it clears the nav. */
-  --header-h: 82px;
+  --header-h: 96px;
 }
 .malaya-site img { max-width: 100%; }
 .malaya-site a { color: inherit; text-decoration: none; transition: color .18s; }
@@ -57,7 +60,9 @@ button, input, select { font-family: inherit; }
 /* Pages that don't open with a full-bleed banner reserve the floating header's
    height so their first content clears the nav (e.g. a cover-less blog post). */
 .malaya-site .malaya-page-header-pad { padding-top: var(--header-h); }
-.malaya-site .hdr-bar { display: flex; justify-content: center; align-items: center; padding-top: 14px; padding-bottom: 10px; }
+/* The nav row sits slightly lower in the header band (it hugged the very top
+   edge); the deeper wash above keeps the brown behind it for contrast. */
+.malaya-site .hdr-bar { display: flex; justify-content: center; align-items: center; padding-top: 26px; padding-bottom: 14px; }
 .malaya-site .hdr-icon-wrap { position: relative; display: inline-flex; }
 /* The cart button mirrors a nav link's box (same vertical padding, centred
    content) so the icon sits optically level with the link text — never lower. */
@@ -120,8 +125,10 @@ button, input, select { font-family: inherit; }
 @keyframes hero-brand-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 /* Proportional to the wordmark (clamped alongside .hero-title): tall enough
    to lead the composition, never so large it competes with the photography.
-   Transparent PNG; the soft drop shadow lifts it off busy imagery the same
-   way the title's text-shadow does. */
+   The height drives the box and width follows the asset's own aspect ratio
+   (the uploaded logo is square, 800×800), so the mark always keeps its
+   proportions. Transparent PNG; the soft drop shadow lifts it off busy
+   imagery the same way the title's text-shadow does. */
 .malaya-site .hero-logo { height: clamp(58px, 8.5vw, 110px); width: auto; margin-bottom: clamp(6px, 1.4vw, 16px); filter: drop-shadow(0 2px 16px rgba(0, 0, 0, .35)); }
 @keyframes hero-text-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .malaya-site .hero-title { font-size: clamp(30px, 4.6vw, 64px); font-weight: 300; letter-spacing: .55em; text-transform: uppercase; text-indent: .55em; text-shadow: 0 2px 22px rgba(0,0,0,.45); }
@@ -272,9 +279,14 @@ button, input, select { font-family: inherit; }
 .malaya-site .pd-layout { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 56px; padding-top: 48px; padding-bottom: 30px; }
 .malaya-site .pd-media { align-self: start; }
 .malaya-site .pd-photo { position: relative; background: #f7f4ef; }
-.malaya-site .pd-photo img:first-child { width: 100%; height: auto; display: block; }
-.malaya-site .pd-photo .pd-alt { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .4s; }
-.malaya-site .pd-photo:hover .pd-alt { opacity: 1; }
+/* Product gallery — a scroll-snap strip: swipe (touch) or drag/trackpad moves
+   between the photos and the thumbnails stay in step. Replaces the old
+   tap/hover "peek the second photo": tapping the image never swaps it, only a
+   swipe or a thumbnail does. */
+.malaya-site .pd-gallery { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.malaya-site .pd-gallery::-webkit-scrollbar { display: none; }
+.malaya-site .pd-slide { flex: 0 0 100%; min-width: 100%; scroll-snap-align: start; scroll-snap-stop: always; }
+.malaya-site .pd-slide img { width: 100%; height: auto; display: block; }
 .malaya-site .pd-tashi { position: absolute; right: 16px; bottom: 16px; width: 54px; height: auto; border: none; }
 .malaya-site .pd-noimg { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; background: #fff; color: var(--muted); }
 .malaya-site .pd-noimg span { font-size: 64px; font-family: "Cormorant Garamond", "Times New Roman", serif; letter-spacing: .12em; }
@@ -292,6 +304,33 @@ button, input, select { font-family: inherit; }
 .malaya-site .pd-price s { color: #bbb; font-size: 17px; }
 .malaya-site .pd-price strong { font-weight: 500; color: #222; }
 .malaya-site .pd-stock { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); border: 1px solid currentColor; padding: 3px 10px; align-self: center; }
+/* Product options (Metal / Ring Size) — variant controls above the specs.
+   Metal buttons move between this design's sibling SKUs; ring-size squares
+   are availability within the current SKU: black = in stock in that size,
+   grey = made to order. */
+.malaya-site .pd-opt { margin: 2px 0 20px; }
+.malaya-site .pd-opt-label { display: block; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--brown); margin-bottom: 10px; }
+.malaya-site .pd-opt-label em { font-style: normal; letter-spacing: .1em; color: var(--muted); }
+.malaya-site .pd-metals { display: flex; flex-wrap: wrap; gap: 8px; }
+.malaya-site .pd-metal { border: 1px solid var(--line); background: #fff; color: #555; font-family: inherit; font-size: 12px; letter-spacing: .06em; padding: 9px 14px; cursor: pointer; transition: border-color .2s, color .2s, background .2s; }
+.malaya-site .pd-metal:hover { border-color: var(--gold); color: var(--gold); }
+.malaya-site .pd-metal.on { border-color: #1d1d1d; background: #1d1d1d; color: #fff; cursor: default; }
+.malaya-site .pd-size-select {
+  display: block; width: 100%; max-width: 300px; padding: 11px 38px 11px 14px;
+  border: 1px solid #cfcfcf; background-color: #fff; color: #1d1d1d;
+  font-family: inherit; font-size: 13.5px; letter-spacing: .04em; cursor: pointer;
+  appearance: none; -webkit-appearance: none; border-radius: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%231d1d1d' stroke-width='1.4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+  transition: border-color .2s;
+}
+.malaya-site .pd-size-select:hover,
+.malaya-site .pd-size-select:focus { border-color: var(--gold); outline: none; }
+.malaya-site .pd-size-status { margin: 10px 0 0; font-size: 12.5px; color: #555; }
+.malaya-site .pd-size-status strong { font-weight: 600; color: #1d1d1d; }
+.malaya-site .pd-size-note { margin: 6px 0 0; font-size: 12px; color: var(--muted); }
+.malaya-site .pd-size-note a { color: var(--gold); border-bottom: 1px solid rgba(176,141,87,.4); }
+.malaya-site .pd-size-note a:hover { border-bottom-color: var(--gold); }
 .malaya-site .pd-specs { border-collapse: collapse; font-size: 13.5px; margin-bottom: 18px; }
 .malaya-site .pd-specs th { text-align: left; font-weight: 500; color: var(--muted); padding: 6px 26px 6px 0; }
 .malaya-site .pd-specs td { padding: 6px 0; }
@@ -742,6 +781,86 @@ button, input, select { font-family: inherit; }
   .malaya-admin .adm-header { padding: 0 14px !important; }
   .malaya-admin .adm-pad { padding-left: 14px !important; padding-right: 14px !important; }
 }
+
+/* Sales desk — orders dashboard & client database grids (same responsive
+   pattern as the Inventory grid: real columns on desktop, labelled cards on
+   tablet/phone). */
+.malaya-admin .sls-list,
+.malaya-admin .slc-list { border: 1px solid rgba(42,37,32,0.12); background: #f4eee3; }
+.malaya-admin .sls-head,
+.malaya-admin .sls-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 1.1fr) minmax(170px, 1.7fr) 96px 132px minmax(96px, 0.9fr) 70px minmax(190px, auto);
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+}
+.malaya-admin .slc-head,
+.malaya-admin .slc-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1.4fr) minmax(180px, 1.6fr) minmax(90px, 0.8fr) 64px minmax(150px, 1fr) minmax(110px, auto);
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+}
+.malaya-admin .sls-head,
+.malaya-admin .slc-head { background: #fbf7ee; border-bottom: 1px solid rgba(42,37,32,0.2); position: sticky; top: 56px; z-index: 6; }
+.malaya-admin .sls-row,
+.malaya-admin .slc-row { border-bottom: 1px solid rgba(42,37,32,0.12); }
+.malaya-admin .sls-row:last-child,
+.malaya-admin .slc-row:last-child { border-bottom: 0; }
+.malaya-admin .sls-cell.num { text-align: right; }
+.malaya-admin .sls-cell-actions { display: flex; gap: 6px; justify-content: flex-end; align-items: center; flex-wrap: wrap; }
+.malaya-admin .sls-cell-label { display: none; }
+@media (max-width: 1024px) {
+  .malaya-admin .sls-head,
+  .malaya-admin .slc-head { display: none; }
+  .malaya-admin .sls-list,
+  .malaya-admin .slc-list { border: none; background: none; }
+  .malaya-admin .sls-row {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "number status"
+      "customer customer"
+      "date total"
+      "currency currency"
+      "actions actions";
+    gap: 8px 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border: 1px solid rgba(42,37,32,0.18);
+    background: #fbf7ee;
+  }
+  .malaya-admin .sls-cell-number { grid-area: number; }
+  .malaya-admin .sls-cell-customer { grid-area: customer; }
+  .malaya-admin .sls-cell-date { grid-area: date; }
+  .malaya-admin .sls-cell-status { grid-area: status; }
+  .malaya-admin .sls-cell-total { grid-area: total; }
+  .malaya-admin .sls-cell-currency { grid-area: currency; }
+  .malaya-admin .sls-cell-actions,
+  .malaya-admin .slc-row .sls-cell-actions { grid-area: actions; justify-content: flex-start; border-top: 1px solid rgba(42,37,32,0.1); padding-top: 9px; margin-top: 2px; }
+  .malaya-admin .sls-cell.num { text-align: left; }
+  .malaya-admin .sls-cell-label { display: block; font-size: 8.5px; letter-spacing: .14em; text-transform: uppercase; color: #7a6f63; margin-bottom: 3px; }
+  .malaya-admin .slc-row {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "name name"
+      "contact contact"
+      "country orders"
+      "lifetime lifetime"
+      "actions actions";
+    gap: 8px 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border: 1px solid rgba(42,37,32,0.18);
+    background: #fbf7ee;
+  }
+  .malaya-admin .slc-cell-name { grid-area: name; }
+  .malaya-admin .slc-cell-contact { grid-area: contact; }
+  .malaya-admin .slc-cell-country { grid-area: country; }
+  .malaya-admin .slc-cell-orders { grid-area: orders; }
+  .malaya-admin .slc-cell-lifetime { grid-area: lifetime; }
+}
 @media (max-width: 1100px) {
   .malaya-site .pgrid-4 { grid-template-columns: repeat(3, 1fr); }
   .malaya-site .order-grid { grid-template-columns: 1fr; }
@@ -752,9 +871,13 @@ button, input, select { font-family: inherit; }
   .malaya-site .shop-layout, .malaya-site .pd-layout, .malaya-site .tashi-intro, .malaya-site .contact-layout { grid-template-columns: 1fr; }
   .malaya-site .ftr-cols { grid-template-columns: 1fr; gap: 30px; }
   /* The header stays one centred row on mobile (nav + cart, no corner logo);
-     tighter link padding keeps all six items on a single line. */
-  .malaya-site { --header-h: 72px; }
-  .malaya-site .hdr-bar { padding-top: 10px; padding-bottom: 8px; }
+     tighter link padding keeps all six items on a single line. The row keeps
+     the same slight drop from the top edge as the desktop header. The doubled
+     class lifts this above the narrow-screen `.site-container` padding
+     shorthands further down, which otherwise zero the bar's top padding (the
+     old cascade quirk that pinned the nav to the very top edge on phones). */
+  .malaya-site { --header-h: 84px; }
+  .malaya-site .site-container.hdr-bar { padding-top: 20px; padding-bottom: 10px; }
   .malaya-site .hdr-nav { gap: 0; }
   .malaya-site .hdr-nav-link { padding: 8px 11px; }
   .malaya-site .hdr-icon-btn { padding: 8px 10px; margin-left: 2px; }
@@ -764,6 +887,15 @@ button, input, select { font-family: inherit; }
      browser UI shown (100vh fallback for older engines); the desktop
      76vh/820px treatment above is untouched. */
   .malaya-site .hero { height: 100vh; height: 100svh; min-height: 480px; max-height: none; }
+  /* Blog post cover: on a phone the 16:6 crop is so short that the floating
+     nav covered most of it — pad the page (padding, not a margin on the image,
+     which would collapse through the wrapper and drag the header down with it)
+     so the hero clears the nav just as the tall desktop crop does. */
+  .malaya-site .malaya-page-blog-cover { padding-top: var(--header-h); }
+  /* iOS zooms the page when a focused input's font is under 16px — and that
+     zoom survives the client-side route change to the product page. Keep the
+     search fields at 16px on touch-size screens so focusing never zooms. */
+  .malaya-site .cat-search, .malaya-site .explore-search-input, .malaya-site .shop-search { font-size: 16px; }
 }
 /* Phones: two aligned cards per row with no horizontal overflow. */
 @media (max-width: 600px) {
@@ -795,7 +927,7 @@ button, input, select { font-family: inherit; }
   .malaya-site .hdr-nav-link { padding: 7px 5px; letter-spacing: .06em; font-size: 11px; }
   .malaya-site .hdr-icon-btn { padding: 7px 6px; margin-left: 0; }
   .malaya-site .hdr-icon-svg { width: 18px; height: 18px; }
-  .malaya-site { --header-h: 68px; }
+  .malaya-site { --header-h: 80px; }
 }
 @media (max-width: 380px) {
   .malaya-site .site-container { padding: 0 10px; }

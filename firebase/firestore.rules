@@ -15,6 +15,10 @@ rules_version = '2';
 //                                     editorial pages, lib/explore.js).
 //   exploreGroups/{slug}            — Explore navigation shelves (ordered
 //                                     topicSlugs curation lists).
+//   orders/{orderId}                — Sales desk orders (lib/data/sales.js).
+//                                     Customer PII — never publicly readable.
+//   clients/{clientId}              — reusable client database. PII, admin-only.
+//   salesMeta/{docId}               — order-number counters & sales settings.
 //   admins/{uid}                    — allowlist of admin account UIDs.
 //
 // Reads of storefront data are public (the storefront needs them). Writes are
@@ -51,6 +55,9 @@ service cloud.firestore {
     function optList(d, f, max) {
       return !(f in d) || d[f] == null || (d[f] is list && d[f].size() <= max);
     }
+    function optMap(d, f, max) {
+      return !(f in d) || d[f] == null || (d[f] is map && d[f].size() <= max);
+    }
 
     // Per-product override written by the admin Inventory desk (lib/overrides.js).
     // `unitCost` is deliberately NOT accepted here — cost data lives in
@@ -58,7 +65,7 @@ service cloud.firestore {
     function validOverride(d) {
       return d.keys().hasOnly([
           'name', 'sub', 'category', 'collection', 'material', 'stock',
-          'listPrice', 'retail', 'salePrice', 'qty',
+          'listPrice', 'retail', 'salePrice', 'qty', 'sizes',
           'salesCode', 'productionCode', 'story', 'images', 'img',
           'specials', 'tag', 'published', 'deleted', 'mergedInto',
           'topics', '_custom', '_updated',
@@ -73,7 +80,9 @@ service cloud.firestore {
         && optNum(d, 'qty') && optNum(d, '_updated')
         && optBool(d, 'published') && optBool(d, 'deleted') && optBool(d, '_custom')
         && optList(d, 'images', 24) && optList(d, 'specials', 10)
-        && optList(d, 'topics', 20);
+        && optList(d, 'topics', 20)
+        // Ring-size inventory: { "50": 1, "52": 2 } — EU size → units on hand.
+        && optMap(d, 'sizes', 40);
     }
 
     function validBlogPost(d, slug) {
@@ -175,6 +184,22 @@ service cloud.firestore {
       allow read: if resource.data.published == true || isAdmin();
       allow write: if isAdmin()
         && (request.method == 'delete' || validGroup(request.resource.data, slug));
+    }
+
+    // Sales & Orders (admin Sales desk, lib/sales.js). Orders and clients hold
+    // customer PII, so reads are admin-only too — the storefront never touches
+    // these. Deep validation of the nested items/customer maps is impractical
+    // in CEL (same stance as exploreTopics blocks); the write surface is
+    // admin-only and the desk normalises every record on read.
+    match /orders/{orderId} {
+      allow read, write: if isAdmin();
+    }
+    match /clients/{clientId} {
+      allow read, write: if isAdmin();
+    }
+    // Order-number counters ("counters") and desk settings ("settings").
+    match /salesMeta/{docId} {
+      allow read, write: if isAdmin() && (docId == 'counters' || docId == 'settings');
     }
 
     // Admin allowlist. A signed-in user may check their own entry; documents

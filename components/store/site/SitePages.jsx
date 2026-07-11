@@ -7,17 +7,19 @@
 // `settings` on the context.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useState, useEffect, useMemo, Fragment } from 'react';
+import { useState, useEffect, useMemo, useRef, Fragment } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  CATEGORIES, CATALOGUE_SECTIONS, CATEGORY_TO_SECTION,
+  CATEGORIES, MATERIALS, CATALOGUE_SECTIONS, CATEGORY_TO_SECTION,
   fmtPrice, posFor, bgImage, resolveHeroSlides, isInStock, relatedProducts, whatsappUrlFor,
 } from '@/lib/data/site-data';
 import { materialFamilyOf } from '@/lib/data/materials';
+import { dupKey } from '@/lib/data/inventory';
+import { RING_SIZES, isRingCategory, ringSizeQty } from '@/lib/data/ring-sizes';
 import { searchExplore } from '@/lib/explore-shared';
 import {
-  useCart, addToCart, setCartQty, removeFromCart, cartTotal, showToast, useSiteData,
+  useCart, addToCart, setCartQty, removeFromCart, cartTotal, showToast, useSiteData, blurActiveElement,
 } from './store';
 import { SiteImg, SiteProductCard, PageBanner, SocialLinks } from './SiteShell';
 import { Reveal, prefersReducedMotion } from './reveal';
@@ -82,7 +84,10 @@ function HeroSlider({ slides, settings, content }) {
         <div className="hero-text">
           <div className="hero-brand">
             {settings.logo && (
-              <SiteImg className="hero-logo" src={settings.logo} alt="" width={480} height={160}
+              // The uploaded logo asset is square (800×800): matching intrinsic
+              // dimensions keep next/image's reserved box and the rendered
+              // proportions in agreement (the CSS sets the height, width:auto).
+              <SiteImg className="hero-logo" src={settings.logo} alt="" width={800} height={800}
                 sizes="240px" priority />
             )}
             <h2 className="hero-title">{content.hero.title}</h2>
@@ -268,8 +273,10 @@ function CatalogueScroll() {
     () => (query ? searchExplore(query, { topics: exploreTopics, groups: exploreGroups, products: [] }, 4) : { topics: [], groups: [] }),
     [query, exploreTopics, exploreGroups],
   );
-  const goToProduct = (id) => { setQ(''); setSearchOpen(false); router.push('/product/' + id); };
-  const goTo = (path) => { setQ(''); setSearchOpen(false); router.push(path); };
+  // blurActiveElement: release the search field before navigating, so the
+  // mobile keyboard / iOS focus zoom can't follow us onto the product page.
+  const goToProduct = (id) => { setQ(''); setSearchOpen(false); blurActiveElement(); router.push('/product/' + id); };
+  const goTo = (path) => { setQ(''); setSearchOpen(false); blurActiveElement(); router.push(path); };
 
   if (!SITE_PRODUCTS.length) return null;
   const activeLabel = (sections.find((s) => s.key === active) || sections[0] || { label: '' }).label;
@@ -402,15 +409,55 @@ function CatalogueScroll() {
 }
 
 // ── Product detail ───────────────────────────────────────────────────────────
+// Shopper-facing labels for the metal options (the strict material taxonomy,
+// shortened where the full name reads as inventory jargon).
+const METAL_LABELS = {
+  'Silver 925': 'Silver',
+  'Yellow Gold Plated': 'Gold Plated',
+  'Rose Gold Plated': 'Rose Gold Plated',
+};
+
+// Customer-friendly metal names for the WhatsApp enquiry text (the strict
+// taxonomy's "Silver 925" reads better as "Sterling Silver" in a message).
+const WA_METAL_LABELS = {
+  'Silver 925': 'Sterling Silver',
+  'Yellow Gold Plated': 'Gold Plated (Vermeil)',
+};
+
 export function ProductPage({ id }) {
   const { SITE_PRODUCTS, SITE_BY_ID, content, settings, exploreTopics } = useSiteData();
   const router = useRouter();
   const p = SITE_BY_ID[id];
   const [qty, setQty] = useState(1);
   const [active, setActive] = useState(0);
-  useEffect(() => { setQty(1); setActive(0); }, [id]);
+  const [size, setSize] = useState(null); // selected EU ring size — availability display only
+  const galleryRef = useRef(null);
+  useEffect(() => {
+    setQty(1); setActive(0); setSize(null);
+    if (galleryRef.current) galleryRef.current.scrollTo({ left: 0 });
+  }, [id]);
   // If this id was merged into a master, canonicalise the URL to the master.
   useEffect(() => { if (p && p.id && p.id !== id) router.replace(`/product/${p.id}`); }, [p, id, router]);
+
+  // Metal options: sibling listings of the SAME design in other metals. The
+  // group key is dupKey (same category + the variant-stripped name the admin's
+  // duplicate finder uses), so the selector can only ever land on this
+  // design's own SKUs — never another product, category or unrelated variant.
+  // One option per material; a material with several listings prefers the
+  // in-stock one (the current listing always represents its own metal).
+  const metalVariants = useMemo(() => {
+    if (!p) return [];
+    const key = dupKey(p);
+    const byMetal = new Map();
+    SITE_PRODUCTS.forEach((x) => {
+      if (dupKey(x) !== key) return;
+      const prev = byMetal.get(x.material);
+      if (x.id === p.id || !prev || (prev.id !== p.id && !isInStock(prev) && isInStock(x))) {
+        byMetal.set(x.material, x);
+      }
+    });
+    return MATERIALS.filter((m) => byMetal.has(m)).map((m) => ({ material: m, product: byMetal.get(m) }));
+  }, [SITE_PRODUCTS, p]);
 
   if (!p) {
     return (
@@ -442,20 +489,41 @@ export function ProductPage({ id }) {
   const exploreImg = (settings.categoryBanners && settings.categoryBanners[p.category])
     || settings.pageBanner || null;
 
-  // WhatsApp enquiry pre-filled with this item (name, sales code and its URL).
-  const waText = `I've contacted you via Malaya Jewellery International website. I'd like to ask about ${p.name}`
-    + `${p.salesCode ? ` (sales code: ${p.salesCode})` : ''}.`
-    + (typeof window !== 'undefined' ? ` ${window.location.href}` : '');
+  const isRing = isRingCategory(p.category);
+
+  // WhatsApp enquiry pre-filled with everything the studio needs to answer:
+  // product name, SKU, the metal, any chosen ring size, and the page URL —
+  // one detail per line, e.g.
+  //   Hello! I'm interested in the Dorje Ring.
+  //   SKU: R017A-S
+  //   Metal: Sterling Silver
+  //   Size: 54
+  //   https://www.malayajewellery.com/product/…
+  const waText = [
+    `Hello! I'm interested in the ${p.name}.`,
+    p.salesCode ? `SKU: ${p.salesCode}` : null,
+    p.material ? `Metal: ${WA_METAL_LABELS[p.material] || p.material}` : null,
+    isRing && size != null ? `Size: ${size}` : null,
+    typeof window !== 'undefined' ? window.location.href : null,
+  ].filter(Boolean).join('\n');
   const waUrl = whatsappUrlFor(content.contact.whatsapp, waText);
 
   // Gallery: every uploaded image, falling back to the single primary photo.
+  // The photos live in a scroll-snap strip — swipe (or drag) moves between
+  // them and the thumbnails stay in step; tapping the photo never swaps it.
   const images = (p.images && p.images.length) ? p.images : (p.img ? [p.img] : []);
-  const hero = images[Math.min(active, images.length - 1)] || images[0] || null;
-  // Hover/tap "peek the second photo" only applies to the default (first) view —
-  // catalogue-style. Once a thumbnail is picked, the chosen photo stays put so a
-  // tap reveals exactly that image, never the next one.
-  const heroAlt = (active === 0 && images.length > 1) ? images[1] : null;
   const monogram = (p.productionCode || p.salesCode || p.name || 'M').replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'M';
+  const onGalleryScroll = () => {
+    const el = galleryRef.current;
+    if (!el || !el.clientWidth) return;
+    const i = Math.max(0, Math.min(images.length - 1, Math.round(el.scrollLeft / el.clientWidth)));
+    if (i !== active) setActive(i);
+  };
+  const showImage = (i) => {
+    setActive(i);
+    const el = galleryRef.current;
+    if (el) el.scrollTo({ left: i * el.clientWidth, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+  };
 
   // Editable story (admin-saved), split into paragraphs; falls back to the global
   // credit line (admin Content → Product page).
@@ -469,12 +537,19 @@ export function ProductPage({ id }) {
       <div className="site-container pd-layout">
         <div className="pd-media">
           <div className="pd-photo">
-            {hero
-              ? <SiteImg src={hero} alt={p.name} priority
-                  sizes="(max-width: 900px) 100vw, 620px" width={1240} height={1240} />
+            {images.length
+              ? (
+                <div className="pd-gallery" ref={galleryRef} onScroll={onGalleryScroll}
+                  aria-label={`${p.name} — photo gallery`}>
+                  {images.map((src, i) => (
+                    <div key={src + i} className="pd-slide">
+                      <SiteImg src={src} alt={i === 0 ? p.name : `${p.name} — view ${i + 1}`} priority={i === 0}
+                        sizes="(max-width: 900px) 100vw, 620px" width={1240} height={1240} />
+                    </div>
+                  ))}
+                </div>
+              )
               : <div className="pd-noimg"><span>{monogram}</span></div>}
-            {heroAlt && <SiteImg className="pd-alt" src={heroAlt} alt={p.name}
-              sizes="(max-width: 900px) 100vw, 620px" width={1240} height={1240} />}
             {p.tashi && settings.tashiBadge && <SiteImg className="pd-tashi" src={settings.tashiBadge}
               alt="Tashi Mannox" width={108} height={108} sizes="54px" />}
           </div>
@@ -482,7 +557,7 @@ export function ProductPage({ id }) {
             <div className="pd-thumbs">
               {images.map((src, i) => (
                 <button key={src + i} type="button" className={'pd-thumb' + (i === active ? ' on' : '')}
-                  onClick={() => setActive(i)} aria-label={`View image ${i + 1}`}>
+                  onClick={() => showImage(i)} aria-label={`View image ${i + 1}`}>
                   <SiteImg src={src} alt={`${p.name} — view ${i + 1}`} width={148} height={148} sizes="74px" />
                 </button>
               ))}
@@ -502,6 +577,56 @@ export function ProductPage({ id }) {
             <span className="pd-stock">{p.stock}</span>
           </div>
           <div className="rule-dot" style={{ margin: '18px 0' }} />
+
+          {/* Metal — switches between this design's own metal variants (other
+              SKUs of the same piece); the URL moves to that variant's listing
+              and nothing else about the page context changes. */}
+          {metalVariants.length > 1 && (
+            <div className="pd-opt">
+              <span className="pd-opt-label">Metal</span>
+              <div className="pd-metals" role="group" aria-label="Metal">
+                {metalVariants.map(({ material, product: v }) => {
+                  const on = material === p.material;
+                  return (
+                    <button key={material} type="button" className={'pd-metal' + (on ? ' on' : '')}
+                      aria-pressed={on}
+                      onClick={() => { if (!on && v.id !== p.id) router.push(`/product/${v.id}`); }}>
+                      {METAL_LABELS[material] || material}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Ring size — a dropdown (never every size at once): availability
+              within this SKU only. Each option says in stock / made to order;
+              choosing a size never changes the product, SKU or price. */}
+          {isRing && (
+            <div className="pd-opt">
+              <span className="pd-opt-label">Ring Size <em>· EU</em></span>
+              <select className="pd-size-select" aria-label="Ring size (EU)"
+                value={size == null ? '' : String(size)}
+                onChange={(e) => setSize(e.target.value === '' ? null : Number(e.target.value))}>
+                <option value="">Select your size…</option>
+                {RING_SIZES.map((s) => (
+                  <option key={s} value={s}>
+                    {`Size ${s} — ${ringSizeQty(p.sizes, s) > 0 ? 'in stock' : 'made to order'}`}
+                  </option>
+                ))}
+              </select>
+              {size != null && (
+                <p className="pd-size-status">
+                  Size {size} — {ringSizeQty(p.sizes, size) > 0 ? <strong>in stock</strong> : 'made to order'}
+                </p>
+              )}
+              <p className="pd-size-note">
+                Standard women&rsquo;s sizes: 50–57 · Standard men&rsquo;s sizes: 57–68 ·{' '}
+                <a href="https://www.malayajewellery.com/blog/ring-sizing" target="_blank" rel="noreferrer">Ring Size Guide</a>
+              </p>
+            </div>
+          )}
+
           <table className="pd-specs">
             <tbody>
               {p.salesCode && <tr><th>Reference</th><td>{p.salesCode}</td></tr>}

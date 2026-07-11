@@ -79,6 +79,16 @@ export function cartTotal(items, byId) {
   return items.reduce((s, i) => s + ((byId[i.id] || {}).price || 0) * i.qty, 0);
 }
 
+// Drop focus from whatever element currently holds it (typically a search
+// field) before a client-side navigation. A still-focused input keeps the
+// mobile keyboard — and iOS's input-focus zoom — alive across the route
+// change, so the destination page could open zoomed in on a stale search box.
+export function blurActiveElement() {
+  if (typeof document !== 'undefined' && document.activeElement && document.activeElement.blur) {
+    document.activeElement.blur();
+  }
+}
+
 // ── Toast ────────────────────────────────────────────────────────────────────
 let toastTimer = null;
 export function showToast(msg) {

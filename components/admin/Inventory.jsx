@@ -19,6 +19,10 @@ import { T } from './theme';
 import { CATEGORIES, MATERIALS, STOCK_OPTIONS } from '@/lib/data/products';
 import { SPECIALS, SPECIAL_KEYS, resolveSpecials, normalizeMaterial } from '@/lib/data/materials';
 import { stockStatus } from '@/lib/data/stock-data';
+import {
+  RING_SIZES, isRingCategory, normalizeRingSizes,
+  ringSizeQty, ringSizesTotal, ringSizeEntries, ringSizeSummary,
+} from '@/lib/data/ring-sizes';
 import { resolveProduct } from '@/lib/data/resolve';
 import {
   INVENTORY, INVENTORY_BY_KEY, isBlankEntity,
@@ -116,14 +120,14 @@ export default function Inventory({ overrides, setOverrides }) {
       o = { ...own };
       ['images', 'img', 'story'].forEach((f) => { if (!(f in o) && f in lo) o[f] = lo[f]; });
     }
-    let name, sub, category, collection, material, salesCode, productionCode, stock, retail, salePrice, onSale, images, img, story, specials, topics;
+    let name, sub, category, collection, material, salesCode, productionCode, stock, retail, salePrice, onSale, images, img, story, specials, topics, sizes;
 
     if (e.kind !== 'ledger') {
       const rp = resolveProduct({ ...b, id: e.key, listPrice: b.retail, salePrice: b.salePrice, tag: b.tag || null }, o);
       name = rp.name; sub = rp.sub; category = rp.category; collection = rp.collection; material = rp.material;
       salesCode = rp.salesCode; productionCode = rp.productionCode; stock = rp.stock;
       retail = rp.listPrice; salePrice = rp.salePrice; onSale = rp.onSale; images = rp.images; img = rp.img; story = rp.story;
-      specials = rp.specials; topics = rp.topics;
+      specials = rp.specials; topics = rp.topics; sizes = rp.sizes;
     } else {
       const val = (f) => (f in o ? o[f] : b[f]);
       name = val('name'); sub = val('sub'); category = val('category'); collection = b.collection; material = normalizeMaterial(val('material'));
@@ -136,6 +140,7 @@ export default function Inventory({ overrides, setOverrides }) {
       story = 'story' in o && o.story != null ? o.story : '';
       specials = resolveSpecials(null, o);
       topics = Array.isArray(o.topics) ? o.topics : [];
+      sizes = normalizeRingSizes(o.sizes);
     }
 
     const qty = numOrNull('qty' in o ? o.qty : b.qty);
@@ -148,7 +153,7 @@ export default function Inventory({ overrides, setOverrides }) {
       key, kind: e.kind, custom: !!e.custom, sku: e.sku, productId: e.kind !== 'ledger' ? e.key : null,
       mergedInto: own.mergedInto || null, deleted: !!own.deleted,
       name, sub, category, collection, material, salesCode, productionCode,
-      qty, unitCost, retail, salePrice, onSale, sellRetail, stock, online,
+      qty, unitCost, retail, salePrice, onSale, sellRetail, stock, online, sizes: sizes || null,
       specials, tashi: specials.includes('tashi'), topics: topics || [],
       marginUnit: unitCost != null && sellRetail != null ? sellRetail - unitCost : null,
       marginPct, markupPct,
@@ -202,6 +207,25 @@ export default function Inventory({ overrides, setOverrides }) {
         const arr = (Array.isArray(p.topics) ? p.topics : []).filter(Boolean).slice(0, 20);
         if (arr.length) o.topics = arr; else delete o.topics;
         delete p.topics;
+      }
+      // Ring-size inventory (Rings): per-size units within this one SKU. The
+      // on-hand total and the stock status follow the sizes automatically so
+      // everything that reads qty/stock (filters, ordering, storefront) stays
+      // truthful without a second bookkeeping step.
+      if ('sizes' in p) {
+        const sizes = normalizeRingSizes(p.sizes);
+        if (sizes) {
+          o.sizes = sizes;
+          const total = ringSizesTotal(sizes);
+          p.qty = total;
+          const curStock = 'stock' in o ? o.stock : e.base.stock;
+          // Sizes without stock sell as made to order (never "Sold out"); an
+          // archived item stays archived.
+          if (curStock !== 'Archived') p.stock = total > 0 ? 'In stock' : 'Made to order';
+        } else {
+          delete o.sizes;
+        }
+        delete p.sizes;
       }
 
       Object.keys(p).forEach((g) => {
@@ -377,11 +401,12 @@ export default function Inventory({ overrides, setOverrides }) {
       unitCost: r.unitCost, retail: r.retail, salePrice: r.salePrice,
       marginPct: r.marginPct == null ? '' : r.marginPct.toFixed(1), status: r.stock,
       online: r.online ? 'yes' : 'no', specials: r.specials.join('|'), images: r.images.length,
+      sizes: r.sizes ? ringSizeEntries(r.sizes).map((en) => `${en.size}:${en.qty}`).join('|') : '',
     }));
     let blob, fname;
     if (fmt === 'json') { blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }); fname = 'malaya-inventory.json'; }
     else {
-      const cols = ['key', 'type', 'salesCode', 'productionCode', 'name', 'category', 'material', 'units', 'unitCost', 'retail', 'salePrice', 'marginPct', 'status', 'online', 'specials', 'images'];
+      const cols = ['key', 'type', 'salesCode', 'productionCode', 'name', 'category', 'material', 'units', 'sizes', 'unitCost', 'retail', 'salePrice', 'marginPct', 'status', 'online', 'specials', 'images'];
       const esc = (v) => { v = v == null ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
       const csv = [cols.join(',')].concat(data.map((row) => cols.map((c) => esc(row[c])).join(','))).join('\n');
       blob = new Blob([csv], { type: 'text/csv' }); fname = 'malaya-inventory.csv';
@@ -520,6 +545,7 @@ function ItemRow({ r, edited, fieldEdited, commit, onToggleSpecial, onEdit, onDe
                 : r.mergedInto
                   ? <span style={{ color: T.accent, letterSpacing: '0.06em' }}>merged → {masterName}</span>
                   : <span style={{ color: r.online ? T.good : T.faint, letterSpacing: '0.06em' }}>{r.online ? '● online' : '○ offline'}</span>}
+              {r.sizes && <span style={{ color: T.muted }} title="Ring sizes on hand (EU)">sizes {ringSizeSummary(r.sizes)}</span>}
             </div>
           </div>
         </div>
@@ -534,7 +560,12 @@ function ItemRow({ r, edited, fieldEdited, commit, onToggleSpecial, onEdit, onDe
         </select>
       </div>
 
-      <div className="inv-cell num inv-cell-units"><span className="inv-cell-label">Units</span><NumCell value={r.qty} edited={fieldEdited(r.key, 'qty')} onCommit={(v) => commit(r.key, { qty: v })} width={46} placeholder="—" color={lowQty ? T.accent : T.ink} /></div>
+      <div className="inv-cell num inv-cell-units">
+        <span className="inv-cell-label">Units</span>
+        {r.sizes
+          ? <span title="Total across ring sizes — adjust per-size stock via Edit" style={{ display: 'inline-block', fontSize: 14, color: lowQty ? T.accent : T.ink, padding: '4px 2px' }}>{r.qty == null ? '—' : r.qty}</span>
+          : <NumCell value={r.qty} edited={fieldEdited(r.key, 'qty')} onCommit={(v) => commit(r.key, { qty: v })} width={46} placeholder="—" color={lowQty ? T.accent : T.ink} />}
+      </div>
       <div className="inv-cell num inv-cell-cost"><span className="inv-cell-label">Cost</span><NumCell value={r.unitCost} edited={fieldEdited(r.key, 'unitCost')} onCommit={(v) => commit(r.key, { unitCost: v })} money placeholder="—" /></div>
       <div className="inv-cell num inv-cell-retail"><span className="inv-cell-label">Retail</span><NumCell value={r.retail} edited={fieldEdited(r.key, 'retail')} onCommit={(v) => commit(r.key, { retail: v })} money placeholder="—" /></div>
       <div className="inv-cell num inv-cell-sale">
@@ -869,9 +900,14 @@ function ItemDrawer({ r, base, fieldEdited, commit, resetItem, onDelete, onToggl
           <div style={{ borderTop: `1px solid ${T.line}`, marginTop: 18, paddingTop: 18 }}>
             <div style={{ fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', color: T.accent, marginBottom: 14 }}>Inventory</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-              <DNum label="Units on hand" value={r.qty} placeholder="—" edited={fieldEdited(r.key, 'qty')} base={base.qty} onCommit={(v) => commit(r.key, { qty: v })} onRevert={() => commit(r.key, { qty: base.qty })} />
+              {r.sizes
+                ? <Readout label="Units on hand" value={r.qty == null ? '—' : r.qty} sub="total across ring sizes" />
+                : <DNum label="Units on hand" value={r.qty} placeholder="—" edited={fieldEdited(r.key, 'qty')} base={base.qty} onCommit={(v) => commit(r.key, { qty: v })} onRevert={() => commit(r.key, { qty: base.qty })} />}
               <DSel label="Status" value={r.stock} options={STOCK_OPTIONS} edited={fieldEdited(r.key, 'stock')} base={base.stock} onCommit={(v) => commit(r.key, { stock: v })} onRevert={() => commit(r.key, { stock: base.stock })} />
             </div>
+            {isRingCategory(r.category) && (
+              <RingSizesEditor sizes={r.sizes} onCommit={(sizes) => commit(r.key, { sizes })} />
+            )}
           </div>
 
           <div style={{ borderTop: `1px solid ${T.line}`, marginTop: 6, paddingTop: 18 }}>
@@ -955,6 +991,60 @@ function SymbolismChecklist({ topics, selected, onToggle }) {
           </div>
         </>
       )}
+    </div>
+  );
+}
+
+// Per-size stock desk for rings (EU 42–70). One SKU, many sizes — this is a
+// variant panel inside the item, never a second product: the dropdown adds
+// stock to the chosen size only, and every tracked size stays listed with its
+// count (zeros included) so the studio sees the full ladder at a glance.
+function RingSizesEditor({ sizes, onCommit }) {
+  const entries = ringSizeEntries(sizes);
+  const tracked = new Set(entries.map((en) => en.size));
+  const [size, setSize] = useState(RING_SIZES.find((s) => !tracked.has(s)) ?? RING_SIZES[0]);
+  const [count, setCount] = useState('1');
+  const change = (s, qty) => {
+    const next = { ...(sizes || {}) };
+    if (qty == null) delete next[String(s)]; else next[String(s)] = qty;
+    onCommit(next);
+  };
+  const addStock = () => {
+    const n = Math.max(1, Math.round(Number(count) || 1));
+    change(size, ringSizeQty(sizes, size) + n);
+    setCount('1');
+  };
+  const input = { background: T.panel, border: `1px solid ${T.line2}`, color: T.ink, fontSize: 13, padding: '9px 10px', fontFamily: T.sans, outline: 'none' };
+  return (
+    <div style={{ marginTop: 14, padding: '14px 16px', background: T.card, border: `1px solid ${T.line2}` }}>
+      <div style={{ fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', color: T.muted, marginBottom: 10 }}>Ring sizes · EU 42–70</div>
+      <div style={{ display: 'flex', gap: 8, alignItems: 'stretch', flexWrap: 'wrap' }}>
+        <select value={size} onChange={(e) => setSize(Number(e.target.value))} style={{ ...input, cursor: 'pointer', flex: '1 1 150px', minWidth: 0 }}>
+          {RING_SIZES.map((s) => (
+            <option key={s} value={s}>Size {s}{tracked.has(s) ? ` — ${ringSizeQty(sizes, s)} on hand` : ''}</option>
+          ))}
+        </select>
+        <input value={count} inputMode="numeric" aria-label="Units to add"
+          onChange={(e) => setCount(e.target.value.replace(/[^0-9]/g, ''))}
+          style={{ ...input, width: 52, textAlign: 'right' }} />
+        <button onClick={addStock} style={{ background: T.ink, color: T.panel, border: 'none', padding: '9px 14px', fontSize: 10, letterSpacing: '0.16em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: T.sans, whiteSpace: 'nowrap' }}>+ Add stock</button>
+      </div>
+      {entries.length > 0 && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
+          {entries.map(({ size: s, qty }) => (
+            <span key={s} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, border: `1px solid ${qty > 0 ? T.line2 : T.line}`, background: T.panel, padding: '5px 7px', fontSize: 12.5, color: qty > 0 ? T.ink : T.faint }}>
+              <strong style={{ fontWeight: 600 }}>{s}</strong>
+              <span>({qty})</span>
+              <IconBtn label="−" title={`Remove one unit from size ${s}`} disabled={qty <= 0} onClick={() => change(s, Math.max(0, qty - 1))} />
+              <IconBtn label="+" title={`Add one unit to size ${s}`} onClick={() => change(s, qty + 1)} />
+              <IconBtn label="✕" title={`Stop tracking size ${s}`} danger onClick={() => change(s, null)} />
+            </span>
+          ))}
+        </div>
+      )}
+      <div style={{ fontSize: 11, color: T.faint, marginTop: 10, lineHeight: 1.6 }}>
+        Inventory is tracked per size within this SKU — no duplicate product or SKU is created. Units on hand and the status follow the size total; a size at 0 shows as made to order on the product page.
+      </div>
     </div>
   );
 }
