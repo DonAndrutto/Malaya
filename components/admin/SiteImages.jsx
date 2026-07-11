@@ -131,8 +131,8 @@ function SlotPreview({ url, w, h, fit = 'cover', tone, pos, onPos }) {
 // ── Slot definitions ──────────────────────────────────────────────────────────
 // Each single-image slot, sized to its real on-site render (see the audit).
 const BRAND_SLOTS = [
-  { k: 'logo', label: 'Brand logo (home hero)', folder: 'site/logo', w: 480, h: 160, fit: 'contain', tone: 'brand', pw: 380,
-    hint: 'Shown centred in the homepage hero, above the brand wordmark. A transparent PNG keeps its background clear over the photography; width can vary — height is scaled to fit.' },
+  { k: 'logo', label: 'Brand logo (home hero)', folder: 'site/logo', w: 800, h: 800, fit: 'contain', tone: 'brand', pw: 240,
+    hint: 'Shown centred in the homepage hero, above the brand wordmark. The current logo asset is square (800×800) — the hero scales it by height, so proportions are always kept. A transparent PNG keeps its background clear over the photography.' },
   { k: 'tashiBadge', label: 'Tashi Mannox badge', folder: 'site/tashi', w: 240, h: 240, fit: 'contain', tone: 'light', pw: 200,
     hint: 'Corner badge on collaboration pieces (catalogue cards & product pages). Transparent PNG recommended.' },
 ];
