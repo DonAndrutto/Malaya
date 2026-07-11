@@ -28,6 +28,17 @@ The `/admin` console writes to that layer, and **Firebase** persists it:
     get indexed; publish each from /admin → Explore when content is ready).
   - `exploreGroups/{slug}` — Explore navigation shelves; membership and
     per-shelf order live in the ordered `topicSlugs` array.
+  - `orders/{orderId}` — Sales desk orders (admin → Sales). Customer snapshot,
+    currency + items (with automatic totals), lifecycle status + timeline,
+    payment, shipping, notes. **Admin-only** (customer PII) — the storefront
+    never reads these. Manual entry today; Stripe/website/WhatsApp integrations
+    later write the same shape (`source` field). See `lib/data/sales.js`.
+  - `clients/{clientId}` — the reusable client database (name, contact,
+    addresses, notes). Order history & lifetime totals are derived from
+    `orders`, never stored. **Admin-only.**
+  - `salesMeta/counters` & `salesMeta/settings` — yearly order-number sequences
+    (`MJ-2026-0042`) and the Sales desk configuration (automatic inventory
+    deduction on Paid/Shipped/off). **Admin-only.**
 - **Storage** holds the uploaded image files
   - `products/{productId}/…` — product photos
   - `site/{slot}/…` — hero slides, banners, tiles, logo, portrait

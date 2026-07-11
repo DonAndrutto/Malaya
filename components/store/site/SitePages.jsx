@@ -417,6 +417,13 @@ const METAL_LABELS = {
   'Rose Gold Plated': 'Rose Gold Plated',
 };
 
+// Customer-friendly metal names for the WhatsApp enquiry text (the strict
+// taxonomy's "Silver 925" reads better as "Sterling Silver" in a message).
+const WA_METAL_LABELS = {
+  'Silver 925': 'Sterling Silver',
+  'Yellow Gold Plated': 'Gold Plated (Vermeil)',
+};
+
 export function ProductPage({ id }) {
   const { SITE_PRODUCTS, SITE_BY_ID, content, settings, exploreTopics } = useSiteData();
   const router = useRouter();
@@ -484,15 +491,21 @@ export function ProductPage({ id }) {
 
   const isRing = isRingCategory(p.category);
 
-  // WhatsApp enquiry pre-filled with this item (name, sales code, any chosen
-  // ring size, and its URL).
-  const waDetails = [
-    p.salesCode ? `sales code: ${p.salesCode}` : null,
-    isRing && size != null ? `EU size ${size}` : null,
-  ].filter(Boolean).join(', ');
-  const waText = `I've contacted you via Malaya Jewellery International website. I'd like to ask about ${p.name}`
-    + `${waDetails ? ` (${waDetails})` : ''}.`
-    + (typeof window !== 'undefined' ? ` ${window.location.href}` : '');
+  // WhatsApp enquiry pre-filled with everything the studio needs to answer:
+  // product name, SKU, the metal, any chosen ring size, and the page URL —
+  // one detail per line, e.g.
+  //   Hello! I'm interested in the Dorje Ring.
+  //   SKU: R017A-S
+  //   Metal: Sterling Silver
+  //   Size: 54
+  //   https://www.malayajewellery.com/product/…
+  const waText = [
+    `Hello! I'm interested in the ${p.name}.`,
+    p.salesCode ? `SKU: ${p.salesCode}` : null,
+    p.material ? `Metal: ${WA_METAL_LABELS[p.material] || p.material}` : null,
+    isRing && size != null ? `Size: ${size}` : null,
+    typeof window !== 'undefined' ? window.location.href : null,
+  ].filter(Boolean).join('\n');
   const waUrl = whatsappUrlFor(content.contact.whatsapp, waText);
 
   // Gallery: every uploaded image, falling back to the single primary photo.
@@ -586,32 +599,27 @@ export function ProductPage({ id }) {
             </div>
           )}
 
-          {/* Ring size — availability within this SKU only. Black = on the
-              shelf in that size, grey = made to order; choosing a size never
-              changes the product, SKU or price. */}
+          {/* Ring size — a dropdown (never every size at once): availability
+              within this SKU only. Each option says in stock / made to order;
+              choosing a size never changes the product, SKU or price. */}
           {isRing && (
             <div className="pd-opt">
               <span className="pd-opt-label">Ring Size <em>· EU</em></span>
-              <div className="pd-sizes" role="group" aria-label="Ring size (EU)">
-                {RING_SIZES.map((s) => {
-                  const stocked = ringSizeQty(p.sizes, s) > 0;
-                  const on = size === s;
-                  return (
-                    <button key={s} type="button"
-                      className={'pd-size' + (stocked ? ' stk' : '') + (on ? ' on' : '')}
-                      aria-pressed={on}
-                      title={`Size ${s} — ${stocked ? 'in stock' : 'made to order'}`}
-                      onClick={() => setSize(on ? null : s)}>
-                      {s}
-                    </button>
-                  );
-                })}
-              </div>
-              <p className="pd-size-status">
-                {size != null
-                  ? <>Size {size} — {ringSizeQty(p.sizes, size) > 0 ? <strong>in stock</strong> : 'made to order'}</>
-                  : <><strong>Black</strong> = in stock · grey = made to order</>}
-              </p>
+              <select className="pd-size-select" aria-label="Ring size (EU)"
+                value={size == null ? '' : String(size)}
+                onChange={(e) => setSize(e.target.value === '' ? null : Number(e.target.value))}>
+                <option value="">Select your size…</option>
+                {RING_SIZES.map((s) => (
+                  <option key={s} value={s}>
+                    {`Size ${s} — ${ringSizeQty(p.sizes, s) > 0 ? 'in stock' : 'made to order'}`}
+                  </option>
+                ))}
+              </select>
+              {size != null && (
+                <p className="pd-size-status">
+                  Size {size} — {ringSizeQty(p.sizes, size) > 0 ? <strong>in stock</strong> : 'made to order'}
+                </p>
+              )}
               <p className="pd-size-note">
                 Standard women&rsquo;s sizes: 50–57 · Standard men&rsquo;s sizes: 57–68 ·{' '}
                 <a href="https://www.malayajewellery.com/blog/ring-sizing" target="_blank" rel="noreferrer">Ring Size Guide</a>

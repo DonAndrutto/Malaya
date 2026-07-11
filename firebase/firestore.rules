@@ -15,6 +15,10 @@ rules_version = '2';
 //                                     editorial pages, lib/explore.js).
 //   exploreGroups/{slug}            — Explore navigation shelves (ordered
 //                                     topicSlugs curation lists).
+//   orders/{orderId}                — Sales desk orders (lib/data/sales.js).
+//                                     Customer PII — never publicly readable.
+//   clients/{clientId}              — reusable client database. PII, admin-only.
+//   salesMeta/{docId}               — order-number counters & sales settings.
 //   admins/{uid}                    — allowlist of admin account UIDs.
 //
 // Reads of storefront data are public (the storefront needs them). Writes are
@@ -180,6 +184,22 @@ service cloud.firestore {
       allow read: if resource.data.published == true || isAdmin();
       allow write: if isAdmin()
         && (request.method == 'delete' || validGroup(request.resource.data, slug));
+    }
+
+    // Sales & Orders (admin Sales desk, lib/sales.js). Orders and clients hold
+    // customer PII, so reads are admin-only too — the storefront never touches
+    // these. Deep validation of the nested items/customer maps is impractical
+    // in CEL (same stance as exploreTopics blocks); the write surface is
+    // admin-only and the desk normalises every record on read.
+    match /orders/{orderId} {
+      allow read, write: if isAdmin();
+    }
+    match /clients/{clientId} {
+      allow read, write: if isAdmin();
+    }
+    // Order-number counters ("counters") and desk settings ("settings").
+    match /salesMeta/{docId} {
+      allow read, write: if isAdmin() && (docId == 'counters' || docId == 'settings');
     }
 
     // Admin allowlist. A signed-in user may check their own entry; documents
