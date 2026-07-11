@@ -11,6 +11,11 @@
 //   node scripts/backfill-symbol-stories.mjs                  # apply (Admin SDK credentials required)
 //   node scripts/backfill-symbol-stories.mjs --report out.json# also save the full per-item report
 //
+// Optional richer source: run  node scripts/scrape-stories.mjs  first (it saves
+// lib/data/scraped-stories.json from the old live site). When that file is
+// present, a product whose sales code matches a scraped page receives its
+// ORIGINAL site story instead of the generic symbol text.
+//
 // Where the current stories come from:
 //   • --dry-run reads the live catalogueOverrides through Firestore's public
 //     REST endpoint (reads are public by rule), so a preview needs NO
@@ -85,7 +90,7 @@ const SYMBOLS = [
   },
   {
     key: 'bumpa', label: 'Bumpa / Tshe-Bum',
-    match: ['\\bbumpa\\b', 'treasure\\s+vase', 'tshe[\\s-]?bum', '(longevity|long\\s*life)\\s+vase'],
+    match: ['\\bbumpa\\b', 'tshe[\\s-]?bum', '\\bvases?\\b'],
     story: 'The Treasure Vase symbolizes inexhaustible abundance, longevity, wisdom and prosperity. Filled with precious substances, it represents the limitless qualities of the awakened mind.',
   },
   {
@@ -144,6 +149,81 @@ const SYMBOLS = [
     story: 'The Mani Mantra, OM MANI PADME HUNG, embodies the compassion of Avalokiteshvara and serves as a reminder to cultivate kindness, wisdom and compassion.',
   },
   {
+    key: 'om-ah-hung', label: 'OM AH HUNG',
+    match: ['om\\s+ah\\s+hung'],
+    story: 'OM AH HUNG are the syllables of enlightened body, speech and mind. Visualized at the crown, throat and heart, they bless ordinary experience — form becomes pure appearance, sound becomes mantra, thought becomes the play of awareness. The three syllables also consecrate offerings and open many of the great mantras.',
+  },
+  {
+    key: 'vajra-guru', label: 'Vajra Guru Mantra',
+    match: ['vajra\\s+guru'],
+    story: 'The Vajra Guru mantra, OM AH HUNG BENZA GURU PEMA SIDDHI HUNG, invokes Guru Rinpoche — Padmasambhava — who carried the Vajrayana teachings across the Himalayas. Its syllables condense his enlightened body, speech, mind, qualities and activity, and its recitation is said to carry his blessing through every obstacle.',
+  },
+  {
+    key: 'dzam', label: 'Dzam / Dzambhala',
+    match: ['\\bdzam\\b', 'dzambhala'],
+    story: 'DZAM is the seed syllable of Dzambhala, the guardian of wealth. The riches he grants are understood to be held in trust for generosity — prosperity as the freedom to give without hesitation, dissolving the anxiety of poverty for oneself and others.',
+  },
+  {
+    key: 'vajra-bell', label: 'Vajra and Bell',
+    match: ['(vajras?|dorjes?)\\s*(and|&|\\+)\\s*bells?', 'bells?\\s*(and|&|\\+)\\s*(vajras?|dorjes?)', 'dorje\\s+bell'],
+    story: 'The Vajra and Bell are the essential pair of Vajrayana ritual: the vajra held in the right hand embodies skillful means and indestructible compassion, while the bell in the left embodies wisdom — the open, empty nature of all things. Used together and never apart, they express the union at the heart of awakening.',
+  },
+  {
+    key: 'gau', label: 'Gau',
+    match: ['\\bgau\\b', '\\bghau\\b'],
+    story: 'The Gau is a portable shrine — an amulet box traditionally worn over the heart, holding sacred images, rolled mantras or a teacher’s blessing. Carried by travellers and pilgrims throughout the Himalayas, it keeps blessing and protection close to the body wherever its wearer goes.',
+  },
+  {
+    key: 'lotus', label: 'Lotus',
+    match: ['\\blotus\\b', '\\bpadma\\b', '\\bpema\\b'],
+    story: 'The Lotus rises from mud and murky water, yet opens immaculate above the surface. It is the image of primordial purity: the awakened qualities of mind are not manufactured but revealed, unstained by the circumstances they grow through. Buddhas and teachers are depicted seated upon lotus thrones — born into the world, yet not bound by it.',
+  },
+  {
+    key: 'conch', label: 'Conch',
+    match: ['\\bconch\\b', 'dungkar'],
+    story: 'The white Conch, spiralling to the right, was once blown to gather assemblies and proclaim victory. In Buddhism it became the voice of the Dharma itself — the fearless, far-reaching sound of the teachings that awakens beings from the sleep of ignorance. It is one of the Eight Auspicious Symbols.',
+  },
+  {
+    key: 'parasol', label: 'Parasol',
+    match: ['\\bparasol\\b', '\\bumbrella\\b'],
+    story: 'The Precious Parasol was once held above royalty; in Buddhism it shelters all beings from the heat of suffering and from harmful influences. One of the Eight Auspicious Symbols, it represents protection, dignity and the cool shade of wisdom.',
+  },
+  {
+    key: 'victory-banner', label: 'Victory Banner',
+    match: ['victory\\s+banner', 'auspicious\\s+banner', '\\bgyaltsen\\b', '\\bbanner\\b'],
+    story: 'The Victory Banner commemorates the Buddha’s triumph over the four maras — pride, desire, disturbing emotions and the fear of death. Raised on rooftops and mountain passes across the Himalayas, it proclaims the victory of wisdom over ignorance. It is one of the Eight Auspicious Symbols.',
+  },
+  {
+    key: 'golden-fish', label: 'Golden Fish',
+    match: ['\\bfish\\b', '\\bsernya\\b'],
+    story: 'The pair of Golden Fish once stood for the great rivers Ganga and Yamuna; in Buddhism they represent beings who move through the ocean of existence in complete freedom — fearless, spontaneous, in no danger of drowning in suffering. They are one of the Eight Auspicious Symbols.',
+  },
+  {
+    key: 'ashtamangala', label: 'Eight Auspicious Symbols',
+    match: ['eight\\s+auspicious', 'ashtamangala', 'tashi\\s+tagye'],
+    story: 'The Eight Auspicious Symbols — the parasol, the golden fish, the treasure vase, the lotus, the conch, the endless knot, the victory banner and the wheel of Dharma — recall the offerings presented to the Buddha upon his awakening. Displayed together across the Himalayan world, they invite protection, abundance and good fortune, and each carries its own teaching.',
+  },
+  {
+    key: 'sun-moon', label: 'Sun and Moon',
+    match: ['sun\\s*(and|&)\\s*moon', '\\bnyima\\b', '\\bdawa\\b'],
+    story: 'The joined Sun and Moon crown stupas and prayer flags throughout the Himalayas. Nyima, the sun, stands for wisdom — the light in which things are seen as they are; Dawa, the moon, for compassion and skillful means. Their union expresses the inseparability of the two at the heart of the path.',
+  },
+  {
+    key: 'kirtimukha', label: 'Kirtimukha / Tsipatta',
+    match: ['kirtimukha', 'tsipatta'],
+    story: 'Kirtimukha, the “Face of Glory” — Tsipatta in the Himalayan tradition — is the fierce guardian face set above temple doors and on ritual ornament. Born of a legend in which the creature devoured its own body at Shiva’s command until only the face remained, it embodies the all-consuming nature of time and stands guard over the sacred, turning harm away from the wearer.',
+  },
+  {
+    key: 'rahu', label: 'Rahu',
+    match: ['\\brahu\\b', '\\brahula\\b'],
+    story: 'Rahu is the eclipse — the celestial force said to swallow the sun and the moon. In the Himalayan tradition he is honoured as Za Rahula, a fierce guardian of the teachings: an acknowledgement of the shadow forces of existence, and of their power turned toward protection.',
+  },
+  {
+    key: 'ratna', label: 'Ratna',
+    match: ['\\bratna\\b'],
+    story: 'Ratna means jewel — the precious gem that grants all that is needed, emblem of the Jewel Family and of the wisdom of equanimity. It stands for inner wealth: the generosity that grows the more freely it is given.',
+  },
+  {
     key: 'blue-poppy', label: 'Blue Poppy',
     match: ['\\bpoppy\\b'],
     story: 'The Blue Poppy is the national flower of Bhutan and symbolizes the country’s unique natural beauty, resilience and cultural identity.',
@@ -190,13 +270,16 @@ const DOMINATES = {
   'double-vajra': ['vajra'],            // "Double Dorje" also hits the bare vajra pattern
   phurba: ['vajra'],                    // "Vajrakilaya" contains vajra
   mani: ['om', 'hung', 'a', 'hri'],     // "OM MANI PADME HUNG" spells out its syllables
+  'om-ah-hung': ['om', 'a', 'hung'],    // the mantra contains its component syllables
+  'vajra-guru': ['vajra', 'om', 'a', 'hung'], // "Vajra Guru Mantra" is not the implement
+  'vajra-bell': ['vajra', 'bell'],      // the pair is its own symbol, not two halves
+  samaya: ['vajra', 'bell', 'vajra-bell'], // "Samaya Ring, Dorje & Bell" IS the Samaya line
+  gau: ['om', 'hung', 'tam', 'hri', 'bam', 'a', 'dhi', 'kirtimukha', 'buddha'], // a gau is
+  // the shrine box; the syllable/deity on it is its decoration
 };
 
 function classify(text) {
-  // "Vajra Guru Mantra" is Guru Rinpoche's mantra, not the vajra implement —
-  // there is no canonical text for it, so the phrase must not trip the Vajra
-  // matcher. Blank it out before matching.
-  const t = String(text || '').replace(/vajra\s+guru\s+mantra/gi, ' ');
+  const t = String(text || '');
   let hits = SYMBOLS.filter((s) => s.match.some((m) => new RegExp(m, 'i').test(t))).map((s) => s.key);
   for (const [winner, losers] of Object.entries(DOMINATES)) {
     if (hits.includes(winner)) hits = hits.filter((k) => k === winner || !losers.includes(k));
@@ -212,12 +295,14 @@ function classify(text) {
 // import chain pulls in a JSON module), so read the literal tables out of the
 // source. Each item carries the override id its story must live under.
 async function loadItems() {
-  const items = []; // { id, name, sub, linkedSku? }
+  const items = []; // { id, name, sub, salesCode?, linkedSku? }
   const productsSrc = await readFile(path.join(ROOT, 'lib/data/products.js'), 'utf8');
+  const codeMatch = productsSrc.match(/export const CODE_MAP = (\{[\s\S]*?\});/);
+  const codeMap = codeMatch ? JSON.parse(codeMatch[1]) : {};
   const rawMatch = productsSrc.match(/const RAW = \[([\s\S]*?)\n\];/);
   if (rawMatch) {
     new Function(`return [${rawMatch[1]}]`)() // [id, name, sub, file, tag, category, hue]
-      .forEach(([id, name, sub]) => items.push({ id, name: name || '', sub: sub || '' }));
+      .forEach(([id, name, sub]) => items.push({ id, name: name || '', sub: sub || '', salesCode: codeMap[id] || '' }));
   }
   const siteSrc = await readFile(path.join(ROOT, 'lib/data/site-data.js'), 'utf8');
   const extraMatch = siteSrc.match(/const SITE_EXTRA = \[([\s\S]*?)\n\];/);
@@ -297,9 +382,34 @@ async function loadCredential(admin) {
 const hasStory = (o) => !!(o && typeof o.story === 'string' && o.story.trim());
 const label = (it) => `${it.id}  ${[it.name, it.sub].filter(Boolean).join(' — ')}`;
 
+// ── Item-specific stories scraped from the old live site ─────────────────────
+// scripts/scrape-stories.mjs writes lib/data/scraped-stories.json (one record
+// per product page: { code, title, description, story, url }). When that file
+// exists, a product whose sales code / SKU matches a scraped record takes the
+// ORIGINAL story from the live site in preference to the generic symbol text —
+// codes are matched on the same punctuation-insensitive key the catalogue
+// importer uses ("P016- YG14" == "P016-YG14").
+const codeKey = (c) => String(c || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+async function loadScrapedStories() {
+  const file = path.join(ROOT, 'lib/data/scraped-stories.json');
+  if (!existsSync(file)) return {};
+  const records = JSON.parse(await readFile(file, 'utf8'));
+  const out = {};
+  for (const r of records) {
+    const story = r && typeof r.story === 'string' ? r.story.trim() : '';
+    // Very short "stories" are scraping artefacts, not narratives.
+    if (r && r.code && story.length >= 60) out[codeKey(r.code)] = story;
+  }
+  return out;
+}
+
 async function main() {
   const items = await loadItems();
-  console.log(`Backfill plan: ${items.length} base item(s) · ${SYMBOLS.length} symbol texts · ${DRY ? 'DRY RUN' : 'APPLY'}\n`);
+  const scraped = await loadScrapedStories();
+  console.log(
+    `Backfill plan: ${items.length} base item(s) · ${SYMBOLS.length} symbol texts · ` +
+    `${Object.keys(scraped).length} scraped site story(ies) · ${DRY ? 'DRY RUN' : 'APPLY'}\n`,
+  );
 
   let db = null;
   let overrides;
@@ -337,13 +447,19 @@ async function main() {
     const sub = own && own.sub != null && String(own.sub).trim() ? own.sub : it.sub;
     const { symbol, reason } = classify(`${name} ${sub}`);
 
+    // The story scraped from the piece's own page on the old live site beats
+    // the generic symbol text; the symbol text is the fallback.
+    const siteStory = scraped[codeKey(it.salesCode)] || scraped[codeKey(it.id)] || '';
+    const story = siteStory || (symbol ? SYMBOL_BY_KEY[symbol].story : '');
+    const source = siteStory ? 'site' : symbol;
+
     const existing = hasStory(own) || (it.linkedSku && hasStory(overrides[it.linkedSku]));
     if (existing) {
       // Only interesting for the report when we WOULD have written something.
-      if (symbol) report.skippedExisting.push({ id: it.id, name, sub, symbol });
+      if (story) report.skippedExisting.push({ id: it.id, name, sub, symbol: source });
       continue;
     }
-    if (!symbol) {
+    if (!story) {
       report.unclassified.push({ id: it.id, name, sub, reason });
       continue;
     }
@@ -351,17 +467,18 @@ async function main() {
     if (!DRY) {
       const ref = db.doc(`catalogueOverrides/${it.id}`);
       const fresh = (await ref.get()).data();
-      if (hasStory(fresh)) { report.skippedExisting.push({ id: it.id, name, sub, symbol }); continue; }
-      await ref.set({ story: SYMBOL_BY_KEY[symbol].story, _updated: Date.now() }, { merge: true });
+      if (hasStory(fresh)) { report.skippedExisting.push({ id: it.id, name, sub, symbol: source }); continue; }
+      await ref.set({ story, _updated: Date.now() }, { merge: true });
     }
-    report.updated.push({ id: it.id, name, sub, symbol });
+    report.updated.push({ id: it.id, name, sub, symbol: source });
   }
 
   // ── Summary ────────────────────────────────────────────────────────────────
   const bySymbol = {};
   report.updated.forEach((r) => { bySymbol[r.symbol] = (bySymbol[r.symbol] || 0) + 1; });
   console.log(`${DRY ? 'Would update' : 'Updated'} ${report.updated.length} product(s):`);
-  SYMBOLS.forEach((s) => { if (bySymbol[s.key]) console.log(`  ${s.label.padEnd(20)} ${String(bySymbol[s.key]).padStart(3)}`); });
+  if (bySymbol.site) console.log(`  ${'(story from old site)'.padEnd(26)} ${String(bySymbol.site).padStart(3)}`);
+  SYMBOLS.forEach((s) => { if (bySymbol[s.key]) console.log(`  ${s.label.padEnd(26)} ${String(bySymbol[s.key]).padStart(3)}`); });
   console.log(`\nSkipped (already have a story): ${report.skippedExisting.length}`);
   report.skippedExisting.forEach((r) => console.log(`  ${label(r)}`));
   console.log(`\nNot confidently classified (untouched): ${report.unclassified.length}`);
