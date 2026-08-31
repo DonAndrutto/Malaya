@@ -10,7 +10,12 @@ import { primaryGroupOf } from '@/lib/explore-shared';
 import { jsonLd, breadcrumbJsonLd, exploreTopicJsonLd } from '@/lib/seo';
 import { TopicPage } from '@/components/store/site/ExplorePages';
 
-export const revalidate = 300;
+// ISR safety net. 24h, matching REVALIDATE_SECONDS (lib/server/firestore.js):
+// admin publishes purge this route on demand, so the TTL only has to catch a
+// ping that never landed. Route segment config must be a statically analysable
+// literal, so it cannot import the constant — lib/server/cache-policy.test.js
+// pins the two together. See CACHING.md.
+export const revalidate = 86400;
 
 export async function generateMetadata({ params }) {
   const topic = await fetchTopic(params.slug);

@@ -1,10 +1,13 @@
 // On-demand cache revalidation — the missing half of the admin publish flow.
 //
 // The storefront server-renders from Firestore through Next's data cache
-// (ISR, lib/server/firestore.js) with a 5-minute safety-net TTL. Admin writes
+// (ISR, lib/server/firestore.js) with a 24-hour safety-net TTL. Admin writes
 // happen client-side, straight into Firestore, so the server never learns
 // about them on its own — a freshly published topic, blog post, price or
 // site-copy change stayed invisible in the server HTML until the TTL expired.
+// With the TTL now measured in days rather than minutes, THIS ENDPOINT is the
+// entire freshness mechanism: if a scope stops purging what it should, the
+// symptom is a storefront that is stale for a day, not for five minutes.
 // The admin save paths (lib/revalidate-ping.js) ping this endpoint after every
 // ACKED Firestore write; it purges the tagged caches and the routes rendered
 // from them, so published content is publicly visible on the very next request.
@@ -44,6 +47,21 @@ const SCOPES = {
   site: () => {
     // Catalogue overrides and siteSettings feed the layout of every route
     // (getServerLayoutData), so the whole tree drops out together.
+    //
+    // BLAST RADIUS — the next optimisation target, deliberately left alone
+    // here (CACHING.md §5). Both lines below are site-wide:
+    //   revalidateTag(SITE_CACHE_TAG) purges the catalogueOverrides /
+    //     siteSettings reads AND, because Next stamps every tag touched
+    //     during a render onto that route's cache entry, the cached HTML of
+    //     every route the store layout wraps — which is all of them.
+    //   revalidatePath('/', 'layout') resolves to the implicit tag `_N_T_/`
+    //     + `/layout`, which every app route derives, so it purges literally
+    //     every route including the ones that read no site data at all.
+    // The second is therefore near-redundant given the first; what makes the
+    // radius large is the root store layout consuming catalogueOverrides on
+    // every route, not this call. Narrowing it means splitting that layout
+    // (Stage 2) — until then, a price edit correctly but expensively drops
+    // every blog and Explore page out of cache too.
     revalidateTag(SITE_CACHE_TAG);
     revalidatePath('/', 'layout');
   },

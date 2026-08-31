@@ -18,7 +18,7 @@ landed as proposed. Seed with `npm run seed-explore`; deploy rules first
 | Layer | What's actually there |
 |---|---|
 | Framework | **Next.js 14.2 (App Router)**, plain JavaScript/JSX (no TypeScript), React 18 |
-| Hosting | Vercel (`vercel.json`), ISR everywhere (`revalidate = 300`), Vercel image optimizer (AVIF/WebP) |
+| Hosting | Vercel (`vercel.json`), ISR everywhere (`revalidate = 86400` — a safety net behind on-demand invalidation; see CACHING.md), images served straight from Firebase Storage (`images.unoptimized`; see IMAGES.md) |
 | Data / CMS | **Firebase**: Firestore (content), Storage (images), Auth (admin sign-in). There is **no external CMS** — the repo ships its own bespoke admin console at `/admin` |
 | Styling | One global stylesheet (`app/globals.css`) scoped under `.malaya-site`; palette brown `#3B231A` / gold `#b08d57`; Poppins body, Raleway headings. The admin styles itself inline from `components/admin/theme.js` |
 | Markdown | `react-markdown` + `remark-gfm` + `rehype-slug`, plus a custom Obsidian-style `[[wiki link]]` resolver (`lib/wiki-links.js`) that already links to products, posts and pages |
@@ -361,7 +361,7 @@ An unobtrusive strip is appended **below** the existing product grid (nothing ab
 ```
 Firestore exploreTopics/endless-knot
         │
-        ▼  server (ISR 300s, fails soft — lib/server/explore.js)
+        ▼  server (ISR 24h + on-demand purge, fails soft — lib/server/explore.js)
 app/(store)/explore/topic/[slug]/page.jsx
    ├─ generateMetadata()        title · excerpt · canonical · OG
    ├─ <script> Article + BreadcrumbList JSON-LD
@@ -386,7 +386,7 @@ app/(store)/explore/topic/[slug]/page.jsx
 
 - **The page template is finished the day it ships.** It renders hero + title + `<BlockRenderer>`. New block types touch the registry and add a component; the template, route, schema, rules and all existing topics are untouched. Unknown types render nothing — old cached clients survive new content.
 - Product-aware blocks (`floatProduct`, `productGrid`, hotspots, the linked-products rail) resolve ids through `SITE_BY_ID` from the **existing** context — Explore renders live product names, prices, sale states and images with no product data duplicated into topic docs, ever. A dangling product id renders nothing.
-- **Listing pages** (`/explore`, `/explore/<group>`) are server-rendered from projections (§3.9) with ISR — deliberately *not* live-subscribed, because the client SDK can't project fields and shipping 200 full articles to paint a card grid is the one genuine scalability trap in this design. A 5-minute editorial propagation delay matches what `generateMetadata` already accepts on product pages; the admin's own preview is instant (§10). The **topic page** does subscribe (one doc) — so "edit in admin, see it live on the site" still works where it matters.
+- **Listing pages** (`/explore`, `/explore/<group>`) are server-rendered from projections (§3.9) with ISR — deliberately *not* live-subscribed, because the client SDK can't project fields and shipping 200 full articles to paint a card grid is the one genuine scalability trap in this design. Editorial propagation is immediate: the admin's save pings `/api/revalidate` after Firestore ACKs the write and the tagged caches are dropped (CACHING.md §1); the 24h TTL is only the backstop for a ping that never landed. The admin's own preview is instant (§10). The **topic page** does subscribe (one doc) — so "edit in admin, see it live on the site" still works where it matters.
 - Visual language: a new `.explore-*` family in `globals.css` under the `.malaya-site` scope — same tokens (brown/gold, Raleway/Poppins), *museum-catalogue* proportions: narrower measure (~68ch), larger serif display sizes, generous whitespace, full-bleed imagery. Reuses `SiteProductCard`, `SiteImg`, `PageBanner`, `rule-dot` verbatim. Nothing outside `.explore-*` changes, so the catalogue cannot regress by CSS accident.
 
 ### 10. Admin architecture
@@ -425,7 +425,7 @@ The Phase 3 helper (standalone Node script in the `scripts/*.mjs` house style) s
 2. *Rules can't deep-validate block internals.* An admin write could store a malformed block. Accepted: writes are admin-only and size-capped, and the renderer is defensive (unknown type / missing prop → render nothing). The alternative (exploding blocks into typed subcollections for CEL's benefit) would sacrifice the one-read page for a validation the trust model doesn't require.
 3. *Fan-out writes from the topic editor* (group docs + product overrides). Firestore has `writeBatch`; the editor commits association changes atomically. Last-write-wins between two simultaneous admins is the existing console's semantics everywhere — not worsened, documented.
 
-**Scalability** — the design's honest ceiling is ~1,000 topics, set by "load summaries whole + in-memory join" (~150 KB of summaries) — 5× the stated 200-topic ambition, and the failure mode is gradual (a slower layout fetch), not a wall. The deliberate trade taken: Explore *listings* give up live-subscription (ISR only) to avoid shipping full articles to card grids; §9 argues a 5-minute editorial delay is the right price. If it ever isn't, on-demand revalidation (a webhook the admin save calls) is a bolt-on.
+**Scalability** — the design's honest ceiling is ~1,000 topics, set by "load summaries whole + in-memory join" (~150 KB of summaries) — 5× the stated 200-topic ambition, and the failure mode is gradual (a slower layout fetch), not a wall. The deliberate trade taken: Explore *listings* give up live-subscription (ISR only) to avoid shipping full articles to card grids; §9 argued a 5-minute editorial delay was the right price; on-demand revalidation was later bolted on as predicted (`app/api/revalidate`), so there is now no editorial delay at all.
 
 **Admin UX risks** — (a) The block editor is the biggest single build item in Phase 2; scoped honestly: linear list + ▲▼ + per-type forms, *not* drag-and-drop WYSIWYG page-building. The split preview is what makes that austerity acceptable. (b) The hotspot editor must handle touch; pointer-events with fraction math is small but fiddly — budgeted as its own step. (c) Two-sided association editing risks "where do I do X?" confusion; both panels will carry one-line captions ("Also editable from the product's drawer"). (d) No standalone draft-preview URL for an unpublished topic — the admin's preview pane covers v1; a signed preview route is a known, additive follow-up.
 
@@ -456,7 +456,7 @@ This document is the Phase 1 checkpoint. Points most worth a deliberate yes/no b
 1. **CMS**: extend the existing Firebase + `/admin` console (no external CMS) — §10.
 2. **Relationship shape**: Groups hold ordered `topicSlugs`; products hold `topics`; no join collection — §2, §5.
 3. **URLs**: `/explore`, `/explore/<group>`, `/explore/topic/<slug>` — §4.
-4. **Listings are ISR (5-min propagation), topic pages live-subscribe** — §9.
+4. **Listings are ISR (published on demand, 24h backstop), topic pages live-subscribe** — §9, CACHING.md.
 5. **Floating PNG syntax**: `![[float: <product> | left|right]]` via the existing wiki-link/LinkPicker idiom — §3.6.
 6. **Seed topics publish immediately** with placeholder content (vs. seeding as drafts) — SEO note in Part III.
 

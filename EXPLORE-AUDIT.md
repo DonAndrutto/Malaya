@@ -549,7 +549,7 @@ exist.**
   traffic and citations exist.
 - **Asset duplication drift** (#16) — irreversible-in-practice once bulk entry begins.
 - **Soft scaling ceilings, accepted and documented**: admin full-collection subscribe +
-  localStorage mirror (graceful degradation); ISR listings' 5-minute propagation;
+  localStorage mirror (graceful degradation); ISR listings' propagation (now on demand — CACHING.md);
   summaries-in-memory joins (~1,000-topic honest ceiling per EXPLORE.md). None needs
   action at the stated ambition.
 
