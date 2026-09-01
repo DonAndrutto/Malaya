@@ -3,8 +3,12 @@ import { getServerProduct, getServerContent } from '@/lib/server/site';
 import { CATEGORY_TO_SECTION } from '@/lib/data/site-data';
 import { jsonLd, productJsonLd, breadcrumbJsonLd } from '@/lib/seo';
 
-// Re-render (ISR) so admin edits reach metadata/JSON-LD within a few minutes.
-export const revalidate = 300;
+// ISR safety net. 24h, matching REVALIDATE_SECONDS (lib/server/firestore.js):
+// admin publishes purge this route on demand, so the TTL only has to catch a
+// ping that never landed. Route segment config must be a statically analysable
+// literal, so it cannot import the constant — lib/server/cache-policy.test.js
+// pins the two together. See CACHING.md.
+export const revalidate = 86400;
 
 export async function generateMetadata({ params }) {
   const p = await getServerProduct(params.id);

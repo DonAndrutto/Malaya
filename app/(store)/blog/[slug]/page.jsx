@@ -1,15 +1,23 @@
+import { cache } from 'react';
 import { BlogPost } from '@/components/store/site/BlogPages';
 import { fetchDoc, REVALIDATE_SECONDS, BLOG_CACHE_TAG } from '@/lib/server/firestore';
 import { jsonLd, blogPostingJsonLd, breadcrumbJsonLd } from '@/lib/seo';
 
-export const revalidate = 300;
+// ISR safety net. 24h, matching REVALIDATE_SECONDS (lib/server/firestore.js):
+// admin publishes purge this route on demand, so the TTL only has to catch a
+// ping that never landed. Route segment config must be a statically analysable
+// literal, so it cannot import the constant — lib/server/cache-policy.test.js
+// pins the two together. See CACHING.md.
+export const revalidate = 86400;
 
 // Unpublished posts are denied by the security rules, so a draft (or unknown
 // slug) simply resolves to null here and the page is kept out of the index.
-async function getPost(slug) {
+// `cache` memoises it for the request: generateMetadata and the page component
+// both want the same post, and only one of them should pay for decoding it.
+const getPost = cache(async (slug) => {
   const post = await fetchDoc(`blogPosts/${encodeURIComponent(slug)}`, REVALIDATE_SECONDS, [BLOG_CACHE_TAG]);
   return post && post.published && post.title ? { ...post, slug } : null;
-}
+});
 
 export async function generateMetadata({ params }) {
   const post = await getPost(params.slug);

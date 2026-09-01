@@ -2,7 +2,24 @@ import { getServerSiteData, SITE_URL } from '@/lib/server/site';
 import { fetchPublishedBlogPosts } from '@/lib/server/firestore';
 import { fetchPublishedGroups, fetchPublishedTopicSummaries } from '@/lib/server/explore';
 
-export const revalidate = 3600;
+// ISR safety net. 24h, matching REVALIDATE_SECONDS (lib/server/firestore.js):
+// admin publishes purge this route on demand, so the TTL only has to catch a
+// ping that never landed. Route segment config must be a statically analysable
+// literal, so it cannot import the constant — lib/server/cache-policy.test.js
+// pins the two together. See CACHING.md.
+//
+// The TTL matters more here than elsewhere: this is a metadata *route*, and
+// Next 14's built-in filesystem cache handler only checks cache tags for
+// entries of kind PAGE and FETCH — never ROUTE — so neither revalidateTag nor
+// revalidatePath('/sitemap.xml') actually drops a cached sitemap when
+// self-hosting (verified against next@14.2.35). Both are still called from
+// app/api/revalidate because Vercel's own cache handler is a different
+// implementation, but do not rely on them: assume a newly published product,
+// post or topic can take up to a day to appear HERE. It is linked from the
+// storefront the moment it publishes either way, and search engines refetch a
+// sitemap roughly daily, so a 24h floor costs nothing measurable. Drop this to
+// 3600 if you ever want the old behaviour back — it costs ~24 writes/day.
+export const revalidate = 86400;
 
 const STATIC_ROUTES = [
   { path: '/', priority: 1.0, changeFrequency: 'daily' },

@@ -43,9 +43,9 @@ export default function StoreLayoutClient({
   // Explore summaries/groups are deliberately NOT live-subscribed: the client
   // SDK can't project fields, and shipping whole articles to paint card grids
   // is the one real scalability trap. They ride the ISR props — refreshed on
-  // demand when the admin publishes (app/api/revalidate) — and the topic page
-  // itself subscribes to its single document, so editing stays live where it
-  // matters.
+  // demand when the admin publishes (app/api/revalidate), which is now the
+  // only thing that refreshes them inside a day — and the topic page itself
+  // subscribes to its single document, so editing stays live where it matters.
   const ctx = useMemo(
     () => ({ ...siteData, settings, content, blogPosts, exploreGroups: initialExploreGroups, exploreTopics: initialExploreTopics }),
     [siteData, settings, content, blogPosts, initialExploreGroups, initialExploreTopics],
