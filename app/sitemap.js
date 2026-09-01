@@ -2,24 +2,25 @@ import { getServerSiteData, SITE_URL } from '@/lib/server/site';
 import { fetchPublishedBlogPosts } from '@/lib/server/firestore';
 import { fetchPublishedGroups, fetchPublishedTopicSummaries } from '@/lib/server/explore';
 
-// ISR safety net. 24h, matching REVALIDATE_SECONDS (lib/server/firestore.js):
-// admin publishes purge this route on demand, so the TTL only has to catch a
-// ping that never landed. Route segment config must be a statically analysable
-// literal, so it cannot import the constant — lib/server/cache-policy.test.js
-// pins the two together. See CACHING.md.
+// INTENTIONAL EXCEPTION to the 24h policy — 1 hour, not REVALIDATE_SECONDS.
+// lib/server/cache-policy.test.js encodes this exception explicitly so it
+// reads as a decision, not as drift.
 //
-// The TTL matters more here than elsewhere: this is a metadata *route*, and
-// Next 14's built-in filesystem cache handler only checks cache tags for
-// entries of kind PAGE and FETCH — never ROUTE — so neither revalidateTag nor
-// revalidatePath('/sitemap.xml') actually drops a cached sitemap when
-// self-hosting (verified against next@14.2.35). Both are still called from
-// app/api/revalidate because Vercel's own cache handler is a different
-// implementation, but do not rely on them: assume a newly published product,
-// post or topic can take up to a day to appear HERE. It is linked from the
-// storefront the moment it publishes either way, and search engines refetch a
-// sitemap roughly daily, so a 24h floor costs nothing measurable. Drop this to
-// 3600 if you ever want the old behaviour back — it costs ~24 writes/day.
-export const revalidate = 86400;
+// Why: this is a metadata *route*, and Next 14's built-in filesystem cache
+// handler only checks cache tags for entries of kind PAGE and FETCH — never
+// ROUTE (verified against next@14.2.35). So when self-hosting, neither
+// revalidateTag nor revalidatePath('/sitemap.xml') actually drops a cached
+// sitemap; only the TTL does. Vercel ships its own cache handler, so the
+// on-demand purges from app/api/revalidate may well work in production — but
+// "may well" is not a basis for content discovery. A 1-hour floor makes a
+// newly published product, post or topic reachable in the sitemap without
+// depending on that uncertainty.
+//
+// The cost is negligible: 24 regenerations/day = ~720/month against a
+// 200,000/month ISR-write allowance, i.e. well under 1% even if one
+// regeneration bills several write units. Everything else on the storefront
+// keeps the 24h safety net (REVALIDATE_SECONDS, lib/server/firestore.js).
+export const revalidate = 3600;
 
 const STATIC_ROUTES = [
   { path: '/', priority: 1.0, changeFrequency: 'daily' },
