@@ -83,6 +83,8 @@ function Login({ onDemoLogin }) {
 
 // ─────────────────────────────────────────────────── Console (shell with tabs) ────
 function Console({ user, onLogout }) {
+  const [contentPending, setContentPending] = useState(false);
+  const leaveContent = () => !contentPending || window.confirm('Site content has unsaved changes or a save in progress. Leave the editor? Your draft will be kept in this tab.');
   const [tab, setTab] = useState('inventory');
   const [overrides, setOverrides] = useState({});
   // Latest override map outside React state, so update() can compute the next
@@ -131,19 +133,19 @@ function Console({ user, onLogout }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
           <span style={{ fontFamily: T.serif, fontSize: 23, letterSpacing: '0.22em', textTransform: 'uppercase', color: T.ink }}>Malaya</span>
           <nav style={{ display: 'flex', gap: 22, flexWrap: 'wrap' }}>
-            {TABS.map(([k, lbl]) => <button key={k} onClick={() => setTab(k)} style={tabBtn(tab === k)}>{lbl}</button>)}
+            {TABS.map(([k, lbl]) => <button key={k} onClick={() => { if (k === tab || leaveContent()) setTab(k); }} style={tabBtn(tab === k)}>{lbl}</button>)}
           </nav>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <a href="https://malayajewellery.com" target="_blank" rel="noreferrer" style={{ ...ghostBtn(), textDecoration: 'none' }}>View site ↗</a>
           <span style={{ fontSize: 11, letterSpacing: '0.06em', color: T.muted }}>Signed in as <span style={{ color: T.ink }}>{user}</span></span>
-          <button onClick={onLogout} style={ghostBtn()}>Log out</button>
+          <button onClick={() => { if (leaveContent()) onLogout(); }} style={ghostBtn()}>Log out</button>
         </div>
       </header>
 
       {tab === 'inventory' && <Inventory overrides={overrides} setOverrides={update} />}
       {tab === 'sales' && <Sales overrides={overrides} setOverrides={update} />}
-      {tab === 'content' && <SiteContent />}
+      {tab === 'content' && <SiteContent user={user} onPendingChange={setContentPending} />}
       {tab === 'site' && <SiteImages />}
       {tab === 'blog' && <BlogAdmin />}
       {tab === 'explore' && <ExploreAdmin />}

@@ -37,6 +37,7 @@
     "eslint": "^8",
     "eslint-config-next": "^14.2.3",
     "firebase-admin": "^14.0.0",
-    "jest": "^30.4.2"
+    "jest": "^30.4.2",
+    "react-test-renderer": "18.3.1"
   }
 }

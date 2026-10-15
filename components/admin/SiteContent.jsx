@@ -8,7 +8,7 @@
 // so clearing a field resets it. Read live by the storefront.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { T } from './theme';
 import { CONTENT_DEFAULTS, whatsappUrlFor } from '@/lib/data/site-data';
 import { subscribeSiteContent, saveSiteContent } from '@/lib/site-content';
@@ -115,16 +115,83 @@ function defaultText(path, type) {
   return d == null ? '' : String(d);
 }
 
-export default function SiteContent() {
-  const [saved, setSaved] = useState({});
-  const [toast, setToast] = useState('');
-  useEffect(() => subscribeSiteContent(setSaved), []);
-  useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), 1800); return () => clearTimeout(t); }, [toast]);
+export default function SiteContent({ user = 'studio', onPendingChange = () => {} }) {
+  const [draft, setDraft] = useState({});
+  const [status, setStatus] = useState('loading');
+  const [error, setError] = useState('');
+  const latest = useRef({});
+  const edits = useRef({});
+  const saving = useRef(false);
+  const key = `malaya:content-draft:${user}`;
+  const dirty = Object.keys(edits.current).length > 0;
 
-  const set = (path, value) => setSaved((prev) => { const next = setAt(prev, path, value); saveSiteContent(next); return next; });
+  useEffect(() => {
+    // Session-scoped recovery survives reload, auth interruption and tab changes.
+    try { edits.current = JSON.parse(sessionStorage.getItem(key)) || {}; } catch {}
+    return subscribeSiteContent((published) => {
+      latest.current = published;
+      if (saving.current) return;
+      let next = published;
+      Object.entries(edits.current).forEach(([path, value]) => { next = setAt(next, path.split('.'), value); });
+      setDraft(next);
+      setStatus(Object.keys(edits.current).length ? 'pending' : 'idle');
+    });
+  }, [key]);
+
+  useEffect(() => {
+    onPendingChange(dirty || status === 'saving');
+    const beforeUnload = (event) => {
+      if (!Object.keys(edits.current).length && !saving.current) return;
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', beforeUnload);
+    return () => { window.removeEventListener('beforeunload', beforeUnload); onPendingChange(false); };
+  }, [dirty, status, onPendingChange]);
+
+  const set = (path, value) => {
+    if (saving.current) return;
+    const id = path.join('.');
+    if ((getAt(latest.current, path) || '') === value) delete edits.current[id];
+    else edits.current[id] = value;
+    try { sessionStorage.setItem(key, JSON.stringify(edits.current)); } catch {}
+    setDraft((prev) => setAt(prev, path, value));
+    setError('');
+    setStatus('pending');
+  };
+
+  const save = async () => {
+    if (saving.current || !Object.keys(edits.current).length) return;
+    saving.current = true;
+    setStatus('saving');
+    setError('');
+    // Preserve remote changes to untouched fields received while editing.
+    let next = latest.current;
+    Object.entries(edits.current).forEach(([path, value]) => { next = setAt(next, path.split('.'), value); });
+    try {
+      await saveSiteContent(next);
+      latest.current = next;
+      edits.current = {};
+      try { sessionStorage.removeItem(key); } catch {}
+      setDraft(next);
+      setStatus('success');
+    } catch (err) {
+      setError('Save failed. Your draft is kept in this tab. Check your connection and retry.');
+      setStatus('error');
+    } finally { saving.current = false; }
+  };
+
+  const discard = () => {
+    if (!window.confirm('Discard unsaved site content changes?')) return;
+    edits.current = {};
+    try { sessionStorage.removeItem(key); } catch {}
+    setDraft(latest.current);
+    setError('');
+    setStatus('idle');
+  };
 
   const Field = ([label, path, type]) => {
-    const cur = getAt(saved, path);
+    const cur = getAt(draft, path);
     const edited = cur !== undefined && cur !== '';
     const ph = defaultText(path, type);
     const multiline = type === 'area' || type === 'paras' || type === 'lines';
@@ -132,12 +199,12 @@ export default function SiteContent() {
     return (
       <div key={path.join('.')} style={{ marginBottom: 14 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <label style={labelStyle}>{label}{edited ? ' ·' : ''}</label>
+          <label htmlFor={`content-${path.join("-")}`} style={labelStyle}>{label}{edited ? ' ·' : ''}</label>
           {edited && <button onClick={() => set(path, '')} style={resetBtn} title="Reset to default">reset</button>}
         </div>
         {multiline
-          ? <textarea value={cur || ''} placeholder={ph} rows={rows} onChange={(e) => set(path, e.target.value)} style={{ ...fieldStyle(edited), resize: 'vertical', lineHeight: 1.6 }} />
-          : <input value={cur || ''} placeholder={ph} onChange={(e) => set(path, e.target.value)} style={fieldStyle(edited)} />}
+          ? <textarea id={`content-${path.join("-")}`} disabled={status === 'saving' || status === 'loading'} value={cur || ''} placeholder={ph} rows={rows} onChange={(e) => set(path, e.target.value)} style={{ ...fieldStyle(edited), resize: 'vertical', lineHeight: 1.6 }} />
+          : <input id={`content-${path.join("-")}`} disabled={status === 'saving' || status === 'loading'} value={cur || ''} placeholder={ph} onChange={(e) => set(path, e.target.value)} style={fieldStyle(edited)} />}
         {path[0] === 'contact' && path[1] === 'whatsapp' && (
           <div style={{ fontSize: 10.5, color: T.faint, marginTop: 5 }}>One number per line — each gets its own chat link. The first is used for one-tap links: {whatsappUrlFor((cur || ph).split('\n')[0]).split('&')[0]}…</div>
         )}
@@ -149,15 +216,22 @@ export default function SiteContent() {
     <div style={{ maxWidth: 880, margin: '0 auto', padding: '30px 28px 80px' }}>
       <h2 style={{ fontFamily: T.serif, fontSize: 30, color: T.ink, margin: '0 0 6px' }}>Site content</h2>
       <p style={{ fontSize: 13, color: T.muted, margin: '0 0 20px' }}>
-        Edit the website&rsquo;s text and links. Changes save automatically and appear on the live site immediately; clear a field to restore its original wording.
+        Edit the website&rsquo;s text and links. Choose Save to publish your changes; clear a field to restore its original wording.
       </p>
+      <div style={{ ...card, position: 'sticky', top: 72, zIndex: 20 }}>
+        <button onClick={save} disabled={!dirty || status === 'saving' || status === 'loading'} style={{ ...fieldStyle(true), width: 'auto', cursor: 'pointer' }}>{status === 'saving' ? 'Saving…' : 'Save changes'}</button>
+        <button onClick={discard} disabled={!dirty || status === 'saving'} style={{ ...resetBtn, marginLeft: 20 }}>Discard draft</button>
+        <p role={error ? 'alert' : 'status'} aria-live="polite" style={{ color: error ? T.danger : T.muted, marginBottom: 0 }}>
+          {error || (status === 'loading' ? 'Loading…' : status === 'saving' ? 'Waiting for save confirmation…' : dirty ? 'Unsaved changes — draft kept in this tab.' : status === 'success' ? 'Saved. Storefront refresh requested.' : 'All changes saved.')}
+        </p>
+      </div>
       {SECTIONS.map(([title, fields]) => (
         <div key={title} style={card}>
           <h3 style={headStyle}>{title}</h3>
           {fields.map(Field)}
         </div>
       ))}
-      {toast && <div style={{ position: 'fixed', bottom: 26, left: '50%', transform: 'translateX(-50%)', zIndex: 60, background: T.ink, color: T.panel, padding: '12px 22px', fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{toast}</div>}
+
     </div>
   );
 }
