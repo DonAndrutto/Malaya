@@ -100,3 +100,18 @@ it will flag a bucket that still needs this backfill.
   pass (e.g. 480 px) plus a `thumb` field on products and a one-off backfill
   script is an additive change. Do not reintroduce keyword-matching or
   runtime resizing infrastructure for this.
+
+## Real delivery checks and the connected-Mac DNS failure
+
+See IMAGE-DELIVERY-REVIEW.md for the 15 October comparison of production and
+preview. Both failed at DNS on the connected Mac's normal VPN resolver; with
+a diagnostic browser-only public-DNS mapping, the original Storage URLs
+returned 200 and decoded actual pixels on desktop/mobile. No app image-source
+regression was found, and no system DNS/VPN/storage setting was changed.
+
+Run `BASE_URL=<preview> node scripts/check-image-delivery.mjs` for real decoded
+pixel and HTTP response checks. `--public-dns` is an explicit diagnostic
+comparison only. Default runs use normal DNS and should fail on a broken
+resolver. Image tests now include catalogue photos, product hero and shared
+logo/background settings on both desktop and mobile, with network-error
+attachments on failure.

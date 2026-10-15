@@ -73,6 +73,18 @@ Read-only staging discovery is recorded in STAGING-AVAILABILITY.md. No clearly
 authorized isolated environment was found. Production-backed preview editor
 writes remain untested and must not be used to close this release gate.
 
+## Image-delivery follow-up
+
+A report of missing images was reproduced on both preview and production on
+this Mac. The same image URLs fail with ERR_NAME_NOT_RESOLVED on the normal
+VPN DNS path. Public DNS resolves the host, and a test-browser-only mapping
+restores HTTP 200 image responses and decoded catalogue/product/hero pixels
+on desktop/mobile. Six strengthened image tests pass with that explicitly
+logged diagnostic mapping; the default-DNS catalogue test fails as expected.
+See IMAGE-DELIVERY-REVIEW.md. No app proxy/URL rewrite, OS DNS/VPN change or
+Storage policy/content mutation was introduced. Normal device DNS remains a
+network configuration issue to resolve outside the app.
+
 ## Rollback
 
 Before merge, close the PR/discard its preview. After a separately approved

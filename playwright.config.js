@@ -19,7 +19,13 @@ const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 // Escape hatch for environments with a system-provided Chromium instead of
 // the Playwright-managed download (e.g. sandboxed CI images).
 const executablePath = process.env.PLAYWRIGHT_CHROMIUM_PATH || undefined;
-const launchOptions = executablePath ? { executablePath } : undefined;
+// Optional diagnostic override applies only to this test browser process.
+// No application URL, OS DNS setting or storage permission is changed.
+const resolverRules = process.env.PLAYWRIGHT_HOST_RESOLVER_RULES;
+const launchOptions = {
+  ...(executablePath ? { executablePath } : {}),
+  ...(resolverRules ? { args: [`--host-resolver-rules=${resolverRules}`] } : {}),
+};
 
 export default defineConfig({
   testDir: './e2e',
@@ -44,7 +50,7 @@ export default defineConfig({
       // The buying journey must also work on phones (most WhatsApp customers).
       name: 'mobile-chromium',
       use: { ...devices['Pixel 7'], launchOptions },
-      testMatch: /(storefront|cart)\.spec\.js/,
+      testMatch: /(storefront|cart|images)\.spec\.js/,
     },
   ],
   // When BASE_URL isn't provided, run against a local dev server.
