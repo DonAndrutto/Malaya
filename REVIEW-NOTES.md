@@ -18,10 +18,10 @@ credential/rule/billing/firewall change, merge or production deployment.
 
 - Baseline: 66 existing unit tests, lint and isolated production build passed.
   All four detail families returned no-store on cold and warm requests.
-- Editor: 7 new interaction/save tests pass for normal edits, no typing writes,
+- Editor: 11 new interaction/save/listener tests pass for normal edits, no typing writes,
   pending acknowledgement, rejected writes/retry, reset, remote snapshots,
   interrupted editing, recovery and discard.
-- Final unit suite: 81 tests in 8 suites pass.
+- Final unit suite: 85 tests in 8 suites pass.
 - Final lint passes with pre-existing font/image warnings only.
 - Real Next 14.2.35 production build/runtime with isolated fetch adapter:
   four detail families MISS then HIT; actual HTML body/title/canonical/JSON-LD
@@ -58,6 +58,20 @@ existing CI write flag cannot silently edit production through the preview.
 A signed-in save against isolated staging Firebase data remains a release gate.
 Draft recovery requires sessionStorage and browser unload prompts are subject
 to browser policy. Same-field multi-editor saves remain last-write-wins.
+
+## Independent review follow-up
+
+Two editor findings were reproduced and fixed: an old unmounted Save completion
+could clear a newer recovery draft, and filtering pending writes without
+requesting metadata events could miss the acknowledgement. Draft records now
+carry owner/revision identity; cleanup compares the submitted record before
+removal. The content listener requests metadata changes while retaining the
+pending-write filter. Four added regressions fail before and pass after these
+fixes (two recovery sequences and two listener modes).
+
+Read-only staging discovery is recorded in STAGING-AVAILABILITY.md. No clearly
+authorized isolated environment was found. Production-backed preview editor
+writes remain untested and must not be used to close this release gate.
 
 ## Rollback
 

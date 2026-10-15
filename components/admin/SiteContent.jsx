@@ -122,12 +122,18 @@ export default function SiteContent({ user = 'studio', onPendingChange = () => {
   const latest = useRef({});
   const edits = useRef({});
   const saving = useRef(false);
+  const draftOwner = useRef(null);
+  const draftRevision = useRef(0);
   const key = `malaya:content-draft:${user}`;
   const dirty = Object.keys(edits.current).length > 0;
 
   useEffect(() => {
     // Session-scoped recovery survives reload, auth interruption and tab changes.
-    try { edits.current = JSON.parse(sessionStorage.getItem(key)) || {}; } catch {}
+    try {
+      const recovered = JSON.parse(sessionStorage.getItem(key));
+      // Accept drafts stored by the first explicit-Save implementation too.
+      edits.current = (recovered?.schema === 1 ? recovered.edits : recovered) || {};
+    } catch {}
     return subscribeSiteContent((published) => {
       latest.current = published;
       if (saving.current) return;
@@ -154,7 +160,11 @@ export default function SiteContent({ user = 'studio', onPendingChange = () => {
     const id = path.join('.');
     if ((getAt(latest.current, path) || '') === value) delete edits.current[id];
     else edits.current[id] = value;
-    try { sessionStorage.setItem(key, JSON.stringify(edits.current)); } catch {}
+    if (!draftOwner.current) draftOwner.current = `${Date.now()}-${Math.random()}`;
+    draftRevision.current += 1;
+    try {
+      sessionStorage.setItem(key, JSON.stringify({ schema: 1, owner: draftOwner.current, revision: draftRevision.current, edits: edits.current }));
+    } catch {}
     setDraft((prev) => setAt(prev, path, value));
     setError('');
     setStatus('pending');
@@ -165,6 +175,10 @@ export default function SiteContent({ user = 'studio', onPendingChange = () => {
     saving.current = true;
     setStatus('saving');
     setError('');
+    // Only this exact recovery revision belongs to this save. A remounted
+    // editor can create a newer revision before this request acknowledges.
+    let submittedDraft = null;
+    try { submittedDraft = sessionStorage.getItem(key); } catch {}
     // Preserve remote changes to untouched fields received while editing.
     let next = latest.current;
     Object.entries(edits.current).forEach(([path, value]) => { next = setAt(next, path.split('.'), value); });
@@ -172,7 +186,9 @@ export default function SiteContent({ user = 'studio', onPendingChange = () => {
       await saveSiteContent(next);
       latest.current = next;
       edits.current = {};
-      try { sessionStorage.removeItem(key); } catch {}
+      try {
+        if (submittedDraft !== null && sessionStorage.getItem(key) === submittedDraft) sessionStorage.removeItem(key);
+      } catch {}
       setDraft(next);
       setStatus('success');
     } catch (err) {
