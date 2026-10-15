@@ -1,3 +1,4 @@
+import StoreRouteData from '@/components/store/site/StoreRouteData';
 // THE canonical topic page — exactly one URL per Topic, however many shelves
 // reference it (duplicate content is impossible by construction; see
 // EXPLORE.md §4). Server-rendered with ISR + metadata + Article/Breadcrumb
@@ -16,6 +17,9 @@ import { TopicPage } from '@/components/store/site/ExplorePages';
 // literal, so it cannot import the constant — lib/server/cache-policy.test.js
 // pins the two together. See CACHING.md.
 export const revalidate = 86400;
+
+// Cache on the first request; do not prebuild every detail page.
+export function generateStaticParams() { return []; }
 
 export async function generateMetadata({ params }) {
   const topic = await fetchTopic(params.slug);
@@ -60,7 +64,7 @@ export default async function Page({ params }) {
   const primary = topic ? primaryGroupOf(topic.slug, groups) : null;
 
   return (
-    <>
+    <StoreRouteData blog explore>
       {topic && (
         <script
           type="application/ld+json"
@@ -81,6 +85,6 @@ export default async function Page({ params }) {
         />
       )}
       <TopicPage slug={params.slug} initialTopic={topic} />
-    </>
+    </StoreRouteData>
   );
 }

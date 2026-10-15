@@ -1,3 +1,4 @@
+import StoreRouteData from '@/components/store/site/StoreRouteData';
 import { cache } from 'react';
 import { BlogPost } from '@/components/store/site/BlogPages';
 import { fetchDoc, REVALIDATE_SECONDS, BLOG_CACHE_TAG } from '@/lib/server/firestore';
@@ -9,6 +10,9 @@ import { jsonLd, blogPostingJsonLd, breadcrumbJsonLd } from '@/lib/seo';
 // literal, so it cannot import the constant — lib/server/cache-policy.test.js
 // pins the two together. See CACHING.md.
 export const revalidate = 86400;
+
+// Cache on the first request; do not prebuild every detail page.
+export function generateStaticParams() { return []; }
 
 // Unpublished posts are denied by the security rules, so a draft (or unknown
 // slug) simply resolves to null here and the page is kept out of the index.
@@ -45,7 +49,7 @@ export async function generateMetadata({ params }) {
 export default async function Page({ params }) {
   const post = await getPost(params.slug);
   return (
-    <>
+    <StoreRouteData blog explore>
       {post && (
         <script
           type="application/ld+json"
@@ -65,6 +69,6 @@ export default async function Page({ params }) {
         />
       )}
       <BlogPost slug={params.slug} />
-    </>
+    </StoreRouteData>
   );
 }

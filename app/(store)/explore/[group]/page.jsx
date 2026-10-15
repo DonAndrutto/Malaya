@@ -19,6 +19,9 @@ import { Reveal } from '@/components/store/site/reveal';
 // pins the two together. See CACHING.md.
 export const revalidate = 86400;
 
+// Cache on the first request; do not prebuild every detail page.
+export function generateStaticParams() { return []; }
+
 async function getGroup(slug) {
   const groups = await fetchPublishedGroups();
   return groups[slug] || null;

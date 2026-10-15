@@ -11,7 +11,6 @@ import { buildSiteData, resolveContent } from '@/lib/data/site-data';
 import { subscribeOverrides } from '@/lib/overrides';
 import { subscribeSiteSettings } from '@/lib/site-settings';
 import { subscribeSiteContent } from '@/lib/site-content';
-import { subscribeBlog } from '@/lib/blog';
 import { SiteDataContext, migrateCartAliases } from '@/components/store/site/store';
 import { SiteHeader, SiteFooter, CartNotice } from '@/components/store/site/SiteShell';
 
@@ -20,35 +19,23 @@ export default function StoreLayoutClient({
   initialOverrides = {},
   initialSettings = {},
   initialContent = {},
-  initialBlog = {},
-  initialExploreGroups = {},
-  initialExploreTopics = {},
 }) {
   const [overrides, setOverrides] = useState(initialOverrides);
   const [settings, setSettings] = useState(initialSettings);
   const [savedContent, setSavedContent] = useState(initialContent);
-  const [blogPosts, setBlogPosts] = useState(initialBlog);
 
   // skipCache: the server-rendered props are fresher than the localStorage
   // cache, so wait for the live Firestore snapshot instead of flashing the
-  // cached copy. The storefront only ever reads published blog posts (the
-  // security rules deny it anything else).
+  // cached copy. Editorial subscriptions live in StoreRouteClient.
   useEffect(() => subscribeOverrides(setOverrides, { skipCache: true }), []);
   useEffect(() => subscribeSiteSettings(setSettings, { skipCache: true }), []);
   useEffect(() => subscribeSiteContent(setSavedContent, { skipCache: true }), []);
-  useEffect(() => subscribeBlog(setBlogPosts, { publishedOnly: true, skipCache: true }), []);
 
   const siteData = useMemo(() => buildSiteData(overrides), [overrides]);
   const content = useMemo(() => resolveContent(savedContent), [savedContent]);
-  // Explore summaries/groups are deliberately NOT live-subscribed: the client
-  // SDK can't project fields, and shipping whole articles to paint card grids
-  // is the one real scalability trap. They ride the ISR props — refreshed on
-  // demand when the admin publishes (app/api/revalidate), which is now the
-  // only thing that refreshes them inside a day — and the topic page itself
-  // subscribes to its single document, so editing stays live where it matters.
   const ctx = useMemo(
-    () => ({ ...siteData, settings, content, blogPosts, exploreGroups: initialExploreGroups, exploreTopics: initialExploreTopics }),
-    [siteData, settings, content, blogPosts, initialExploreGroups, initialExploreTopics],
+    () => ({ ...siteData, settings, content, blogPosts: {}, exploreGroups: {}, exploreTopics: {} }),
+    [siteData, settings, content],
   );
 
   // Keep existing carts working when an item has been merged into a master.

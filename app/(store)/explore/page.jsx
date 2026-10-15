@@ -1,3 +1,4 @@
+import StoreRouteData from '@/components/store/site/StoreRouteData';
 // Explore landing — every published Group as a curated shelf of Topic cards.
 // Server-rendered from the topic-summary projection with ISR (never article
 // bodies — lib/server/explore.js); deliberately not live-subscribed. Admin
@@ -37,7 +38,7 @@ export default async function Page() {
     .map((g) => ({ group: g, topics: topicsOfGroup(g, topics) }));
 
   return (
-    <>
+    <StoreRouteData explore>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -66,6 +67,6 @@ export default async function Page() {
           ))}
         </div>
       </main>
-    </>
+    </StoreRouteData>
   );
 }
