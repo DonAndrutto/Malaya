@@ -17,11 +17,11 @@ badge settings also reached the rendered page. The settings dependency remains
 in the shared layout and is preserved by the nested route context. CSP permits
 the Storage host. No source image/context regression was found.
 
-The Mac's active resolver is `10.2.0.1` on VPN tunnel interface `utun4`; Wi-Fi
-has no explicit DNS servers. Google's public DNS-over-HTTPS resolves the same
-Storage hostname successfully. This narrows the failure to the Mac's normal
-DNS path (VPN resolver/filter/cache), not the bucket, tokens or preview build.
-The particular VPN policy responsible has not been changed or determined.
+The Mac's normal resolver fails for this hostname, while Google's public
+DNS-over-HTTPS resolves it successfully. This narrows the failure to the
+normal device/network DNS path, not the bucket, tokens or preview build.
+Device-specific network identifiers are omitted from this public report.
+The particular DNS policy responsible has not been changed or determined.
 
 ## Real delivery verification
 
