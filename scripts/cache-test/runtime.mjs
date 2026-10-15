@@ -33,6 +33,10 @@ for (const [path,title,type,selector,text] of [
 ]) {
   const {body}=await route(path,'HIT'); const $=load(body);
   assert.ok($('title').text().includes(title),path);
+  if(path.startsWith('/product/')) {
+    assert.notEqual($('.pd-order-buy button.btn-malaya').attr('disabled'), undefined);
+    assert.notEqual($('.pd-size-select').attr('disabled'), undefined);
+  }
   assert.ok($(selector).text().includes(text),`${path} SSR body missing ${text}`);
   assert.ok($('link[rel=canonical]').attr('href').endsWith(path),path);
   const blocks=$('script[type="application/ld+json"]').map((_,el)=>JSON.parse($(el).text())).get();

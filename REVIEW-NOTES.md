@@ -9,7 +9,9 @@ Production deployment: `dpl_3N5JKXjLNtF4DGbPdEBN22pBRC21`.
 
 The first commit fixes SiteContent drafts/saving. The second splits editorial
 cache dependencies and invalidation, enables on-demand detail caching, adds
-cart regressions and documents the policy. No data migration, production write,
+cart regressions and documents the policy. A follow-up guards product order
+controls until hydration, fixing early clicks/size selections dropped during
+slower preview navigation. No data migration, production write,
 credential/rule/billing/firewall change, merge or production deployment.
 
 ## Validation

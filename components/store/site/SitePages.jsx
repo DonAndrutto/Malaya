@@ -428,6 +428,11 @@ export function ProductPage({ id }) {
   const { SITE_PRODUCTS, SITE_BY_ID, content, settings, exploreTopics } = useSiteData();
   const router = useRouter();
   const p = SITE_BY_ID[id];
+  // Cached HTML can paint before the client handlers hydrate. Keep ordering
+  // controls disabled until the initial reset effect has run, so early input
+  // cannot be dropped or reset while navigation is still hydrating.
+  const [readyId, setReadyId] = useState(null);
+  const ready = readyId === id;
   const [qty, setQty] = useState(1);
   const [active, setActive] = useState(0);
   const [size, setSize] = useState(null); // selected EU ring size — shown for availability and carried into the cart
@@ -439,6 +444,7 @@ export function ProductPage({ id }) {
   useEffect(() => {
     setQty(1); setActive(0); setSize(null);
     setPageUrl(window.location.href);
+    setReadyId(id);
     if (galleryRef.current) galleryRef.current.scrollTo({ left: 0 });
   }, [id]);
   // If this id was merged into a master, canonicalise the URL to the master.
@@ -610,7 +616,7 @@ export function ProductPage({ id }) {
           {isRing && (
             <div className="pd-opt">
               <span className="pd-opt-label">Ring Size <em>· EU</em></span>
-              <select className="pd-size-select" aria-label="Ring size (EU)"
+              <select disabled={!ready} className="pd-size-select" aria-label="Ring size (EU)"
                 value={size == null ? '' : String(size)}
                 onChange={(e) => setSize(e.target.value === '' ? null : Number(e.target.value))}>
                 <option value="">Select your size…</option>
@@ -667,11 +673,11 @@ export function ProductPage({ id }) {
             </div>
             <div className="pd-order-buy">
               <div className="pd-qty">
-                <button type="button" aria-label="Decrease quantity" onClick={() => setQty(Math.max(1, qty - 1))}>−</button>
+                <button type="button" aria-label="Decrease quantity" disabled={!ready} onClick={() => setQty(Math.max(1, qty - 1))}>−</button>
                 <span>{qty}</span>
-                <button type="button" aria-label="Increase quantity" onClick={() => setQty(qty + 1)}>+</button>
+                <button type="button" aria-label="Increase quantity" disabled={!ready} onClick={() => setQty(qty + 1)}>+</button>
               </div>
-              <button className="btn-malaya" disabled={sold}
+              <button className="btn-malaya" disabled={sold || !ready}
                 onClick={() => addToCart(p.id, qty, isRing ? size : null)}>{sold ? 'Sold Out' : 'Add to Order'}</button>
             </div>
           </Reveal>

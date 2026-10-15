@@ -49,6 +49,9 @@ export async function openBuyableProduct(page) {
     const name = (await cards.nth(i).textContent())?.trim();
     await cards.nth(i).click();
     await expect(page.locator('.pd-name')).toBeVisible();
+    // A cached product can paint before hydration. Wait for a control that
+    // becomes enabled even for sold-out items before testing availability.
+    await expect(page.locator('.pd-qty button[aria-label="Increase quantity"]')).toBeEnabled();
     const buy = page.locator('.pd-order-buy button.btn-malaya');
     if (await buy.isEnabled()) return name;
     await page.goBack();
