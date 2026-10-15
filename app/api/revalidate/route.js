@@ -24,7 +24,7 @@
 import { revalidateTag, revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 import { EXPLORE_CACHE_TAG } from '@/lib/server/explore';
-import { BLOG_CACHE_TAG, SITE_CACHE_TAG } from '@/lib/server/firestore';
+import { BLOG_CACHE_TAG, SITE_CACHE_TAG, CATALOGUE_CACHE_TAG, CONTENT_CACHE_TAG, SETTINGS_CACHE_TAG } from '@/lib/server/firestore';
 import { firebaseConfig } from '@/lib/firebase-config';
 
 const SCOPES = {
@@ -44,26 +44,24 @@ const SCOPES = {
     revalidatePath('/blog/[slug]', 'page');
     revalidatePath('/sitemap.xml');
   },
+  catalogue: () => {
+    revalidateTag(CATALOGUE_CACHE_TAG);
+    revalidatePath('/sitemap.xml');
+  },
+  content: () => {
+    revalidateTag(CONTENT_CACHE_TAG);
+  },
+  settings: () => {
+    revalidateTag(SETTINGS_CACHE_TAG);
+  },
+  // Compatibility for already-open older admin clients. Still limited to store
+  // data; no root layout purge of /admin or /robots.txt is necessary.
   site: () => {
-    // Catalogue overrides and siteSettings feed the layout of every route
-    // (getServerLayoutData), so the whole tree drops out together.
-    //
-    // BLAST RADIUS — the next optimisation target, deliberately left alone
-    // here (CACHING.md §5). Both lines below are site-wide:
-    //   revalidateTag(SITE_CACHE_TAG) purges the catalogueOverrides /
-    //     siteSettings reads AND, because Next stamps every tag touched
-    //     during a render onto that route's cache entry, the cached HTML of
-    //     every route the store layout wraps — which is all of them.
-    //   revalidatePath('/', 'layout') resolves to the implicit tag `_N_T_/`
-    //     + `/layout`, which every app route derives, so it purges literally
-    //     every route including the ones that read no site data at all.
-    // The second is therefore near-redundant given the first; what makes the
-    // radius large is the root store layout consuming catalogueOverrides on
-    // every route, not this call. Narrowing it means splitting that layout
-    // (Stage 2) — until then, a price edit correctly but expensively drops
-    // every blog and Explore page out of cache too.
     revalidateTag(SITE_CACHE_TAG);
-    revalidatePath('/', 'layout');
+    revalidateTag(CATALOGUE_CACHE_TAG);
+    revalidateTag(CONTENT_CACHE_TAG);
+    revalidateTag(SETTINGS_CACHE_TAG);
+    revalidatePath('/sitemap.xml');
   },
 };
 

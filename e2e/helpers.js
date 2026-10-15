@@ -1,10 +1,20 @@
 // Shared helpers for the Malaya E2E suite.
 
-import { expect } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+
+// Local fixture runs must never reach the production Firebase SDK endpoints.
+if (process.env.E2E_ISOLATED === '1') {
+  test.beforeEach(async ({ context }) => {
+    const origin = new URL(process.env.BASE_URL).origin;
+    await context.route('**/*', (route) => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
+  });
+}
 
 export const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL || '';
 export const ADMIN_PASSWORD = process.env.E2E_ADMIN_PASSWORD || '';
-export const ALLOW_WRITES = process.env.E2E_ALLOW_WRITES === '1';
+// Preview deployments use production Firebase defaults. A legacy CI variable
+// alone must not authorize write-through tests against shared content.
+export const ALLOW_WRITES = process.env.E2E_ALLOW_WRITES === '1' && process.env.E2E_ISOLATED === '1';
 export const TEST_ITEM_ID = process.env.E2E_TEST_ITEM_ID || 'p001';
 
 // Navigate without waiting for the window `load` event: store pages keep
@@ -39,6 +49,9 @@ export async function openBuyableProduct(page) {
     const name = (await cards.nth(i).textContent())?.trim();
     await cards.nth(i).click();
     await expect(page.locator('.pd-name')).toBeVisible();
+    // A cached product can paint before hydration. Wait for a control that
+    // becomes enabled even for sold-out items before testing availability.
+    await expect(page.locator('.pd-qty button[aria-label="Increase quantity"]')).toBeEnabled();
     const buy = page.locator('.pd-order-buy button.btn-malaya');
     if (await buy.isEnabled()) return name;
     await page.goBack();

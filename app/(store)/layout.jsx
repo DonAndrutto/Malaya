@@ -11,7 +11,7 @@ import { jsonLd, organizationJsonLd, websiteJsonLd } from '@/lib/seo';
 import StoreLayoutClient from '@/components/store/site/StoreLayoutClient';
 
 export default async function StoreLayout({ children }) {
-  const { overrides, settings, savedContent, blogPosts, exploreGroups, exploreTopics } = await getServerLayoutData();
+  const { overrides, settings, savedContent } = await getServerLayoutData();
   const content = resolveContent(savedContent);
   // The home hero is a CSS background image, which browsers only discover
   // late; preloading the first slide pulls the LCP image forward. The slide
@@ -37,9 +37,6 @@ export default async function StoreLayout({ children }) {
         initialOverrides={overrides}
         initialSettings={settings}
         initialContent={savedContent}
-        initialBlog={blogPosts}
-        initialExploreGroups={exploreGroups}
-        initialExploreTopics={exploreTopics}
       >
         {children}
       </StoreLayoutClient>

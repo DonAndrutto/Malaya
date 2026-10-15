@@ -1,0 +1,63 @@
+{
+  "catalogueOverrides": {
+    "p009": {
+      "name": "Fixture Ring",
+      "listPrice": 120,
+      "published": true,
+      "stock": "In stock",
+      "qty": 10,
+      "img": "https://firebasestorage.googleapis.com/v0/b/isolated-test/o/diagnostic.svg?alt=media"
+    },
+    "p010": {
+      "mergedInto": "p009"
+    },
+    "p001": {
+      "img": "https://firebasestorage.googleapis.com/v0/b/isolated-test/o/diagnostic.svg?alt=media",
+      "category": "Pendants",
+      "stock": "In stock"
+    }
+  },
+  "siteSettings": {
+    "content": {
+      "hero": {
+        "title": "Fixture Studio"
+      }
+    },
+    "images": {
+      "heroSlides": [
+        "https://firebasestorage.googleapis.com/v0/b/isolated-test/o/diagnostic.svg?alt=media"
+      ]
+    }
+  },
+  "blogPosts": {
+    "fixture-post": {
+      "title": "Fixture Post",
+      "published": true,
+      "body": "Isolated article body.",
+      "excerpt": "Fixture excerpt"
+    }
+  },
+  "exploreGroups": {
+    "fixture-group": {
+      "slug": "fixture-group",
+      "name": "Fixture Shelf",
+      "published": true,
+      "topicSlugs": [
+        "fixture-topic"
+      ]
+    }
+  },
+  "exploreTopics": {
+    "fixture-topic": {
+      "title": "Fixture Topic",
+      "published": true,
+      "blocks": [
+        {
+          "id": "fixture-body",
+          "type": "richText",
+          "md": "Isolated topic body."
+        }
+      ]
+    }
+  }
+}

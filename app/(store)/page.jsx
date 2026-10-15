@@ -1,3 +1,4 @@
+import StoreRouteData from '@/components/store/site/StoreRouteData';
 import { HomePage } from '@/components/store/site/SitePages';
 
 export const metadata = {
@@ -6,5 +7,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <HomePage />;
+  return <StoreRouteData explore><HomePage /></StoreRouteData>;
 }

@@ -1,3 +1,4 @@
+import StoreRouteData from '@/components/store/site/StoreRouteData';
 import { ProductPage } from '@/components/store/site/SitePages';
 import { getServerProduct, getServerContent } from '@/lib/server/site';
 import { CATEGORY_TO_SECTION } from '@/lib/data/site-data';
@@ -9,6 +10,9 @@ import { jsonLd, productJsonLd, breadcrumbJsonLd } from '@/lib/seo';
 // literal, so it cannot import the constant — lib/server/cache-policy.test.js
 // pins the two together. See CACHING.md.
 export const revalidate = 86400;
+
+// Cache on the first request; do not prebuild every detail page.
+export function generateStaticParams() { return []; }
 
 export async function generateMetadata({ params }) {
   const p = await getServerProduct(params.id);
@@ -37,7 +41,7 @@ export async function generateMetadata({ params }) {
 export default async function Page({ params }) {
   const [p, content] = await Promise.all([getServerProduct(params.id), getServerContent()]);
   return (
-    <>
+    <StoreRouteData explore>
       {p && (
         <script
           type="application/ld+json"
@@ -59,6 +63,6 @@ export default async function Page({ params }) {
         />
       )}
       <ProductPage id={params.id} />
-    </>
+    </StoreRouteData>
   );
 }

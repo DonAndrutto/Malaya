@@ -80,8 +80,10 @@ test.describe('Cart', () => {
     const select = page.locator('.pd-size-select');
     await expect(select).toBeVisible();
     await select.selectOption('54');
+    await expect(page.locator('.pd-size-status')).toContainText('Size 54');
     await page.locator('.pd-order-buy button.btn-malaya').click();
     await select.selectOption('56');
+    await expect(page.locator('.pd-size-status')).toContainText('Size 56');
     await page.locator('.pd-order-buy button.btn-malaya').click();
 
     await goto(page, '/order');
@@ -97,4 +99,26 @@ test.describe('Cart', () => {
   // The sold-out regression (ordering disabled for "Sold out" stock) is
   // covered by the admin↔storefront inventory-sync suite, which can control
   // an item's stock state end-to-end (e2e/inventory-sync.spec.js).
+});
+
+test('header basket retains names, totals and removal on editorial and legal routes', async ({ page }) => {
+  const errors = [];
+  page.on('console', (message) => { if (message.type() === 'error' && /hydration|hydrating|Minified React error/i.test(message.text())) errors.push(message.text()); });
+  const name = await openBuyableProduct(page);
+  await page.locator('.pd-order-buy button.btn-malaya').click();
+  await expect(page.locator('.cart-notice')).toContainText(name);
+  for (const path of ['/blog', '/explore', '/about', '/policy/privacy']) {
+    await goto(page, path);
+    await expect(page.locator('.hdr-cart-count').first()).toHaveText('1');
+    await expect(page.locator('.hdr-cart-name').first()).toContainText(name);
+    const total = await page.locator('.hdr-cart-total').textContent();
+    expect(Number(total.replace(/[^0-9.]/g, ''))).toBeGreaterThan(0);
+  }
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await expect(page.locator('.hdr-cart-name').first()).toContainText(name);
+  // The desktop hover dropdown and mobile order page use the same cart store.
+  await goto(page, '/order');
+  await page.locator('.order-table .hdr-cart-x').click();
+  await expect(page.locator('.hdr-cart-count').first()).toHaveText('0');
+  expect(errors).toEqual([]);
 });

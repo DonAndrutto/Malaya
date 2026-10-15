@@ -1,3 +1,4 @@
+import StoreRouteData from '@/components/store/site/StoreRouteData';
 import { BlogIndex } from '@/components/store/site/BlogPages';
 
 export const metadata = {
@@ -6,5 +7,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <BlogIndex />;
+  return <StoreRouteData blog><BlogIndex /></StoreRouteData>;
 }
