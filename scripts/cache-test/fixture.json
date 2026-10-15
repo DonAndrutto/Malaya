@@ -5,10 +5,16 @@
       "listPrice": 120,
       "published": true,
       "stock": "In stock",
-      "qty": 10
+      "qty": 10,
+      "img": "https://firebasestorage.googleapis.com/v0/b/isolated-test/o/diagnostic.svg?alt=media"
     },
     "p010": {
       "mergedInto": "p009"
+    },
+    "p001": {
+      "img": "https://firebasestorage.googleapis.com/v0/b/isolated-test/o/diagnostic.svg?alt=media",
+      "category": "Pendants",
+      "stock": "In stock"
     }
   },
   "siteSettings": {
@@ -17,7 +23,11 @@
         "title": "Fixture Studio"
       }
     },
-    "images": {}
+    "images": {
+      "heroSlides": [
+        "https://firebasestorage.googleapis.com/v0/b/isolated-test/o/diagnostic.svg?alt=media"
+      ]
+    }
   },
   "blogPosts": {
     "fixture-post": {

@@ -1,5 +1,19 @@
 # Missing-image investigation — 15 October 2026
 
+## Physical-iOS report remains unresolved
+
+The supplied iPhone Safari screenshots show missing catalogue pictures and a
+missing CSS hero background, while the live site reportedly loads images.
+The separate Mac DNS failure below does not establish the cause on that
+phone. Mobile-emulated WebKit/Chromium comparisons, including delayed CSS
+and JavaScript, have not reproduced a preview-only render failure. Normal-DNS
+behavior on the physical iPhone remains unverified.
+
+A bounded preview-only `/api/image-check` page is available to distinguish
+plain image/decode, no-referrer, CSS background and HTTP/CORS outcomes on the
+actual phone. Results stay on the page; see IMAGE-CHECK.md. It is a diagnostic,
+not an image-delivery fix or a claim that the iOS report is resolved.
+
 ## Cause observed on the connected Mac
 
 Real Chromium image loading was tested at 1440px and 390px against preview

@@ -115,3 +115,7 @@ comparison only. Default runs use normal DNS and should fail on a broken
 resolver. Image tests now include catalogue photos, product hero and shared
 logo/background settings on both desktop and mobile, with network-error
 attachments on failure.
+
+The physical-iPhone preview-only report remains open; the Mac DNS result does
+not explain it. `/api/image-check` provides a bounded, non-reporting diagnostic
+on preview/development only, with production excluded. See IMAGE-CHECK.md.

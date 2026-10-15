@@ -21,7 +21,7 @@ credential/rule/billing/firewall change, merge or production deployment.
 - Editor: 11 new interaction/save/listener tests pass for normal edits, no typing writes,
   pending acknowledgement, rejected writes/retry, reset, remote snapshots,
   interrupted editing, recovery and discard.
-- Final unit suite: 85 tests in 8 suites pass.
+- Final unit suite: 92 tests in 10 suites pass.
 - Final lint passes with pre-existing font/image warnings only.
 - Real Next 14.2.35 production build/runtime with isolated fetch adapter:
   four detail families MISS then HIT; actual HTML body/title/canonical/JSON-LD
@@ -84,6 +84,23 @@ logged diagnostic mapping; the default-DNS catalogue test fails as expected.
 See IMAGE-DELIVERY-REVIEW.md. No app proxy/URL rewrite, OS DNS/VPN change or
 Storage policy/content mutation was introduced. Normal device DNS remains a
 network configuration issue to resolve outside the app.
+
+## Actual-device image diagnostic
+
+The iPhone preview-only report remains unresolved. Added `/api/image-check`
+as standalone preview/development-only HTML, with no store layout, Firebase
+client SDK, analytics or third-party scripts. It uses at most three existing
+public image URLs, fixed labels, coarse timing and load/decode/HTTP states;
+results are not transmitted or stored. No device/network/account identifiers
+are read. Production requests return 404 before data access. Its fixed hashed
+script and restrictive CSP exclude the preview toolbar.
+
+Seven unit regressions cover production exclusion, bounded public samples,
+control behavior, CSP, output escaping and privacy. Local browser fixtures
+verify success, failure and stalled requests, with the stalled run completing
+in about 24 seconds and no extra-service requests. Those fixtures are not
+physical-iPhone evidence. The user must open the diagnostic on the affected
+phone and may choose to share its visible report/screenshot. See IMAGE-CHECK.md.
 
 ## Rollback
 
