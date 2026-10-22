@@ -18,7 +18,8 @@ import { TopicPage } from '@/components/store/site/ExplorePages';
 export const revalidate = 86400;
 
 export async function generateMetadata({ params }) {
-  const topic = await fetchTopic(params.slug);
+  const { slug } = await params;
+  const topic = await fetchTopic(slug);
   if (!topic) {
     // Drafts and unknown slugs resolve to null (rules deny the read) and are
     // kept out of the index.
@@ -43,8 +44,9 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Page({ params }) {
+  const { slug } = await params;
   const [topic, groups] = await Promise.all([
-    fetchTopic(params.slug),
+    fetchTopic(slug),
     fetchPublishedGroups(),
   ]);
   if (!topic) {
@@ -53,7 +55,7 @@ export default async function Page({ params }) {
     // canonical page, so inbound links and SEO equity survive renames.
     const summaries = await fetchPublishedTopicSummaries();
     const renamed = Object.values(summaries).find(
-      (t) => Array.isArray(t.previousSlugs) && t.previousSlugs.includes(params.slug),
+      (t) => Array.isArray(t.previousSlugs) && t.previousSlugs.includes(slug),
     );
     if (renamed) permanentRedirect(`/explore/topic/${renamed.slug}`);
   }
@@ -80,7 +82,7 @@ export default async function Page({ params }) {
           }}
         />
       )}
-      <TopicPage slug={params.slug} initialTopic={topic} />
+      <TopicPage slug={slug} initialTopic={topic} />
     </>
   );
 }

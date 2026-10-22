@@ -20,7 +20,8 @@ const getPost = cache(async (slug) => {
 });
 
 export async function generateMetadata({ params }) {
-  const post = await getPost(params.slug);
+  const { slug } = await params;
+  const post = await getPost(slug);
   if (!post) {
     return { title: 'Blog · Malaya Jewellery', robots: { index: false, follow: false } };
   }
@@ -43,7 +44,8 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Page({ params }) {
-  const post = await getPost(params.slug);
+  const { slug } = await params;
+  const post = await getPost(slug);
   return (
     <>
       {post && (
@@ -64,7 +66,7 @@ export default async function Page({ params }) {
           }}
         />
       )}
-      <BlogPost slug={params.slug} />
+      <BlogPost slug={slug} />
     </>
   );
 }

@@ -126,7 +126,9 @@ export function SiteImg({
     <Image
       src={src} alt={alt || ''} className={className} style={style}
       width={width} height={height} sizes={sizes} quality={quality}
-      priority={priority} onError={hide}
+      // Next 15 stopped deriving fetchpriority="high" from `priority` (it
+      // only preloads), so state it explicitly to keep the LCP hint.
+      priority={priority} fetchPriority={priority ? 'high' : undefined} onError={hide}
     />
   );
 }
