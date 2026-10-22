@@ -25,7 +25,8 @@ async function getGroup(slug) {
 }
 
 export async function generateMetadata({ params }) {
-  const group = await getGroup(params.group);
+  const { group: slug } = await params;
+  const group = await getGroup(slug);
   if (!group) {
     return { title: 'Explore · Malaya Jewellery', robots: { index: false, follow: false } };
   }
@@ -45,8 +46,9 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Page({ params }) {
+  const { group: slug } = await params;
   const [group, topics] = await Promise.all([
-    getGroup(params.group),
+    getGroup(slug),
     fetchPublishedTopicSummaries(),
   ]);
 

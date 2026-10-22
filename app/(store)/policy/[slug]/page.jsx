@@ -19,14 +19,16 @@ export function generateStaticParams() {
   return Object.keys(TITLES).map((slug) => ({ slug }));
 }
 
-export function generateMetadata({ params }) {
-  const title = TITLES[params.slug] || 'Policy';
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const title = TITLES[slug] || 'Policy';
   return {
     title: title + ' · Malaya Jewellery',
     description: `${title} — Malaya Jewellery, handcrafted Buddhist jewellery from Bhutan.`,
   };
 }
 
-export default function Page({ params }) {
-  return <PolicyPage slug={params.slug} />;
+export default async function Page({ params }) {
+  const { slug } = await params;
+  return <PolicyPage slug={slug} />;
 }

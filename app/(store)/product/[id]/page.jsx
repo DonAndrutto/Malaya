@@ -11,7 +11,8 @@ import { jsonLd, productJsonLd, breadcrumbJsonLd } from '@/lib/seo';
 export const revalidate = 86400;
 
 export async function generateMetadata({ params }) {
-  const p = await getServerProduct(params.id);
+  const { id } = await params;
+  const p = await getServerProduct(id);
   if (!p) {
     return { title: 'Product · Malaya Jewellery', robots: { index: false, follow: false } };
   }
@@ -35,7 +36,8 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Page({ params }) {
-  const [p, content] = await Promise.all([getServerProduct(params.id), getServerContent()]);
+  const { id } = await params;
+  const [p, content] = await Promise.all([getServerProduct(id), getServerContent()]);
   return (
     <>
       {p && (
@@ -58,7 +60,7 @@ export default async function Page({ params }) {
           }}
         />
       )}
-      <ProductPage id={params.id} />
+      <ProductPage id={id} />
     </>
   );
 }

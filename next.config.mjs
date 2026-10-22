@@ -35,6 +35,11 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Keep Next 14's blocking metadata: title, canonical and OG tags rendered in
+  // <head> for every visitor. Next 15's streamed metadata lands in <body> for
+  // browsers and Googlebot and, after a client-side navigation, left the
+  // previous page's canonical behind next to the new one.
+  htmlLimitedBots: /.*/,
   images: {
     // Images are served straight from Firebase Storage, NOT through the
     // Vercel image optimizer: the Hobby plan's transformation quota runs out,
