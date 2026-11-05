@@ -372,6 +372,20 @@ function BlockForm({ block, setBlock, products, byId, topicsArr, uploadFolder, b
                 onPick={(p) => set({ ids: [...(b.ids || []), p.id] })} />
             </div>
           )}
+          <label style={{ fontSize: 12 }}>
+            <input type="checkbox" checked={!!b.stockFirst} onChange={(e) => set({ stockFirst: e.target.checked })} /> Prioritise pieces in stock
+          </label>
+          <label style={labelStyle}>Skip pieces (after sorting)
+            <input value={b.offset || 0} inputMode="numeric" onChange={(e) => set({ offset: Number(e.target.value.replace(/[^0-9]/g, '')) || 0 })} style={fieldStyle} />
+          </label>
+          {!!Object.keys(b.captions || {}).length && <details>
+            <summary style={{ cursor: 'pointer', fontSize: 12 }}>Product captions</summary>
+            {Object.entries(b.captions).map(([id, caption]) => <label key={id} style={{ ...labelStyle, display: 'block', marginTop: 10 }}>
+              {byId[id]?.name || id}
+              <textarea value={caption} rows={2} style={fieldStyle}
+                onChange={(e) => set({ captions: { ...b.captions, [id]: e.target.value } })} />
+            </label>)}
+          </details>}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px', gap: 12 }}>
             <div>
               <label style={labelStyle}>Title (optional)</label>

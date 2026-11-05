@@ -12,7 +12,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { subscribeTopic, topicProducts, relatedTopics, groupsOfTopic, primaryGroupOf, searchExplore } from '@/lib/explore';
+import { subscribeTopic, topicProducts, selectGridProducts, relatedTopics, groupsOfTopic, primaryGroupOf, searchExplore } from '@/lib/explore';
 import { bgImage } from '@/lib/data/site-data';
 import { useSiteData, blurActiveElement } from './store';
 import { SiteImg, SiteProductCard } from './SiteShell';
@@ -208,19 +208,17 @@ function DividerBlock({ style }) {
   return <div className="rule-dot" style={{ margin: '34px auto' }} />;
 }
 
-function ProductGridBlock({ mode, ids, title, limit, ctx }) {
+function ProductGridBlock({ mode, ids, title, limit, offset, stockFirst, captions, ctx }) {
   const linked = mode !== 'manual';
   let items = linked
     ? topicProducts(ctx.topic && ctx.topic.slug, ctx.products)
     : (ids || []).map((id) => productOf(id, ctx.byId)).filter(Boolean);
-  const seen = new Set();
-  items = items.filter((p) => !seen.has(p.id) && seen.add(p.id));
-  if (limit > 0) items = items.slice(0, limit);
+  items = selectGridProducts(items, { stockFirst, offset, limit });
   if (!items.length) return null;
   return (
     <section className="explore-block-products">
       {title && <Reveal><h2 className="section-title">{title}</h2><div className="rule-dot" /></Reveal>}
-      <div className="pgrid pgrid-3">{items.map((p) => <SiteProductCard key={p.id} p={p} />)}</div>
+      <div className="pgrid pgrid-3">{items.map((p) => <SiteProductCard key={p.id} p={p} caption={captions?.[p.id]} />)}</div>
     </section>
   );
 }
