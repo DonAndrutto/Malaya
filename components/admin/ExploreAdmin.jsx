@@ -30,6 +30,7 @@ import { FIREBASE_ENABLED } from '@/lib/firebase';
 import { buildSiteData } from '@/lib/data/site-data';
 import { loadOverrides, saveOverrides, subscribeOverrides } from '@/lib/overrides';
 import { BlockRenderer } from '@/components/store/site/ExplorePages';
+import VajraRefresh from './VajraRefresh';
 
 const card = { background: T.panel, border: `1px solid ${T.line}`, padding: '18px 20px', marginBottom: 16 };
 const headStyle = { fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase', color: T.accent, margin: '0 0 14px' };
@@ -1040,6 +1041,7 @@ export default function ExploreAdmin() {
               }} style={primaryBtn}>New group</button>}
         </div>
       </div>
+      {FIREBASE_ENABLED && view === 'topics' && <VajraRefresh />}
       {!FIREBASE_ENABLED && (
         <div style={{ ...card, background: T.card, borderColor: T.danger, color: T.danger, fontSize: 13, marginTop: 16 }}>
           Firebase is not configured — Explore content saves locally to this browser only and image uploads are disabled.
