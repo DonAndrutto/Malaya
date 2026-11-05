@@ -134,7 +134,7 @@ export function SiteImg({
 }
 
 // ── Product card — bordered photo, centred name/subtitle (matches live site) ──
-export function SiteProductCard({ p }) {
+export function SiteProductCard({ p, caption }) {
   const { settings } = useSiteData();
   const specials = p.specials || [];
   const onSale = p.onSale || specials.includes('sale') || p.tag === 'sale';
@@ -161,7 +161,7 @@ export function SiteProductCard({ p }) {
       </Link>
       <h5 className="pcard-text">
         <Link href={`/product/${p.id}`} className="pcard-name">{p.name}</Link>
-        <Link href={`/product/${p.id}`} className="pcard-sub">{p.sub}</Link>
+        <Link href={`/product/${p.id}`} className="pcard-sub">{typeof caption === 'string' && caption.trim() ? caption : p.sub}</Link>
       </h5>
     </div>
   );
