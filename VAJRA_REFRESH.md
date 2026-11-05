@@ -38,6 +38,17 @@ between them; when editing a caption, update it in both grids.
 
 ## Apply the content migration
 
+The signed-in **Admin → Explore → Review Vajra refresh** control reads current
+Firebase data and shows the pieces and exact field changes. **Apply approved
+refresh** downloads a before-state backup, writes all changes in one transaction,
+saves the previous topic in History, and refreshes both storefront caches. It
+aborts if an intervening edit changed a reviewed record. This uses the existing
+admin session and Firestore rules; no terminal credentials are needed.
+
+If the cache refresh fails after the database commit, use **Retry storefront
+refresh**. The UI distinguishes saved content from refreshed public pages and
+does not repeat the data writes during that retry.
+
 Deploy the matching renderer before applying content that uses its new grid
 fields. No live writes are performed by a normal build or by the default
 script invocation. The initial brief's no-merge/no-deploy constraint remains
