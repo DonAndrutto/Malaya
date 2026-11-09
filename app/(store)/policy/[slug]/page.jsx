@@ -24,7 +24,7 @@ export async function generateMetadata({ params }) {
   const title = TITLES[slug] || 'Policy';
   return {
     title: title + ' · Malaya Jewellery',
-    description: `${title} — Malaya Jewellery, handcrafted Buddhist jewellery from Bhutan.`,
+    description: `${title} — Malaya Jewellery, handcrafted Buddhist jewellery from Tbilisi, Georgia.`,
   };
 }
 
