@@ -1,7 +1,7 @@
 import './globals.css';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { SITE_URL } from '@/lib/server/site';
+import { SITE_URL } from '@/lib/site-url';
 import HeadMetadataCleanup from '@/components/HeadMetadataCleanup';
 
 export const metadata = {
@@ -12,6 +12,7 @@ export const metadata = {
   alternates: { canonical: './' },
   openGraph: {
     siteName: 'Malaya Jewellery',
+    url: './',
     type: 'website',
     locale: 'en_US',
   },
