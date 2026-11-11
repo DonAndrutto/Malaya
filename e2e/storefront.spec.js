@@ -70,11 +70,15 @@ test.describe('Home & catalogue', () => {
     const name = (await page.locator('.pcard-name').first().textContent()).trim();
     const term = name.split(/\s+/).find((w) => w.length > 3) || name;
     await page.locator('.cat-search').fill(term);
-    const row = page.locator('.cat-search-row').first();
+    // Explore topics can precede products; select the product we searched for.
+    const row = page.locator('.cat-search-row').filter({
+      has: page.getByText(name, { exact: true }),
+      hasNot: page.locator('.cat-search-kind'),
+    }).first();
     await expect(row).toBeVisible();
     await row.click();
     await expect(page).toHaveURL(/\/product\//);
-    await expect(page.locator('.pd-name')).toBeVisible();
+    await expect(page.locator('.pd-name')).toHaveText(name);
   });
 });
 

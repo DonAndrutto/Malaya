@@ -2,7 +2,7 @@ import { AboutPage } from '@/components/store/site/SitePages';
 
 export const metadata = {
   title: 'About · Malaya Jewellery',
-  description: 'Malaya Jewellery — a brand based in Tbilisi, Georgia crafting jewelry rooted in the spiritual traditions of the Himalayas.',
+  description: 'Discover Malaya, the Vajrayana fine jewellery brand by designer Andrzej Rybszleger since 2016. Himalayan traditions, fine craftsmanship and worldwide shipping.',
 };
 
 export default function Page() {

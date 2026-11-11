@@ -7,7 +7,7 @@ import HeadMetadataCleanup from '@/components/HeadMetadataCleanup';
 export const metadata = {
   metadataBase: new URL(SITE_URL),
   title: 'Malaya Jewellery · Fine Buddhist Jewellery',
-  description: 'Handcrafted Buddhist jewellery from Tbilisi, Georgia — mantras, ritual objects and healing stones in fine gold and silver.',
+  description: 'Fine Vajrayana jewellery in gold and silver — mantras, sacred symbols and ritual objects of the Himalayan tradition. Shipped worldwide.',
   // Self-referencing canonical, resolved per route against metadataBase.
   alternates: { canonical: './' },
   openGraph: {
