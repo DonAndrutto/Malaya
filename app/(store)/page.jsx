@@ -1,9 +1,12 @@
+import { staticPageMetadata } from '@/lib/metadata';
 import { HomePage } from '@/components/store/site/SitePages';
 
-export const metadata = {
+export const metadata = staticPageMetadata({
+  path: '/',
+  image: 'home',
   title: 'Malaya · Fine Buddhist Jewellery',
   description: 'Fine Vajrayana jewellery in gold and silver — mantras, sacred symbols and ritual objects of the Himalayan tradition. Shipped worldwide.',
-};
+});
 
 export default function Page() {
   return <HomePage />;
