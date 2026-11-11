@@ -27,6 +27,8 @@ export async function blockImages(page) {
 export async function gotoHome(page) {
   await goto(page, '/');
   await expect(page.locator('.pcard').first()).toBeVisible();
+  // The catalogue's guard opens only after React attaches its event handlers.
+  await expect(page.locator('.cat-search')).toBeEnabled();
 }
 
 // Navigate to the first product whose "Add to Order" button is enabled

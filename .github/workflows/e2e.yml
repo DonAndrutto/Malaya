@@ -5,12 +5,9 @@
 # its URL (no build needed here — we test the real deployment). It can also be
 # run by hand against any URL via workflow_dispatch.
 #
-# Secrets/vars (Settings → Secrets and variables → Actions):
-#   E2E_ADMIN_EMAIL / E2E_ADMIN_PASSWORD  (secrets, optional) — enables the
-#     signed-in admin dashboard tests.
-#   E2E_ALLOW_WRITES (variable, optional, "1") — additionally runs the
-#     admin↔storefront inventory-sync test, which edits and restores one
-#     product's sale price/status in the project's Firestore.
+# Preview Firebase currently points at production: this automated suite is
+# public/read-only. Authenticated mutation tests require a separately approved,
+# isolated environment and are never enabled by repository secrets/variables.
 
 name: E2E
 
@@ -36,8 +33,11 @@ jobs:
       github.event_name == 'workflow_dispatch' ||
       (github.event.deployment_status.state == 'success' &&
        contains(github.event.deployment_status.environment, 'review'))
-    # Keep the runner on an OS supported by the locked Playwright version.
     runs-on: ubuntu-24.04
+    # Matches @playwright/test 1.56.0 in package-lock.json; includes browsers
+    # and OS dependencies so runs do not depend on a live Ubuntu apt mirror.
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.0-noble@sha256:35246d87a7c88ea9b771c65d33171b2611b02a8253b4b12ce6f94376c55f99f2
     timeout-minutes: 30
     steps:
       - name: Checkout the deployed commit (matching tests)
@@ -53,16 +53,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
       - name: Run Playwright suite
         run: npx playwright test
         env:
           BASE_URL: ${{ inputs.base_url || github.event.deployment_status.environment_url }}
-          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
-          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
-          E2E_ALLOW_WRITES: ${{ vars.E2E_ALLOW_WRITES }}
+          E2E_ADMIN_EMAIL: ''
+          E2E_ADMIN_PASSWORD: ''
+          E2E_ALLOW_WRITES: '0'
 
       - name: Upload report
         if: failure()
