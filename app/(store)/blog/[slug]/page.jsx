@@ -26,7 +26,7 @@ export async function generateMetadata({ params }) {
     return { title: 'Blog · Malaya Jewellery', robots: { index: false, follow: false } };
   }
   const title = `${post.title} · Malaya Jewellery`;
-  const description = post.excerpt || `${post.title} — stories from Malaya Jewellery in Thimphu, Bhutan.`;
+  const description = post.excerpt || `${post.title} — stories of Vajrayana art and Himalayan traditions from Malaya Jewellery.`;
   return {
     title,
     description,

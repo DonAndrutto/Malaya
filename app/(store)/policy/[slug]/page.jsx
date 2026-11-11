@@ -1,3 +1,4 @@
+import { staticPageMetadata } from '@/lib/metadata';
 import { PolicyPage } from '@/components/store/site/SitePages';
 
 const TITLES = {
@@ -22,10 +23,11 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const title = TITLES[slug] || 'Policy';
-  return {
+  return staticPageMetadata({
+    path: `/policy/${slug}`,
     title: title + ' · Malaya Jewellery',
-    description: `${title} — Malaya Jewellery, handcrafted Buddhist jewellery from Bhutan.`,
-  };
+    description: `${title} — Malaya Jewellery, fine Vajrayana jewellery with worldwide shipping.`,
+  });
 }
 
 export default async function Page({ params }) {

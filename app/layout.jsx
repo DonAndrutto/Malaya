@@ -1,17 +1,18 @@
 import './globals.css';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { SITE_URL } from '@/lib/server/site';
+import { SITE_URL } from '@/lib/site-url';
 import HeadMetadataCleanup from '@/components/HeadMetadataCleanup';
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),
   title: 'Malaya Jewellery · Fine Buddhist Jewellery',
-  description: 'Handcrafted Buddhist jewellery — mantras, ritual objects and healing stones in fine gold and silver.',
+  description: 'Fine Vajrayana jewellery in gold and silver — mantras, sacred symbols and ritual objects of the Himalayan tradition. Shipped worldwide.',
   // Self-referencing canonical, resolved per route against metadataBase.
   alternates: { canonical: './' },
   openGraph: {
     siteName: 'Malaya Jewellery',
+    url: './',
     type: 'website',
     locale: 'en_US',
   },

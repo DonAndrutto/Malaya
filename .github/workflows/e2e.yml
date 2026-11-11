@@ -1,21 +1,18 @@
 # E2E suite against Vercel Preview Deployments.
 #
-# Vercel's GitHub integration reports each deployment through the Deployments
-# API; when a Preview deployment goes green this workflow points Playwright at
-# its URL (no build needed here — we test the real deployment). It can also be
-# run by hand against any URL via workflow_dispatch.
+# PR runs wait for Vercel's successful deployment of the exact head SHA, then
+# test its URL. This also validates workflow changes before they reach main.
+# It can also be run by hand against a URL via workflow_dispatch.
 #
-# Secrets/vars (Settings → Secrets and variables → Actions):
-#   E2E_ADMIN_EMAIL / E2E_ADMIN_PASSWORD  (secrets, optional) — enables the
-#     signed-in admin dashboard tests.
-#   E2E_ALLOW_WRITES (variable, optional, "1") — additionally runs the
-#     admin↔storefront inventory-sync test, which edits and restores one
-#     product's sale price/status in the project's Firestore.
+# Preview Firebase currently points at production: this automated suite is
+# public/read-only. Authenticated mutation tests require a separately approved,
+# isolated environment and are never enabled by repository secrets/variables.
 
 name: E2E
 
 on:
-  deployment_status:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
     inputs:
       base_url:
@@ -25,25 +22,25 @@ on:
 
 permissions:
   contents: read
+  deployments: read
 
 concurrency:
-  group: e2e-${{ github.event.deployment_status.environment_url || inputs.base_url }}
+  group: e2e-${{ github.event.pull_request.number || inputs.base_url }}
   cancel-in-progress: true
 
 jobs:
   e2e:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.deployment_status.state == 'success' &&
-       contains(github.event.deployment_status.environment, 'review'))
-    # Keep the runner on an OS supported by the locked Playwright version.
     runs-on: ubuntu-24.04
+    # Matches @playwright/test 1.56.0 in package-lock.json; includes browsers
+    # and OS dependencies so runs do not depend on a live Ubuntu apt mirror.
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.0-noble@sha256:35246d87a7c88ea9b771c65d33171b2611b02a8253b4b12ce6f94376c55f99f2
     timeout-minutes: 30
     steps:
       - name: Checkout the deployed commit (matching tests)
         uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.deployment.sha || github.ref }}
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
 
       - uses: actions/setup-node@v5
         with:
@@ -53,16 +50,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+      - name: Wait for the matching Vercel preview
+        if: github.event_name == 'pull_request'
+        id: preview
+        run: node scripts/wait-for-preview.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PREVIEW_SHA: ${{ github.event.pull_request.head.sha }}
 
       - name: Run Playwright suite
         run: npx playwright test
         env:
-          BASE_URL: ${{ inputs.base_url || github.event.deployment_status.environment_url }}
-          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
-          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
-          E2E_ALLOW_WRITES: ${{ vars.E2E_ALLOW_WRITES }}
+          BASE_URL: ${{ inputs.base_url || steps.preview.outputs.url }}
+          E2E_ADMIN_EMAIL: ''
+          E2E_ADMIN_PASSWORD: ''
+          E2E_ALLOW_WRITES: '0'
 
       - name: Upload report
         if: failure()

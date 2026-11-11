@@ -44,7 +44,7 @@ export default async function sitemap() {
   ]);
 
   const statics = STATIC_ROUTES.map((r) => ({
-    url: `${SITE_URL}${r.path === '/' ? '' : r.path}` || SITE_URL,
+    url: `${SITE_URL}${r.path}`,
     priority: r.priority,
     changeFrequency: r.changeFrequency,
   }));
