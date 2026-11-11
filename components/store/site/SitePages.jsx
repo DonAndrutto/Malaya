@@ -150,6 +150,9 @@ function CatalogueScroll() {
   const [active, setActive] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   const [q, setQ] = useState('');
+  const [searchReady, setSearchReady] = useState(false);
+  // Do not accept typing into server HTML before React can retain the input.
+  useEffect(() => { setSearchReady(true); }, []);
   const [searchOpen, setSearchOpen] = useState(false);
   const [fam, setFam] = useState(''); // '' | 'gold' | 'silver' — metal filter
   const [inStock, setInStock] = useState(false); // availability filter (on-hand pieces only)
@@ -344,7 +347,7 @@ function CatalogueScroll() {
             </div>
           )}
           <div className="cat-search-wrap">
-            <input className="cat-search" type="search" placeholder="Search by name or code…" value={q}
+            <input className="cat-search" type="search" placeholder="Search by name or code…" value={q} disabled={!searchReady}
               onChange={(e) => { setQ(e.target.value); setSearchOpen(true); }}
               onFocus={() => setSearchOpen(true)}
               onKeyDown={(e) => { if (e.key === 'Enter' && matches[0]) goToProduct(matches[0].id); if (e.key === 'Escape') setSearchOpen(false); }} />
