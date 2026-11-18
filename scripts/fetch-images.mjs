@@ -1,14 +1,13 @@
 #!/usr/bin/env node
 // ─────────────────────────────────────────────────────────────────────────────
-// Seed Firebase with the existing Malaya imagery from the live site.
+// Seed Firebase with existing Malaya imagery from an operator-supplied archive.
 //
 //   node scripts/fetch-images.mjs            # seed everything
 //   node scripts/fetch-images.mjs --force    # re-upload even if already present
 //   node scripts/fetch-images.mjs --dry-run  # list what would happen, no writes
 //
 // For each image it:
-//   1. downloads it from https://malayajewelrybhutan.com  (into memory only —
-//      nothing is written to the repo, so the checkout stays lightweight),
+//   1. reads a bundled copy when available, or downloads it from MALAYA_IMPORT_ORIGIN,
 //   2. uploads it to the Firebase Storage bucket
 //        products/{productId}/{file}   — catalogue photos
 //        site/{slot}/{file}            — logo, hero, tiles, banners, portrait
@@ -17,7 +16,7 @@
 //        siteSettings/images                        — site imagery (one doc)
 //
 // The storefront already reads those Firestore fields live, so once this runs the
-// site serves every image from your own Firebase (no CDN, nothing committed).
+// imported images are served from your own Firebase.
 //
 // ── Credentials ──────────────────────────────────────────────────────────────
 // Uses the Firebase Admin SDK, which bypasses the security rules, so it works
@@ -40,9 +39,10 @@ import { fileURLToPath } from 'node:url';
 import { initializeApp, cert } from 'firebase-admin/app';
 import { getStorage } from 'firebase-admin/storage';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { legacyImagePath } from '../lib/legacy-images.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const CDN = 'https://malayajewelrybhutan.com/';
+const IMPORT_ORIGIN = process.env.MALAYA_IMPORT_ORIGIN;
 const DEFAULT_BUCKET =
   process.env.FIREBASE_STORAGE_BUCKET ||
   process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
@@ -51,9 +51,9 @@ const DEFAULT_BUCKET =
 const FORCE = process.argv.includes('--force');
 const DRY = process.argv.includes('--dry-run');
 
-// ── Site imagery: which CDN file backs each Firestore slot ───────────────────
+// ── Site imagery: which archive file backs each Firestore slot ───────────────
 // Mirrors the defaults in lib/data/site-data.js and the folders SiteImages.jsx
-// uploads to. `images/` is the CDN prefix for non-product imagery.
+// uploads to. `images/` is the archive prefix for non-product imagery.
 const SITE_IMAGES = [
   { slot: 'logo',        folder: 'site/logo',    file: 'logo.png' },
   { slot: 'homeBanner',  folder: 'site/banners', file: 'banner12.jpg' },
@@ -100,10 +100,10 @@ function downloadUrl(bucketName, dest, token) {
   return `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(dest)}?alt=media&token=${token}`;
 }
 
-// Download `srcUrl` into memory and upload it to `dest` in the bucket, returning
+// Read `sourcePath` into memory and upload it to `dest` in the bucket, returning
 // a Firebase download URL. Reuses an existing object (and its token) unless
 // --force is set, so reruns are cheap and idempotent.
-async function seedImage(bucket, dest, srcUrl) {
+async function seedImage(bucket, dest, sourcePath) {
   const file = bucket.file(dest);
   if (!FORCE) {
     const [exists] = await file.exists();
@@ -113,9 +113,15 @@ async function seedImage(bucket, dest, srcUrl) {
       if (token) return { url: downloadUrl(bucket.name, dest, token), status: 'skip' };
     }
   }
-  const res = await fetch(srcUrl);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const buffer = Buffer.from(await res.arrayBuffer());
+  const localPath = legacyImagePath(sourcePath);
+  let buffer;
+  if (localPath) {
+    buffer = await readFile(path.join(ROOT, 'public', localPath));
+  } else {
+    const res = await fetch(new URL(sourcePath, IMPORT_ORIGIN));
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    buffer = Buffer.from(await res.arrayBuffer());
+  }
   const token = randomUUID();
   await file.save(buffer, {
     resumable: false,
@@ -140,6 +146,7 @@ async function loadCredential() {
 }
 
 async function main() {
+  if (!DRY && !IMPORT_ORIGIN) throw new Error('Set MALAYA_IMPORT_ORIGIN to the image archive origin.');
   const credential = await loadCredential();
   if (!credential && !process.env.GOOGLE_APPLICATION_CREDENTIALS) {
     console.error('✗ No service account found. Set GOOGLE_APPLICATION_CREDENTIALS or FIREBASE_SERVICE_ACCOUNT (see the header of this file).');
@@ -167,7 +174,7 @@ async function main() {
     const dest = `products/${id}/${file}`;
     try {
       if (DRY) { console.log(`  · ${id}  ${file}`); continue; }
-      const { url, status } = await seedImage(bucket, dest, CDN + 'products/' + file);
+      const { url, status } = await seedImage(bucket, dest, '/products/' + file);
       await db.collection('catalogueOverrides').doc(id).set(
         { img: url, _updated: FieldValue.serverTimestamp() },
         { merge: true },
@@ -184,7 +191,7 @@ async function main() {
   const seedSite = async (folder, file, label) => {
     const dest = `${folder}/${file.split('/').pop()}`;
     if (DRY) { console.log(`  · ${label}  ${file}`); return null; }
-    const { url, status } = await seedImage(bucket, dest, CDN + 'images/' + file);
+    const { url, status } = await seedImage(bucket, dest, '/images/' + file);
     tally(status);
     return url;
   };

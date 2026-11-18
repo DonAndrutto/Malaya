@@ -8,6 +8,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { buildSiteData, resolveContent } from '@/lib/data/site-data';
+import { localizeImageData } from '@/lib/legacy-images';
 import { subscribeOverrides } from '@/lib/overrides';
 import { subscribeSiteSettings } from '@/lib/site-settings';
 import { subscribeSiteContent } from '@/lib/site-content';
@@ -33,10 +34,10 @@ export default function StoreLayoutClient({
   // cache, so wait for the live Firestore snapshot instead of flashing the
   // cached copy. The storefront only ever reads published blog posts (the
   // security rules deny it anything else).
-  useEffect(() => subscribeOverrides(setOverrides, { skipCache: true }), []);
-  useEffect(() => subscribeSiteSettings(setSettings, { skipCache: true }), []);
-  useEffect(() => subscribeSiteContent(setSavedContent, { skipCache: true }), []);
-  useEffect(() => subscribeBlog(setBlogPosts, { publishedOnly: true, skipCache: true }), []);
+  useEffect(() => subscribeOverrides((data) => setOverrides(localizeImageData(data)), { skipCache: true }), []);
+  useEffect(() => subscribeSiteSettings((data) => setSettings(localizeImageData(data)), { skipCache: true }), []);
+  useEffect(() => subscribeSiteContent((data) => setSavedContent(localizeImageData(data)), { skipCache: true }), []);
+  useEffect(() => subscribeBlog((data) => setBlogPosts(localizeImageData(data)), { publishedOnly: true, skipCache: true }), []);
 
   const siteData = useMemo(() => buildSiteData(overrides), [overrides]);
   const content = useMemo(() => resolveContent(savedContent), [savedContent]);
