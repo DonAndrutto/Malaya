@@ -10,7 +10,7 @@
 //   node scripts/scrape-stories.mjs --out path.json # override the output file
 //
 // What it does:
-//   1. fetches the catalogue page  https://malayajewelrybhutan.com/malaya-jewelry-products
+//   1. fetches /malaya-jewelry-products from the supplied MALAYA_IMPORT_ORIGIN
 //      and extracts the URL of every individual product detail page
 //      (links shaped like  /malaya-jewelry/<Category>/<Code> , e.g. .../Necklaces/N024-S),
 //   2. visits each product page and pulls out
@@ -35,7 +35,11 @@ import { fileURLToPath } from 'node:url';
 import * as cheerio from 'cheerio';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const ORIGIN = 'https://malayajewelrybhutan.com';
+if (!process.env.MALAYA_IMPORT_ORIGIN) {
+  console.error('Set MALAYA_IMPORT_ORIGIN to the catalogue archive origin.');
+  process.exit(1);
+}
+const ORIGIN = new URL(process.env.MALAYA_IMPORT_ORIGIN).origin;
 const CATALOGUE_URL = `${ORIGIN}/malaya-jewelry-products`;
 
 // ── Tunables (override via CLI flags) ────────────────────────────────────────

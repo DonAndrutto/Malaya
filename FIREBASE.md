@@ -127,11 +127,11 @@ builds never allow demo sign-in.
 
 ## 3. Seed the existing images into Firebase
 
-`scripts/fetch-images.mjs` moves the live site's imagery into **your own
-Firebase** — nothing is downloaded into the repo or committed (the checkout
-stays lightweight). For each image it:
+`scripts/fetch-images.mjs` imports archived imagery into **your own Firebase**.
+For each image it:
 
-1. downloads it from `malayajewelrybhutan.com` into memory,
+1. reads the bundled copy from `public/images/legacy/` when available, or
+   downloads it from the archive selected by `MALAYA_IMPORT_ORIGIN`,
 2. uploads it to Firebase **Storage** (`products/{id}/…`, `site/{slot}/…`),
 3. writes the Storage URL into **Firestore** (`catalogueOverrides/{id}.img` and
    `siteSettings/images`), which the storefront reads live.
@@ -142,14 +142,20 @@ Service accounts → Generate new private key):
 
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/serviceAccount.json
+export MALAYA_IMPORT_ORIGIN=https://your-archive.example
 npm run fetch-images                 # seed everything
 npm run fetch-images -- --dry-run    # preview, no writes
 npm run fetch-images -- --force      # re-upload even if already present
 ```
 
-Reruns are idempotent: images already in Storage are reused (their existing
-download token is kept) and only Firestore is refreshed. Anything not yet seeded
-keeps falling back to the CDN, so the site works throughout.
+Reruns reuse images already in Storage and keep their existing download tokens.
+
+To audit the five recovered image URLs in Firestore, run
+`node scripts/fix-hotlinked-images.ts` from the repo root (Node 24). The default
+dry run reads the public storefront collections. Use `--authenticated` with
+Application Default Credentials or `FIREBASE_SERVICE_ACCOUNT` to include draft
+and legacy content collections. Once a deployment serves the bundled files,
+`--apply` explicitly commits the listed field updates using the same credentials.
 
 ## 3a. Master inventory & local image seeding (current workflow)
 
@@ -196,8 +202,8 @@ inventory is built from these same folders, none are flagged "unknown".
 
 **Step 3 — publish**: open `/admin → Stock ledger` and toggle lines **Online**.
 
-> `scripts/fetch-images.mjs` (section 3) is the older path that pulled imagery
-> from the live CDN; the local-folder workflow here supersedes it.
+> Use the local-folder workflow for current catalogue uploads. The archive
+> importer in section 3 supports historical imports.
 
 ## 4. Using the admin
 

@@ -14,6 +14,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { subscribeTopic, topicProducts, selectGridProducts, relatedTopics, groupsOfTopic, primaryGroupOf, searchExplore } from '@/lib/explore';
 import { bgImage } from '@/lib/data/site-data';
+import { localizeImageData } from '@/lib/legacy-images';
 import { useSiteData, blurActiveElement } from './store';
 import { SiteImg, SiteProductCard } from './SiteShell';
 import { Reveal } from './reveal';
@@ -297,7 +298,7 @@ export function TopicPage({ slug, initialTopic = null }) {
   // Visitors can't read drafts (rules) — the subscription then never fires and
   // the server-rendered state stands; a signed-in admin sees the draft live.
   useEffect(
-    () => subscribeTopic(slug, (t) => setTopic(t), { skipCache: true }),
+    () => subscribeTopic(slug, (t) => setTopic(localizeImageData(t)), { skipCache: true }),
     [slug],
   );
 
