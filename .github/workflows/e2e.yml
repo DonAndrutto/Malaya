@@ -46,13 +46,13 @@ jobs:
         shell: bash
         run: |
           retired_name='malaya''jewelrybhutan'
-          if git grep -ailF -e "$retired_name"; then
+          if git -c safe.directory="$GITHUB_WORKSPACE" grep -ailF -e "$retired_name"; then
             exit 1
           else
             status=$?
             if [ "$status" -ne 1 ]; then exit "$status"; fi
           fi
-          if git ls-files | grep -iF -- "$retired_name"; then exit 1; fi
+          if git -c safe.directory="$GITHUB_WORKSPACE" ls-files | grep -iF -- "$retired_name"; then exit 1; fi
 
       - uses: actions/setup-node@v5
         with:
